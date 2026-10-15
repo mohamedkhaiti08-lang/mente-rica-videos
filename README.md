@@ -16,10 +16,11 @@ Cada día a las 13:15 (hora de Madrid) se genera un vídeo nuevo y se envía el 
 4. Prueba fotogramas: `python3 render.py stills 3 10 17 24 31 38` y revisa que nada se corte ni se solape.
 5. Renderiza: `python3 render.py video salida.mp4`, y comprime con `ffmpeg -i salida.mp4 -c:v libx264 -crf 23 -preset slow -pix_fmt yuv420p -c:a copy -movflags +faststart videos/AAAA-MM-DD-tema.mp4`.
 
-## Estilo VIVO (desde el 18 de octubre de 2026)
+## Estilo VERDE (desde el 18 de octubre de 2026)
 
-`plantilla/vivo/` tiene el estilo nuevo, más llamativo: fondo violeta→rosa con rayos giratorios y confeti, letras tipo pegatina (borde oscuro y sombra), tarjetas blancas con sombra dura y Moni más alegre (gafas rosas, salta y saluda).
+Estética moderna en tonos verdes, **sin mascota**: fondo verde oscuro con brillos esmeralda, tipografía Inter Display limpia, tarjetas de cristal, iconos de línea y contadores animados.
 
-- `vivo.py` – módulo base (fondo, texto, tarjetas, `badge`, Moni, escenas comunes `scene_truco` y `scene_outro`, motor de render).
-- `v1_leche.py`, `v2_hormiga.py`, `v3_movil.py` – ejemplos completos. Para un vídeo nuevo, copia uno y cambia sus escenas, `TALK` y textos.
-- Voz: pedir en HyperFrames una voz joven de España MUY entusiasta y alegre (tipo creador de TikTok, nada de profe aburrido) y música pop alegre de fondo.
+- `plantilla/verde/verde.py` – módulo base. `g1_leche.py`, `g2_hormiga.py`, `g3_movil.py` – ejemplos.
+- Cada vídeo son **6 clips de escena** (`videos/AAAA-MM-DD-tema/escena-N.mp4`, 8 s, sin audio). Todo aparece en los primeros ~2,5 s y luego la escena se mantiene, para poder recortarla o alargarla según la voz.
+- Sincronización: en HyperFrames cada escena empieza justo cuando empieza su frase y dura lo que dura la frase + 0,6 s. Así el audio nunca se desfasa.
+- Voz: hombre, España, tono de **empresario** seguro y profesional. Música corporativa suave de fondo.
