@@ -214,20 +214,29 @@ def draw_header(dst, idx, total):
 def glow_text(txt, size, color, path, gcol, r=26, st=0.45):
     return glow(text_img(txt, size, color, path), gcol, r, st)
 
+CHIP_Y, HEAD_Y, VIS_Y = 400, 630, 1100
+
+def headline(dst, words, t, start=0.1, size=100, y=HEAD_Y, max_w=940):
+    words_in(dst, words, W / 2, y, size, t, start, path=F_BLACK, max_w=max_w)
+
 def outro(dst, t):
-    words_in(dst, [("Sígueme", WHITE), ("para", WHITE), ("tener", WHITE), ("una", WHITE)], W / 2, 700, 76, t, 0.15, path=F_B)
-    p = prog(t, 0.5, 0.7)
+    p = prog(t, 0.1, 0.7)
+    if p > 0:
+        coin = Image.new("RGBA", (220, 220), (0, 0, 0, 0)); d = ImageDraw.Draw(coin)
+        d.ellipse([10, 10, 210, 210], outline=MINT, width=10)
+        e = text_img("€", 120, MINT, F_BLACK, shadow=False); coin.alpha_composite(e, (110 - e.width // 2, 104 - e.height // 2))
+        paste_center(dst, glow(coin, EMERALD, 24, 0.5), W / 2, 640 + (1 - ease_out_quint(p)) * 50 + math.sin(t * 1.8) * 6, 0.9 + 0.1 * ease_out_back(p), ease_out_cubic(p))
+    p = prog(t, 0.4, 0.7)
     if p > 0:
         big = glow_text("MENTE RICA", 150, MINT, F_BLACK, EMERALD, 30, 0.45)
-        paste_center(dst, big, W / 2, 860 + (1 - ease_out_quint(p)) * 50, 0.94 + 0.06 * ease_out_back(p) + 0.01 * math.sin(t * 2), ease_out_cubic(p))
-    p = prog(t, 1.1, 0.6)
+        paste_center(dst, big, W / 2, 900 + (1 - ease_out_quint(p)) * 50, 0.94 + 0.06 * ease_out_back(p), ease_out_cubic(p))
+    p = prog(t, 0.9, 0.6)
     if p > 0:
-        btn = pill("  + Seguir  ", 58, MINT, DEEP, F_B)
-        pulse = 1 + 0.025 * math.sin(max(0, t - 1.7) * 4)
-        paste_center(dst, btn, W / 2, 1080 + (1 - ease_out_quint(p)) * 40, pulse * (0.92 + 0.08 * ease_out_back(p)), ease_out_cubic(p))
-    words_in(dst, [("Comenta", MUTED), ("qué", MUTED), ("tema", MUTED), ("quieres", MUTED), ("mañana", WHITE)], W / 2, 1250, 52, t, 1.6, path=F_SB)
+        btn = pill("  + Seguir  ", 64, MINT, DEEP, F_B)
+        pulse = 1 + 0.03 * math.sin(max(0, t - 1.5) * 4)
+        paste_center(dst, btn, W / 2, 1110 + (1 - ease_out_quint(p)) * 40, pulse * (0.92 + 0.08 * ease_out_back(p)), ease_out_cubic(p))
 
-def tip_chip(dst, t, y=470):
+def tip_chip(dst, t, y=CHIP_Y):
     pop(dst, pill("  ✓  EL TRUCO  ", 40, LIME, DEEP, F_XB), W / 2, y, t, 0.1, 0.5, 30)
 
 # ---------- motor ----------
