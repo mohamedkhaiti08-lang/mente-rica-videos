@@ -284,10 +284,10 @@ def phase_teach(dst, t):
     text_lines(dst, CFG["intro"], W / 2, 520, 48, GREEN, POP, 66, t, [t5 + 0.3 + k * 0.3 for k in range(len(CFG["intro"]))])
     q = CFG["quote"]; n = len(q)
     d6 = LINES[5][1] - LINES[5][0]
-    starts = [LINES[5][0] - 0.1 + d6 * 0.92 * k / n for k in range(n)]
+    starts = [LINES[5][0] - 0.1 + d6 * CFG.get('reveal', 0.92) * k / n for k in range(n)]
     y0 = 700 if len(CFG["intro"]) > 1 else 650
     text_lines(dst, q, W / 2, y0, 50, INK, LORA_I, 78, t, starts, 0.5)
-    ls = LINES[5][1] - 0.2
+    ls = min(LINES[5][1] - 0.2, t5 + 1.0) if CFG.get("early_source") else LINES[5][1] - 0.2
     pl = eout(prog(t, ls, 0.6))
     if pl > 0:
         ImageDraw.Draw(dst).line([(W / 2 - 80 * pl, 1360), (W / 2 + 80 * pl, 1360)], fill=GOLD, width=4)
