@@ -23,7 +23,7 @@ with open(os.path.join(HERE, "tiempos.json")) as f:
 LEAD = 0.35          # la imagen cambia un poco antes que la voz
 XF = 0.6             # duración del fundido
 BOUNDS = [0.0] + [LINES[i][0] - min(LEAD, (LINES[i][0] - LINES[i - 1][1]) / 2) for i in range(1, len(LINES))]
-DUR = LINES[-1][1] + 1.6
+DUR = 62.4
 BOUNDS.append(DUR)
 
 @lru_cache(maxsize=None)
