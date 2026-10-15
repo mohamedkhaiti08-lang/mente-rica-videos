@@ -15,3 +15,11 @@ Cada día a las 13:15 (hora de Madrid) se genera un vídeo nuevo y se envía el 
 3. Reescribe solo las funciones `sceneN`, la lista `SCENES`, las ventanas `TALK` (cuando Moni habla) y `DUR`.
 4. Prueba fotogramas: `python3 render.py stills 3 10 17 24 31 38` y revisa que nada se corte ni se solape.
 5. Renderiza: `python3 render.py video salida.mp4`, y comprime con `ffmpeg -i salida.mp4 -c:v libx264 -crf 23 -preset slow -pix_fmt yuv420p -c:a copy -movflags +faststart videos/AAAA-MM-DD-tema.mp4`.
+
+## Estilo VIVO (desde el 18 de octubre de 2026)
+
+`plantilla/vivo/` tiene el estilo nuevo, más llamativo: fondo violeta→rosa con rayos giratorios y confeti, letras tipo pegatina (borde oscuro y sombra), tarjetas blancas con sombra dura y Moni más alegre (gafas rosas, salta y saluda).
+
+- `vivo.py` – módulo base (fondo, texto, tarjetas, `badge`, Moni, escenas comunes `scene_truco` y `scene_outro`, motor de render).
+- `v1_leche.py`, `v2_hormiga.py`, `v3_movil.py` – ejemplos completos. Para un vídeo nuevo, copia uno y cambia sus escenas, `TALK` y textos.
+- Voz: pedir en HyperFrames una voz joven de España MUY entusiasta y alegre (tipo creador de TikTok, nada de profe aburrido) y música pop alegre de fondo.
