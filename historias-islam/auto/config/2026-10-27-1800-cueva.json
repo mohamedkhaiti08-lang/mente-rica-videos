@@ -1,0 +1,206 @@
+{
+ "label": "HISTORIA REAL",
+ "times": "t2.json",
+ "tail": 1.6,
+ "scenes": [
+  {
+   "title": [
+    "3 hombres atrapados",
+    "en una cueva…"
+   ],
+   "tint": "stone",
+   "title_y": 280,
+   "cap_y": 1660,
+   "hi": [
+    "cueva…",
+    "roca"
+   ],
+   "vis": {
+    "type": "cave",
+    "open": [
+     0,
+     0
+    ],
+    "y": 300
+   },
+   "cap": "Tres hombres, atrapados en una cueva… y una roca enorme tapa la salida."
+  },
+  {
+   "title": [
+    "Sin salida"
+   ],
+   "tint": "night",
+   "title_y": 280,
+   "cap_y": 1660,
+   "hi": [
+    "salir."
+   ],
+   "vis": {
+    "type": "cave",
+    "open": [
+     0,
+     0
+    ],
+    "y": 300
+   },
+   "cap": "Nadie sabe que están ahí. No hay forma de salir."
+  },
+  {
+   "title": [
+    "La obra más",
+    "sincera"
+   ],
+   "tint": "gold",
+   "hi": [
+    "sincera"
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "🤲",
+    "orbit": [
+     "✨",
+     "✨",
+     "✨"
+    ],
+    "y": 920
+   },
+   "cap": "Entonces dicen: pidamos a Allah, por la obra más sincera que hayamos hecho."
+  },
+  {
+   "title": [
+    "El primero:",
+    "sus padres"
+   ],
+   "tint": "night",
+   "hi": [
+    "padres",
+    "ancianos."
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "🥛",
+    "orbit": [
+     "🌙",
+     "👵",
+     "👴"
+    ],
+    "y": 920
+   },
+   "cap": "El primero esperó toda la noche, con la leche en la mano, para no despertar a sus padres ancianos."
+  },
+  {
+   "title": [
+    "Se movió…",
+    "un poco"
+   ],
+   "tint": "stone",
+   "title_y": 280,
+   "cap_y": 1660,
+   "hi": [
+    "movió"
+   ],
+   "vis": {
+    "type": "cave",
+    "open": [
+     0,
+     0.2
+    ],
+    "y": 300,
+    "at": 0.2
+   },
+   "cap": "La roca se movió un poco."
+  },
+  {
+   "title": [
+    "El segundo:",
+    "dejó el pecado"
+   ],
+   "tint": "red",
+   "hi": [
+    "temor",
+    "Allah."
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "🛑",
+    "orbit": [
+     "🤍"
+    ],
+    "y": 920
+   },
+   "cap": "El segundo pudo cometer un pecado… y lo dejó, por temor a Allah."
+  },
+  {
+   "title": [
+    "El tercero:",
+    "fue honrado"
+   ],
+   "tint": "green",
+   "hi": [
+    "todo."
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "💰",
+    "orbit": [
+     "🐑",
+     "🐄",
+     "🐪"
+    ],
+    "y": 920
+   },
+   "cap": "El tercero guardó el sueldo de un trabajador, lo hizo crecer, y se lo dio todo."
+  },
+  {
+   "title": [
+    "¡Libres!"
+   ],
+   "tint": "gold",
+   "title_y": 280,
+   "cap_y": 1660,
+   "hi": [
+    "apartó"
+   ],
+   "vis": {
+    "type": "cave",
+    "open": [
+     0.2,
+     1.0
+    ],
+    "y": 300,
+    "at": 0.1
+   },
+   "cap": "Y la roca, se apartó del todo."
+  },
+  {
+   "title": [
+    "Lo que haces",
+    "en secreto…"
+   ],
+   "tint": "gold",
+   "hi": [
+    "salva"
+   ],
+   "vis": {
+    "type": "book",
+    "src": "SAHIH AL-BUJARI 2272",
+    "y": 920
+   },
+   "cap": "Lo que haces cuando nadie te ve, te salva cuando nadie te puede ayudar."
+  },
+  {
+   "tint": "green",
+   "hi": [
+    "Allah?",
+    "abajo."
+   ],
+   "vis": {
+    "type": "cta",
+    "word": "¿Y TÚ?",
+    "e": "🤲",
+    "y": 900
+   },
+   "cap": "¿Tú tienes una obra así, solo para Allah? Piénsalo, y escríbelo abajo."
+  }
+ ]
+}

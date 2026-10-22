@@ -1,0 +1,196 @@
+{
+ "label": "TE PASA A TI",
+ "times": "t1.json",
+ "tail": 1.6,
+ "scenes": [
+  {
+   "title": [
+    "Te ofrecen apostar…",
+    "¡Solo son 5 €!"
+   ],
+   "tint": "red",
+   "hi": [
+    "cinco",
+    "euros!"
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "📱",
+    "orbit": [
+     "⚽",
+     "💶",
+     "🎰"
+    ],
+    "y": 900
+   },
+   "cap": "Te ofrecen apostar en el partido… ¡Solo son cinco euros!"
+  },
+  {
+   "title": [
+    "«Todos lo hacen»"
+   ],
+   "tint": "green",
+   "hi": [
+    "todos"
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "👬",
+    "orbit": [
+     "📱",
+     "📱",
+     "📱"
+    ],
+    "y": 900
+   },
+   "cap": "Todos tus amigos lo hacen, y parece un juego sin importancia."
+  },
+  {
+   "title": [
+    "Ganas una vez…"
+   ],
+   "tint": "red",
+   "hi": [
+    "veinte?"
+   ],
+   "vis": {
+    "type": "counter",
+    "seq": [
+     "5 €",
+     "20 €"
+    ],
+    "e": "🤑",
+    "y": 880
+   },
+   "cap": "Ganas una vez, y piensas: ¿y si ahora pruebo con veinte?"
+  },
+  {
+   "tint": "night",
+   "hi": [
+    "empieza"
+   ],
+   "vis": {
+    "type": "big",
+    "words": [
+     "ASÍ",
+     "EMPIEZA"
+    ],
+    "y": 860,
+    "size": 180
+   },
+   "cap": "Pero así es como empieza casi siempre."
+  },
+  {
+   "title": [
+    "El camino de la apuesta"
+   ],
+   "tint": "red",
+   "hi": [
+    "deuda."
+   ],
+   "vis": {
+    "type": "steps",
+    "items": [
+     [
+      "🎮",
+      "JUEGO"
+     ],
+     [
+      "⛓️",
+      "NECESIDAD"
+     ],
+     [
+      "💸",
+      "DEUDA"
+     ]
+    ],
+    "y": 900
+   },
+   "cap": "Primero es un juego. Luego, una necesidad. Y al final, una deuda."
+  },
+  {
+   "title": [
+    "El islam cierra",
+    "esa puerta"
+   ],
+   "tint": "green",
+   "hi": [
+    "puerta"
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "🚪",
+    "orbit": [
+     "🔒"
+    ],
+    "y": 920
+   },
+   "cap": "Por eso el islam, cierra esa puerta desde el principio."
+  },
+  {
+   "title": [
+    "¿Qué dice Allah?"
+   ],
+   "tint": "gold",
+   "hi": [
+    "Corán:"
+   ],
+   "vis": {
+    "type": "book",
+    "src": "CORÁN 5:90",
+    "y": 900
+   },
+   "cap": "Allah dice en el Corán:"
+  },
+  {
+   "tint": "gold",
+   "hi": [
+    "éxito."
+   ],
+   "vis": {
+    "type": "quote",
+    "lines": [
+     "«…Los embriagantes y las",
+     "apuestas… son obra inmunda",
+     "del demonio. Absteneos de",
+     "ellos, y así tendréis éxito.»"
+    ],
+    "src": "CORÁN 5:90 · SURA AL-MÁIDA",
+    "y": 900
+   },
+   "cap": "Los embriagantes y las apuestas, son obra inmunda del demonio. Absteneos de ellos, y así tendréis éxito.",
+   "nocap": true
+  },
+  {
+   "tint": "green",
+   "hi": [
+    "fe,",
+    "más."
+   ],
+   "vis": {
+    "type": "big",
+    "words": [
+     "TU FE",
+     "VALE MÁS"
+    ],
+    "y": 820,
+    "size": 160,
+    "e": "🤍"
+   },
+   "cap": "Cinco euros no es mucho dinero. Pero tu fe, vale mucho más."
+  },
+  {
+   "tint": "green",
+   "hi": [
+    "comentarios."
+   ],
+   "vis": {
+    "type": "cta",
+    "word": "¿Y TÚ?",
+    "e": "🤔",
+    "y": 900
+   },
+   "cap": "¿Y tú qué harías? ¿Dirías que no? Te leo en los comentarios."
+  }
+ ]
+}
