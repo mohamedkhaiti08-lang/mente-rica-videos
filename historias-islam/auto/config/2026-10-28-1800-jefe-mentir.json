@@ -1,0 +1,234 @@
+{
+ "label": "TE PASA A TI",
+ "times": "tB.json",
+ "tail": 1.6,
+ "scenes": [
+  {
+   "title": [
+    "Tu jefe te pide",
+    "que mientas…"
+   ],
+   "tint": "red",
+   "hi": [
+    "mientas"
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "👔",
+    "orbit": [
+     "📞",
+     "💼",
+     "🤥"
+    ],
+    "y": 900
+   },
+   "cap": "Tu jefe te pide que mientas a un cliente…"
+  },
+  {
+   "title": [
+    "«Dile que ya",
+    "ha salido»"
+   ],
+   "tint": "night",
+   "hi": [
+    "verdad."
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "📦",
+    "orbit": [
+     "❓",
+     "🚚"
+    ],
+    "y": 900
+   },
+   "cap": "Dile que el pedido ya ha salido. Aunque no sea verdad."
+  },
+  {
+   "title": [
+    "Si dices que NO…"
+   ],
+   "tint": "red",
+   "hi": [
+    "trabajo?"
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "😰",
+    "orbit": [
+     "💼",
+     "❌"
+    ],
+    "y": 900
+   },
+   "cap": "Si dices que no, ¿te arriesgas a perder el trabajo?"
+  },
+  {
+   "title": [
+    "Si dices que SÍ…"
+   ],
+   "tint": "gold",
+   "hi": [
+    "mentirita,"
+   ],
+   "vis": {
+    "type": "choice",
+    "opts": [
+     [
+      "✋",
+      "DECIR NO",
+      "gold"
+     ],
+     [
+      "🤥",
+      "MENTIRITA",
+      "red"
+     ]
+    ],
+    "y": 900
+   },
+   "cap": "Y si dices que sí… es solo una mentirita, ¿no?"
+  },
+  {
+   "tint": "night",
+   "hi": [
+    "otra…",
+    "más."
+   ],
+   "vis": {
+    "type": "counter",
+    "seq": [
+     "1",
+     "2",
+     "3",
+     "10…"
+    ],
+    "sub": "MENTIRAS",
+    "e": "🤥",
+    "y": 880,
+    "last_red": true
+   },
+   "cap": "Pero una mentira lleva a otra… y luego a otra más."
+  },
+  {
+   "title": [
+    "¿Qué dijo",
+    "el Profeta?"
+   ],
+   "tint": "gold",
+   "hi": [
+    "Profeta"
+   ],
+   "vis": {
+    "type": "book",
+    "src": "SAHIH AL-BUJARI 6094",
+    "y": 900
+   },
+   "cap": "El Profeta, la paz sea con él, dijo:"
+  },
+  {
+   "title": [
+    "El camino",
+    "de la verdad"
+   ],
+   "tint": "green",
+   "hi": [
+    "verdad",
+    "Paraíso."
+   ],
+   "vis": {
+    "type": "quote",
+    "lines": [
+     "La verdad lleva al bien,",
+     "y el bien lleva",
+     "al Paraíso."
+    ],
+    "src": "SAHIH AL-BUJARI 6094",
+    "size": 60,
+    "y": 860
+   },
+   "cap": "La verdad lleva al bien, y el bien lleva al Paraíso."
+  },
+  {
+   "title": [
+    "El camino",
+    "de la mentira"
+   ],
+   "tint": "red",
+   "hi": [
+    "mentira",
+    "Fuego."
+   ],
+   "vis": {
+    "type": "steps",
+    "items": [
+     [
+      "🤥",
+      "MENTIRA"
+     ],
+     [
+      "😈",
+      "MALDAD"
+     ],
+     [
+      "🔥",
+      "FUEGO"
+     ]
+    ],
+    "y": 900
+   },
+   "cap": "Y la mentira lleva a la maldad, y la maldad lleva al Fuego."
+  },
+  {
+   "title": [
+    "Dile con respeto:"
+   ],
+   "tint": "green",
+   "hi": [
+    "respeto:",
+    "solución."
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "🤝",
+    "orbit": [
+     "💬",
+     "✅"
+    ],
+    "y": 900
+   },
+   "cap": "Así que dile a tu jefe, con respeto: no puedo mentir, pero te ayudo a buscar otra solución."
+  },
+  {
+   "tint": "gold",
+   "hi": [
+    "Allah,"
+   ],
+   "vis": {
+    "type": "big",
+    "words": [
+     "TU SUSTENTO",
+     "ES DE ALLAH"
+    ],
+    "size": 120,
+    "gap": 160,
+    "y": 840,
+    "e": "🤲"
+   },
+   "cap": "Tu sustento viene de Allah, no de una mentira."
+  },
+  {
+   "tint": "green",
+   "hi": [
+    "verdad"
+   ],
+   "vis": {
+    "type": "cta",
+    "word": "¿Y TÚ?",
+    "e": "💬",
+    "y": 860
+   },
+   "cap": "¿Tú qué harías? ¿Dirías la verdad aunque te cueste? Te leo abajo."
+  }
+ ]
+}

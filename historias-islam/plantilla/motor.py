@@ -341,8 +341,64 @@ def v_cave(dst, t, dur, v):
     if v.get("e"):
         badge(dst, t, W / 2 + v.get("ex", 300), y0 + v.get("ey", 330), v["e"], 150, 0.5, ring=True)
 
+
+# --- barrotes de cárcel que caen sobre el emoji ---
+def v_bars(dst, t, dur, v):
+    cy = v.get("y", 900)
+    badge(dst, t, W / 2, cy, v["e"], v.get("size", 280), 0.1, ring=v.get("ring", True))
+    p = eout(prog(t, v.get("at", 0.6), 0.6))
+    if p <= 0: return
+    shake = math.sin(t * 40) * 5 * (1 - prog(t, v.get("at", 0.6) + 0.6, 0.4)) if p >= 1 else 0
+    lay = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(lay)
+    top = cy - 330; bot = cy + 330; yb = top - (1 - p) * 900
+    x0, x1 = W / 2 - 330, W / 2 + 330
+    d.rectangle([x0 - 20, yb - 10, x1 + 20, yb + 22], fill=(70, 74, 80, 255), outline=(30, 30, 34, 255), width=3)
+    d.rectangle([x0 - 20, yb + (bot - top) - 22, x1 + 20, yb + (bot - top) + 10], fill=(70, 74, 80, 255), outline=(30, 30, 34, 255), width=3)
+    for k in range(7):
+        x = x0 + k * (x1 - x0) / 6
+        d.rounded_rectangle([x - 13, yb, x + 13, yb + (bot - top)], 10, fill=(110, 116, 124, 255), outline=(40, 40, 46, 255), width=3)
+        d.line([(x - 5, yb + 6), (x - 5, yb + (bot - top) - 6)], fill=(170, 176, 184, 255), width=4)
+    sh = Image.new("RGBA", (W, H), (0, 0, 0, 0)); sh.alpha_composite(lay)
+    dst.alpha_composite(lay, (int(shake), 0))
+
+# --- dos opciones (dilema): tarjetas izquierda/derecha ---
+def v_choice(dst, t, dur, v):
+    cy = v.get("y", 900); opts = v["opts"]; pick = v.get("pick", -1)
+    for k, (ch, lab, col) in enumerate(opts):
+        p = prog(t, 0.15 + k * 0.35, 0.45)
+        if p <= 0: continue
+        cx = W / 2 + (-1 if k == 0 else 1) * 235
+        c = RED if col == "red" else GOLD
+        fill = (60, 14, 16, 235) if col == "red" else (12, 52, 40, 235)
+        lay = Image.new("RGBA", (420, 520), (0, 0, 0, 0)); d = ImageDraw.Draw(lay)
+        d.rounded_rectangle([10, 10, 410, 510], 40, fill=fill, outline=c + (255,), width=5)
+        lay.alpha_composite(emoji(ch, 170), (210 - emoji(ch, 170).width // 2, 90))
+        tx = text(lab, fit_size([lab], 52, POP, 340), c, POP)
+        lay.alpha_composite(tx, (210 - tx.width // 2, 330))
+        sc = 0.5 + 0.5 * eback(p, 2.0)
+        if pick == k: sc *= 1 + 0.05 * math.sin(t * 5)
+        a = ease(p) * (0.45 if (pick >= 0 and pick != k and t > 1.2) else 1.0)
+        paste(dst, lay, cx, cy + math.sin(t * 2 + k) * 10, sc, a, (-4 if k == 0 else 4))
+    q = prog(t, 0.5, 0.4)
+    if q > 0: paste(dst, gold_text("VS", 110), W / 2, cy, 0.5 + 0.5 * eback(q, 2.4), ease(q))
+
+# --- camisa rota por detrás ---
+def v_shirt(dst, t, dur, v):
+    cy = v.get("y", 900)
+    badge(dst, t, W / 2, cy, "👕", 300, 0.1)
+    p = eout(prog(t, v.get("at", 0.7), 0.5))
+    if p > 0:
+        d = ImageDraw.Draw(dst, "RGBA")
+        pts = [(W / 2 - 10, cy - 60), (W / 2 + 18, cy - 20), (W / 2 - 14, cy + 20), (W / 2 + 16, cy + 60), (W / 2 - 6, cy + 100)]
+        n = 1 + int(p * (len(pts) - 1))
+        d.line(pts[:n], fill=(40, 10, 10, 255), width=12, joint="curve")
+        d.line(pts[:n], fill=RED + (255,), width=5, joint="curve")
+    if v.get("tag"):
+        q = prog(t, v.get("at", 0.7) + 0.4, 0.4)
+        paste(dst, pill(v["tag"], 36, (60, 14, 16, 230), CREAM, RED), W / 2, cy + 300, 0.6 + 0.4 * eback(q), ease(q))
+
 VIS = {"emoji": v_emoji, "counter": v_counter, "steps": v_steps, "quote": v_quote, "book": v_book,
-       "big": v_big, "cta": v_cta, "cave": v_cave}
+       "big": v_big, "cta": v_cta, "cave": v_cave, "bars": v_bars, "choice": v_choice, "shirt": v_shirt}
 
 # ---------- subtítulos karaoke ----------
 def word_times(i):
@@ -358,7 +414,7 @@ def cap_layout(i):
     while True:
         rows, cur = [], []
         for w in words:
-            if cur and f.getlength(" ".join(cur + [w])) > maxw: rows.append(cur); cur = [w]
+            if cur and f.getlength(" ".join(cur + [w])) + f.getlength(" ") * 0.25 * len(cur) > maxw: rows.append(cur); cur = [w]
             else: cur.append(w)
         rows.append(cur)
         if len(rows) <= 3 or size <= 44: break
@@ -366,7 +422,7 @@ def cap_layout(i):
     return rows, size
 
 def draw_caption(dst, i, gt):
-    rows, size = cap_layout(i); f = F(POP, size); sp = f.getlength(" ")
+    rows, size = cap_layout(i); f = F(POP, size); sp = f.getlength(" ") * 1.25
     wt = word_times(i); k = 0; hi = set(x.strip("¿?¡!,.…«»").lower() for x in SC[i].get("hi", []))
     lh = int(size * 1.3); y0 = SC[i].get("cap_y", 1440) - (len(rows) - 1) * lh / 2
     for r, row in enumerate(rows):
@@ -378,7 +434,7 @@ def draw_caption(dst, i, gt):
             said = gt >= ws; cur = ws <= gt < we + 0.05
             col = GOLD if bare in hi and said else (WHITE if said else DIM)
             a = 1.0 if said else 0.55
-            sc = 1.0 + 0.10 * (1 - eout(prog(gt, ws, 0.25))) if said else 1.0
+            sc = 1.0 + 0.05 * (1 - eout(prog(gt, ws, 0.25))) if said else 1.0
             im = text(w, size, col, POP, True, GOLD if (bare in hi and said) else None)
             paste(dst, im, x + wd / 2, y0 + r * lh - (6 if cur else 0), sc, a)
             x += wd + sp
