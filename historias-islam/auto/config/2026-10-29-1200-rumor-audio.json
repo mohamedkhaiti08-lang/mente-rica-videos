@@ -1,0 +1,239 @@
+{
+ "label": "TE PASA A TI",
+ "times": "tA.json",
+ "tail": 1.6,
+ "scenes": [
+  {
+   "title": [
+    "Te llega un audio",
+    "con un rumor…"
+   ],
+   "tint": "red",
+   "hi": [
+    "rumor"
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "📱",
+    "orbit": [
+     "🎙️",
+     "👀",
+     "🤫"
+    ],
+    "y": 900
+   },
+   "cap": "Te llega un audio por WhatsApp con un rumor sobre alguien…"
+  },
+  {
+   "title": [
+    "Todo el grupo",
+    "lo reenvía"
+   ],
+   "tint": "night",
+   "hi": [
+    "reenviando.",
+    "feo."
+   ],
+   "vis": {
+    "type": "counter",
+    "seq": [
+     "5",
+     "20",
+     "50",
+     "+100"
+    ],
+    "sub": "REENVÍOS",
+    "e": "📲",
+    "y": 880
+   },
+   "cap": "Todo el grupo lo está reenviando. Dicen que ha hecho algo muy feo."
+  },
+  {
+   "title": [
+    "Tu dedo, encima",
+    "de «reenviar»…"
+   ],
+   "tint": "red",
+   "hi": [
+    "reenviar…"
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "👆",
+    "orbit": [
+     "📤",
+     "⏳"
+    ],
+    "y": 900
+   },
+   "cap": "Tu dedo ya está encima del botón de reenviar…"
+  },
+  {
+   "title": [
+    "¿Y si es",
+    "MENTIRA?"
+   ],
+   "tint": "gold",
+   "hi": [
+    "mentira?",
+    "vida"
+   ],
+   "vis": {
+    "type": "choice",
+    "opts": [
+     [
+      "🛑",
+      "LO PARO",
+      "gold"
+     ],
+     [
+      "📤",
+      "REENVÍO",
+      "red"
+     ]
+    ],
+    "y": 900
+   },
+   "cap": "¿Y si es mentira? ¿Y si le arruinas la vida a alguien?"
+  },
+  {
+   "tint": "night",
+   "hi": [
+    "cien",
+    "atrás."
+   ],
+   "vis": {
+    "type": "steps",
+    "items": [
+     [
+      "📱",
+      "1 AUDIO"
+     ],
+     [
+      "👥",
+      "100 PERSONAS"
+     ],
+     [
+      "💔",
+      "UNA VIDA"
+     ]
+    ],
+    "y": 900
+   },
+   "cap": "En diez minutos lo saben cien personas… y ya no hay vuelta atrás."
+  },
+  {
+   "title": [
+    "¿Qué dice",
+    "el Corán?"
+   ],
+   "tint": "gold",
+   "hi": [
+    "Corán:"
+   ],
+   "vis": {
+    "type": "book",
+    "src": "CORÁN 49:6",
+    "y": 900
+   },
+   "cap": "Allah dice en el Corán:"
+  },
+  {
+   "title": [
+    "Antes de creer…"
+   ],
+   "tint": "green",
+   "hi": [
+    "comprobadla."
+   ],
+   "vis": {
+    "type": "quote",
+    "lines": [
+     "Si os llega alguien",
+     "poco fiable con una noticia,",
+     "comprobadla."
+    ],
+    "src": "CORÁN 49:6 · SURA AL-HUYURAT",
+    "size": 58,
+    "y": 860
+   },
+   "cap": "Si os llega alguien poco fiable con una noticia, comprobadla."
+  },
+  {
+   "title": [
+    "…y antes",
+    "de hacer daño"
+   ],
+   "tint": "green",
+   "hi": [
+    "daño",
+    "arrepintáis."
+   ],
+   "vis": {
+    "type": "quote",
+    "lines": [
+     "No sea que hagáis daño",
+     "a gente por ignorancia",
+     "y luego os arrepintáis."
+    ],
+    "src": "CORÁN 49:6",
+    "size": 56,
+    "y": 860
+   },
+   "cap": "No sea que hagáis daño a gente por ignorancia, y luego os arrepintáis."
+  },
+  {
+   "tint": "gold",
+   "hi": [
+    "para.",
+    "comprueba."
+   ],
+   "vis": {
+    "type": "big",
+    "words": [
+     "PARA.",
+     "PREGUNTA.",
+     "COMPRUEBA."
+    ],
+    "size": 120,
+    "gap": 150,
+    "y": 840
+   },
+   "cap": "Así que, antes de reenviar, para. Pregunta. Comprueba."
+  },
+  {
+   "title": [
+    "Si no lo puedes",
+    "comprobar…"
+   ],
+   "tint": "green",
+   "hi": [
+    "móvil."
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "🔒",
+    "orbit": [
+     "📱",
+     "🤐"
+    ],
+    "y": 900
+   },
+   "cap": "Y si no puedes comprobarlo, que se quede en tu móvil."
+  },
+  {
+   "tint": "green",
+   "hi": [
+    "rumor?",
+    "paras?"
+   ],
+   "vis": {
+    "type": "cta",
+    "word": "¿Y TÚ?",
+    "e": "💬",
+    "y": 860
+   },
+   "cap": "¿Tú qué haces cuando te llega un rumor? ¿Lo reenvías o lo paras? Te leo abajo."
+  }
+ ]
+}

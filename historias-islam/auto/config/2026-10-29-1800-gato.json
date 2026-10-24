@@ -1,0 +1,238 @@
+{
+ "label": "HISTORIA REAL",
+ "times": "tB.json",
+ "tail": 1.6,
+ "scenes": [
+  {
+   "title": [
+    "Acabó en el Fuego…",
+    "por un gato"
+   ],
+   "tint": "red",
+   "hi": [
+    "fuego…",
+    "gato."
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "🐈",
+    "orbit": [
+     "🔥",
+     "😳"
+    ],
+    "y": 900
+   },
+   "cap": "Una mujer acabó en el Fuego… por un gato."
+  },
+  {
+   "title": [
+    "¿Exagerado?"
+   ],
+   "tint": "night",
+   "hi": [
+    "historia."
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "🤔",
+    "orbit": [
+     "❓",
+     "👂"
+    ],
+    "y": 900
+   },
+   "cap": "¿Parece exagerado? Escucha bien la historia."
+  },
+  {
+   "title": [
+    "Lo encerró"
+   ],
+   "tint": "night",
+   "hi": [
+    "encerró"
+   ],
+   "vis": {
+    "type": "bars",
+    "e": "🐈",
+    "y": 900
+   },
+   "cap": "Esta mujer encerró a un gato."
+  },
+  {
+   "tint": "red",
+   "hi": [
+    "comer.",
+    "beber."
+   ],
+   "vis": {
+    "type": "choice",
+    "opts": [
+     [
+      "🍽️",
+      "SIN COMIDA",
+      "red"
+     ],
+     [
+      "💧",
+      "SIN AGUA",
+      "red"
+     ]
+    ],
+    "y": 900
+   },
+   "cap": "No le daba de comer. No le daba de beber."
+  },
+  {
+   "title": [
+    "Ni lo dejaba",
+    "salir"
+   ],
+   "tint": "night",
+   "hi": [
+    "salir",
+    "tierra."
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "🚪",
+    "orbit": [
+     "🔒",
+     "🐾"
+    ],
+    "y": 900
+   },
+   "cap": "Y tampoco lo dejaba salir a buscar comida por la tierra."
+  },
+  {
+   "title": [
+    "No podía",
+    "defenderse"
+   ],
+   "tint": "blue",
+   "hi": [
+    "pequeño,",
+    "defenderse…"
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "😿",
+    "orbit": [
+     "🐾",
+     "💧"
+    ],
+    "y": 900
+   },
+   "cap": "Un animal pequeño, que no podía defenderse… ni quejarse a nadie."
+  },
+  {
+   "tint": "night",
+   "hi": [
+    "murió."
+   ],
+   "vis": {
+    "type": "counter",
+    "seq": [
+     "DÍA 1",
+     "DÍA 2",
+     "DÍA 3",
+     "…"
+    ],
+    "sub": "SIN COMIDA NI AGUA",
+    "e": "🐈",
+    "y": 880,
+    "last_red": true
+   },
+   "cap": "Pasaron los días… y el gato murió."
+  },
+  {
+   "title": [
+    "Fue castigada",
+    "por eso"
+   ],
+   "tint": "red",
+   "hi": [
+    "castigada."
+   ],
+   "vis": {
+    "type": "quote",
+    "lines": [
+     "Una mujer fue castigada",
+     "por un gato que encerró",
+     "hasta que murió."
+    ],
+    "src": "SAHIH AL-BUJARI 3482",
+    "size": 56,
+    "y": 860
+   },
+   "cap": "El Profeta, la paz sea con él, contó que por eso fue castigada."
+  },
+  {
+   "tint": "gold",
+   "hi": [
+    "al-Bujari."
+   ],
+   "vis": {
+    "type": "book",
+    "src": "SAHIH AL-BUJARI 3482",
+    "y": 880
+   },
+   "cap": "Lo recoge el Sahih al-Bujari."
+  },
+  {
+   "tint": "gold",
+   "hi": [
+    "gato…",
+    "persona."
+   ],
+   "vis": {
+    "type": "big",
+    "words": [
+     "POR UN GATO…",
+     "IMAGINA POR",
+     "UNA PERSONA"
+    ],
+    "size": 110,
+    "gap": 150,
+    "y": 840
+   },
+   "cap": "Si Allah pide cuentas por un gato… imagina por una persona."
+  },
+  {
+   "title": [
+    "La misericordia",
+    "también es esto"
+   ],
+   "tint": "green",
+   "hi": [
+    "agua",
+    "mascota.",
+    "religión."
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "🐈",
+    "orbit": [
+     "💧",
+     "🍲",
+     "🤍"
+    ],
+    "y": 900
+   },
+   "cap": "Dale agua al gato de la calle. Cuida a tu mascota. Eso también es religión."
+  },
+  {
+   "tint": "green",
+   "hi": [
+    "mascota?",
+    "cuidas?"
+   ],
+   "vis": {
+    "type": "cta",
+    "word": "¿Y TÚ?",
+    "e": "🐾",
+    "y": 860
+   },
+   "cap": "¿Tienes mascota? ¿Cómo la cuidas? Cuéntamelo abajo."
+  }
+ ]
+}
