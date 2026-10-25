@@ -1,0 +1,238 @@
+{
+ "label": "TE PASA A TI",
+ "times": "2026-10-30-1200-terrorista.tiempos.json",
+ "tail": 2.0,
+ "scenes": [
+  {
+   "title": [
+    "Te gritan",
+    "«¡TERRORISTA!»"
+   ],
+   "tint": "red",
+   "hi": [
+    "¡terrorista!"
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "🚇",
+    "orbit": [
+     "😠",
+     "🗯️",
+     "👉"
+    ],
+    "y": 900
+   },
+   "cap": "Vas en el metro, y alguien te grita: ¡terrorista!"
+  },
+  {
+   "title": [
+    "Todo el vagón",
+    "te mira"
+   ],
+   "tint": "night",
+   "hi": [
+    "mira."
+   ],
+   "vis": {
+    "type": "counter",
+    "seq": [
+     "1",
+     "5",
+     "12",
+     "TODOS"
+    ],
+    "sub": "MIRADAS",
+    "e": "👀",
+    "y": 880
+   },
+   "cap": "Todo el vagón se gira… y te mira."
+  },
+  {
+   "title": [
+    "Te hierve",
+    "la sangre"
+   ],
+   "tint": "red",
+   "hi": [
+    "sangre.",
+    "también."
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "😤",
+    "orbit": [
+     "🔥",
+     "💢",
+     "🔥"
+    ],
+    "y": 900
+   },
+   "cap": "Te hierve la sangre. Quieres gritarle tú también."
+  },
+  {
+   "title": [
+    "¿Y si es justo",
+    "lo que espera?"
+   ],
+   "tint": "gold",
+   "hi": [
+    "espera?"
+   ],
+   "vis": {
+    "type": "choice",
+    "opts": [
+     [
+      "😡",
+      "GRITAR",
+      "red"
+     ],
+     [
+      "😌",
+      "CALMA",
+      "gold"
+     ]
+    ],
+    "y": 900
+   },
+   "cap": "Pero, ¿y si eso es justo lo que él espera?"
+  },
+  {
+   "title": [
+    "¿Qué dice",
+    "el Corán?"
+   ],
+   "tint": "gold",
+   "hi": [
+    "Corán:"
+   ],
+   "vis": {
+    "type": "book",
+    "src": "CORÁN 41:34",
+    "y": 900
+   },
+   "cap": "Allah dice en el Corán:"
+  },
+  {
+   "title": [
+    "Responde",
+    "con lo mejor"
+   ],
+   "tint": "green",
+   "hi": [
+    "mejor."
+   ],
+   "vis": {
+    "type": "quote",
+    "lines": [
+     "No son iguales",
+     "el bien y el mal.",
+     "Responde con lo que es mejor."
+    ],
+    "src": "CORÁN 41:34 · SURA FUSSILAT",
+    "size": 56,
+    "y": 860
+   },
+   "cap": "No son iguales el bien y el mal. Responde con lo que es mejor."
+  },
+  {
+   "title": [
+    "El enemigo…",
+    "se vuelve amigo"
+   ],
+   "tint": "green",
+   "hi": [
+    "amigo",
+    "íntimo."
+   ],
+   "vis": {
+    "type": "quote",
+    "lines": [
+     "Y aquel con quien",
+     "tenías enemistad, se volverá",
+     "como un amigo íntimo."
+    ],
+    "src": "CORÁN 41:34",
+    "size": 54,
+    "y": 860
+   },
+   "cap": "Y aquel con quien tenías enemistad, se volverá como un amigo íntimo."
+  },
+  {
+   "title": [
+    "Respiras…"
+   ],
+   "tint": "blue",
+   "hi": [
+    "calma,",
+    "respeto."
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "😌",
+    "orbit": [
+     "🌬️",
+     "🤝",
+     "🕊️"
+    ],
+    "y": 900
+   },
+   "cap": "Así que respiras… y le contestas con calma, y con respeto."
+  },
+  {
+   "title": [
+    "Se queda",
+    "sin palabras"
+   ],
+   "tint": "gold",
+   "hi": [
+    "palabras.",
+    "verdad."
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "😶",
+    "orbit": [
+     "✨",
+     "👀",
+     "🤍"
+    ],
+    "y": 900
+   },
+   "cap": "Él se queda sin palabras. Y el vagón entero ve cómo es un musulmán de verdad."
+  },
+  {
+   "tint": "green",
+   "hi": [
+    "fuerza",
+    "difícil."
+   ],
+   "vis": {
+    "type": "big",
+    "words": [
+     "NO ES",
+     "DEBILIDAD.",
+     "ES FUERZA."
+    ],
+    "size": 120,
+    "gap": 150,
+    "y": 840,
+    "e": "💪"
+   },
+   "cap": "No es debilidad. Es la fuerza más difícil."
+  },
+  {
+   "tint": "green",
+   "hi": [
+    "rabia,",
+    "calma?"
+   ],
+   "vis": {
+    "type": "cta",
+    "word": "¿Y TÚ?",
+    "e": "💬",
+    "y": 860
+   },
+   "cap": "¿Tú qué harías? ¿Le contestarías con rabia, o con calma? Te leo abajo."
+  }
+ ]
+}

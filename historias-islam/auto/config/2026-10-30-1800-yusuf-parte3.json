@@ -1,0 +1,261 @@
+{
+ "label": "HISTORIAS DEL CORÁN · PARTE 3",
+ "times": "2026-10-30-1800-yusuf-parte3.tiempos.json",
+ "tail": 1.6,
+ "scenes": [
+  {
+   "title": [
+    "Le piden ayuda…",
+    "sin saber quién es"
+   ],
+   "tint": "night",
+   "hi": [
+    "ayuda,",
+    "es."
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "🤲",
+    "orbit": [
+     "❓",
+     "👑",
+     "❓"
+    ],
+    "y": 900
+   },
+   "cap": "Años después… sus hermanos le piden ayuda, sin saber quién es."
+  },
+  {
+   "title": [
+    "¿Te acuerdas?",
+    "Parte 2"
+   ],
+   "tint": "stone",
+   "hi": [
+    "cárcel,",
+    "inocente."
+   ],
+   "vis": {
+    "type": "bars",
+    "e": "😔",
+    "at": 0.5,
+    "y": 900
+   },
+   "cap": "¿Te acuerdas? Yusuf acabó en la cárcel, siendo inocente."
+  },
+  {
+   "title": [
+    "De la cárcel…",
+    "a ministro"
+   ],
+   "tint": "gold",
+   "hi": [
+    "ministro",
+    "Egipto."
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "👑",
+    "orbit": [
+     "⛓️",
+     "🔓",
+     "🏛️"
+    ],
+    "y": 900
+   },
+   "cap": "Pero Allah lo sacó de allí, y llegó a ser ministro de Egipto."
+  },
+  {
+   "title": [
+    "Una gran",
+    "hambruna"
+   ],
+   "tint": "red",
+   "hi": [
+    "hambruna…",
+    "comida."
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "🌾",
+    "orbit": [
+     "🐫",
+     "🐫",
+     "🐫"
+    ],
+    "y": 900
+   },
+   "cap": "Llegó una gran hambruna… y sus hermanos vinieron a pedirle comida."
+  },
+  {
+   "tint": "night",
+   "hi": [
+    "enseguida.",
+    "no."
+   ],
+   "vis": {
+    "type": "big",
+    "words": [
+     "ÉL SÍ…",
+     "ELLOS NO."
+    ],
+    "size": 140,
+    "gap": 170,
+    "y": 840,
+    "e": "👀"
+   },
+   "cap": "Él los reconoció enseguida. Ellos a él… no."
+  },
+  {
+   "title": [
+    "Los mismos",
+    "del pozo"
+   ],
+   "tint": "red",
+   "hi": [
+    "pozo,",
+    "suplicaban."
+   ],
+   "vis": {
+    "type": "steps",
+    "items": [
+     [
+      "🕳️",
+      "EL POZO"
+     ],
+     [
+      "⏳",
+      "AÑOS"
+     ],
+     [
+      "🙏",
+      "SÚPLICA"
+     ]
+    ],
+    "y": 900
+   },
+   "cap": "Los mismos que lo tiraron al pozo, ahora le suplicaban."
+  },
+  {
+   "title": [
+    "La pregunta"
+   ],
+   "tint": "gold",
+   "hi": [
+    "Yusuf?"
+   ],
+   "vis": {
+    "type": "quote",
+    "lines": [
+     "¿Sabéis lo que",
+     "le hicisteis",
+     "a Yusuf?"
+    ],
+    "src": "CORÁN 12:89",
+    "size": 62,
+    "y": 860
+   },
+   "cap": "Y Yusuf les preguntó: ¿Sabéis lo que le hicisteis a Yusuf?"
+  },
+  {
+   "tint": "night",
+   "hi": [
+    "helados:",
+    "Yusuf?"
+   ],
+   "vis": {
+    "type": "big",
+    "words": [
+     "¿ERES TÚ",
+     "YUSUF?"
+    ],
+    "size": 150,
+    "gap": 180,
+    "y": 840,
+    "e": "😳"
+   },
+   "cap": "Se quedaron helados: ¿De verdad eres tú Yusuf?"
+  },
+  {
+   "title": [
+    "Tenía todo",
+    "el poder"
+   ],
+   "tint": "red",
+   "hi": [
+    "vengarse.",
+    "poder."
+   ],
+   "vis": {
+    "type": "choice",
+    "opts": [
+     [
+      "⚔️",
+      "VENGARSE",
+      "red"
+     ],
+     [
+      "🤍",
+      "PERDONAR",
+      "gold"
+     ]
+    ],
+    "y": 900
+   },
+   "cap": "Podía vengarse. Tenía todo el poder."
+  },
+  {
+   "title": [
+    "Su respuesta"
+   ],
+   "tint": "green",
+   "hi": [
+    "reproche",
+    "perdone."
+   ],
+   "vis": {
+    "type": "quote",
+    "lines": [
+     "Hoy no hay reproche",
+     "contra vosotros.",
+     "Que Allah os perdone."
+    ],
+    "src": "CORÁN 12:92",
+    "size": 60,
+    "y": 860
+   },
+   "cap": "Pero dijo: Hoy no hay reproche contra vosotros. Que Allah os perdone."
+  },
+  {
+   "title": [
+    "La familia,",
+    "reunida"
+   ],
+   "tint": "gold",
+   "hi": [
+    "familia",
+    "Egipto."
+   ],
+   "vis": {
+    "type": "book",
+    "src": "CORÁN 12:58-100 · SURA YUSUF",
+    "y": 900
+   },
+   "cap": "Y al final, toda su familia se reunió con él en Egipto. Corán, sura 12."
+  },
+  {
+   "tint": "green",
+   "hi": [
+    "perdonarías",
+    "daño?"
+   ],
+   "vis": {
+    "type": "cta",
+    "word": "¿Y TÚ?",
+    "e": "🤍",
+    "y": 860
+   },
+   "cap": "¿Tú perdonarías a quien te hizo tanto daño? Te leo abajo."
+  }
+ ]
+}
