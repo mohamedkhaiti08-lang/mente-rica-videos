@@ -1,0 +1,276 @@
+{
+ "label": "TE PASA A TI",
+ "times": "2026-10-31-1800-hermano.tiempos.json",
+ "tail": 1.8,
+ "scenes": [
+  {
+   "title": [
+    "Una semana",
+    "sin hablarte"
+   ],
+   "tint": "red",
+   "hi": [
+    "semana",
+    "hermano."
+   ],
+   "vis": {
+    "type": "counter",
+    "seq": [
+     "DÍA 1",
+     "DÍA 3",
+     "DÍA 5",
+     "DÍA 7"
+    ],
+    "sub": "SIN HABLAROS",
+    "e": "😶",
+    "y": 880,
+    "last_red": true
+   },
+   "cap": "Llevas una semana sin hablarte con tu hermano."
+  },
+  {
+   "title": [
+    "Ni os miráis"
+   ],
+   "tint": "night",
+   "hi": [
+    "miráis."
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "🙄",
+    "orbit": [
+     "🚪",
+     "💢"
+    ],
+    "y": 900
+   },
+   "cap": "Os cruzáis en el pasillo… y ni os miráis."
+  },
+  {
+   "title": [
+    "«¡Que hable",
+    "él primero!»"
+   ],
+   "tint": "red",
+   "hi": [
+    "primero!",
+    "suya."
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "😤",
+    "orbit": [
+     "👉",
+     "💢",
+     "🔥"
+    ],
+    "y": 900
+   },
+   "cap": "Tú piensas: ¡Que hable él primero! Fue culpa suya."
+  },
+  {
+   "title": [
+    "Y él piensa",
+    "lo mismo"
+   ],
+   "tint": "red",
+   "hi": [
+    "mismo."
+   ],
+   "vis": {
+    "type": "choice",
+    "opts": [
+     [
+      "😤",
+      "TÚ ESPERAS",
+      "red"
+     ],
+     [
+      "😤",
+      "ÉL ESPERA",
+      "red"
+     ]
+    ],
+    "y": 900
+   },
+   "cap": "Y él piensa exactamente lo mismo."
+  },
+  {
+   "title": [
+    "El orgullo",
+    "crece"
+   ],
+   "tint": "night",
+   "hi": [
+    "orgullo",
+    "grande."
+   ],
+   "vis": {
+    "type": "big",
+    "words": [
+     "ORGULLO",
+     "ORGULLO+",
+     "ORGULLO++"
+    ],
+    "size": 110,
+    "gap": 150,
+    "y": 840
+   },
+   "cap": "Pasan los días… y el orgullo se hace más grande."
+  },
+  {
+   "title": [
+    "¿Sabes lo que",
+    "dijo el Profeta?"
+   ],
+   "tint": "gold",
+   "hi": [
+    "Profeta,"
+   ],
+   "vis": {
+    "type": "book",
+    "src": "SAHIH AL-BUJARI 6077",
+    "y": 900
+   },
+   "cap": "Pero, ¿sabes lo que dijo el Profeta, la paz sea con él?"
+  },
+  {
+   "tint": "gold",
+   "hi": [
+    "tres",
+    "noches."
+   ],
+   "vis": {
+    "type": "quote",
+    "lines": [
+     "No es lícito que un musulmán",
+     "se aleje de su hermano",
+     "más de tres noches."
+    ],
+    "src": "SAHIH AL-BUJARI 6077",
+    "size": 52,
+    "y": 860
+   },
+   "cap": "No es lícito que un musulmán se aleje de su hermano más de tres noches."
+  },
+  {
+   "title": [
+    "Cada uno",
+    "gira la cara"
+   ],
+   "tint": "red",
+   "hi": [
+    "cara."
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "🙅",
+    "orbit": [
+     "↩️",
+     "↪️"
+    ],
+    "y": 900
+   },
+   "cap": "Que se encuentren, y cada uno gire la cara."
+  },
+  {
+   "title": [
+    "El mejor",
+    "de los dos…"
+   ],
+   "tint": "green",
+   "hi": [
+    "mejor",
+    "primero."
+   ],
+   "vis": {
+    "type": "quote",
+    "lines": [
+     "Y el mejor de los dos",
+     "es el que saluda",
+     "primero."
+    ],
+    "src": "SAHIH AL-BUJARI 6077",
+    "size": 58,
+    "y": 860
+   },
+   "cap": "Y el mejor de los dos, es el que saluda primero."
+  },
+  {
+   "tint": "gold",
+   "hi": [
+    "al-Bujari."
+   ],
+   "vis": {
+    "type": "book",
+    "src": "SAHIH AL-BUJARI 6077",
+    "y": 900
+   },
+   "cap": "Lo recoge el Sahih al-Bujari."
+  },
+  {
+   "tint": "green",
+   "hi": [
+    "ganar"
+   ],
+   "vis": {
+    "type": "big",
+    "words": [
+     "NO ES",
+     "PERDER.",
+     "ES GANAR."
+    ],
+    "size": 120,
+    "gap": 150,
+    "y": 840,
+    "e": "🏆"
+   },
+   "cap": "Saludar primero no es perder. Es ganar ante Allah."
+  },
+  {
+   "title": [
+    "Mándale",
+    "un mensaje"
+   ],
+   "tint": "green",
+   "hi": [
+    "mensaje.",
+    "Salam."
+   ],
+   "vis": {
+    "type": "steps",
+    "items": [
+     [
+      "📱",
+      "ESCRIBE"
+     ],
+     [
+      "💬",
+      "SALAM"
+     ],
+     [
+      "🤝",
+      "PAZ"
+     ]
+    ],
+    "y": 920
+   },
+   "cap": "Así que hoy, mándale un mensaje. Solo un: Salam."
+  },
+  {
+   "tint": "green",
+   "hi": [
+    "primero?",
+    "esperas?"
+   ],
+   "vis": {
+    "type": "cta",
+    "word": "¿Y TÚ?",
+    "e": "🤝",
+    "y": 860
+   },
+   "cap": "¿Tú eres de los que saludan primero? ¿O esperas? Te leo abajo."
+  }
+ ]
+}

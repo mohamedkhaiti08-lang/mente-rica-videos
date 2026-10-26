@@ -1,0 +1,281 @@
+{
+ "label": "HISTORIA REAL",
+ "times": "2026-10-31-1200-invitado.tiempos.json",
+ "tail": 1.6,
+ "scenes": [
+  {
+   "title": [
+    "Apagó la luz…",
+    "para no comer"
+   ],
+   "tint": "night",
+   "hi": [
+    "luz…",
+    "comía."
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "🕯️",
+    "orbit": [
+     "🌑",
+     "🍲",
+     "😳"
+    ],
+    "y": 900
+   },
+   "cap": "Apagó la luz… para que su invitado no viera que él no comía."
+  },
+  {
+   "title": [
+    "Llegó un hombre",
+    "con hambre"
+   ],
+   "tint": "blue",
+   "hi": [
+    "hambre",
+    "Profeta,"
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "🚶",
+    "orbit": [
+     "🍞",
+     "💭"
+    ],
+    "y": 900
+   },
+   "cap": "Un hombre con hambre llegó a ver al Profeta, la paz sea con él."
+  },
+  {
+   "tint": "night",
+   "hi": [
+    "agua."
+   ],
+   "vis": {
+    "type": "choice",
+    "opts": [
+     [
+      "🍲",
+      "COMIDA",
+      "red"
+     ],
+     [
+      "💧",
+      "SOLO AGUA",
+      "gold"
+     ]
+    ],
+    "pick": 1,
+    "y": 900
+   },
+   "cap": "Pero esa noche, en su casa solo había agua."
+  },
+  {
+   "title": [
+    "¿Quién acoge",
+    "a este invitado?"
+   ],
+   "tint": "gold",
+   "hi": [
+    "invitado?"
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "🏠",
+    "orbit": [
+     "❓",
+     "🤲"
+    ],
+    "y": 900
+   },
+   "cap": "Entonces preguntó: ¿Quién acoge a este invitado?"
+  },
+  {
+   "tint": "green",
+   "hi": [
+    "Ansar",
+    "¡Yo!"
+   ],
+   "vis": {
+    "type": "big",
+    "words": [
+     "¡YO!"
+    ],
+    "size": 240,
+    "y": 880,
+    "e": "✋"
+   },
+   "cap": "Un hombre de los Ansar dijo: ¡Yo!"
+  },
+  {
+   "title": [
+    "Solo había",
+    "para sus hijos"
+   ],
+   "tint": "red",
+   "hi": [
+    "comida",
+    "hijos."
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "🍽️",
+    "orbit": [
+     "👦",
+     "👧"
+    ],
+    "y": 900
+   },
+   "cap": "Pero en su casa, solo había comida para sus hijos."
+  },
+  {
+   "title": [
+    "Durmió",
+    "a los niños"
+   ],
+   "tint": "night",
+   "hi": [
+    "niños,",
+    "cena."
+   ],
+   "vis": {
+    "type": "steps",
+    "items": [
+     [
+      "🛏️",
+      "NIÑOS"
+     ],
+     [
+      "🍲",
+      "CENA"
+     ],
+     [
+      "🕯️",
+      "LÁMPARA"
+     ]
+    ],
+    "y": 920
+   },
+   "cap": "Su mujer durmió a los niños, y preparó la cena."
+  },
+  {
+   "title": [
+    "…y la apagó"
+   ],
+   "tint": "night",
+   "hi": [
+    "lámpara…",
+    "apagó."
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "🕯️",
+    "orbit": [
+     "💨",
+     "🌑"
+    ],
+    "y": 900
+   },
+   "cap": "Luego hizo como que arreglaba la lámpara… y la apagó."
+  },
+  {
+   "title": [
+    "A oscuras,",
+    "fingían comer"
+   ],
+   "tint": "night",
+   "hi": [
+    "fingían",
+    "llenarse."
+   ],
+   "vis": {
+    "type": "choice",
+    "opts": [
+     [
+      "😋",
+      "INVITADO: COME",
+      "gold"
+     ],
+     [
+      "🫥",
+      "ELLOS: FINGEN",
+      "red"
+     ]
+    ],
+    "y": 900
+   },
+   "cap": "A oscuras, fingían comer. Y el invitado comió hasta llenarse."
+  },
+  {
+   "title": [
+    "Se durmieron",
+    "con hambre"
+   ],
+   "tint": "blue",
+   "hi": [
+    "hambre."
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "🌙",
+    "orbit": [
+     "😴",
+     "🤍"
+    ],
+    "y": 900
+   },
+   "cap": "Esa noche, ellos se fueron a dormir con hambre."
+  },
+  {
+   "tint": "gold",
+   "hi": [
+    "maravillado"
+   ],
+   "vis": {
+    "type": "quote",
+    "lines": [
+     "Allah se ha maravillado",
+     "de lo que hicisteis",
+     "esta noche."
+    ],
+    "src": "SAHIH AL-BUJARI 3798",
+    "size": 56,
+    "y": 860
+   },
+   "cap": "Al día siguiente, el Profeta le dijo: Allah se ha maravillado de lo que hicisteis."
+  },
+  {
+   "tint": "green",
+   "hi": [
+    "prefieren",
+    "necesidad."
+   ],
+   "vis": {
+    "type": "quote",
+    "lines": [
+     "Los prefieren",
+     "a ellos mismos,",
+     "aunque pasen necesidad."
+    ],
+    "src": "CORÁN 59:9 · SURA AL-HASHR",
+    "size": 58,
+    "y": 860
+   },
+   "cap": "Y Allah reveló: Los prefieren a ellos mismos, aunque pasen necesidad."
+  },
+  {
+   "tint": "green",
+   "hi": [
+    "cena",
+    "desconocido?"
+   ],
+   "vis": {
+    "type": "cta",
+    "word": "¿Y TÚ?",
+    "e": "🍲",
+    "y": 860
+   },
+   "cap": "¿Tú darías tu cena a un desconocido? Cuéntamelo abajo."
+  }
+ ]
+}
