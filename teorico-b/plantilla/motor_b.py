@@ -1,0 +1,692 @@
+# Motor de vídeos "Teórico B en 30s" (estilo azul señal DGT + amarillo, imágenes directas dibujadas, subtítulos karaoke).
+# Uso:
+#   python3 motor_b.py config.json stills t1 t2 ...      -> still_t1.png ... (para revisar)
+#   python3 motor_b.py config.json video salida.mp4       -> vídeo final con voz + efectos (voz.wav junto al config)
+# config.json:
+#   {"label": "¿APROBARÍAS?", "times": "tiempos.json", "voice": "voz.wav", "tail": 1.2,
+#    "sfx": [{"t": 12.0, "type": "beep|ding|buzz|whoosh"}],
+#    "scenes": [ {"cap": "texto en pantalla de la frase", "hi": ["palabras", "en amarillo"], "vis": {"type": ...}} ]}
+# Una escena por frase de la voz: cada escena empieza justo cuando empieza su frase (tiempos.json de voz.py).
+# Tipos de "vis" (ver funciones vis_*): hook, road, quiz, countdown, reveal, compare, roof, cta, topdown, law,
+#   nocross, save, sign, mito, stat.
+import math, json, sys, os, subprocess
+from functools import lru_cache
+from multiprocessing import Pool
+import numpy as np
+from PIL import Image, ImageDraw, ImageFont, ImageFilter
+
+W, H, FPS = 1080, 1920, 30
+BLACK = "/usr/share/fonts/opentype/inter/InterDisplay-Black.otf"
+XB = "/usr/share/fonts/opentype/inter/InterDisplay-ExtraBold.otf"
+SB = "/usr/share/fonts/opentype/inter/InterDisplay-SemiBold.otf"
+POP = "/usr/share/fonts/truetype/google-fonts/Poppins-Bold.ttf"
+WHITE = (255, 255, 255); YEL = (255, 196, 0); NAVY = (6, 20, 43); BLUE = (18, 86, 190); BLUE_L = (60, 140, 255)
+GREEN = (34, 197, 94); RED = (239, 68, 68); ORANGE = (255, 140, 0); DARK = (14, 18, 28); GREY = (120, 132, 150)
+
+CFG = json.load(open(sys.argv[1]))
+BASE = os.path.dirname(os.path.abspath(sys.argv[1]))
+LINES = json.load(open(os.path.join(BASE, CFG.get("times", "tiempos.json"))))
+SC = CFG["scenes"]
+assert len(SC) == len(LINES), f"{len(SC)} escenas vs {len(LINES)} frases"
+B = [0.0] + [LINES[i][0] - min(0.2, (LINES[i][0] - LINES[i - 1][1]) / 2) for i in range(1, len(LINES))]
+DUR = round(LINES[-1][1] + CFG.get("tail", 1.2), 2)
+B.append(DUR)
+VZ = (330, 1230)          # zona visual (y)
+CY = (VZ[0] + VZ[1]) // 2  # centro visual
+
+@lru_cache(maxsize=None)
+def F(p, s): return ImageFont.truetype(p, s)
+def clamp(x, a=0.0, b=1.0): return max(a, min(b, x))
+def ease(t): t = clamp(t); return 3 * t * t - 2 * t * t * t
+def eout(t): t = clamp(t); return 1 - (1 - t) ** 3
+def eback(t, s=1.8): t = clamp(t) - 1; return t * t * ((s + 1) * t + s) + 1
+def prog(t, s, d): return clamp((t - s) / d)
+def lerp(a, b, k): return a + (b - a) * k
+def mix(c1, c2, k): return tuple(int(lerp(a, b, k)) for a, b in zip(c1, c2))
+
+def paste(dst, im, cx, cy, scale=1.0, alpha=1.0, rot=0.0):
+    if alpha <= 0.01 or scale <= 0.01: return
+    if abs(scale - 1) > 0.003: im = im.resize((max(1, int(im.width * scale)), max(1, int(im.height * scale))), Image.BICUBIC)
+    if rot: im = im.rotate(rot, resample=Image.BICUBIC, expand=True)
+    if alpha < 0.999:
+        im = im.copy(); im.putalpha(im.split()[3].point(lambda v: int(v * alpha)))
+    x, y = int(cx - im.width / 2), int(cy - im.height / 2)
+    if x >= W or y >= H or x + im.width <= 0 or y + im.height <= 0: return
+    dst.alpha_composite(im, (max(0, x), max(0, y)), (max(0, -x), max(0, -y)))
+
+def ss(w, h):  # lienzo con supermuestreo x2 para formas suaves
+    return Image.new("RGBA", (w * 2, h * 2), (0, 0, 0, 0))
+def down(im): return im.resize((im.width // 2, im.height // 2), Image.LANCZOS)
+
+def glow(im, r=18, a=0.8):
+    g = im.filter(ImageFilter.GaussianBlur(r)); out = Image.new("RGBA", im.size, (0, 0, 0, 0))
+    g.putalpha(g.split()[3].point(lambda v: int(v * a))); out.alpha_composite(g); out.alpha_composite(im); return out
+
+# ---------- texto ----------
+@lru_cache(maxsize=4096)
+def text(txt, size, col=WHITE, path=BLACK, shadow=True, stroke=0, scol=(0, 0, 0)):
+    f = F(path, size); bb = f.getbbox(txt, stroke_width=stroke); asc, desc = f.getmetrics(); pad = 28
+    im = Image.new("RGBA", (bb[2] - bb[0] + pad * 2, asc + desc + pad * 2), (0, 0, 0, 0))
+    if shadow:
+        sh = Image.new("RGBA", im.size, (0, 0, 0, 0))
+        ImageDraw.Draw(sh).text((pad - bb[0], pad + 6), txt, font=f, fill=(0, 0, 0, 170), stroke_width=stroke, stroke_fill=(0, 0, 0, 170))
+        im.alpha_composite(sh.filter(ImageFilter.GaussianBlur(9)))
+    ImageDraw.Draw(im).text((pad - bb[0], pad), txt, font=f, fill=col, stroke_width=stroke, stroke_fill=scol)
+    return im
+
+def fit(lines, size, path=BLACK, maxw=920):
+    while size > 30 and max(F(path, size).getlength(l) for l in lines) > maxw: size -= 2
+    return size
+
+def wrap(txt, size, path, maxw):
+    words, lines, cur = txt.split(), [], ""
+    for w in words:
+        test = (cur + " " + w).strip()
+        if F(path, size).getlength(test) <= maxw or not cur: cur = test
+        else: lines.append(cur); cur = w
+    if cur: lines.append(cur)
+    return lines
+
+@lru_cache(maxsize=256)
+def pill(txt, size=40, bg=YEL, fg=NAVY, path=XB, padx=34, pady=16):
+    f = F(path, size); bb = f.getbbox(txt); w, h = int(f.getlength(txt)) + padx * 2, (bb[3] - bb[1]) + pady * 2
+    im = ss(w, h); d = ImageDraw.Draw(im)
+    d.rounded_rectangle((0, 0, w * 2 - 1, h * 2 - 1), radius=h, fill=bg)
+    d.text((padx * 2, pady * 2 - bb[1] * 2), txt, font=F(path, size * 2), fill=fg)
+    return down(im)
+
+@lru_cache(maxsize=64)
+def card(w, h, fill=(255, 255, 255, 245), r=44, border=None, bw=0):
+    im = ss(w, h); d = ImageDraw.Draw(im)
+    d.rounded_rectangle((0, 0, w * 2 - 1, h * 2 - 1), radius=r * 2, fill=fill, outline=border, width=bw * 2)
+    im = down(im)
+    sh = Image.new("RGBA", (w + 80, h + 80), (0, 0, 0, 0))
+    ImageDraw.Draw(sh).rounded_rectangle((40, 52, w + 40, h + 52), radius=r, fill=(0, 0, 0, 120))
+    sh = sh.filter(ImageFilter.GaussianBlur(18)); sh.alpha_composite(im, (40, 40)); return sh
+
+# ---------- iconos / imágenes dibujadas ----------
+@lru_cache(maxsize=None)
+def icon_check(s=120, col=GREEN):
+    im = ss(s, s); d = ImageDraw.Draw(im); S = s * 2
+    d.ellipse((0, 0, S - 1, S - 1), fill=col)
+    d.line([(S * .26, S * .52), (S * .43, S * .68), (S * .74, S * .34)], fill=WHITE, width=int(S * .11), joint="curve")
+    return down(im)
+
+@lru_cache(maxsize=None)
+def icon_x(s=120, col=RED):
+    im = ss(s, s); d = ImageDraw.Draw(im); S = s * 2
+    d.ellipse((0, 0, S - 1, S - 1), fill=col); k = S * .3
+    d.line([(k, k), (S - k, S - k)], fill=WHITE, width=int(S * .11)); d.line([(S - k, k), (k, S - k)], fill=WHITE, width=int(S * .11))
+    return down(im)
+
+@lru_cache(maxsize=None)
+def sign_b(s=200):  # señal circular azul con B
+    im = ss(s, s); d = ImageDraw.Draw(im); S = s * 2
+    d.ellipse((0, 0, S - 1, S - 1), fill=WHITE); d.ellipse((S * .07, S * .07, S * .93, S * .93), fill=BLUE)
+    f = F(BLACK, int(S * .62)); bb = f.getbbox("B")
+    d.text((S / 2 - (bb[0] + bb[2]) / 2, S / 2 - (bb[1] + bb[3]) / 2), "B", font=f, fill=WHITE)
+    return down(im)
+
+@lru_cache(maxsize=None)
+def triangle(s=300, grey=False):
+    im = ss(s, s); d = ImageDraw.Draw(im); S = s * 2
+    rc = (150, 150, 160) if grey else (220, 30, 40)
+    pts = [(S / 2, S * .06), (S * .96, S * .9), (S * .04, S * .9)]
+    d.polygon(pts, fill=rc)
+    ip = [(S / 2, S * .27), (S * .79, S * .79), (S * .21, S * .79)]
+    d.polygon(ip, fill=(235, 235, 240) if grey else WHITE)
+    d.rectangle((S * .47, S * .9, S * .53, S * .99), fill=(90, 90, 100))
+    return down(im)
+
+@lru_cache(maxsize=None)
+def beacon(s=150, on=True):  # baliza V-16
+    im = ss(s, s); d = ImageDraw.Draw(im); S = s * 2
+    d.rounded_rectangle((S * .18, S * .62, S * .82, S * .92), radius=int(S * .08), fill=(30, 30, 36))
+    dome = (255, 170, 20) if on else (190, 120, 30)
+    d.pieslice((S * .2, S * .18, S * .8, S * 1.06), 180, 360, fill=dome)
+    d.rectangle((S * .2, S * .6, S * .8, S * .66), fill=dome)
+    d.ellipse((S * .36, S * .3, S * .5, S * .44), fill=(255, 240, 190) if on else (220, 170, 90))
+    im = down(im)
+    return glow(im, 22, 0.95) if on else im
+
+@lru_cache(maxsize=None)
+def car_rear(w=560, col=(226, 69, 60)):
+    h = int(w * .78); im = ss(w, h); d = ImageDraw.Draw(im); X, Y = w * 2, h * 2
+    dk = mix(col, (0, 0, 0), .35)
+    d.rounded_rectangle((X * .14, Y * .02, X * .86, Y * .5), radius=int(X * .12), fill=dk)            # techo
+    d.rounded_rectangle((X * .2, Y * .08, X * .8, Y * .42), radius=int(X * .07), fill=(40, 60, 90))     # luna trasera
+    d.polygon([(X * .22, Y * .38), (X * .5, Y * .1), (X * .6, Y * .1), (X * .32, Y * .38)], fill=(80, 105, 140))  # reflejo
+    d.rounded_rectangle((X * .02, Y * .4, X * .98, Y * .84), radius=int(X * .09), fill=col)             # carrocería
+    d.rounded_rectangle((X * .3, Y * .55, X * .7, Y * .7), radius=int(X * .015), fill=WHITE)            # matrícula
+    d.rectangle((X * .3, Y * .55, X * .35, Y * .7), fill=(30, 70, 170))
+    f = F(XB, int(Y * .085)); d.text((X * .37, Y * .57), "3030 BTB", font=f, fill=(20, 20, 20))
+    d.rounded_rectangle((X * .0, Y * .76, X * 1.0, Y * .9), radius=int(X * .05), fill=(28, 30, 36))    # paragolpes
+    for x0 in (.06, .78):
+        d.rounded_rectangle((X * x0, Y * .46, X * (x0 + .16), Y * .56), radius=int(X * .03), fill=(150, 20, 25))
+    for x0 in (.08, .76):
+        d.rounded_rectangle((X * x0, Y * .86, X * (x0 + .16), Y * .99), radius=int(X * .03), fill=(15, 15, 18))  # ruedas
+    return down(im)
+
+@lru_cache(maxsize=None)
+def hazard(s=150):
+    im = Image.new("RGBA", (s, s), (0, 0, 0, 0)); d = ImageDraw.Draw(im)
+    d.ellipse((s * .2, s * .2, s * .8, s * .8), fill=(255, 160, 0, 255))
+    return glow(im.filter(ImageFilter.GaussianBlur(6)), 26, 1.0)
+
+@lru_cache(maxsize=None)
+def car_top(col=(226, 69, 60), w=150):
+    h = int(w * 1.8); im = ss(w, h); d = ImageDraw.Draw(im); X, Y = w * 2, h * 2
+    d.rounded_rectangle((0, 0, X - 1, Y - 1), radius=int(X * .3), fill=col)
+    d.rounded_rectangle((X * .12, Y * .2, X * .88, Y * .36), radius=int(X * .12), fill=(40, 60, 90))   # parabrisas
+    d.rounded_rectangle((X * .14, Y * .72, X * .86, Y * .84), radius=int(X * .1), fill=(40, 60, 90))   # luna trasera
+    d.rounded_rectangle((X * .14, Y * .38, X * .86, Y * .7), radius=int(X * .1), fill=mix(col, (255, 255, 255), .15))
+    for y0 in (.02, .93):
+        for x0 in (.08, .72):
+            d.rounded_rectangle((X * x0, Y * y0, X * (x0 + .2), Y * (y0 + .05)), radius=8, fill=(255, 240, 200) if y0 < .5 else (200, 30, 30))
+    im = down(im)
+    sh = Image.new("RGBA", (w + 40, h + 40), (0, 0, 0, 0))
+    ImageDraw.Draw(sh).rounded_rectangle((20, 26, w + 20, h + 26), radius=int(w * .3), fill=(0, 0, 0, 140))
+    sh = sh.filter(ImageFilter.GaussianBlur(10)); sh.alpha_composite(im, (20, 20)); return sh
+
+@lru_cache(maxsize=None)
+def ambulance_top(w=170, lights=0):
+    h = int(w * 2.1); im = ss(w, h); d = ImageDraw.Draw(im); X, Y = w * 2, h * 2
+    d.rounded_rectangle((0, 0, X - 1, Y - 1), radius=int(X * .18), fill=(250, 250, 250))
+    d.rounded_rectangle((X * .1, Y * .08, X * .9, Y * .2), radius=int(X * .1), fill=(40, 60, 90))
+    for i in range(6):
+        d.rectangle((0, Y * (.3 + i * .1), X, Y * (.3 + i * .1 + .05)), fill=(255, 210, 0) if i % 2 else (40, 160, 70))
+    d.rectangle((X * .38, Y * .5, X * .62, Y * .76), fill=(220, 30, 40)); d.rectangle((X * .26, Y * .58, X * .74, Y * .68), fill=(220, 30, 40))
+    a, b = ((40, 120, 255), (180, 200, 255)) if lights == 0 else ((180, 200, 255), (40, 120, 255))
+    d.rounded_rectangle((X * .1, Y * .22, X * .48, Y * .27), radius=8, fill=a)
+    d.rounded_rectangle((X * .52, Y * .22, X * .9, Y * .27), radius=8, fill=b)
+    im = down(im)
+    g = Image.new("RGBA", (w + 200, h + 200), (0, 0, 0, 0)); gd = ImageDraw.Draw(g)
+    cx = 100 + (w * .3 if lights == 0 else w * .7); gd.ellipse((cx - 70, 100 + h * .245 - 70, cx + 70, 100 + h * .245 + 70), fill=(60, 140, 255, 150))
+    g = g.filter(ImageFilter.GaussianBlur(28)); g.alpha_composite(im, (100, 100)); return g
+
+@lru_cache(maxsize=None)
+def semaphore(state):  # state 0..3: cuántas luces encendidas (rojo, ámbar, verde)
+    w, h = 230, 600; im = ss(w, h); d = ImageDraw.Draw(im); X, Y = w * 2, h * 2
+    d.rounded_rectangle((0, 0, X - 1, Y - 1), radius=90, fill=(22, 24, 30), outline=(60, 64, 76), width=10)
+    cols = [(239, 68, 68), (255, 176, 0), (34, 197, 94)]
+    for i, c in enumerate(cols):
+        on = state == i + 1
+        d.ellipse((X * .17, Y * (.05 + i * .32), X * .83, Y * (.05 + i * .32) + X * .66), fill=c if on else mix(c, (22, 24, 30), .78))
+    im = down(im)
+    return glow(im, 30, .9)
+
+@lru_cache(maxsize=None)
+def bookmark(s=300):
+    im = ss(s, int(s * 1.3)); d = ImageDraw.Draw(im); X, Y = s * 2, int(s * 1.3) * 2
+    d.polygon([(X * .12, 0), (X * .88, 0), (X * .88, Y), (X * .5, Y * .72), (X * .12, Y)], fill=YEL)
+    return glow(down(im), 30, .7)
+
+@lru_cache(maxsize=None)
+def bubble(w=760, h=360):
+    im = ss(w, h + 80); d = ImageDraw.Draw(im); X, Y = w * 2, h * 2
+    d.rounded_rectangle((0, 0, X - 1, Y - 1), radius=120, fill=WHITE)
+    d.polygon([(X * .2, Y - 4), (X * .34, Y - 4), (X * .16, Y + 150)], fill=WHITE)
+    return down(im)
+
+@lru_cache(maxsize=None)
+def doc_card():
+    w, h = 760, 720; c = card(w, h, fill=(252, 252, 250, 255), r=36); d = ImageDraw.Draw(c); ox, oy = 40, 40
+    d.rectangle((ox, oy, ox + w, oy + 120), fill=BLUE);
+    d.rounded_rectangle((ox, oy, ox + w, oy + 160), radius=36, fill=BLUE); d.rectangle((ox, oy + 100, ox + w, oy + 160), fill=(252, 252, 250))
+    d.text((ox + 50, oy + 34), "BOE", font=F(BLACK, 58), fill=WHITE)
+    d.text((ox + 230, oy + 50), "Normativa de tráfico", font=F(SB, 34), fill=(210, 225, 255))
+    for i in range(5):
+        y = oy + 440 + i * 52; d.rounded_rectangle((ox + 50, y, ox + w - 50 - (i % 3) * 90, y + 18), radius=9, fill=(214, 220, 230))
+    return c
+
+# ---------- fondo ----------
+@lru_cache(maxsize=1)
+def bg_base():
+    yy = np.linspace(0, 1, H)[:, None, None]
+    c1, c2 = np.array(NAVY, float), np.array((10, 52, 120), float)
+    arr = (c1 * (1 - yy) + c2 * yy) * np.ones((1, W, 1))
+    xx = np.linspace(-1, 1, W)[None, :, None]; yv = np.linspace(-1, 1, H)[:, None, None]
+    vign = 1 - 0.35 * np.clip(xx ** 2 + (yv * .8) ** 2, 0, 1)
+    im = Image.fromarray(np.clip(arr * vign, 0, 255).astype(np.uint8)).convert("RGBA")
+    g = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(g)
+    d.ellipse((-300, 400, 700, 1400), fill=(30, 110, 255, 70)); d.ellipse((500, 900, 1400, 1800), fill=(255, 196, 0, 30))
+    im.alpha_composite(g.filter(ImageFilter.GaussianBlur(160)))
+    return im
+
+def background(t):
+    im = bg_base().copy(); d = ImageDraw.Draw(im, "RGBA")
+    # líneas de carretera en perspectiva que avanzan (sutiles)
+    vx, vy = W / 2, 980
+    for k in range(14):
+        z = ((k / 14) + t * 0.35) % 1.0; z2 = z + 0.035
+        y1, y2 = vy + (H - vy) * z ** 2, vy + (H - vy) * z2 ** 2
+        for side in (-1, 1):
+            x1, x2 = vx + side * 900 * z ** 2, vx + side * 900 * z2 ** 2
+            d.line([(x1, y1), (x2, y2)], fill=(255, 255, 255, int(40 * z)), width=max(2, int(14 * z)))
+    return im
+
+# ---------- capa fija (cabecera y cronómetro) ----------
+def header(dst, t):
+    paste(dst, sign_b(92), 104, 150)
+    paste(dst, text("TEÓRICO B", 46, WHITE, BLACK, shadow=False), 152 + text("TEÓRICO B", 46, WHITE, BLACK, shadow=False).width / 2, 132)
+    paste(dst, text("en 30 segundos", 30, YEL, SB, shadow=False), 152 + text("en 30 segundos", 30, YEL, SB, shadow=False).width / 2, 178)
+    # cronómetro
+    cx, cy, r = 960, 150, 58; d = ImageDraw.Draw(dst, "RGBA")
+    d.ellipse((cx - r, cy - r, cx + r, cy + r), fill=(0, 0, 0, 90), outline=(255, 255, 255, 60), width=8)
+    ang = -90 + 360 * clamp(t / 30.0)
+    d.arc((cx - r, cy - r, cx + r, cy + r), -90, ang, fill=YEL, width=10)
+    d.rounded_rectangle((cx - 14, cy - r - 24, cx + 14, cy - r - 8), radius=5, fill=YEL)
+    s = f"{int(t):02d}"; paste(dst, text(s, 44, WHITE, BLACK, shadow=False), cx, cy - 2)
+    lab = CFG.get("label")
+    if lab: paste(dst, pill(lab, 38), W / 2, 268)
+
+# ---------- subtítulos karaoke ----------
+def captions(dst, t, i):
+    sc = SC[i]; cap = sc.get("cap", ""); hi = set(w.lower().strip("¿?¡!.,:;") for w in sc.get("hi", []))
+    if not cap: return
+    s0, s1 = LINES[i]; words = cap.split(); size = 70
+    lines = wrap(cap, size, POP, 860)
+    while len(lines) > 3 and size > 44: size -= 4; lines = wrap(cap, size, POP, 860)
+    total = sum(len(w) + 1 for w in words); acc = 0; starts = []
+    for w in words: starts.append(s0 + (s1 - s0) * acc / total); acc += len(w) + 1
+    appear = eout(prog(t, B[i], 0.18)); y0 = 1395 - (len(lines) - 1) * size * 0.62
+    f = F(POP, size); wi = 0; lh = int(size * 1.24)
+    # placa
+    d = ImageDraw.Draw(dst, "RGBA")
+    pw = max(f.getlength(l) + 16 * (len(l.split()) - 1) for l in lines) + 70; ph = lh * len(lines) + 40
+    d.rounded_rectangle((W / 2 - pw / 2, y0 - 34, W / 2 + pw / 2, y0 - 34 + ph), radius=30, fill=(0, 0, 0, int(120 * appear)))
+    for li, line in enumerate(lines):
+        lw = line.split(); x = W / 2 - (f.getlength(line) + 16 * (len(lw) - 1)) / 2; y = y0 + li * lh
+        for w in lw:
+            st = starts[wi]; key = w.lower().strip("¿?¡!.,:;")
+            said = t >= st; cur = st <= t < (starts[wi + 1] if wi + 1 < len(starts) else s1 + 0.3)
+            col = YEL if (key in hi and said) else WHITE
+            a = 1.0 if said else 0.38
+            ww = f.getlength(w)
+            if cur and appear > .5:
+                bb = f.getbbox(w); d.rounded_rectangle((x - 12, y - size * .5 + 2, x + ww + 12, y + size * .62 + 2), radius=16, fill=YEL + (235,))
+                col = NAVY
+            im = text(w, size, col, POP, shadow=not cur, stroke=0)
+            paste(dst, im, x + ww / 2, y + 6, alpha=a * appear)
+            x += ww + f.getlength(" ") + 16; wi += 1
+
+# ---------- visuales ----------
+def big_lines(dst, lines, t, y, cols=None, size=150, stagger=0.22):
+    size = fit(lines, size); lh = int(size * 1.02)
+    for k, l in enumerate(lines):
+        p = prog(t, k * stagger, 0.35); col = (cols[k] if cols else WHITE)
+        paste(dst, text(l, size, tuple(col), BLACK, stroke=0), W / 2, y + k * lh, scale=0.6 + 0.4 * eback(p), alpha=ease(p * 2))
+
+def vis_hook(dst, t, v, i):
+    lines = v.get("lines", []); cols = [tuple(c) for c in v.get("cols", [])] or None
+    n = len(lines); y = CY - (n - 1) * 80 - (40 if v.get("badge") else 0)
+    shake = 0
+    if v.get("stamp"):
+        ps = prog(t, v.get("stamp_at", 0.8), 0.18)
+        if 0 < ps < 1 or (ps == 1 and t - v.get("stamp_at", 0.8) < 0.45): shake = math.sin(t * 90) * 10 * (1 - prog(t, v.get("stamp_at", .8) + .18, .3))
+    big_lines(dst, lines, t, y + shake, cols)
+    if v.get("badge"):
+        p = prog(t, 0.5, 0.35); paste(dst, pill(v["badge"], 46, YEL, NAVY), W / 2, y + n * 150 + 30, scale=eback(p), alpha=ease(p * 2))
+    if v.get("stamp"):
+        st = v.get("stamp_at", 0.8); ps = prog(t, st, 0.2)
+        if ps > 0:
+            im = stamp_img(v["stamp"]); paste(dst, im, W / 2 + 120, CY + 230, scale=lerp(2.2, 1.0, eout(ps)), alpha=ease(ps * 1.5), rot=-12)
+
+@lru_cache(maxsize=16)
+def stamp_img(txt):
+    f = F(BLACK, 96); w = int(f.getlength(txt)) + 90; h = 170; im = ss(w, h); d = ImageDraw.Draw(im)
+    d.rounded_rectangle((6, 6, w * 2 - 6, h * 2 - 6), radius=36, outline=RED, width=18)
+    bb = F(BLACK, 192).getbbox(txt); d.text((w - (bb[0] + bb[2]) / 2, h - (bb[1] + bb[3]) / 2), txt, font=F(BLACK, 192), fill=RED)
+    return down(im)
+
+def road_scene(dst, t, horizon=560, label=None):
+    d = ImageDraw.Draw(dst, "RGBA"); vx = W / 2; top, bot = horizon, VZ[1] + 20
+    d.polygon([(vx - 60, top), (vx + 60, top), (vx + 620, bot), (vx - 620, bot)], fill=(34, 38, 48, 255))
+    d.line([(vx - 60, top), (vx - 620, bot)], fill=(255, 255, 255, 200), width=8)
+    d.line([(vx + 60, top), (vx + 620, bot)], fill=(255, 255, 255, 200), width=8)
+    for k in range(10):
+        z = ((k / 10) + t * 0.9) % 1.0; z2 = min(1, z + 0.05)
+        y1, y2 = top + (bot - top) * z ** 1.6, top + (bot - top) * z2 ** 1.6
+        for lx in (-0.33, 0.33):
+            x1 = vx + lx * (60 + 560 * z ** 1.6) * 1.0; x2 = vx + lx * (60 + 560 * z2 ** 1.6)
+            d.line([(x1, y1), (x2, y2)], fill=(255, 255, 255, int(220 * z)), width=max(2, int(12 * z)))
+    if label: paste(dst, pill(label, 36, WHITE, BLUE), W / 2, horizon - 60)
+
+def vis_road(dst, t, v, i):
+    road_scene(dst, t, label=v.get("label"))
+    p = eback(prog(t, 0.0, 0.5)); y = lerp(1300, 980, p)
+    car = car_rear(560); paste(dst, car, W / 2, y)
+    if v.get("hazard", True) and int(t * 2.4) % 2 == 0:
+        for dx in (-205, 205): paste(dst, hazard(170), W / 2 + dx, y - car.height / 2 + car.height * .51)
+    if v.get("smoke"):
+        for k in range(5):
+            z = ((t * .6 + k / 5) % 1); paste(dst, puff(), W / 2 + 160 + k * 18, y - 140 - z * 260, scale=.5 + z, alpha=(1 - z) * .55)
+
+@lru_cache(maxsize=1)
+def puff():
+    im = Image.new("RGBA", (220, 220), (0, 0, 0, 0)); ImageDraw.Draw(im).ellipse((40, 40, 180, 180), fill=(220, 220, 225, 200))
+    return im.filter(ImageFilter.GaussianBlur(24))
+
+QC = (900, 0)
+def quiz_card(dst, v, t, state, enter=0.0):
+    """state: dict(opts_shown=[a,b,c alphas], reveal=0..1, small=False)"""
+    q = v["q"]; opts = v["opts"]; corr = v["correct"]
+    qs = 52; ql = wrap(q, qs, XB, 780)
+    while len(ql) > 3: qs -= 4; ql = wrap(q, qs, XB, 780)
+    ch = 150 + len(ql) * int(qs * 1.2) + 3 * 130 + 40
+    p = eback(prog(t, enter, 0.45)); cy = CY + 20; top = cy - ch / 2
+    c = card(880, int(ch), fill=(255, 255, 255, 250), r=46)
+    paste(dst, c, W / 2, cy + (1 - p) * 200, alpha=ease(prog(t, enter, .25)))
+    a = ease(prog(t, enter, .25)); off = (1 - p) * 200
+    paste(dst, pill("PREGUNTA DE EXAMEN", 30, BLUE, WHITE), W / 2, top + 50 + off, alpha=a)
+    for k, l in enumerate(ql):
+        paste(dst, text(l, qs, DARK, XB, shadow=False), W / 2, top + 120 + k * qs * 1.2 + qs / 2 + off, alpha=a)
+    oy = top + 150 + len(ql) * qs * 1.2 + 20
+    for k, o in enumerate(opts):
+        oa = state["opts"][k] * a
+        if oa <= 0.01: continue
+        rv = state.get("reveal", 0)
+        fill = (241, 244, 250); bord = (210, 218, 232); lc = BLUE
+        if rv > 0:
+            if k == corr: fill = mix((241, 244, 250), (220, 252, 231), rv); bord = mix(bord, GREEN, rv); lc = GREEN
+            else: fill = mix((241, 244, 250), (250, 235, 235), rv); bord = mix(bord, (240, 180, 180), rv); lc = mix(BLUE, RED, rv)
+        im = opt_row("ABC"[k], o, fill, bord, lc, rv > .5 and k != corr)
+        sx = (1 - eout(state["opts"][k])) * 120
+        y = oy + k * 130 + 55 + off
+        sc = 1 + (0.06 * math.sin(clamp(rv) * math.pi) if k == corr else 0)
+        paste(dst, im, W / 2 + sx, y, alpha=oa * (0.55 + 0.45 * (1 - rv) if (rv > 0 and k != corr) else 1), scale=sc)
+        if rv > 0.05:
+            ic = icon_check(78) if k == corr else icon_x(78, (220, 90, 90))
+            paste(dst, ic, W / 2 + 350, y, scale=eback(prog(rv, 0, 1)), alpha=clamp(rv * 2) * (1 if k == corr else .8))
+
+@lru_cache(maxsize=64)
+def opt_row(letter, o, fill, bord, lc, dim):
+    w, h = 780, 108; im = ss(w, h); d = ImageDraw.Draw(im)
+    d.rounded_rectangle((0, 0, w * 2 - 1, h * 2 - 1), radius=50, fill=fill, outline=bord, width=6)
+    d.ellipse((24, 24, 24 + 168, 24 + 168), fill=lc)
+    f = F(BLACK, 96); bb = f.getbbox(letter); d.text((108 - (bb[0] + bb[2]) / 2, 108 - (bb[1] + bb[3]) / 2), letter, font=f, fill=WHITE)
+    s = 84
+    while F(XB, s).getlength(o) > w * 2 - 300 and s > 50: s -= 4
+    bb = F(XB, s).getbbox(o); d.text((230, 108 - (bb[1] + bb[3]) / 2), o, font=F(XB, s), fill=(120, 126, 140) if dim else DARK)
+    return down(im)
+
+def vis_quiz(dst, t, v, i):
+    at = v.get("opt_at", [0.0, 0.0, 0.0]); dur = LINES[i][1] - LINES[i][0]
+    if v.get("hide_opts"): shown = [0, 0, 0]
+    else: shown = [eout(prog(t, a * dur if a <= 1 else a, 0.3)) for a in at]
+    quiz_card(dst, v, t, {"opts": shown}, enter=0.0 if not v.get("cont") else -1)
+    if v.get("hide_opts"):
+        pk = .5 + .5 * math.sin(t * 6); paste(dst, text("?", 300, BLUE, BLACK, shadow=False), W / 2, CY + 150, scale=(.9 + .1 * pk) * eback(prog(t, .3, .4)), alpha=ease(prog(t, .3, .2)))
+
+def vis_countdown(dst, t, v, i):
+    q = SC[v.get("quiz_scene", i - 1)]["vis"]
+    # tarjeta reducida arriba + semáforo
+    sub = Image.new("RGBA", (W, H), (0, 0, 0, 0)); quiz_card(sub, q, 10, {"opts": [1, 1, 1]}, enter=-1)
+    sub = sub.crop((0, VZ[0] - 40, W, VZ[1] + 60)).resize((int(W * .62), int((VZ[1] - VZ[0] + 100) * .62)), Image.LANCZOS)
+    p = eout(prog(t, 0, 0.4)); paste(dst, sub, W / 2 - 150 * p, CY - 10, alpha=1)
+    starts = v.get("at", [1.25, 2.15, 3.05]); n = sum(1 for s in starts if t >= s)
+    paste(dst, semaphore(n), W / 2 + 330 * p, CY, scale=0.6 + 0.4 * eback(prog(t, 0, .4)))
+    if n:
+        num = str(4 - n); pk = prog(t, starts[n - 1], 0.25)
+        paste(dst, text(num, 260, [RED, (255, 176, 0), GREEN][n - 1], BLACK), W / 2 - 150, CY + 330, scale=lerp(1.6, 1, eout(pk)), alpha=ease(pk * 2))
+
+def vis_reveal(dst, t, v, i):
+    q = SC[v.get("quiz_scene", 2)]["vis"]; to = v.get("then_at")
+    if to is None or t < to:
+        a = 1 - ease(prog(t, to, 0.3)) if to else 1
+        sub = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+        quiz_card(sub, q, 10, {"opts": [1, 1, 1], "reveal": eout(prog(t, 0.05, 0.5))}, enter=-1)
+        paste(dst, sub, W / 2, H / 2, alpha=a)
+        # confeti
+        if t > 0.1:
+            for k in range(26):
+                ang = k * 2.4; r = 120 + 520 * eout(prog(t, 0.1, 1.0)); y = CY + math.sin(ang) * r * .7 + 300 * prog(t, .4, 1.5) ** 2
+                d = ImageDraw.Draw(dst, "RGBA"); x = W / 2 + math.cos(ang) * r
+                c = [YEL, GREEN, WHITE, BLUE_L][k % 4]; al = int(255 * (1 - prog(t, 0.9, 0.8)))
+                d.rounded_rectangle((x - 9, y - 16, x + 9, y + 16), radius=4, fill=c + (al,))
+    if to is not None and t >= to - 0.05:
+        vis_compare(dst, t - to, v["compare"], i)
+
+def vis_compare(dst, t, v, i):
+    # ANTES / AHORA con imágenes directas
+    p1, p2 = eback(prog(t, 0, .45)), eback(prog(t, .35, .45))
+    for k, (px, p, data) in enumerate(((W / 2 - 235, p1, v["antes"]), (W / 2 + 235, p2, v["ahora"]))):
+        c = card(430, 620, fill=(255, 255, 255, 250) if k else (225, 230, 238, 245), r=40, border=GREEN if k else None, bw=6 if k else 0)
+        y = CY + 30 + (1 - p) * 160; a = ease(prog(t, k * .35, .3))
+        paste(dst, c, px, y, alpha=a)
+        paste(dst, pill(data["tag"], 34, GREEN if k else GREY, WHITE), px, y - 250, alpha=a)
+        img = triangle(250, grey=True) if data["img"] == "triangle" else (beacon(230, on=int(t * 3) % 2 == 0) if data["img"] == "beacon" else None)
+        if img: paste(dst, img, px, y - 40, alpha=a)
+        for j, l in enumerate(data["txt"]): paste(dst, text(l, 40, DARK if k else (90, 96, 110), XB, shadow=False), px, y + 140 + j * 50, alpha=a)
+        if not k and t > .9: paste(dst, icon_x(90, (200, 80, 80)), px + 150, y - 150, scale=eback(prog(t, .9, .3)))
+        if k and t > 1.1: paste(dst, icon_check(90), px + 150, y - 150, scale=eback(prog(t, 1.1, .3)))
+
+def vis_roof(dst, t, v, i):
+    road_scene(dst, t * 0, label=None)
+    car = car_rear(600); y = 1010; paste(dst, car, W / 2, y)
+    if int(t * 2.4) % 2 == 0:
+        for dx in (-220, 220): paste(dst, hazard(170), W / 2 + dx, y - car.height / 2 + car.height * .51)
+    on = int(t * 4) % 2 == 0; bp = eback(prog(t, 0.2, 0.5))
+    by = y - car.height / 2 - 70 - (1 - bp) * 300
+    if on and t > .5:
+        d = ImageDraw.Draw(dst, "RGBA")
+        for k in range(10):
+            ang = k * math.pi / 9 + math.pi; r1, r2 = 90, 210 + 30 * math.sin(t * 8)
+            d.line([(W / 2 + math.cos(ang) * r1, by + math.sin(ang) * r1), (W / 2 + math.cos(ang) * r2, by + math.sin(ang) * r2)], fill=(255, 190, 40, 160), width=10)
+    paste(dst, beacon(230, on=on), W / 2, by, alpha=ease(prog(t, .2, .2)))
+    lp = eout(prog(t, .8, .4))
+    paste(dst, chip_ok("EN EL TECHO", True), W / 2 - 230, VZ[0] + 60, alpha=lp, scale=.8 + .2 * eback(prog(t, .8, .4)))
+    lp2 = eout(prog(t, 1.4, .4))
+    paste(dst, chip_ok("A LA CARRETERA", False), W / 2 + 230, VZ[0] + 60, alpha=lp2, scale=.8 + .2 * eback(prog(t, 1.4, .4)))
+
+@lru_cache(maxsize=32)
+def chip_ok(txt, ok):
+    p = pill(txt, 36, WHITE, DARK, padx=34 + 40); im = Image.new("RGBA", (p.width + 20, p.height + 20), (0, 0, 0, 0))
+    im.alpha_composite(p, (10, 10)); ic = (icon_check if ok else icon_x)(56)
+    im.alpha_composite(ic, (22, 10 + (p.height - 56) // 2)); return im
+
+def vis_cta(dst, t, v, i):
+    bp = eback(prog(t, 0, .45)); bb = bubble(780, 360)
+    paste(dst, bb, W / 2, CY - 40, scale=.7 + .3 * bp, alpha=ease(prog(t, 0, .2)))
+    big = v.get("big", "¿A, B o C?"); s = fit([big], 140, BLACK, 680)
+    paste(dst, text(big, s, BLUE, BLACK, shadow=False), W / 2, CY - 110, scale=.7 + .3 * bp, alpha=ease(prog(t, 0, .2)))
+    paste(dst, text(v.get("small", "Dímelo en comentarios"), 44, DARK, XB, shadow=False), W / 2, CY + 20, alpha=ease(prog(t, .3, .3)))
+    ay = CY + 300 + math.sin(t * 7) * 22; d = ImageDraw.Draw(dst, "RGBA"); a = int(255 * ease(prog(t, .4, .3)))
+    d.polygon([(W / 2 - 70, ay - 40), (W / 2 + 70, ay - 40), (W / 2, ay + 50)], fill=YEL + (a,))
+    d.rectangle((W / 2 - 26, ay - 120, W / 2 + 26, ay - 38), fill=YEL + (a,))
+
+# --- vista cenital de autovía (pasillo de emergencia) ---
+LANE_X = (W / 2 - 150, W / 2 + 150)
+CAR_COLS = [(226, 69, 60), (245, 245, 245), (40, 40, 48), (255, 196, 0), (60, 140, 255), (130, 140, 155)]
+def topdown(out, t, phase, pt, show_amb=True, highlight=False):
+    """phase 0 atasco, 1 izquierda se aparta, 2 derecha se aparta, 3 ambulancia pasa. pt = progreso 0..1 de la fase"""
+    dst = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    d = ImageDraw.Draw(dst, "RGBA"); x0, x1 = W / 2 - 340, W / 2 + 340; top, bot = VZ[0] + 10, VZ[1] + 20
+    d.rectangle((x0 - 40, top, x1 + 40, bot), fill=(70, 80, 60, 255))
+    d.rectangle((x0, top, x1, bot), fill=(36, 40, 50, 255))
+    d.line([(x0 + 10, top), (x0 + 10, bot)], fill=(255, 255, 255, 230), width=8); d.line([(x1 - 10, top), (x1 - 10, bot)], fill=(255, 255, 255, 230), width=8)
+    for k in range(9):
+        y = top + k * 110; d.line([(W / 2, y), (W / 2, y + 60)], fill=(255, 255, 255, 200), width=8)
+    kl = 1.0 if phase > 1 else (ease(pt) if phase == 1 else 0); kr = 1.0 if phase > 2 else (ease(pt) if phase == 2 else 0)
+    if highlight or phase == 3:
+        ha = int(110 * ease(pt if phase == 3 else 1)); cw = 90 + 0
+        d.rectangle((W / 2 - cw, top, W / 2 + cw, bot), fill=(34, 197, 94, ha))
+    rows = [top + 120 + r * 265 for r in range(3)]
+    for row, y in enumerate(rows):
+        for side, k in ((0, kl), (1, kr)):
+            col = CAR_COLS[(row * 2 + side) % len(CAR_COLS)]
+            x = LANE_X[side] + (-1 if side == 0 else 1) * 125 * k
+            jig = math.sin(t * 3 + row + side) * 2
+            paste(dst, car_top(col, 132), x + jig, y)
+    for row, y in enumerate(rows):
+        for side in (0, 1):
+            if ((phase == 1 and side == 0) or (phase == 2 and side == 1)) and pt < .95:
+                dirn = -1 if side == 0 else 1; a = int(255 * (1 - prog(pt, .7, .25)))
+                arrow(d, W / 2 + dirn * 20, y, dirn, a)
+    if show_amb:
+        if phase < 3: ay = bot + 30 - 25 * ease(prog(t, 0, 1.0)) - 8 * math.sin(t * 3)
+        else: ay = lerp(bot + 5, top + 200, ease(pt))
+        paste(dst, ambulance_top(150, int(t * 6) % 2), W / 2, ay)
+        for k in range(3):
+            r = ((t * 1.4 + k / 3) % 1) * 260
+            d.ellipse((W / 2 - r, ay - 120 - r, W / 2 + r, ay - 120 + r), outline=(80, 150, 255, int(170 * (1 - r / 260))), width=6)
+    m = Image.new("L", (W, H), 0); ImageDraw.Draw(m).rounded_rectangle((x0 - 40, top, x1 + 40, bot), radius=36, fill=255)
+    dst.putalpha(Image.fromarray(np.minimum(np.array(dst.split()[3]), np.array(m))))
+    out.alpha_composite(dst)
+
+def arrow(d, x, y, dirn, a):
+    d.polygon([(x + dirn * 60, y), (x, y - 40), (x, y + 40)], fill=YEL + (a,))
+    d.rectangle((min(x, x - dirn * 50), y - 15, max(x, x - dirn * 50), y + 15), fill=YEL + (a,))
+
+def vis_topdown(dst, t, v, i):
+    ph = v.get("phase", 0); dur = max(1.0, (B[i + 1] - B[i]) * v.get("speed", 0.75))
+    topdown(dst, t, ph, prog(t, 0.15, dur), highlight=v.get("highlight", False))
+    if v.get("tag"):
+        paste(dst, pill(v["tag"], 36, GREEN if ph == 3 else YEL, WHITE if ph == 3 else NAVY), W / 2, VZ[0] + 70,
+              scale=eback(prog(t, .3, .4)), alpha=ease(prog(t, .3, .3)))
+
+def vis_law(dst, t, v, i):
+    p = eback(prog(t, 0, .5)); c = doc_card(); paste(dst, c, W / 2, CY + (1 - p) * 220, alpha=ease(prog(t, 0, .25)), rot=(1 - p) * 6)
+    paste(dst, text(v.get("title1", "Reglamento General"), 50, DARK, BLACK, shadow=False), W / 2, CY - 130, alpha=ease(prog(t, .2, .3)))
+    paste(dst, text(v.get("title2", "de Circulación"), 50, DARK, BLACK, shadow=False), W / 2, CY - 70, alpha=ease(prog(t, .2, .3)))
+    sp = prog(t, .7, .22)
+    if sp > 0: paste(dst, stamp2(v.get("stamp", "R.D. 518/2026")), W / 2 + 40, CY + 110, scale=lerp(2.2, 1, eout(sp)), alpha=ease(sp * 1.6), rot=-8)
+    if v.get("badge"): paste(dst, pill(v["badge"], 40, YEL, NAVY), W / 2, CY + 330, scale=eback(prog(t, 1.1, .4)), alpha=ease(prog(t, 1.1, .3)))
+
+@lru_cache(maxsize=8)
+def stamp2(txt):
+    f = F(BLACK, 76); w = int(f.getlength(txt)) + 80; h = 140; im = ss(w, h); d = ImageDraw.Draw(im)
+    d.rounded_rectangle((6, 6, w * 2 - 6, h * 2 - 6), radius=30, outline=BLUE, width=16)
+    bb = F(BLACK, 152).getbbox(txt); d.text((w - (bb[0] + bb[2]) / 2, h - (bb[1] + bb[3]) / 2), txt, font=F(BLACK, 152), fill=BLUE)
+    return down(im)
+
+def vis_nocross(dst, t, v, i):
+    topdown(dst, t, 3, 1.0, show_amb=False, highlight=True)
+    # coche que intenta cruzarse por delante en diagonal
+    p = ease(prog(t, 0.2, 1.4)); x = lerp(W / 2 - 275, W / 2 + 40, p); y = lerp(VZ[0] + 830, VZ[0] + 540, p)
+    d = ImageDraw.Draw(dst, "RGBA")
+    for k in range(12):
+        q = k / 12
+        qx, qy = lerp(W / 2 - 275, W / 2 + 40, q), lerp(VZ[0] + 830, VZ[0] + 540, q)
+        if q < p: d.ellipse((qx - 8, qy - 8, qx + 8, qy + 8), fill=RED + (220,))
+    paste(dst, car_top((255, 120, 0), 140), x, y, rot=-35 * p)
+    xp = prog(t, 1.4, .25)
+    if xp > 0: paste(dst, icon_x(220), W / 2, CY, scale=lerp(2, 1, eout(xp)), alpha=ease(xp * 2))
+    if xp > 0.5: paste(dst, pill("NUNCA", 56, RED, WHITE), W / 2, CY + 190, scale=eback(prog(t, 1.6, .35)))
+
+def vis_save(dst, t, v, i):
+    p = eback(prog(t, 0, .5)); paste(dst, bookmark(260), W / 2, CY - 120 + math.sin(t * 4) * 10, scale=.6 + .4 * p, alpha=ease(prog(t, 0, .2)))
+    paste(dst, text(v.get("big", "GUÁRDALO"), 130, WHITE, BLACK), W / 2, CY + 170, scale=.7 + .3 * eback(prog(t, .2, .4)), alpha=ease(prog(t, .2, .3)))
+    paste(dst, text(v.get("small", "para tu examen"), 56, YEL, XB), W / 2, CY + 290, alpha=ease(prog(t, .45, .3)))
+
+def vis_mito(dst, t, v, i):
+    # MITO o VERDAD: frase en tarjeta + sello
+    p = eback(prog(t, 0, .45)); c = card(880, 520, fill=(255, 255, 255, 250), r=44); paste(dst, c, W / 2, CY, alpha=ease(prog(t, 0, .2)), scale=.85 + .15 * p)
+    ql = wrap(v["frase"], 60, XB, 760)
+    for k, l in enumerate(ql): paste(dst, text(l, 60, DARK, XB, shadow=False), W / 2, CY - (len(ql) - 1) * 38 + k * 76, alpha=ease(prog(t, .1, .3)))
+    if v.get("verdict"):
+        sp = prog(t, v.get("at", 1.0), .2)
+        if sp > 0:
+            col = GREEN if v["verdict"] == "VERDAD" else RED
+            paste(dst, stamp_col(v["verdict"], col), W / 2 + 140, CY + 230, scale=lerp(2.2, 1, eout(sp)), alpha=ease(sp * 1.6), rot=-10)
+
+@lru_cache(maxsize=8)
+def stamp_col(txt, col):
+    f = F(BLACK, 96); w = int(f.getlength(txt)) + 90; h = 170; im = ss(w, h); d = ImageDraw.Draw(im)
+    d.rounded_rectangle((6, 6, w * 2 - 6, h * 2 - 6), radius=36, outline=col, width=18)
+    bb = F(BLACK, 192).getbbox(txt); d.text((w - (bb[0] + bb[2]) / 2, h - (bb[1] + bb[3]) / 2), txt, font=F(BLACK, 192), fill=col)
+    return down(im)
+
+def vis_stat(dst, t, v, i):
+    # número grande que cuenta hacia arriba (p. ej. "90 km/h")
+    p = eout(prog(t, 0, 1.0)); val = v["value"]; num = int(round(val * p)); unit = v.get("unit", "")
+    paste(dst, text(f"{num}", 300, YEL, BLACK), W / 2, CY - 60, scale=.8 + .2 * eback(prog(t, 0, .4)))
+    paste(dst, text(unit, 80, WHITE, BLACK), W / 2, CY + 140, alpha=ease(prog(t, .3, .3)))
+    if v.get("sub"): paste(dst, pill(v["sub"], 40, WHITE, BLUE), W / 2, CY + 270, alpha=ease(prog(t, .6, .3)))
+
+def vis_sign(dst, t, v, i):
+    # señal redonda genérica dibujada: {"kind": "speed", "n": 90} (límite) | {"kind": "noentry"} | {"kind": "b"}
+    p = eback(prog(t, 0, .5)); s = 560
+    paste(dst, sign_generic(v.get("kind", "speed"), v.get("n", 90), s), W / 2, CY - 30, scale=.5 + .5 * p, alpha=ease(prog(t, 0, .25)), rot=(1 - p) * -20)
+    if v.get("tag"): paste(dst, pill(v["tag"], 40, YEL, NAVY), W / 2, CY + 330, scale=eback(prog(t, .5, .35)), alpha=ease(prog(t, .5, .3)))
+
+@lru_cache(maxsize=16)
+def sign_generic(kind, n, s):
+    im = ss(s, s); d = ImageDraw.Draw(im); S = s * 2
+    if kind == "speed":
+        d.ellipse((0, 0, S - 1, S - 1), fill=(220, 30, 40)); d.ellipse((S * .12, S * .12, S * .88, S * .88), fill=WHITE)
+        f = F(BLACK, int(S * .42)); txt = str(n); bb = f.getbbox(txt)
+        d.text((S / 2 - (bb[0] + bb[2]) / 2, S / 2 - (bb[1] + bb[3]) / 2), txt, font=f, fill=(20, 20, 20))
+    elif kind == "noentry":
+        d.ellipse((0, 0, S - 1, S - 1), fill=(220, 30, 40)); d.rounded_rectangle((S * .16, S * .42, S * .84, S * .58), radius=10, fill=WHITE)
+    else:
+        return sign_b(s)
+    return glow(down(im), 30, .5)
+
+VIS = {k[4:]: v for k, v in globals().items() if k.startswith("vis_")}
+
+def frame(n):
+    t = n / FPS
+    i = max(k for k in range(len(SC)) if B[k] <= t + 1e-6); i = min(i, len(SC) - 1)
+    lt = t - B[i]
+    im = background(t); header(im, t)
+    v = SC[i].get("vis", {})
+    layer = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    VIS[v.get("type", "hook")](layer, lt, v, i)
+    # entrada de escena: pequeño zoom + flash
+    if i > 0 and lt < 0.12 and not v.get("no_flash"):
+        k = lt / 0.12; layer = layer.resize((int(W * (1.04 - .04 * k)), int(H * (1.04 - .04 * k))), Image.BICUBIC)
+        layer = layer.crop(((layer.width - W) // 2, (layer.height - H) // 2, (layer.width - W) // 2 + W, (layer.height - H) // 2 + H))
+    im.alpha_composite(layer)
+    captions(im, t, i)
+    # barra de progreso
+    d = ImageDraw.Draw(im, "RGBA"); d.rectangle((0, 0, W, 10), fill=(255, 255, 255, 40)); d.rectangle((0, 0, int(W * t / DUR), 10), fill=YEL)
+    if i > 0 and lt < 0.08 and not v.get("no_flash"):
+        im.alpha_composite(Image.new("RGBA", (W, H), (255, 255, 255, int(70 * (1 - lt / 0.08)))))
+    return im.convert("RGB")
+
+def raw(n): return frame(n).tobytes()
+
+# ---------- audio: voz + efectos ----------
+def tone(f, d, sr=24000, vol=.25, decay=6):
+    t = np.arange(int(sr * d)) / sr; return (np.sin(2 * np.pi * f * t) * np.exp(-t * decay) * vol).astype(np.float32)
+def sfx_wave(kind, sr=24000):
+    if kind == "beep": return tone(880, .16, sr, .22, 8)
+    if kind == "ding": return np.concatenate([tone(1046, .12, sr, .25, 5), tone(1568, .45, sr, .25, 5)])
+    if kind == "buzz":
+        t = np.arange(int(sr * .35)) / sr; return (np.sign(np.sin(2 * np.pi * 140 * t)) * .08 * np.exp(-t * 4)).astype(np.float32)
+    if kind == "whoosh":
+        n = int(sr * .3); x = np.random.default_rng(1).standard_normal(n).astype(np.float32)
+        x = np.convolve(x, np.ones(30) / 30, mode="same"); env = np.sin(np.linspace(0, np.pi, n)) ** 2; return (x * env * .12).astype(np.float32)
+    return np.zeros(1, np.float32)
+
+def build_audio(out):
+    import soundfile as sf
+    v, sr = sf.read(os.path.join(BASE, CFG.get("voice", "voz.wav")), dtype="float32")
+    if v.ndim > 1: v = v.mean(axis=1)
+    total = np.zeros(int(DUR * sr) + sr, np.float32); total[:len(v)] += v
+    events = list(CFG.get("sfx", []))
+    for k in range(1, len(SC)): events.append({"t": B[k], "type": "whoosh"})
+    for e in events:
+        w = sfx_wave(e["type"], sr); s = int(e["t"] * sr); total[s:s + len(w)] += w[:max(0, len(total) - s)]
+    total = total[:int(DUR * sr)]; total /= max(1.0, np.abs(total).max() / 0.95)
+    sf.write(out, total, sr)
+
+if __name__ == "__main__":
+    mode = sys.argv[2]
+    if mode == "stills":
+        for ts in sys.argv[3:]:
+            frame(int(float(ts) * FPS)).save(os.path.join(BASE, f"still_{ts}.png")); print("ok", ts)
+    else:
+        out = sys.argv[3]; tmp = out + ".silent.mp4"; aud = out + ".wav"; N = int(DUR * FPS)
+        p = subprocess.Popen(["ffmpeg", "-y", "-loglevel", "error", "-f", "rawvideo", "-pix_fmt", "rgb24", "-s", f"{W}x{H}", "-r", str(FPS),
+                              "-i", "-", "-c:v", "libx264", "-preset", "veryfast", "-crf", "20", "-pix_fmt", "yuv420p", tmp], stdin=subprocess.PIPE)
+        with Pool(os.cpu_count()) as pool:
+            for k, b in enumerate(pool.imap(raw, range(N), chunksize=4)):
+                p.stdin.write(b)
+                if k % 150 == 0: print(f"{k}/{N}", flush=True)
+        p.stdin.close(); p.wait()
+        build_audio(aud)
+        subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", tmp, "-i", aud, "-c:v", "copy", "-c:a", "aac", "-b:a", "128k",
+                        "-shortest", "-movflags", "+faststart", out], check=True)
+        os.remove(tmp); os.remove(aud); print("listo", out, f"{DUR:.1f}s")

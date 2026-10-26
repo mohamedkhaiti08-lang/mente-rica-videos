@@ -1,0 +1,12 @@
+{"label": "ESTO HA CAMBIADO", "times": "tiempos.json", "voice": "voz.wav", "tail": 1.3,
+ "sfx": [{"t": 0.75, "type": "ding"}, {"t": 19.3, "type": "buzz"}],
+ "scenes": [
+  {"cap": "Desde el 1 de octubre, en los atascos hay una maniobra obligatoria.", "hi": ["atascos", "obligatoria"], "vis": {"type": "hook", "lines": ["NUEVA NORMA", "EN ATASCOS"], "cols": [[255,255,255],[255,196,0]], "badge": "DESDE EL 1 OCT 2026"}},
+  {"cap": "Si llega una ambulancia, tienes que abrirle un pasillo.", "hi": ["ambulancia", "pasillo"], "vis": {"type": "topdown", "phase": 0, "tag": "ATASCO + AMBULANCIA"}},
+  {"cap": "Los del carril izquierdo, a la izquierda.", "hi": ["izquierda"], "vis": {"type": "topdown", "phase": 1, "tag": "CARRIL IZQUIERDO", "no_flash": true}},
+  {"cap": "Los del carril derecho, a la derecha.", "hi": ["derecha"], "vis": {"type": "topdown", "phase": 2, "tag": "CARRIL DERECHO", "no_flash": true}},
+  {"cap": "Y el hueco del centro, libre para emergencias.", "hi": ["centro", "libre"], "vis": {"type": "topdown", "phase": 3, "tag": "PASILLO DE EMERGENCIA", "no_flash": true, "speed": 0.9}},
+  {"cap": "Lo dice el nuevo Reglamento General de Circulación.", "hi": ["Reglamento"], "vis": {"type": "law", "stamp": "R.D. 518/2026", "badge": "EN VIGOR: 1 OCT 2026"}},
+  {"cap": "Y ojo: nunca te cruces por delante de otro coche.", "hi": ["nunca"], "vis": {"type": "nocross"}},
+  {"cap": "¿Lo sabías? Guárdalo para tu examen.", "hi": ["Guárdalo"], "vis": {"type": "save"}}
+ ]}

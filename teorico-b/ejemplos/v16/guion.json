@@ -1,0 +1,17 @@
+{
+ "speed": 1.05,
+ "pause": 0.28,
+ "lines": [
+  "Si fallas esta, hoy no apruebas.",
+  "Tu coche se avería en plena autovía.",
+  "¿Qué tienes que usar para señalizarlo?",
+  "¿Triángulos? ¿La baliza uve dieciséis conectada? ¿O nada?",
+  "Tienes tres segundos.",
+  "¡Es la B! Desde enero de dos mil veintiséis, la baliza uve dieciséis conectada sustituye a los triángulos.",
+  "Se pone en el techo, sin bajar a la carretera.",
+  "¿La has acertado? Dímelo en comentarios."
+ ],
+ "gaps": {
+  "4": 2.6
+ }
+}

@@ -1,0 +1,12 @@
+{"label": "¿APROBARÍAS?", "times": "tiempos.json", "voice": "voz.wav", "tail": 1.3,
+ "sfx": [{"t": 1.0, "type": "buzz"}, {"t": 11.87, "type": "beep"}, {"t": 12.77, "type": "beep"}, {"t": 13.67, "type": "beep"}, {"t": 14.5, "type": "ding"}],
+ "scenes": [
+  {"cap": "Si fallas esta, hoy no apruebas.", "hi": ["fallas", "apruebas"], "vis": {"type": "hook", "lines": ["SI FALLAS ESTA", "HOY NO APRUEBAS"], "cols": [[255,255,255],[255,196,0]], "stamp": "SUSPENSO", "stamp_at": 0.95}},
+  {"cap": "Tu coche se avería en plena autovía.", "hi": ["avería", "autovía"], "vis": {"type": "road", "label": "AUTOVÍA", "hazard": true, "smoke": true}},
+  {"cap": "¿Qué tienes que usar para señalizarlo?", "hi": ["señalizarlo"], "vis": {"type": "quiz", "hide_opts": true, "q": "Tu coche se avería en autovía. ¿Qué usas para señalizarlo?", "opts": ["Triángulos de emergencia", "Baliza V-16 conectada", "Solo las luces de emergencia"], "correct": 1}},
+  {"cap": "¿Triángulos? ¿Baliza V-16 conectada? ¿O nada?", "hi": ["V-16"], "vis": {"type": "quiz", "opt_at": [0.0, 0.3, 0.8], "q": "Tu coche se avería en autovía. ¿Qué usas para señalizarlo?", "opts": ["Triángulos de emergencia", "Baliza V-16 conectada", "Solo las luces de emergencia"], "correct": 1}},
+  {"cap": "Tienes 3 segundos.", "hi": ["3"], "vis": {"type": "countdown", "quiz_scene": 3, "at": [1.45, 2.35, 3.25]}},
+  {"cap": "¡Es la B! Desde enero de 2026, la baliza V-16 conectada sustituye a los triángulos.", "hi": ["B", "2026", "V-16"], "vis": {"type": "reveal", "quiz_scene": 3, "then_at": 1.9, "compare": {"antes": {"tag": "ANTES", "img": "triangle", "txt": ["Triángulos", "en la calzada"]}, "ahora": {"tag": "DESDE 2026", "img": "beacon", "txt": ["Baliza V-16", "conectada"]}}}},
+  {"cap": "Se pone en el techo, sin bajar a la carretera.", "hi": ["techo"], "vis": {"type": "roof"}},
+  {"cap": "¿La has acertado? Dímelo en comentarios.", "hi": ["comentarios"], "vis": {"type": "cta", "big": "¿La acertaste?", "small": "Comenta: A, B o C"}}
+ ]}
