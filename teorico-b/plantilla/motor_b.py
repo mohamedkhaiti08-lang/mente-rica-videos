@@ -8,7 +8,8 @@
 #    "scenes": [ {"cap": "texto en pantalla de la frase", "hi": ["palabras", "en amarillo"], "vis": {"type": ...}} ]}
 # Una escena por frase de la voz: cada escena empieza justo cuando empieza su frase (tiempos.json de voz.py).
 # Tipos de "vis" (ver funciones vis_*): hook, road, quiz, countdown, reveal, compare, roof, cta, topdown, law,
-#   nocross, save, sign, mito, stat.
+#   nocross, save, sign, mito, stat (admite "dec": 1 para decimales), cruce (cruce sin señales con coches numerados),
+#   tyre (neumático: tread | gauge | wet | compare).
 import math, json, sys, os, subprocess
 from functools import lru_cache
 from multiprocessing import Pool
@@ -599,8 +600,9 @@ def stamp_col(txt, col):
 
 def vis_stat(dst, t, v, i):
     # número grande que cuenta hacia arriba (p. ej. "90 km/h")
-    p = eout(prog(t, 0, 1.0)); val = v["value"]; num = int(round(val * p)); unit = v.get("unit", "")
-    paste(dst, text(f"{num}", 300, YEL, BLACK), W / 2, CY - 60, scale=.8 + .2 * eback(prog(t, 0, .4)))
+    p = eout(prog(t, 0, 1.0)); val = v["value"]; dec = v.get("dec", 0); unit = v.get("unit", "")
+    num = f"{val * p:.{dec}f}".replace(".", ",") if dec else f"{int(round(val * p))}"
+    paste(dst, text(num, 300, YEL, BLACK), W / 2, CY - 60, scale=.8 + .2 * eback(prog(t, 0, .4)))
     paste(dst, text(unit, 80, WHITE, BLACK), W / 2, CY + 140, alpha=ease(prog(t, .3, .3)))
     if v.get("sub"): paste(dst, pill(v["sub"], 40, WHITE, BLUE), W / 2, CY + 270, alpha=ease(prog(t, .6, .3)))
 
@@ -622,6 +624,185 @@ def sign_generic(kind, n, s):
     else:
         return sign_b(s)
     return glow(down(im), 30, .5)
+
+# --- cruce sin señalizar visto desde arriba con coches numerados (formato ¿QUIÉN PASA PRIMERO?) ---
+# coche 1: sube (viene del sur); coche 2: viene por el este hacia el oeste; coche 3: viene del oeste hacia el este.
+# vis: {"type": "cruce", "nosigns": bool, "countdown": [t1,t2,t3], "done": [2], "move": [[2, 0.3, 1.2]],
+#       "focus": 1, "tag": "...", "rank": ["2", "1", "3"], "rank_at": [..]}
+RW = 150  # ancho de carril
+CRUCE_COLS = {1: (226, 69, 60), 2: (60, 140, 255), 3: (255, 196, 0)}
+def cruce_pos(n, k):
+    """posición (x, y, rot) del coche n con avance k (0 parado en la línea, 1 fuera de la zona)."""
+    cx, cy = W / 2, CY
+    if n == 1: return cx + RW / 2, lerp(cy + RW + 140, VZ[0] - 220, k), 0
+    if n == 2: return lerp(cx + RW + 150, -220, k), cy - RW / 2, 90
+    return lerp(cx - RW - 150, W + 220, k), cy + RW / 2, -90
+
+@lru_cache(maxsize=16)
+def num_badge(n, s=86, col=WHITE, fg=NAVY):
+    im = ss(s, s); d = ImageDraw.Draw(im); S = s * 2
+    d.ellipse((0, 0, S - 1, S - 1), fill=fg); d.ellipse((S * .08, S * .08, S * .92, S * .92), fill=col)
+    f = F(BLACK, int(S * .58)); txt = str(n); bb = f.getbbox(txt)
+    d.text((S / 2 - (bb[0] + bb[2]) / 2, S / 2 - (bb[1] + bb[3]) / 2), txt, font=f, fill=fg)
+    return down(im)
+
+@lru_cache(maxsize=4)
+def sign_ceda(s=170):
+    im = ss(s, s); d = ImageDraw.Draw(im); S = s * 2
+    d.polygon([(S * .04, S * .1), (S * .96, S * .1), (S / 2, S * .92)], fill=(220, 30, 40))
+    d.polygon([(S * .22, S * .21), (S * .78, S * .21), (S / 2, S * .7)], fill=WHITE)
+    return down(im)
+
+def vis_cruce(dst, t, v, i):
+    lay = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(lay, "RGBA")
+    top, bot = VZ[0] + 10, VZ[1] + 20; cx, cy = W / 2, CY
+    d.rectangle((40, top, W - 40, bot), fill=(64, 92, 60, 255))
+    for k in range(40):  # textura de césped
+        gx, gy = 60 + (k * 263) % (W - 120), top + (k * 157) % (bot - top)
+        d.ellipse((gx - 30, gy - 18, gx + 30, gy + 18), fill=(74, 104, 68, 255))
+    d.rectangle((40, cy - RW, W - 40, cy + RW), fill=(36, 40, 50, 255))
+    d.rectangle((cx - RW, top, cx + RW, bot), fill=(36, 40, 50, 255))
+    for x0, x1 in ((40, cx - RW), (cx + RW, W - 40)):  # bordes y eje en brazos horizontales
+        d.line([(x0, cy - RW + 8), (x1, cy - RW + 8)], fill=(255, 255, 255, 220), width=6)
+        d.line([(x0, cy + RW - 8), (x1, cy + RW - 8)], fill=(255, 255, 255, 220), width=6)
+        x = x0 + 10
+        while x < x1 - 40: d.line([(x, cy), (x + 50, cy)], fill=(255, 255, 255, 200), width=7); x += 95
+    for y0, y1 in ((top, cy - RW), (cy + RW, bot)):
+        d.line([(cx - RW + 8, y0), (cx - RW + 8, y1)], fill=(255, 255, 255, 220), width=6)
+        d.line([(cx + RW - 8, y0), (cx + RW - 8, y1)], fill=(255, 255, 255, 220), width=6)
+        y = y0 + 10
+        while y < y1 - 40: d.line([(cx, y), (cx, y + 50)], fill=(255, 255, 255, 200), width=7); y += 95
+    fc = v.get("focus")
+    if fc:  # zona "su derecha" resaltada para el coche fc (1 = brazo este)
+        pa = ease(prog(t, .3, .5)); a = int(120 * pa * (.75 + .25 * math.sin(t * 6)))
+        d.rectangle((cx + RW, cy - RW, W - 40, cy + RW), fill=(34, 197, 94, a))
+    done = set(v.get("done", [])); moves = {m[0]: (m[1], m[2]) for m in v.get("move", [])}
+    for n in (1, 2, 3):
+        if n in done: continue
+        k = 0.0
+        if n in moves: s, du = moves[n]; k = ease(prog(t, s, du)) ** 1.4
+        x, y, rot = cruce_pos(n, k)
+        x0, y0, _ = cruce_pos(n, 0.0)
+        if k == 0 and t < .5 and not v.get("still"):  # entrada al cruce
+            e = eout(prog(t, 0, .5)); dx, dy = {1: (0, 160), 2: (160, 0), 3: (-160, 0)}[n]; x += dx * (1 - e); y += dy * (1 - e)
+        car = car_top(CRUCE_COLS[n], 120); paste(lay, car, x, y, rot=rot)
+        if k < .02:  # flecha de dirección
+            al = int(230 * (.6 + .4 * math.sin(t * 5)))
+            if n == 1: arrow_v(d, x, y - 175, -1, al)
+            else: arrow(d, x + (-150 if n == 2 else 150), y, -1 if n == 2 else 1, al)
+        bx, by = {1: (x + 125, y + 30), 2: (x + 20, y - 125), 3: (x - 20, y + 125)}[n]
+        paste(lay, num_badge(n), bx, by, scale=eback(prog(t, .15 + n * .12, .35)) if not v.get("still") else 1)
+    m = Image.new("L", (W, H), 0); ImageDraw.Draw(m).rounded_rectangle((40, top, W - 40, bot), radius=36, fill=255)
+    lay.putalpha(Image.fromarray(np.minimum(np.array(lay.split()[3]), np.array(m)))); dst.alpha_composite(lay)
+    if v.get("nosigns"):  # sin señales: ceda y semáforo tachados en las esquinas
+        for k, (ix, iy) in enumerate(((cx - RW - 200, top + 150), (W - 150, bot - 150))):
+            p = prog(t, .2 + k * .35, .35); im = sign_ceda(170) if k == 0 else semaphore(0).resize((92, 240), Image.LANCZOS)
+            paste(dst, im, ix, iy, scale=.6 + .4 * eback(p), alpha=ease(p * 2))
+            if t > .55 + k * .35: paste(dst, icon_x(110), ix + 60, iy + 70, scale=eback(prog(t, .55 + k * .35, .3)))
+    cd = v.get("countdown")
+    if cd:
+        n = sum(1 for s in cd if t >= s); ix, iy = cx - RW - 270, top + 160
+        paste(dst, semaphore(n).resize((115, 300), Image.LANCZOS), ix, iy, scale=eback(prog(t, 0, .4)))
+        if n:
+            pk = prog(t, cd[n - 1], .25)
+            paste(dst, text(str(4 - n), 200, [RED, (255, 176, 0), GREEN][n - 1], BLACK), cx - RW - 105, iy, scale=lerp(1.6, 1, eout(pk)), alpha=ease(pk * 2))
+    rk = v.get("rank")
+    if rk:  # clasificación en la esquina superior izquierda (césped libre)
+        ra = v.get("rank_at", [0] * len(rk))
+        for j, (lab, at) in enumerate(zip(rk, ra)):
+            p = prog(t, at, .35)
+            if p > 0: paste(dst, rank_chip(j + 1, int(lab)), cx - RW - 205, top + 62 + j * 90, scale=eback(p), alpha=ease(p * 2))
+    if v.get("tag"):
+        paste(dst, pill(v["tag"], 40, YEL, NAVY), W / 2, top + 60, scale=eback(prog(t, .4, .4)), alpha=ease(prog(t, .4, .3)))
+
+@lru_cache(maxsize=16)
+def rank_chip(pos, car):
+    p = pill(f"{pos}º", 44, NAVY if pos > 1 else YEL, WHITE if pos > 1 else NAVY, padx=26); b = num_badge(car, 74, mix(CRUCE_COLS[car], WHITE, .15), NAVY)
+    im = Image.new("RGBA", (p.width + b.width + 12, max(p.height, b.height)), (0, 0, 0, 0))
+    im.alpha_composite(p, (0, (im.height - p.height) // 2)); im.alpha_composite(b, (p.width + 12, (im.height - b.height) // 2)); return im
+
+def arrow_v(d, x, y, dirn, a):
+    d.polygon([(x, y + dirn * 60), (x - 40, y), (x + 40, y)], fill=YEL + (a,))
+    d.rectangle((x - 15, min(y, y - dirn * 50), x + 15, max(y, y - dirn * 50)), fill=YEL + (a,))
+
+# --- neumático: dibujo y profundidad (formato CIFRA CLAVE, bloque vehículo y seguridad) ---
+# vis: {"type": "tyre", "mode": "tread" | "gauge" | "wet" | "compare", "mm": 1.6, "from_mm": 8, "tag": "..."}
+@lru_cache(maxsize=None)
+def tyre_front(w=470, h=820, off=0):
+    im = ss(w, h); d = ImageDraw.Draw(im); X, Y = w * 2, h * 2
+    d.rounded_rectangle((0, 0, X - 1, Y - 1), radius=int(X * .22), fill=(34, 34, 40))
+    gx = [X * .3, X * .5, X * .7]
+    for k in range(-1, 14):  # laminillas diagonales (se desplazan con off para que parezca que rueda)
+        y = k * Y / 12 + off * 2
+        for a, b in ((X * .08, X * .26), (X * .34, X * .46), (X * .54, X * .66), (X * .74, X * .92)):
+            d.line([(a, y), (b, y + Y * .045)], fill=(18, 18, 22), width=int(X * .025))
+    for x in gx: d.rectangle((x - X * .03, 0, x + X * .03, Y), fill=(14, 14, 18))
+    d.rounded_rectangle((0, 0, X - 1, Y - 1), radius=int(X * .22), outline=(70, 72, 82), width=int(X * .02))
+    m = Image.new("L", (X, Y), 0); ImageDraw.Draw(m).rounded_rectangle((0, 0, X - 1, Y - 1), radius=int(X * .22), fill=255)
+    im.putalpha(Image.fromarray(np.minimum(np.array(im.split()[3]), np.array(m))))
+    return down(im)
+
+PXMM = 34  # píxeles por milímetro en el corte del neumático
+def tread_section(dst, cx, base, depth, w=760, col=(40, 40, 46), warn=False):
+    d = ImageDraw.Draw(dst, "RGBA"); hgt = depth * PXMM
+    d.rounded_rectangle((cx - w / 2, base, cx + w / 2, base + 120), radius=20, fill=(28, 28, 34, 255))  # carcasa
+    nb = 4; gw = 56; bw = (w - gw * (nb - 1)) / nb
+    for k in range(nb):
+        x0 = cx - w / 2 + k * (bw + gw)
+        d.rounded_rectangle((x0, base - hgt, x0 + bw, base + 10), radius=10, fill=col + (255,))
+    d.rectangle((cx - w / 2, base - 4, cx + w / 2, base + 6), fill=(255, 80, 80, 200) if warn else (28, 28, 34, 255))
+    return [cx - w / 2 + k * (bw + gw) + bw + gw / 2 for k in range(nb - 1)]
+
+def depth_label(dst, x, base, depth, col, t, a=1.0):
+    d = ImageDraw.Draw(dst, "RGBA"); top = base - depth * PXMM; al = int(255 * a)
+    d.line([(x, top), (x, base)], fill=col + (al,), width=8)
+    for yy in (top, base): d.line([(x - 22, yy), (x + 22, yy)], fill=col + (al,), width=8)
+    s = f"{depth:.1f}".replace(".", ",") + " mm"; paste(dst, pill(s, 46, col, WHITE), x, top - 70, alpha=a)
+
+def vis_tyre(dst, t, v, i):
+    mode = v.get("mode", "tread")
+    if mode in ("tread", "wet"):
+        p = eback(prog(t, 0, .5)); off = int(t * 260) % int(820 * 2 / 12 / 2)
+        tx = W / 2 if mode == "tread" else W / 2 - 150
+        paste(dst, tyre_front(470, 820, off), tx, CY + 10, scale=.6 + .4 * p, alpha=ease(prog(t, 0, .25)))
+        if mode == "tread":
+            for k, gx in enumerate((.3, .5, .7)):  # ranuras principales señaladas
+                pa = prog(t, .6 + k * .15, .3)
+                if pa > 0:
+                    x = tx - 235 + 470 * gx; dd = ImageDraw.Draw(dst, "RGBA")
+                    dd.rounded_rectangle((x - 16, CY - 400, x + 16, CY + 420), radius=14, outline=YEL + (int(255 * ease(pa * 2)),), width=6)
+        else:
+            dd = ImageDraw.Draw(dst, "RGBA")
+            for k in range(36):  # lluvia
+                z = (t * 1.3 + k * .137) % 1; x = 120 + (k * 97) % (W - 240); y = VZ[0] + z * (VZ[1] - VZ[0])
+                dd.line([(x, y), (x - 14, y + 46)], fill=(150, 200, 255, 170), width=5)
+            dd.rounded_rectangle((tx - 330, CY + 395, tx + 330, CY + 445), radius=20, fill=(70, 140, 255, 150))  # lámina de agua
+            for k in range(20):  # salpicadura a los lados del agua que no se evacúa
+                z = (t * 1.6 + k / 20) % 1; sd = -1 if k % 2 else 1; ang = -1.1 - (k // 2) * .06
+                x = tx + sd * (240 + (260 + (k // 2) * 14) * z); y = CY + 405 - (300 + (k // 2) * 10) * z + 360 * z * z
+                r = 14 + 10 * (1 - z); dd.ellipse((x - r, y - r, x + r, y + r), fill=(110, 175, 255, int(230 * (1 - z))))
+            pa = prog(t, .7, .3)
+            paste(dst, icon_x(150), W / 2 + 270, CY - 200, scale=eback(pa), alpha=ease(pa * 2))
+            paste(dst, pill(v.get("tag", "MENOS AGARRE"), 40, RED, WHITE), W / 2 + 270, CY - 50, scale=eback(prog(t, .9, .35)), alpha=ease(prog(t, .9, .3)))
+            return
+    elif mode == "gauge":
+        base = CY + 240; fm, mm = v.get("from_mm", 8.0), v.get("mm", 1.6)
+        k = ease(prog(t, .5, 1.4)); dep = lerp(fm, mm, k); warn = k > .98
+        paste(dst, card(900, 760, fill=(236, 241, 250, 255), r=44), W / 2, CY + 20, alpha=ease(prog(t, 0, .25)))
+        paste(dst, pill("CORTE DEL NEUMÁTICO", 34, BLUE, WHITE), W / 2, VZ[0] + 110, alpha=ease(prog(t, 0, .3)))
+        gx = tread_section(dst, W / 2, base, dep, warn=warn)
+        depth_label(dst, gx[1], base, dep, RED if warn else YEL, t)
+        if warn: paste(dst, pill(v.get("tag", "MÍNIMO LEGAL"), 42, RED, WHITE), W / 2, base + 210, scale=eback(prog(t, 2.0, .35)))
+    elif mode == "compare":
+        for k, (mm, ok) in enumerate(((3.0, True), (1.6, False))):
+            px = W / 2 + (-240 if k == 0 else 240); a = ease(prog(t, k * .45, .3)); y = CY + 30 + (1 - eback(prog(t, k * .45, .45))) * 150
+            c = card(440, 640, fill=(255, 255, 255, 250), r=40, border=GREEN if ok else RED, bw=6); paste(dst, c, px, y, alpha=a)
+            sub = Image.new("RGBA", (W, H), (0, 0, 0, 0)); gx = tread_section(sub, W / 2, 1100, mm, w=640, warn=not ok)
+            depth_label(sub, gx[1], 1100, mm, GREEN if ok else RED, t)
+            sub = sub.crop((W / 2 - 200, 1100 - 190, W / 2 + 200, 1100 + 130))
+            paste(dst, sub, px, y + 20, alpha=a)
+            paste(dst, pill("CAMBIAR AQUÍ" if ok else "LÍMITE LEGAL", 32, GREEN if ok else RED, WHITE), px, y - 230, alpha=a)
+            paste(dst, (icon_check if ok else icon_x)(96), px, y + 220, scale=eback(prog(t, .9 + k * .3, .3)))
 
 VIS = {k[4:]: v for k, v in globals().items() if k.startswith("vis_")}
 

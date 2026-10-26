@@ -1,0 +1,15 @@
+{
+ "speed": 1.08,
+ "pause": 0.3,
+ "lines": [
+  "¿Quién pasa primero en este cruce?",
+  "No hay señales, ni semáforos.",
+  "El uno sube, el dos le viene por la derecha, y el tres, por la izquierda.",
+  "Tienes tres segundos.",
+  "¡Primero el dos! Nadie le viene por su derecha.",
+  "Después pasa el uno, y el último, el tres.",
+  "Sin señales, cede siempre al que viene por tu derecha.",
+  "¿Quieres la parte dos, con rotonda? Pídemela en comentarios."
+ ],
+ "gaps": {"3": 2.6}
+}

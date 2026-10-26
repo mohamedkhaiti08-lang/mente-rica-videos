@@ -1,0 +1,12 @@
+{"label": "¿QUIÉN PASA PRIMERO?", "times": "tiempos.json", "voice": "voz.wav", "tail": 1.3,
+ "sfx": [{"t": 9.59, "type": "beep"}, {"t": 10.49, "type": "beep"}, {"t": 11.39, "type": "beep"}, {"t": 12.4, "type": "ding"}],
+ "scenes": [
+  {"cap": "¿Quién pasa primero en este cruce?", "hi": ["primero"], "vis": {"type": "cruce", "tag": "¿1, 2 o 3?"}},
+  {"cap": "No hay señales ni semáforos.", "hi": ["señales", "semáforos"], "vis": {"type": "cruce", "nosigns": true, "still": true}},
+  {"cap": "El 1 sube, el 2 le viene por la derecha y el 3 por la izquierda.", "hi": ["derecha", "izquierda"], "vis": {"type": "cruce", "still": true, "tag": "SIN SEÑALES"}},
+  {"cap": "Tienes 3 segundos.", "hi": ["3"], "vis": {"type": "cruce", "still": true, "countdown": [1.45, 2.35, 3.25]}},
+  {"cap": "¡Primero el 2! Nadie le viene por su derecha.", "hi": ["2", "derecha"], "vis": {"type": "cruce", "still": true, "move": [[2, 0.5, 1.5]], "rank": ["2"], "rank_at": [0.2]}},
+  {"cap": "Después pasa el 1, y el último, el 3.", "hi": ["1", "3"], "vis": {"type": "cruce", "still": true, "done": [2], "move": [[1, 0.2, 1.1], [3, 1.2, 1.0]], "rank": ["2", "1", "3"], "rank_at": [0, 0.3, 1.3]}},
+  {"cap": "Sin señales, cede siempre al que viene por tu derecha.", "hi": ["derecha"], "vis": {"type": "cruce", "still": true, "done": [3], "focus": 1, "tag": "CEDE A LA DERECHA"}},
+  {"cap": "¿Quieres la parte 2, con rotonda? Pídemela en comentarios.", "hi": ["parte", "rotonda"], "vis": {"type": "cta", "big": "¿Parte 2?", "small": "Rotondas · Pídela en comentarios"}}
+ ]}
