@@ -1,0 +1,278 @@
+{
+ "label": "TE PASA A TI",
+ "times": "2026-11-01-1800-stories-sadaqa.tiempos.json",
+ "tail": 1.6,
+ "scenes": [
+  {
+   "title": [
+    "Das en la mezquita…",
+    "¿y lo subes?"
+   ],
+   "tint": "gold",
+   "hi": [
+    "mezquita…",
+    "stories."
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "📱",
+    "orbit": [
+     "🕌",
+     "💶",
+     "❤️"
+    ],
+    "y": 900
+   },
+   "cap": "Das dinero en la mezquita… y te entran ganas de subirlo a stories."
+  },
+  {
+   "title": [
+    "Foto",
+    "del billete"
+   ],
+   "tint": "night",
+   "hi": [
+    "móvil.",
+    "foto"
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "📸",
+    "orbit": [
+     "💶",
+     "📦"
+    ],
+    "y": 900
+   },
+   "cap": "Sacas el móvil. Haces la foto del billete en la caja."
+  },
+  {
+   "title": [
+    "«Que vean",
+    "lo generoso que soy»"
+   ],
+   "tint": "blue",
+   "hi": [
+    "generoso."
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "😎",
+    "orbit": [
+     "👀",
+     "👀",
+     "✨"
+    ],
+    "y": 900
+   },
+   "cap": "Y piensas: Así la gente ve que soy generoso."
+  },
+  {
+   "title": [
+    "Llegan",
+    "los likes"
+   ],
+   "tint": "red",
+   "hi": [
+    "likes.",
+    "buena"
+   ],
+   "vis": {
+    "type": "counter",
+    "seq": [
+     "12",
+     "87",
+     "240",
+     "1.203"
+    ],
+    "sub": "«¡QUÉ BUENA PERSONA!»",
+    "e": "❤️",
+    "y": 880
+   },
+   "cap": "Empiezan a llegar los likes. ¡Qué buena persona!, te dicen."
+  },
+  {
+   "tint": "red",
+   "hi": [
+    "quién",
+    "likes?"
+   ],
+   "vis": {
+    "type": "choice",
+    "opts": [
+     [
+      "🤲",
+      "PARA ALLAH",
+      "gold"
+     ],
+     [
+      "❤️",
+      "PARA LOS LIKES",
+      "red"
+     ]
+    ],
+    "y": 900
+   },
+   "cap": "Pero espera. ¿Para quién lo has dado? ¿Para Allah, o para los likes?"
+  },
+  {
+   "title": [
+    "El Profeta",
+    "dijo:"
+   ],
+   "tint": "night",
+   "hi": [
+    "Profeta,",
+    "dijo:"
+   ],
+   "vis": {
+    "type": "book",
+    "src": "SAHIH AL-BUJARI 1",
+    "y": 900
+   },
+   "cap": "El Profeta, la paz sea con él, dijo:"
+  },
+  {
+   "tint": "gold",
+   "hi": [
+    "intenciones."
+   ],
+   "vis": {
+    "type": "quote",
+    "lines": [
+     "Las acciones valen",
+     "según las intenciones."
+    ],
+    "src": "SAHIH AL-BUJARI 1",
+    "size": 58,
+    "y": 860
+   },
+   "cap": "Las acciones valen según las intenciones."
+  },
+  {
+   "tint": "gold",
+   "hi": [
+    "intención"
+   ],
+   "vis": {
+    "type": "quote",
+    "lines": [
+     "Y cada persona tendrá",
+     "lo que tuvo intención",
+     "de conseguir."
+    ],
+    "src": "SAHIH AL-BUJARI 1",
+    "size": 56,
+    "y": 860
+   },
+   "cap": "Y cada persona tendrá lo que tuvo intención de conseguir."
+  },
+  {
+   "title": [
+    "El primer hadiz",
+    "del Bujari"
+   ],
+   "tint": "green",
+   "hi": [
+    "primer",
+    "Bujari."
+   ],
+   "vis": {
+    "type": "big",
+    "words": [
+     "HADIZ",
+     "Nº 1"
+    ],
+    "size": 190,
+    "y": 860,
+    "e": "📖"
+   },
+   "cap": "Es el primer hadiz del Sahih al-Bujari."
+  },
+  {
+   "title": [
+    "Por los likes…"
+   ],
+   "tint": "red",
+   "hi": [
+    "likes…",
+    "likes."
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "❤️",
+    "orbit": [
+     "📱",
+     "💨"
+    ],
+    "y": 900
+   },
+   "cap": "Si lo das por los likes… te quedas con los likes."
+  },
+  {
+   "title": [
+    "Por Allah…"
+   ],
+   "tint": "green",
+   "hi": [
+    "Allah…",
+    "recompensa"
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "🤲",
+    "orbit": [
+     "✨",
+     "🌟",
+     "✨"
+    ],
+    "y": 900
+   },
+   "cap": "Si lo das por Allah… tu recompensa la tiene Allah."
+  },
+  {
+   "title": [
+    "Da",
+    "en secreto"
+   ],
+   "tint": "night",
+   "hi": [
+    "secreto.",
+    "Él."
+   ],
+   "vis": {
+    "type": "steps",
+    "items": [
+     [
+      "💶",
+      "DAR"
+     ],
+     [
+      "🤫",
+      "CALLAR"
+     ],
+     [
+      "🤲",
+      "SOLO ÉL"
+     ]
+    ],
+    "y": 920
+   },
+   "cap": "Así que la próxima vez, da en secreto. Que solo lo sepa Él."
+  },
+  {
+   "tint": "green",
+   "hi": [
+    "stories?",
+    "sincero,"
+   ],
+   "vis": {
+    "type": "cta",
+    "word": "¿Y TÚ?",
+    "e": "📱",
+    "y": 860
+   },
+   "cap": "¿Tú subirías tu sadaqa a stories? Sé sincero, te leo abajo."
+  }
+ ]
+}

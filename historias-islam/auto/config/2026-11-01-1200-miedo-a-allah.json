@@ -1,0 +1,281 @@
+{
+ "label": "HISTORIA REAL",
+ "times": "2026-11-01-1200-miedo-a-allah.tiempos.json",
+ "tail": 1.6,
+ "scenes": [
+  {
+   "title": [
+    "«Quemad",
+    "mi cuerpo»"
+   ],
+   "tint": "red",
+   "hi": [
+    "quemaran",
+    "miedo"
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "🔥",
+    "orbit": [
+     "😳",
+     "⚰️",
+     "💨"
+    ],
+    "y": 900
+   },
+   "cap": "Pidió a sus hijos que quemaran su cuerpo… por miedo a Allah."
+  },
+  {
+   "title": [
+    "Un hombre",
+    "de antes"
+   ],
+   "tint": "night",
+   "hi": [
+    "historia",
+    "hombre"
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "📜",
+    "orbit": [
+     "🌙",
+     "⏳"
+    ],
+    "y": 900
+   },
+   "cap": "El Profeta, la paz sea con él, contó la historia de un hombre de antes."
+  },
+  {
+   "title": [
+    "Toda una vida",
+    "haciendo el mal"
+   ],
+   "tint": "red",
+   "hi": [
+    "mal."
+   ],
+   "vis": {
+    "type": "big",
+    "words": [
+     "TODA",
+     "UNA VIDA"
+    ],
+    "size": 150,
+    "y": 860,
+    "e": "⏳"
+   },
+   "cap": "Había pasado la vida haciendo el mal."
+  },
+  {
+   "title": [
+    "Llamó a",
+    "sus hijos"
+   ],
+   "tint": "night",
+   "hi": [
+    "moría,",
+    "hijos."
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "🛏️",
+    "orbit": [
+     "👦",
+     "👦",
+     "🕯️"
+    ],
+    "y": 900
+   },
+   "cap": "Y cuando sintió que se moría, llamó a sus hijos."
+  },
+  {
+   "tint": "red",
+   "hi": [
+    "quemad",
+    "cuerpo."
+   ],
+   "vis": {
+    "type": "big",
+    "words": [
+     "«QUEMAD",
+     "MI CUERPO»"
+    ],
+    "size": 150,
+    "y": 860,
+    "e": "🔥"
+   },
+   "cap": "Les dijo: Cuando muera, quemad mi cuerpo."
+  },
+  {
+   "title": [
+    "Cenizas",
+    "al viento"
+   ],
+   "tint": "night",
+   "hi": [
+    "cenizas",
+    "viento."
+   ],
+   "vis": {
+    "type": "steps",
+    "items": [
+     [
+      "🔥",
+      "QUEMAR"
+     ],
+     [
+      "🪨",
+      "MOLER"
+     ],
+     [
+      "💨",
+      "AL VIENTO"
+     ]
+    ],
+    "y": 920
+   },
+   "cap": "Moled lo que quede, y echad las cenizas al viento."
+  },
+  {
+   "title": [
+    "Tenía",
+    "miedo"
+   ],
+   "tint": "blue",
+   "hi": [
+    "miedo",
+    "castigara."
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "😰",
+    "orbit": [
+     "⚖️",
+     "💭"
+    ],
+    "y": 900
+   },
+   "cap": "Tenía miedo de que Allah lo castigara."
+  },
+  {
+   "title": [
+    "«¡Reúne",
+    "lo que tienes!»"
+   ],
+   "tint": "gold",
+   "hi": [
+    "tierra:",
+    "Reúne"
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "🌍",
+    "orbit": [
+     "✨",
+     "💨",
+     "✨"
+    ],
+    "y": 900
+   },
+   "cap": "Sus hijos lo hicieron. Pero Allah ordenó a la tierra: ¡Reúne lo que tienes de él!"
+  },
+  {
+   "title": [
+    "Ante",
+    "su Señor"
+   ],
+   "tint": "gold",
+   "hi": [
+    "pie,",
+    "Señor."
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "🧍",
+    "orbit": [
+     "✨",
+     "🤍"
+    ],
+    "y": 900
+   },
+   "cap": "Y el hombre quedó de pie, ante su Señor."
+  },
+  {
+   "tint": "gold",
+   "hi": [
+    "¿Por",
+    "eso?"
+   ],
+   "vis": {
+    "type": "big",
+    "words": [
+     "¿POR QUÉ?"
+    ],
+    "size": 190,
+    "y": 880,
+    "e": "❓"
+   },
+   "cap": "¿Por qué hiciste eso? Le preguntó Allah."
+  },
+  {
+   "tint": "green",
+   "hi": [
+    "miedo",
+    "perdonó."
+   ],
+   "vis": {
+    "type": "choice",
+    "opts": [
+     [
+      "😨",
+      "POR MIEDO A TI",
+      "gold"
+     ],
+     [
+      "🤍",
+      "PERDONADO",
+      "gold"
+     ]
+    ],
+    "pick": 1,
+    "y": 900
+   },
+   "cap": "Por miedo a Ti, Señor. Y Allah lo perdonó."
+  },
+  {
+   "tint": "green",
+   "hi": [
+    "sincero",
+    "salvó."
+   ],
+   "vis": {
+    "type": "quote",
+    "lines": [
+     "Le preguntó: ¿Qué te",
+     "llevó a hacerlo? Dijo:",
+     "«Mi miedo a Ti, Señor».",
+     "Y Allah lo perdonó."
+    ],
+    "src": "SAHIH AL-BUJARI 3481",
+    "size": 52,
+    "y": 860
+   },
+   "cap": "Lo recoge el Sahih al-Bujari. Su miedo sincero a Allah fue lo que le salvó."
+  },
+  {
+   "tint": "green",
+   "hi": [
+    "tarde",
+    "volver"
+   ],
+   "vis": {
+    "type": "cta",
+    "word": "¿Y TÚ?",
+    "e": "🤲",
+    "y": 860
+   },
+   "cap": "¿Y tú? ¿Crees que ya es tarde para volver a Allah? Te leo abajo."
+  }
+ ]
+}
