@@ -1,0 +1,12 @@
+{"label": "ERROR DE NOVATO", "times": "tiempos.json", "voice": "voz.wav", "tail": 1.4,
+ "sfx": [{"t": 1.75, "type": "buzz"}, {"t": 3.9, "type": "ding"}, {"t": 16.2, "type": "ding"}],
+ "scenes": [
+  {"cap": "¿Recién aprobado y con 12 puntos? No.", "hi": ["12", "No."], "vis": {"type": "puntos", "mode": "card", "n": 12, "cross": true, "cross_at": 1.6, "tag": "ERROR", "tag_at": 1.7}},
+  {"cap": "Con el carnet nuevo, empiezas con 8.", "hi": ["8."], "vis": {"type": "puntos", "mode": "card", "from": 12, "n": 8, "count_at": 0.3, "tag": "NOVEL", "tag_at": 1.2}},
+  {"cap": "Y lo mismo si lo recuperas después de que te lo retiren.", "hi": ["recuperas"], "vis": {"type": "puntos", "mode": "card", "from": 0, "n": 8, "count_at": 0.4, "tag": "AL RECUPERARLO", "tag_at": 1.4}},
+  {"cap": "Si pasas 2 años sin perder puntos, subes a 12.", "hi": ["2", "12."], "vis": {"type": "puntos", "mode": "steps", "upto": 1}},
+  {"cap": "Con 3 años más sin infracciones, llegas a 14.", "hi": ["3", "14."], "vis": {"type": "puntos", "mode": "steps", "upto": 2}},
+  {"cap": "Y con otros 3, al máximo: 15.", "hi": ["máximo:", "15."], "vis": {"type": "puntos", "mode": "steps", "upto": 3}},
+  {"cap": "Así que el primer año, cada punto cuenta.", "hi": ["cada", "punto"], "vis": {"type": "puntos", "mode": "card", "n": 8, "tag": "CUIDA CADA PUNTO", "tag_at": 0.6}},
+  {"cap": "Guárdalo para el día que apruebes.", "hi": ["Guárdalo"], "vis": {"type": "save", "big": "GUÁRDALO", "small": "para cuando apruebes"}}
+ ]}

@@ -1,0 +1,12 @@
+{"label": "POV: ESTÁS CONDUCIENDO", "times": "tiempos.json", "voice": "voz.wav", "tail": 1.3,
+ "sfx": [{"t": 6.9, "type": "ding"}, {"t": 21.0, "type": "buzz"}],
+ "scenes": [
+  {"cap": "Vas por una carretera de 90 y tienes un ciclista delante.", "hi": ["90", "ciclista"], "vis": {"type": "bike", "mode": "approach", "limit": 90}},
+  {"cap": "¿Cómo lo adelantas?", "hi": ["adelantas?"], "vis": {"type": "bike", "mode": "approach", "limit": 90, "ask": true, "tag": "¿QUÉ HACES?", "tag_at": 0.1}},
+  {"cap": "Desde el 1 de octubre, bajas al menos 20 km/h respecto al límite.", "hi": ["20", "km/h"], "vis": {"type": "speedo", "from": 90, "to": 70, "at": 1.0, "tag": "−20 km/h"}},
+  {"cap": "O sea, aquí, a 70 como mucho.", "hi": ["70"], "vis": {"type": "speedo", "from": 70, "to": 70, "at": 0, "tag": "MÁX. 70"}},
+  {"cap": "Le dejas, como mínimo, 1,5 metros de separación.", "hi": ["1,5", "metros"], "vis": {"type": "bike", "mode": "pass"}},
+  {"cap": "Y si hay 2 carriles en tu sentido, te cambias de carril por completo.", "hi": ["carril", "completo."], "vis": {"type": "bike", "mode": "twolanes", "tag": "CARRIL COMPLETO", "tag_at": 1.4}},
+  {"cap": "Lo dice el Real Decreto 518/2026.", "hi": ["518/2026."], "vis": {"type": "law", "stamp": "R.D. 518/2026", "badge": "EN VIGOR DESDE 1/10/2026"}},
+  {"cap": "¿Lo sabías? Dime sí o no en comentarios.", "hi": ["sí", "no"], "vis": {"type": "cta", "big": "¿SÍ o NO?", "small": "¿Lo sabías? Comenta"}}
+ ]}
