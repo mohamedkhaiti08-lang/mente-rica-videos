@@ -1,0 +1,312 @@
+{
+ "label": "AHMED VS BILAL",
+ "times": "2026-11-02-1800-discusion-razon.tiempos.json",
+ "tail": 1.6,
+ "cx": 510,
+ "cap_maxw": 800,
+ "title_maxw": 820,
+ "scenes": [
+  {
+   "title": [
+    "Tienes razón…",
+    "¿lo humillas?"
+   ],
+   "tint": "red",
+   "hi": [
+    "razón",
+    "humillas"
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "😏",
+    "orbit": [
+     "🗣️",
+     "👀",
+     "🔥"
+    ],
+    "y": 900
+   },
+   "cap": "Tienes razón en una discusión… ¿lo humillas delante de todos?"
+  },
+  {
+   "title": [
+    "En clase…"
+   ],
+   "tint": "night",
+   "hi": [
+    "clase,",
+    "tontería."
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "🏫",
+    "orbit": [
+     "🤓",
+     "💬"
+    ],
+    "y": 900
+   },
+   "cap": "Estás en clase, y tu amigo suelta una tontería."
+  },
+  {
+   "title": [
+    "Todos",
+    "están mirando"
+   ],
+   "tint": "blue",
+   "hi": [
+    "equivoca.",
+    "mirando."
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "👀",
+    "orbit": [
+     "👀",
+     "👀",
+     "👀"
+    ],
+    "y": 900
+   },
+   "cap": "Tú sabes que se equivoca. Y todos están mirando."
+  },
+  {
+   "tint": "red",
+   "hi": [
+    "idea!"
+   ],
+   "vis": {
+    "type": "duo",
+    "focus": "ahmed",
+    "ahmed": "point",
+    "bilal": "down",
+    "ab": [
+     "¡No tienes",
+     "ni idea!"
+    ],
+    "bat": 0.4,
+    "y": 920
+   },
+   "title": [
+    "Ahmed",
+    "no se corta"
+   ],
+   "cap": "Ahmed no se corta: ¡Pero qué dices, si no tienes ni idea!"
+  },
+  {
+   "title": [
+    "Ahmed gana",
+    "la discusión…"
+   ],
+   "tint": "red",
+   "hi": [
+    "ríen.",
+    "gana"
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "😂",
+    "orbit": [
+     "😂",
+     "🤣",
+     "😂",
+     "🏆"
+    ],
+    "y": 900
+   },
+   "cap": "Todos se ríen. Ahmed gana la discusión…"
+  },
+  {
+   "title": [
+    "…y su amigo",
+    "se hunde"
+   ],
+   "tint": "red",
+   "hi": [
+    "vergüenza."
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "😳",
+    "orbit": [
+     "💔",
+     "😞"
+    ],
+    "y": 900
+   },
+   "cap": "pero su amigo se queda rojo de vergüenza."
+  },
+  {
+   "tint": "green",
+   "hi": [
+    "respira…",
+    "estar."
+   ],
+   "title": [
+    "Bilal",
+    "lo deja estar"
+   ],
+   "vis": {
+    "type": "duo",
+    "focus": "bilal",
+    "ahmed": "point",
+    "bilal": "calm",
+    "bb": [
+     "Vale,",
+     "lo que tú digas"
+    ],
+    "bat": 0.9,
+    "y": 920
+   },
+   "cap": "Bilal también tiene razón. Pero respira… y lo deja estar."
+  },
+  {
+   "tint": "gold",
+   "hi": [
+    "mejor."
+   ],
+   "title": [
+    "Bilal ganó",
+    "algo mejor"
+   ],
+   "vis": {
+    "type": "duo",
+    "focus": "both",
+    "ahmed": "angry",
+    "bilal": "calm",
+    "am": "🏆",
+    "bm": "🏡",
+    "mat": 0.9,
+    "vs": false,
+    "y": 920
+   },
+   "cap": "Ahmed ganó la discusión. Bilal ganó algo mucho mejor."
+  },
+  {
+   "title": [
+    "El Profeta",
+    "dijo:"
+   ],
+   "tint": "night",
+   "hi": [
+    "Profeta,",
+    "dijo:"
+   ],
+   "vis": {
+    "type": "book",
+    "src": "ABU DAWUD 4800",
+    "y": 900
+   },
+   "cap": "El Profeta, la paz sea con él, dijo:"
+  },
+  {
+   "tint": "gold",
+   "hi": [
+    "casa",
+    "Paraíso,"
+   ],
+   "vis": {
+    "type": "quote",
+    "lines": [
+     "«Yo garantizo una casa",
+     "en los alrededores",
+     "del Paraíso…"
+    ],
+    "src": "SUNAN ABI DAWUD 4800",
+    "size": 54,
+    "y": 860
+   },
+   "cap": "Yo garantizo una casa en los alrededores del Paraíso,"
+  },
+  {
+   "tint": "gold",
+   "hi": [
+    "razón."
+   ],
+   "vis": {
+    "type": "quote",
+    "lines": [
+     "…a quien deja",
+     "la discusión,",
+     "aunque tenga razón.»"
+    ],
+    "src": "SUNAN ABI DAWUD 4800",
+    "size": 56,
+    "y": 860
+   },
+   "cap": "a quien deja la discusión, aunque tenga razón."
+  },
+  {
+   "title": [
+    "Hadiz",
+    "auténtico"
+   ],
+   "tint": "green",
+   "hi": [
+    "Abu",
+    "Dawud,"
+   ],
+   "vis": {
+    "type": "big",
+    "words": [
+     "ABU DAWUD",
+     "4800"
+    ],
+    "size": 120,
+    "y": 860,
+    "e": "📖"
+   },
+   "cap": "Lo recoge Abu Dawud, en el hadiz 4800."
+  },
+  {
+   "title": [
+    "Tener razón",
+    "≠ humillar"
+   ],
+   "tint": "night",
+   "hi": [
+    "razón",
+    "humillar"
+   ],
+   "vis": {
+    "type": "steps",
+    "items": [
+     [
+      "🧠",
+      "RAZÓN"
+     ],
+     [
+      "🤐",
+      "CALMA"
+     ],
+     [
+      "🏡",
+      "PARAÍSO"
+     ]
+    ],
+    "y": 920
+   },
+   "cap": "Tener razón no te da derecho a humillar a nadie."
+  },
+  {
+   "tint": "green",
+   "hi": [
+    "Ahmed,",
+    "Bilal?"
+   ],
+   "title": [
+    "¿Y tú?"
+   ],
+   "vis": {
+    "type": "duo",
+    "focus": "both",
+    "ahmed": "down",
+    "bilal": "calm",
+    "y": 900
+   },
+   "cap": "¿Y tú? ¿Eres más Ahmed, o más Bilal? Te leo abajo."
+  }
+ ],
+ "instant": true,
+ "step_gap": 290
+}

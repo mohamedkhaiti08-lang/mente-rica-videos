@@ -1,0 +1,288 @@
+{
+ "label": "CURIOSIDAD",
+ "times": "2026-11-02-1200-maria.tiempos.json",
+ "tail": 1.6,
+ "cx": 510,
+ "cap_maxw": 800,
+ "title_maxw": 820,
+ "scenes": [
+  {
+   "title": [
+    "La única mujer",
+    "con nombre en el Corán"
+   ],
+   "tint": "gold",
+   "hi": [
+    "única",
+    "María."
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "🤯",
+    "orbit": [
+     "📖",
+     "✨",
+     "🌙"
+    ],
+    "y": 900
+   },
+   "cap": "La única mujer que el Corán llama por su nombre… es María."
+  },
+  {
+   "title": [
+    "María,",
+    "madre de Isa"
+   ],
+   "tint": "night",
+   "hi": [
+    "Jesús.",
+    "Isa,"
+   ],
+   "vis": {
+    "type": "big",
+    "words": [
+     "MARYAM"
+    ],
+    "size": 125,
+    "y": 860,
+    "e": "🤍"
+   },
+   "cap": "Sí. María, la madre de Jesús. Isa, en árabe."
+  },
+  {
+   "title": [
+    "Ni una vez,",
+    "ni dos…"
+   ],
+   "tint": "blue",
+   "hi": [
+    "una",
+    "dos."
+   ],
+   "vis": {
+    "type": "counter",
+    "seq": [
+     "1",
+     "2",
+     "?"
+    ],
+    "e": "📖",
+    "y": 880
+   },
+   "cap": "Y no aparece una vez, ni dos."
+  },
+  {
+   "title": [
+    "Su nombre",
+    "aparece…"
+   ],
+   "tint": "gold",
+   "hi": [
+    "34"
+   ],
+   "vis": {
+    "type": "counter",
+    "seq": [
+     "5",
+     "12",
+     "21",
+     "34"
+    ],
+    "sub": "VECES EN EL CORÁN",
+    "e": "😳",
+    "y": 880
+   },
+   "cap": "Su nombre sale 34 veces."
+  },
+  {
+   "title": [
+    "Una sura",
+    "con su nombre"
+   ],
+   "tint": "green",
+   "hi": [
+    "sura",
+    "Maryam."
+   ],
+   "vis": {
+    "type": "big",
+    "words": [
+     "SURA",
+     "MARYAM"
+    ],
+    "size": 115,
+    "y": 860,
+    "e": "📜"
+   },
+   "cap": "Y tiene una sura entera con su nombre: la sura Maryam."
+  },
+  {
+   "title": [
+    "Ninguna",
+    "otra mujer"
+   ],
+   "tint": "night",
+   "hi": [
+    "Ninguna",
+    "honor"
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "👑",
+    "orbit": [
+     "✨",
+     "🌟",
+     "✨"
+    ],
+    "y": 900
+   },
+   "cap": "Ninguna otra mujer tiene ese honor en el Corán."
+  },
+  {
+   "title": [
+    "Lo que dicen",
+    "los ángeles…"
+   ],
+   "tint": "blue",
+   "hi": [
+    "bonito",
+    "ángeles:"
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "🕊️",
+    "orbit": [
+     "✨",
+     "🌙",
+     "✨"
+    ],
+    "y": 900
+   },
+   "cap": "Pero lo más bonito es lo que le dicen los ángeles:"
+  },
+  {
+   "tint": "gold",
+   "hi": [
+    "elegido,",
+    "purificado."
+   ],
+   "vis": {
+    "type": "quote",
+    "lines": [
+     "«¡Oh, María!",
+     "Allah te ha elegido",
+     "y te ha purificado…"
+    ],
+    "src": "CORÁN 3:42",
+    "size": 56,
+    "y": 860
+   },
+   "cap": "¡Oh, María! Allah te ha elegido, y te ha purificado."
+  },
+  {
+   "tint": "gold",
+   "hi": [
+    "mujeres",
+    "mundos."
+   ],
+   "vis": {
+    "type": "quote",
+    "lines": [
+     "…y te ha elegido",
+     "sobre las mujeres",
+     "de los mundos.»"
+    ],
+    "src": "CORÁN 3:42",
+    "size": 56,
+    "y": 860
+   },
+   "cap": "Y te ha elegido sobre las mujeres de los mundos."
+  },
+  {
+   "title": [
+    "Sura Al Imran",
+    "aleya 42"
+   ],
+   "tint": "night",
+   "hi": [
+    "3,",
+    "42."
+   ],
+   "vis": {
+    "type": "book",
+    "src": "CORÁN 3:42",
+    "y": 900
+   },
+   "cap": "Corán, sura 3, aleya 42."
+  },
+  {
+   "title": [
+    "Ejemplo de fe",
+    "y de pureza"
+   ],
+   "tint": "green",
+   "hi": [
+    "fe",
+    "pureza."
+   ],
+   "vis": {
+    "type": "steps",
+    "items": [
+     [
+      "🤲",
+      "FE"
+     ],
+     [
+      "🤍",
+      "PUREZA"
+     ],
+     [
+      "🌟",
+      "EJEMPLO"
+     ]
+    ],
+    "y": 920
+   },
+   "cap": "Para un musulmán, María es un ejemplo de fe y de pureza."
+  },
+  {
+   "title": [
+    "Mándaselo"
+   ],
+   "tint": "blue",
+   "hi": [
+    "Mándaselo",
+    "sorprender."
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "📲",
+    "orbit": [
+     "😮",
+     "🤯",
+     "😮"
+    ],
+    "y": 900
+   },
+   "cap": "Mándaselo a alguien que se va a sorprender."
+  },
+  {
+   "tint": "green",
+   "hi": [
+    "sabías?",
+    "Sí",
+    "no?"
+   ],
+   "vis": {
+    "type": "cta",
+    "word": "¿LO SABÍAS?",
+    "size": 100,
+    "e": "🤔",
+    "y": 860
+   },
+   "cap": "¿Tú lo sabías? ¿Sí o no? Te leo abajo."
+  }
+ ],
+ "instant": true,
+ "step_gap": 290
+}

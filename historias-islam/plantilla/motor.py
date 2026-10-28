@@ -225,7 +225,7 @@ def v_counter(dst, t, dur, v):
 
 def v_steps(dst, t, dur, v):
     items = v["items"]; n = len(items); cy = v.get("y", 920)
-    xs = [W / 2 + (k - (n - 1) / 2) * 320 for k in range(n)]
+    xs = [CFG.get("cx", W / 2) + (k - (n - 1) / 2) * CFG.get("step_gap", 320) for k in range(n)]
     st = [0.1 + k * (dur - 0.6) / n for k in range(n)]
     d = ImageDraw.Draw(dst, "RGBA")
     for k in range(n - 1):
@@ -397,7 +397,96 @@ def v_shirt(dst, t, dur, v):
         q = prog(t, v.get("at", 0.7) + 0.4, 0.4)
         paste(dst, pill(v["tag"], 36, (60, 14, 16, 230), CREAM, RED), W / 2, cy + 300, 0.6 + 0.4 * eback(q), ease(q))
 
-VIS = {"emoji": v_emoji, "counter": v_counter, "steps": v_steps, "quote": v_quote, "book": v_book,
+
+# --- Ahmed vs Bilal: dos personajes sin cara (mismo dibujo que situaciones2) ---
+SKIN = (224, 184, 150); AHMED_SHIRT = (88, 108, 140); BILAL_SHIRT = (22, 128, 92)
+@lru_cache(maxsize=64)
+def character(shirt, mood="calm", arms_phase=0, scale=1.0):
+    s = 2; w, h = int(320 * s * scale), int(580 * s * scale)
+    im = Image.new("RGBA", (w, h), (0, 0, 0, 0)); d = ImageDraw.Draw(im)
+    S = lambda v: v * s * scale
+    cx = w / 2
+    d.rounded_rectangle([cx - S(60), S(390), cx - S(12), S(560)], S(22), fill=(60, 66, 80))
+    d.rounded_rectangle([cx + S(12), S(390), cx + S(60), S(560)], S(22), fill=(60, 66, 80))
+    d.rounded_rectangle([cx - S(64), S(540), cx - S(4), S(570)], S(14), fill=(40, 44, 54))
+    d.rounded_rectangle([cx + S(4), S(540), cx + S(64), S(570)], S(14), fill=(40, 44, 54))
+    d.rounded_rectangle([cx - S(95), S(200), cx + S(95), S(420)], S(70), fill=shirt)
+    aw = int(S(40))
+    if mood == "angry":
+        up = 120 if arms_phase == 0 else 95
+        d.line([(cx - S(85), S(240)), (cx - S(150), S(up))], fill=shirt, width=aw)
+        d.line([(cx + S(85), S(240)), (cx + S(150), S(up))], fill=shirt, width=aw)
+        d.ellipse([cx - S(176), S(up - 26), cx - S(124), S(up + 26)], fill=SKIN); d.ellipse([cx + S(124), S(up - 26), cx + S(176), S(up + 26)], fill=SKIN)
+    elif mood == "calm":
+        d.line([(cx - S(85), S(250)), (cx - S(40), S(340))], fill=shirt, width=aw)
+        d.line([(cx + S(85), S(250)), (cx + S(40), S(340))], fill=shirt, width=aw)
+        d.ellipse([cx - S(32), S(310), cx + S(32), S(362)], fill=SKIN)
+    elif mood == "point":
+        d.line([(cx - S(85), S(250)), (cx - S(110), S(380))], fill=shirt, width=aw)
+        d.line([(cx + S(85), S(240)), (cx + S(190), S(170))], fill=shirt, width=aw)
+        d.ellipse([cx - S(136), S(360), cx - S(84), S(410)], fill=SKIN); d.ellipse([cx + S(174), S(144), cx + S(226), S(196)], fill=SKIN)
+    else:
+        d.line([(cx - S(85), S(250)), (cx - S(110), S(380))], fill=shirt, width=aw)
+        d.line([(cx + S(85), S(250)), (cx + S(110), S(380))], fill=shirt, width=aw)
+        d.ellipse([cx - S(136), S(360), cx - S(84), S(410)], fill=SKIN); d.ellipse([cx + S(84), S(360), cx + S(136), S(410)], fill=SKIN)
+    d.ellipse([cx - S(70), S(40), cx + S(70), S(180)], fill=SKIN)
+    d.chord([cx - S(68), S(36), cx + S(68), S(140)], 180, 360, fill=(250, 250, 250))
+    im = im.resize((w // s, h // s), Image.LANCZOS)
+    out = Image.new("RGBA", (im.width, im.height + 24), (0, 0, 0, 0))
+    sh = Image.new("RGBA", (im.width, 44), (0, 0, 0, 0)); ImageDraw.Draw(sh).ellipse([40, 6, im.width - 40, 38], fill=(0, 0, 0, 110))
+    out.alpha_composite(sh.filter(ImageFilter.GaussianBlur(6)), (0, im.height - 24)); out.alpha_composite(im)
+    return out
+
+@lru_cache(maxsize=64)
+def bubble(lines, size=38, col=(34, 40, 49), tail="left"):
+    ts = [text(l, size, col, POP, False) for l in lines]
+    w = max(t.width for t in ts) + 10; lh = int(size * 1.3); h = lh * len(ts) + 50
+    im = Image.new("RGBA", (w + 40, h + 60), (0, 0, 0, 0)); d = ImageDraw.Draw(im)
+    d.rounded_rectangle([20, 10, w + 20, h + 10], 34, fill=(255, 255, 255, 250))
+    tx = 80 if tail == "left" else w - 40
+    d.polygon([(tx - 18, h + 8), (tx + 18, h + 8), (tx + (-12 if tail == "left" else 12), h + 50)], fill=(255, 255, 255, 250))
+    y = 10 + 25 - 30
+    for t_ in ts:
+        im.alpha_composite(t_, (int(20 + (w - t_.width) / 2), y)); y += lh
+    return im
+
+def v_duo(dst, t, dur, v):
+    cy = v.get("y", 900); focus = v.get("focus", "both")
+    for k, (name, shirt, x) in enumerate((("ahmed", AHMED_SHIRT, 300), ("bilal", BILAL_SHIRT, 740))):
+        if v.get("only") and v["only"] != name: continue
+        on = focus in ("both", name)
+        a = (1.0 if on else 0.32) * ease(prog(t, 0.05 + k * 0.15, 0.4))
+        mood = v.get(name, "down")
+        if on and mood == "calm":
+            lay = Image.new("RGBA", (520, 520), (0, 0, 0, 0)); dd = ImageDraw.Draw(lay)
+            r = 190 + 14 * math.sin(t * 2); dd.ellipse([260 - r, 260 - r, 260 + r, 260 + r], fill=(255, 220, 140, 70))
+            dst.alpha_composite(lay.filter(ImageFilter.GaussianBlur(40)), (x - 260, int(cy - 330)))
+        ph = int(t * 6) % 2 if mood == "angry" else 0
+        dx = math.sin(t * 40) * 5 if mood == "angry" else math.sin(t * 1.5) * 3
+        paste(dst, character(shirt, mood, ph, 0.86), x + dx, cy + math.sin(t * 2.4) * 3, 1.0, a)
+        col = RED if name == "ahmed" else (60, 190, 130)
+        paste(dst, pill(name.upper(), 34, (60, 14, 16, 230) if name == "ahmed" else (12, 52, 40, 235), CREAM, col), x, cy + 300, 1.0, a)
+        b = v.get(name[0] + "b")
+        if b and on:
+            p = prog(t, v.get("bat", 0.5), 0.4)
+            paste(dst, bubble(tuple(b), 36, RED if name == "ahmed" else (22, 128, 92), "left" if k == 0 else "right"), x + (40 if k == 0 else -90), cy - 340, 0.5 + 0.5 * eback(p), ease(p))
+        m = v.get(name[0] + "m")
+        if m and on:
+            p = prog(t, v.get("mat", 0.8), 0.4)
+            if p > 0:
+                paste(dst, emoji(m, 110), x + 125, cy - 170, 0.4 + 0.6 * eback(p, 2.4), ease(p), math.sin(t * 6) * 6)
+        if name == "ahmed" and mood == "angry" and on:
+            paste(dst, text("#@!", 70, RED, POP), x, cy - 330 if not b else cy - 520, 1 + 0.12 * abs(math.sin(t * 7)), a, math.sin(t * 9) * 6)
+    if focus == "both" and v.get("vs", True):
+        q = prog(t, 0.4, 0.4)
+        if q > 0: paste(dst, gold_text("VS", 100), 520, cy, 0.5 + 0.5 * eback(q, 2.4), ease(q))
+    for k, ch in enumerate(v.get("extra", [])):
+        p = prog(t, 0.6 + k * 0.2, 0.4)
+        if p > 0:
+            a_ = t * 1.2 + k * 2.1
+            paste(dst, emoji(ch, 90), 520 + math.cos(a_) * 120, cy - 420 + math.sin(a_) * 50, 0.4 + 0.6 * eback(p), ease(p))
+
+VIS = {"duo": v_duo, "emoji": v_emoji, "counter": v_counter, "steps": v_steps, "quote": v_quote, "book": v_book,
        "big": v_big, "cta": v_cta, "cave": v_cave, "bars": v_bars, "choice": v_choice, "shirt": v_shirt}
 
 # ---------- subtítulos karaoke ----------
@@ -410,7 +499,7 @@ def word_times(i):
 
 @lru_cache(maxsize=None)
 def cap_layout(i):
-    words = SC[i]["cap"].split(); size = SC[i].get("cap_size", 64); f = F(POP, size); maxw = 900
+    words = SC[i]["cap"].split(); size = SC[i].get("cap_size", 64); f = F(POP, size); maxw = CFG.get("cap_maxw", 900)
     while True:
         rows, cur = [], []
         for w in words:
@@ -427,7 +516,7 @@ def draw_caption(dst, i, gt):
     lh = int(size * 1.3); y0 = SC[i].get("cap_y", 1440) - (len(rows) - 1) * lh / 2
     for r, row in enumerate(rows):
         widths = [f.getlength(w) for w in row]; total = sum(widths) + sp * (len(row) - 1)
-        x = W / 2 - total / 2
+        x = CFG.get("cx", W / 2) - total / 2
         for w, wd in zip(row, widths):
             _, ws, we = wt[k]; k += 1
             bare = w.strip("¿?¡!,.…«»").lower()
@@ -443,16 +532,17 @@ def draw_caption(dst, i, gt):
 def draw_title(dst, sc, lt):
     tl = sc.get("title")
     if not tl: return
-    size = fit_size(tl, sc.get("title_size", 78), POP, 960)
+    size = fit_size(tl, sc.get("title_size", 78), POP, CFG.get("title_maxw", 960))
     y = sc.get("title_y", 330)
     for k, ln in enumerate(tl):
         p = prog(lt, 0.05 + k * 0.22, 0.45)
         col = GOLD if k % 2 else WHITE
         im = text(ln, size, col, POP, True, GOLD if k % 2 else None)
-        paste(dst, im, W / 2, y + k * int(size * 1.15) + (1 - eout(p)) * 30, 0.85 + 0.15 * eback(p, 2), ease(p))
+        paste(dst, im, CFG.get("cx", W / 2), y + k * int(size * 1.15) + (1 - eout(p)) * 30, 0.85 + 0.15 * eback(p, 2), ease(p))
 
 def scene_layer(i, gt):
     sc = SC[i]; lt = gt - B[i]; dur = B[i + 1] - B[i]
+    if i == 0 and CFG.get("instant"): lt += 0.7   # el primer fotograma ya sale con texto y gancho
     im = background(sc.get("tint", "green"), lt, gt)
     v = sc.get("vis")
     if v: VIS[v["type"]](im, lt, dur, v)
@@ -475,7 +565,7 @@ def render(gt):
     d.rounded_rectangle([10, 10, W - 110, 18], 4, fill=(255, 255, 255, 45))
     d.rounded_rectangle([10, 10, 10 + (W - 120) * clamp(gt / DUR), 18], 4, fill=GOLD + (235,))
     im.alpha_composite(bar, (50, H - 80))
-    a = min(prog(gt, 0, 0.12), 1 - prog(gt, DUR - 0.5, 0.5))
+    a = min(1.0 if CFG.get("instant") else prog(gt, 0, 0.12), 1 - prog(gt, DUR - 0.5, 0.5))
     if a < 1: im = Image.blend(BLACK, im, a)
     return im.convert("RGB")
 
