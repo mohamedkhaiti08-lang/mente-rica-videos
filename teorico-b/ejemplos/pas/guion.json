@@ -1,0 +1,16 @@
+{
+ "speed": 1.1,
+ "pause": 0.3,
+ "gaps": {
+  "1": 0.5
+ },
+ "lines": [
+  "Lo que harías por instinto en un accidente, en el examen es un fallo.",
+  "¿Mito o verdad? Lo primero es socorrer al herido.",
+  "Mito. El orden es Pas: proteger, avisar y socorrer.",
+  "Primero, proteger: sitio seguro, luces de emergencia y chaleco antes de salir.",
+  "Segundo, avisar: llama al uno uno dos.",
+  "Y solo después, socorrer, sin mover al herido, salvo riesgo de incendio o explosión.",
+  "Etiqueta a alguien que se examine pronto."
+ ]
+}

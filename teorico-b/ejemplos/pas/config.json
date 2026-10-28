@@ -1,0 +1,130 @@
+{
+ "label": "MITO O VERDAD",
+ "times": "tiempos.json",
+ "voice": "voz.wav",
+ "tail": 1.3,
+ "sfx": [
+  {
+   "t": 0.45,
+   "type": "buzz"
+  },
+  {
+   "t": 6.46,
+   "type": "buzz"
+  },
+  {
+   "t": 15.7,
+   "type": "ding"
+  }
+ ],
+ "scenes": [
+  {
+   "cap": "Lo que harías por instinto en un accidente, en el examen es un fallo.",
+   "hi": [
+    "instinto",
+    "fallo."
+   ],
+   "vis": {
+    "type": "pas",
+    "mode": "crash",
+    "lines": [
+     "¿LO PRIMERO?",
+     "¿AYUDAR?"
+    ],
+    "cols": [
+     [
+      255,
+      255,
+      255
+     ],
+     [
+      255,
+      196,
+      0
+     ]
+    ]
+   }
+  },
+  {
+   "cap": "¿Mito o verdad? Lo primero es socorrer al herido.",
+   "hi": [
+    "socorrer"
+   ],
+   "vis": {
+    "type": "mito",
+    "frase": "Lo primero es socorrer al herido",
+    "verdict": "MITO",
+    "at": 2.6
+   }
+  },
+  {
+   "cap": "MITO. El orden es PAS: proteger, avisar y socorrer.",
+   "hi": [
+    "MITO.",
+    "PAS:"
+   ],
+   "vis": {
+    "type": "pas",
+    "mode": "steps",
+    "upto": -1
+   }
+  },
+  {
+   "cap": "1. Proteger: sitio seguro, luces de emergencia y chaleco antes de salir.",
+   "hi": [
+    "Proteger:",
+    "chaleco"
+   ],
+   "vis": {
+    "type": "pas",
+    "mode": "steps",
+    "upto": 0,
+    "chips": [
+     "Sitio seguro",
+     "Luces de emergencia",
+     "Chaleco antes de salir"
+    ]
+   }
+  },
+  {
+   "cap": "2. Avisar: llama al 112.",
+   "hi": [
+    "Avisar:",
+    "112."
+   ],
+   "vis": {
+    "type": "pas",
+    "mode": "steps",
+    "upto": 1,
+    "big": "112"
+   }
+  },
+  {
+   "cap": "3. Y solo después, socorrer, sin mover al herido, salvo riesgo de incendio o explosión.",
+   "hi": [
+    "socorrer,",
+    "mover"
+   ],
+   "vis": {
+    "type": "pas",
+    "mode": "steps",
+    "upto": 2,
+    "chips": [
+     "!No mover al herido",
+     "Salvo incendio o explosión"
+    ]
+   }
+  },
+  {
+   "cap": "Etiqueta a alguien que se examine pronto.",
+   "hi": [
+    "Etiqueta"
+   ],
+   "vis": {
+    "type": "cta",
+    "big": "@ETIQUÉTALO",
+    "small": "a quien se examina pronto"
+   }
+  }
+ ]
+}

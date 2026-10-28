@@ -1,0 +1,12 @@
+{"label": "¿APROBARÍAS?", "times": "tiempos.json", "voice": "voz.wav", "tail": 1.3,
+ "sfx": [{"t": 1.0, "type": "buzz"}, {"t": 13.84, "type": "beep"}, {"t": 14.74, "type": "beep"}, {"t": 15.64, "type": "beep"}, {"t": 16.45, "type": "ding"}, {"t": 25.3, "type": "buzz"}],
+ "scenes": [
+  {"cap": "Si fallas esta, no estás listo para el examen.", "hi": ["fallas", "examen."], "vis": {"type": "hook", "lines": ["SI FALLAS ESTA", "NO ESTÁS LISTO"], "cols": [[255,255,255],[255,196,0]], "stamp": "SUSPENSO", "stamp_at": 0.95, "stamp_x": 190, "img": "seat"}},
+  {"cap": "Llevas a tu sobrino, que mide 1,30 m. ¿Cómo tiene que viajar?", "hi": ["1,30", "m."], "vis": {"type": "sillita", "mode": "measure", "h": 130, "from": 80, "line_at": 99}},
+  {"cap": "¿Detrás con cinturón? ¿Delante con cinturón? ¿O detrás en su sillita?", "hi": ["sillita?"], "vis": {"type": "quiz", "opt_at": [0.0, 0.33, 0.66], "q": "Un niño mide 1,30 m. ¿Cómo tiene que viajar?", "opts": ["Detrás, solo con cinturón", "Delante, con cinturón", "Detrás, en su sillita"], "correct": 2}},
+  {"cap": "Pon tu letra en comentarios. Tienes 3 segundos.", "hi": ["letra", "3"], "vis": {"type": "countdown", "quiz_scene": 2, "at": [2.9, 3.8, 4.7]}},
+  {"cap": "¡Es la C! Va detrás, en un sistema de retención homologado.", "hi": ["C!", "detrás,"], "vis": {"type": "reveal", "quiz_scene": 2}},
+  {"cap": "Manda la estatura, no la edad: hasta 1,35 m, sillita.", "hi": ["estatura,", "1,35"], "vis": {"type": "sillita", "mode": "measure", "h": 135, "from": 128, "line_at": 0.2, "tag": "SILLITA HASTA 1,35 m", "tag_at": 1.6}},
+  {"cap": "Si no la lleva, pierdes 4 puntos.", "hi": ["4", "puntos."], "vis": {"type": "sillita", "mode": "seat", "tag": "SIN SILLITA: −4 PUNTOS", "tag_at": 1.0}},
+  {"cap": "¿La has acertado? Dímelo en comentarios.", "hi": ["comentarios."], "vis": {"type": "cta", "big": "¿A, B o C?", "small": "Comenta tu letra"}}
+ ]}

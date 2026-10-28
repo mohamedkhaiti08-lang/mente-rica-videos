@@ -10,7 +10,9 @@
 # Tipos de "vis" (ver funciones vis_*): hook, road, quiz, countdown, reveal, compare, roof, cta, topdown, law,
 #   nocross, save, sign, mito, stat (admite "dec": 1 para decimales), cruce (cruce sin señales con coches numerados),
 #   tyre (neumático: tread | gauge | wet | compare), puntos (carné por puntos: card | steps),
-#   bike (ciclista cenital y adelantamiento: approach | pass | twolanes), speedo (cuentakilómetros que baja de from a to).
+#   bike (ciclista cenital y adelantamiento: approach | pass | twolanes), speedo (cuentakilómetros que baja de from a to),
+#   sillita (tallímetro 1,35 m: measure | coche con sillita detrás: seat), pas (accidente: crash | tarjetas P·A·S: steps).
+#   hook admite "img": "seat" (sillita) y "stamp_x" (posición del sello).
 import math, json, sys, os, subprocess
 from functools import lru_cache
 from multiprocessing import Pool
@@ -291,7 +293,7 @@ def captions(dst, t, i):
     while len(lines) > 3 and size > 44: size -= 4; lines = wrap(cap, size, POP, 860)
     total = sum(len(w) + 1 for w in words); acc = 0; starts = []
     for w in words: starts.append(s0 + (s1 - s0) * acc / total); acc += len(w) + 1
-    appear = eout(prog(t, B[i], 0.18)); y0 = 1395 - (len(lines) - 1) * size * 0.62
+    appear = 1.0 if i == 0 else eout(prog(t, B[i], 0.18)); y0 = 1395 - (len(lines) - 1) * size * 0.62
     f = F(POP, size); wi = 0; lh = int(size * 1.24)
     # placa
     d = ImageDraw.Draw(dst, "RGBA")
@@ -321,18 +323,21 @@ def big_lines(dst, lines, t, y, cols=None, size=150, stagger=0.22):
 
 def vis_hook(dst, t, v, i):
     lines = v.get("lines", []); cols = [tuple(c) for c in v.get("cols", [])] or None
-    n = len(lines); y = CY - (n - 1) * 80 - (40 if v.get("badge") else 0)
+    n = len(lines); y = CY - (n - 1) * 80 - (40 if v.get("badge") else 0) - (150 if v.get("img") else 0)
+    if i == 0: t = t + 0.6  # primer fotograma: el gancho ya está en pantalla
     shake = 0
     if v.get("stamp"):
         ps = prog(t, v.get("stamp_at", 0.8), 0.18)
         if 0 < ps < 1 or (ps == 1 and t - v.get("stamp_at", 0.8) < 0.45): shake = math.sin(t * 90) * 10 * (1 - prog(t, v.get("stamp_at", .8) + .18, .3))
     big_lines(dst, lines, t, y + shake, cols)
+    if v.get("img") == "seat":  # sillita infantil que entra botando
+        ip = prog(t, .25, .5); paste(dst, child_seat(300), W / 2 - 230, CY + 200 + math.sin(t * 5) * 8, scale=.85 * eback(ip), alpha=ease(ip * 2), rot=4 * math.sin(t * 3))
     if v.get("badge"):
         p = prog(t, 0.5, 0.35); paste(dst, pill(v["badge"], 46, YEL, NAVY), W / 2, y + n * 150 + 30, scale=eback(p), alpha=ease(p * 2))
     if v.get("stamp"):
         st = v.get("stamp_at", 0.8); ps = prog(t, st, 0.2)
         if ps > 0:
-            im = stamp_img(v["stamp"]); paste(dst, im, W / 2 + 120, CY + 230, scale=lerp(2.2, 1.0, eout(ps)), alpha=ease(ps * 1.5), rot=-12)
+            im = stamp_img(v["stamp"]); paste(dst, im, W / 2 + v.get("stamp_x", 120), CY + 230, scale=lerp(2.2, 1.0, eout(ps)), alpha=ease(ps * 1.5), rot=-12)
 
 @lru_cache(maxsize=16)
 def stamp_img(txt):
@@ -483,7 +488,7 @@ def vis_roof(dst, t, v, i):
 
 @lru_cache(maxsize=32)
 def chip_ok(txt, ok):
-    p = pill(txt, 36, WHITE, DARK, padx=34 + 40); im = Image.new("RGBA", (p.width + 20, p.height + 20), (0, 0, 0, 0))
+    p = pill(txt, 36, WHITE, DARK, padx=34 + 52); im = Image.new("RGBA", (p.width + 20, p.height + 20), (0, 0, 0, 0))
     im.alpha_composite(p, (10, 10)); ic = (icon_check if ok else icon_x)(56)
     im.alpha_composite(ic, (22, 10 + (p.height - 56) // 2)); return im
 
@@ -968,6 +973,160 @@ def vis_speedo(dst, t, v, i):
     paste(dst, text("km/h", 52, (200, 210, 230), XB), cx, oy + 235, alpha=a)
     if v.get("tag"):
         pa = prog(t, v.get("at", .7) + .9, .35); paste(dst, pill(v["tag"], 56, RED, WHITE), cx + 250, VZ[0] + 60, scale=eback(pa), alpha=ease(pa * 2), rot=-6)
+
+# --- sillita infantil + tallímetro (bloque vehículo y seguridad) ---
+# vis: {"type": "sillita", "mode": "measure", "h": 130, "from": 100, "line": 135, "tag": "..."}  -> niño junto a un tallímetro con la marca 1,35 m
+#      {"type": "sillita", "mode": "seat", "tag": "..."}  -> coche visto desde arriba: sillita detrás (OK) y asiento delantero (X)
+@lru_cache(maxsize=8)
+def child_seat(s=300, col=(30, 70, 160)):  # sillita de lado, mirando a la izquierda
+    w, h = s, int(s * 1.25); im = ss(w, h); d = ImageDraw.Draw(im); X, Y = w * 2, h * 2
+    dk = mix(col, (0, 0, 0), .45)
+    d.rounded_rectangle((X * .52, Y * .02, X * .9, Y * .2), radius=int(X * .08), fill=dk)               # reposacabezas
+    d.rounded_rectangle((X * .58, Y * .08, X * .86, Y * .8), radius=int(X * .12), fill=col)             # respaldo
+    d.rounded_rectangle((X * .12, Y * .62, X * .86, Y * .86), radius=int(X * .1), fill=col)             # asiento
+    d.rounded_rectangle((X * .08, Y * .84, X * .9, Y * .96), radius=int(X * .05), fill=(40, 42, 50))    # base
+    d.rounded_rectangle((X * .5, Y * .1, X * .62, Y * .2), radius=12, fill=(150, 170, 210))             # ala lateral
+    d.line([(X * .66, Y * .24), (X * .38, Y * .7)], fill=(255, 196, 0), width=int(X * .05))              # arnés
+    d.ellipse((X * .33, Y * .62, X * .45, Y * .74), fill=(220, 225, 235))                               # hebilla
+    return glow(down(im), 16, .35)
+
+@lru_cache(maxsize=8)
+def child_seat_top(s=120):  # sillita vista desde arriba
+    w, h = s, int(s * 1.25); im = ss(w, h); d = ImageDraw.Draw(im); X, Y = w * 2, h * 2
+    d.rounded_rectangle((0, 0, X - 1, Y - 1), radius=int(X * .3), fill=(30, 70, 160))
+    d.rounded_rectangle((X * .18, Y * .05, X * .82, Y * .3), radius=int(X * .15), fill=(20, 45, 110))
+    d.ellipse((X * .3, Y * .1, X * .7, Y * .42), fill=(240, 200, 170))                                  # cabeza del niño
+    d.line([(X * .3, Y * .45), (X * .5, Y * .78)], fill=YEL, width=16); d.line([(X * .7, Y * .45), (X * .5, Y * .78)], fill=YEL, width=16)
+    return down(im)
+
+def child_side(dst, cx, base, hpx, a=1.0):
+    d = ImageDraw.Draw(dst, "RGBA"); al = int(255 * a); hr = hpx * .085
+    col = (255, 255, 255, al)
+    d.ellipse((cx - hr, base - hpx, cx + hr, base - hpx + 2 * hr), fill=col)                             # cabeza
+    d.rounded_rectangle((cx - hpx * .12, base - hpx + 2 * hr + 8, cx + hpx * .12, base - hpx * .45), radius=int(hpx * .06), fill=col)  # cuerpo
+    for sx in (-1, 1):
+        d.rounded_rectangle((cx + sx * hpx * .02 - hpx * .045 + sx * hpx * .03, base - hpx * .46, cx + sx * hpx * .02 + hpx * .045 + sx * hpx * .03, base), radius=int(hpx * .04), fill=col)
+        d.rounded_rectangle((cx + sx * hpx * .14 - hpx * .035, base - hpx + 2 * hr + 14, cx + sx * hpx * .14 + hpx * .035, base - hpx * .5), radius=int(hpx * .03), fill=col)
+
+def vis_sillita(dst, t, v, i):
+    mode = v.get("mode", "measure")
+    if mode == "measure":
+        base, pxcm = VZ[1] - 40, 5.0; rx = W / 2 + 200; d = ImageDraw.Draw(dst, "RGBA"); a = ease(prog(t, 0, .25))
+        # tallímetro
+        d.rounded_rectangle((rx - 50, base - 160 * pxcm - 20, rx + 50, base + 10), radius=18, fill=YEL + (int(255 * a),))
+        for cm in range(0, 161, 10):
+            y = base - cm * pxcm; L = 50 if cm % 20 == 0 else 28
+            d.line([(rx - 50, y), (rx - 50 + L, y)], fill=NAVY + (int(255 * a),), width=6)
+            if cm % 20 == 0 and cm: paste(dst, text(str(cm), 30, NAVY, XB, shadow=False), rx + 18, y, alpha=a)
+        # marca de 1,35 m
+        line = v.get("line", 135); ly = base - line * pxcm; lp = eout(prog(t, v.get("line_at", .3), .4))
+        if lp > 0:
+            for x in range(int(W / 2 - 400), int(W / 2 - 400 + (rx - 50 - (W / 2 - 400)) * lp), 40):
+                d.line([(x, ly), (x + 24, ly)], fill=RED + (230,), width=8)
+            paste(dst, pill(v.get("line_txt", "1,35 m"), 44, RED, WHITE), W / 2 - 330, ly - 50, scale=eback(lp), alpha=ease(lp * 2))
+        # niño que "crece" hasta su estatura
+        h = v.get("h", 130); fr = v.get("from", h * .6)
+        cur = lerp(fr, h, eout(prog(t, .1, 1.0))); child_side(dst, W / 2 - 60, base, cur * pxcm, a)
+        d.line([(W / 2 - 160, base + 4), (rx + 60, base + 4)], fill=(255, 255, 255, 140), width=6)
+        hy = base - cur * pxcm
+        d.line([(W / 2 - 10, hy), (rx - 50, hy)], fill=WHITE + (int(200 * a),), width=5)
+        num = f"{cur / 100:.2f}".replace(".", ",") + " m"
+        paste(dst, pill(num, 50, WHITE, NAVY), W / 2 - 60, max(VZ[0] + 60, hy - 70), alpha=a)
+        if v.get("tag"):
+            tp = prog(t, v.get("tag_at", 1.1), .35)
+            paste(dst, pill(v["tag"], 44, GREEN if v.get("ok") else YEL, WHITE if v.get("ok") else NAVY), W / 2 - 130, ly - 150, scale=eback(tp), alpha=ease(tp * 2))
+    else:  # seat: coche desde arriba con la sillita detrás
+        p = eback(prog(t, 0, .5)); car = car_top((226, 69, 60), 330); cy = CY + 10
+        paste(dst, car, W / 2, cy + (1 - p) * 200, alpha=ease(prog(t, 0, .25)))
+        ch = car.height - 40
+        rear = (W / 2 + 70, cy + ch * .1); front = (W / 2 + 70, cy - ch * .1)
+        sp = eback(prog(t, .4, .45)); pulse = .5 + .5 * math.sin(t * 6)
+        g = Image.new("RGBA", (W, H), (0, 0, 0, 0)); ImageDraw.Draw(g).ellipse((rear[0] - 95, rear[1] - 105, rear[0] + 95, rear[1] + 105), fill=(34, 197, 94, int(120 + 80 * pulse)))
+        dst.alpha_composite(g.filter(ImageFilter.GaussianBlur(14)))
+        paste(dst, child_seat_top(120), rear[0], rear[1], scale=sp, alpha=ease(prog(t, .4, .2)))
+        paste(dst, icon_check(84), rear[0] + 150, rear[1], scale=eback(prog(t, .8, .3)))
+        xp = prog(t, 1.1, .3)
+        if xp > 0: paste(dst, icon_x(84), front[0] + 150, front[1] - 20, scale=eback(xp))
+        paste(dst, pill("DELANTE", 34, (90, 96, 110), WHITE), W / 2 - 290, front[1] - 20, alpha=ease(prog(t, 1.1, .3)))
+        paste(dst, pill("DETRÁS", 34, GREEN, WHITE), W / 2 - 290, rear[1] + 20, alpha=ease(prog(t, .8, .3)))
+        if v.get("tag"):
+            tp = prog(t, v.get("tag_at", 1.4), .35)
+            paste(dst, pill(v["tag"], 50, RED, WHITE), W / 2, VZ[0] + 50, scale=eback(tp), alpha=ease(tp * 2), rot=-4)
+
+# --- conducta PAS en un accidente (bloque primeros auxilios y accidentes) ---
+# vis: {"type": "pas", "mode": "crash", "lines": [...], "cols": [...]}  -> choque de 2 coches visto desde arriba (humo + warnings)
+#      {"type": "pas", "mode": "steps", "upto": -1..2, "chips": [...]}    -> tarjetas P · A · S (chaleco, 112, botiquín)
+@lru_cache(maxsize=4)
+def vest_icon(s=170):
+    im = ss(s, s); d = ImageDraw.Draw(im); S = s * 2; Y = (255, 214, 0)
+    d.polygon([(S * .2, S * .1), (S * .4, S * .1), (S * .5, S * .38), (S * .6, S * .1), (S * .8, S * .1), (S * .96, S * .32),
+               (S * .86, S * .44), (S * .86, S * .96), (S * .14, S * .96), (S * .14, S * .44), (S * .04, S * .32)], fill=Y)
+    for y0 in (.56, .74):
+        d.rectangle((S * .14, S * y0, S * .86, S * (y0 + .08)), fill=(200, 205, 215))
+    d.line([(S * .5, S * .4), (S * .5, S * .96)], fill=mix(Y, (0, 0, 0), .25), width=6)
+    return down(im)
+
+@lru_cache(maxsize=4)
+def phone_icon(s=170):
+    im = ss(s, s); d = ImageDraw.Draw(im); S = s * 2
+    d.rounded_rectangle((S * .26, S * .04, S * .74, S * .96), radius=int(S * .1), fill=(22, 24, 30))
+    d.rounded_rectangle((S * .3, S * .12, S * .7, S * .84), radius=int(S * .05), fill=BLUE)
+    f = F(BLACK, int(S * .2)); bb = f.getbbox("112"); d.text((S / 2 - (bb[0] + bb[2]) / 2, S * .48 - (bb[1] + bb[3]) / 2), "112", font=f, fill=WHITE)
+    return down(im)
+
+@lru_cache(maxsize=4)
+def aid_icon(s=170):
+    im = ss(s, s); d = ImageDraw.Draw(im); S = s * 2
+    d.rounded_rectangle((S * .08, S * .2, S * .92, S * .9), radius=int(S * .12), fill=GREEN)
+    d.rounded_rectangle((S * .36, S * .08, S * .64, S * .24), radius=20, outline=GREEN, width=18)
+    d.rectangle((S * .44, S * .34, S * .56, S * .78), fill=WHITE); d.rectangle((S * .28, S * .5, S * .72, S * .62), fill=WHITE)
+    return down(im)
+
+@lru_cache(maxsize=4)
+def burst(s=260):
+    im = ss(s, s); d = ImageDraw.Draw(im); S = s * 2; pts = []
+    for k in range(20):
+        r = S * (.48 if k % 2 == 0 else .26); an = k * math.pi / 10
+        pts.append((S / 2 + math.cos(an) * r, S / 2 + math.sin(an) * r))
+    d.polygon(pts, fill=(255, 196, 0)); d.polygon([((x - S / 2) * .55 + S / 2, (y - S / 2) * .55 + S / 2) for x, y in pts], fill=WHITE)
+    return down(im)
+
+def vis_pas(dst, t, v, i):
+    mode = v.get("mode", "steps")
+    if mode == "crash":
+        if i == 0: t = t + 0.6  # primer fotograma: choque y gancho ya en pantalla
+        top, bot = bike_road(dst, t, scroll=False); cx, cy = W / 2, CY + 140
+        k = eout(prog(t, 0, .45)); shake = math.sin(t * 70) * 8 * (1 - prog(t, .3, .5))
+        paste(dst, car_top((226, 69, 60), 140), lerp(cx - 300, cx - 70, k) + shake, cy + 30, rot=lerp(0, 28, k))
+        paste(dst, car_top((60, 140, 255), 140), cx + 90 + shake, lerp(cy - 420, cy - 120, k), rot=lerp(90, 70, k))
+        bp = prog(t, .35, .3)
+        if bp > 0: paste(dst, burst(260), cx, cy - 40, scale=eback(bp) * (1 - .3 * prog(t, .9, .5)), alpha=1 - .6 * prog(t, 1.0, .6))
+        for kk in range(5):
+            z = ((t * .5 + kk / 5) % 1); paste(dst, puff(), cx + 10 + kk * 14, cy - 80 - z * 300, scale=.5 + z, alpha=(1 - z) * .55 * prog(t, .4, .3))
+        if int(t * 2.4) % 2 == 0 and t > .5:
+            paste(dst, hazard(110), cx - 140, cy - 20); paste(dst, hazard(110), cx + 150, cy - 180)
+        if v.get("lines"):
+            big_lines(dst, v["lines"], t, VZ[0] + 110, [tuple(c) for c in v.get("cols", [])] or None, size=130, stagger=.18)
+    else:
+        upto = v.get("upto", -1); cw, chh, gap = 260, 400, 20; x0 = W / 2 - 40 - (3 * cw + 2 * gap) / 2 + cw / 2; cy = VZ[0] + 260  # sin pisar la zona derecha de botones
+        data = [("P", "PROTEGER", vest_icon), ("A", "AVISAR", phone_icon), ("S", "SOCORRER", aid_icon)]
+        for k, (L, word, ic) in enumerate(data):
+            if upto == -1: p = prog(t, .15 + k * .45, .4)
+            else: p = 1.0
+            cur = k == upto; dim = upto >= 0 and k > upto
+            a = ease(p * 2) * (.45 if dim else 1); sc = eback(p) * (1.08 + .02 * math.sin(t * 6) if cur else 1)
+            x = x0 + k * (cw + gap)
+            c = card(cw, chh, fill=(255, 255, 255, 250) if not dim else (210, 216, 228, 240), r=36, border=YEL if cur else None, bw=10 if cur else 0)
+            paste(dst, c, x, cy, alpha=a, scale=sc)
+            paste(dst, text(L, 110, BLUE if not cur else (200, 140, 0), BLACK, shadow=False), x, cy - 120 * sc, alpha=a, scale=sc)
+            paste(dst, ic(150), x, cy + 30 * sc, alpha=a, scale=sc)
+            paste(dst, text(word, 40, DARK, BLACK, shadow=False), x, cy + 150 * sc, alpha=a, scale=sc)
+            if upto >= 0 and k < upto: paste(dst, icon_check(64), x + cw / 2 - 30, cy - chh / 2 + 30)
+        for j, ch in enumerate(v.get("chips", [])):
+            cp = prog(t, .35 + j * .4, .35); ok = not ch.startswith("!")
+            paste(dst, chip_ok(ch.lstrip("!"), ok), W / 2 - 40, cy + chh / 2 + 90 + j * 125, scale=1.3 * (.8 + .2 * eback(cp)), alpha=ease(cp * 2))
+        if v.get("big"):
+            bp = prog(t, .4, .4); paste(dst, text(v["big"], 120, YEL, BLACK), W / 2, cy + chh / 2 + 150, scale=eback(bp), alpha=ease(bp * 2))
 
 VIS = {k[4:]: v for k, v in globals().items() if k.startswith("vis_")}
 
