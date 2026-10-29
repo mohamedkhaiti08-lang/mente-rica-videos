@@ -1,0 +1,313 @@
+{
+ "label": "AHMED VS BILAL",
+ "times": "2026-11-03-1200-madre-bronca.tiempos.json",
+ "tail": 1.4,
+ "cx": 510,
+ "cap_maxw": 800,
+ "title_maxw": 820,
+ "scenes": [
+  {
+   "title": [
+    "¿Bronca delante",
+    "de tus amigos?"
+   ],
+   "tint": "red",
+   "hi": [
+    "bronca",
+    "amigos…",
+    "contestas?"
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "😳",
+    "orbit": [
+     "🗣️",
+     "👀",
+     "😬"
+    ],
+    "y": 900
+   },
+   "cap": "Tu madre te echa la bronca delante de tus amigos… ¿le contestas?"
+  },
+  {
+   "title": [
+    "Entra",
+    "tu madre…"
+   ],
+   "tint": "night",
+   "hi": [
+    "madre:",
+    "recoger!"
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "🛏️",
+    "orbit": [
+     "🧦",
+     "👕",
+     "🎮"
+    ],
+    "y": 900
+   },
+   "cap": "Estás con tus amigos, y entra tu madre: ¡Otra vez la habitación sin recoger!"
+  },
+  {
+   "title": [
+    "Silencio",
+    "total"
+   ],
+   "tint": "blue",
+   "hi": [
+    "callan.",
+    "rojo."
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "😶",
+    "orbit": [
+     "👀",
+     "👀",
+     "👀"
+    ],
+    "y": 900
+   },
+   "cap": "Todos se callan. Y tú te pones rojo."
+  },
+  {
+   "title": [
+    "Ahmed",
+    "explota"
+   ],
+   "tint": "red",
+   "hi": [
+    "explota:",
+    "pesada!"
+   ],
+   "vis": {
+    "type": "duo",
+    "focus": "ahmed",
+    "ahmed": "point",
+    "bilal": "down",
+    "ab": [
+     "¡Qué pesada!",
+     "¡Déjame ya!"
+    ],
+    "bat": 0.5,
+    "y": 940
+   },
+   "cap": "Ahmed explota: ¡Mamá, qué pesada! ¡Déjame ya!"
+  },
+  {
+   "title": [
+    "Portazo…"
+   ],
+   "tint": "red",
+   "hi": [
+    "Portazo.",
+    "tristes."
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "🚪",
+    "orbit": [
+     "💥",
+     "💔",
+     "😢"
+    ],
+    "y": 900
+   },
+   "cap": "Portazo. Su madre se queda sola, con los ojos tristes."
+  },
+  {
+   "title": [
+    "Bilal",
+    "respira…"
+   ],
+   "tint": "blue",
+   "hi": [
+    "vergüenza.",
+    "respira…"
+   ],
+   "vis": {
+    "type": "duo",
+    "focus": "bilal",
+    "ahmed": "angry",
+    "bilal": "down",
+    "y": 940
+   },
+   "cap": "Bilal también se muere de vergüenza. Pero respira…"
+  },
+  {
+   "title": [
+    "Bilal",
+    "responde"
+   ],
+   "tint": "green",
+   "hi": [
+    "Vale,",
+    "recojo."
+   ],
+   "vis": {
+    "type": "duo",
+    "focus": "bilal",
+    "ahmed": "angry",
+    "bilal": "calm",
+    "bb": [
+     "Vale, mamá.",
+     "Ahora lo recojo"
+    ],
+    "bat": 0.4,
+    "y": 940
+   },
+   "cap": "y dice: Vale, mamá. Ahora lo recojo."
+  },
+  {
+   "title": [
+    "Orgullo",
+    "vs respeto"
+   ],
+   "tint": "gold",
+   "hi": [
+    "orgullo.",
+    "grande."
+   ],
+   "vis": {
+    "type": "duo",
+    "focus": "both",
+    "ahmed": "angry",
+    "bilal": "calm",
+    "am": "😤",
+    "bm": "🤍",
+    "mat": 0.6,
+    "vs": false,
+    "y": 940
+   },
+   "cap": "Ahmed defendió su orgullo. Bilal, algo mucho más grande."
+  },
+  {
+   "title": [
+    "Allah dice",
+    "en el Corán:"
+   ],
+   "tint": "night",
+   "hi": [
+    "Corán:"
+   ],
+   "vis": {
+    "type": "book",
+    "src": "CORÁN 17:23",
+    "y": 900
+   },
+   "cap": "Allah dice en el Corán:"
+  },
+  {
+   "tint": "gold",
+   "hi": [
+    "uf,",
+    "voz."
+   ],
+   "vis": {
+    "type": "quote",
+    "lines": [
+     "«No les digas ni “uf”,",
+     "ni les levantes",
+     "la voz…"
+    ],
+    "src": "CORÁN 17:23 · SURA AL-ISRA",
+    "size": 54,
+    "y": 860
+   },
+   "cap": "No les digas ni «uf», ni les levantes la voz."
+  },
+  {
+   "tint": "gold",
+   "hi": [
+    "respeto."
+   ],
+   "vis": {
+    "type": "quote",
+    "lines": [
+     "…y háblales",
+     "siempre",
+     "con respeto.»"
+    ],
+    "src": "CORÁN 17:23 · SURA AL-ISRA",
+    "size": 58,
+    "y": 860
+   },
+   "cap": "Háblales siempre con respeto."
+  },
+  {
+   "title": [
+    "Palabra",
+    "de Allah"
+   ],
+   "tint": "green",
+   "hi": [
+    "Isra,",
+    "veintitrés."
+   ],
+   "vis": {
+    "type": "big",
+    "words": [
+     "CORÁN",
+     "17:23"
+    ],
+    "size": 150,
+    "y": 860,
+    "e": "📖"
+   },
+   "cap": "Sura Al Isra, aleya 23."
+  },
+  {
+   "title": [
+    "5 minutos",
+    "de orgullo…"
+   ],
+   "tint": "night",
+   "hi": [
+    "orgullo",
+    "siempre."
+   ],
+   "vis": {
+    "type": "steps",
+    "items": [
+     [
+      "😤",
+      "ORGULLO"
+     ],
+     [
+      "⏳",
+      "5 MIN"
+     ],
+     [
+      "🤍",
+      "MAMÁ"
+     ]
+    ],
+    "y": 920
+   },
+   "cap": "El orgullo se pasa en cinco minutos. Tu madre no estará siempre."
+  },
+  {
+   "title": [
+    "¿Y tú?"
+   ],
+   "tint": "green",
+   "hi": [
+    "Ahmed,",
+    "Bilal?"
+   ],
+   "vis": {
+    "type": "duo",
+    "focus": "both",
+    "ahmed": "down",
+    "bilal": "calm",
+    "y": 920
+   },
+   "cap": "¿Y tú? ¿Eres más Ahmed, o más Bilal? Te leo abajo."
+  }
+ ],
+ "instant": true,
+ "step_gap": 290
+}

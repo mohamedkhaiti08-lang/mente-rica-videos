@@ -367,7 +367,7 @@ def v_choice(dst, t, dur, v):
     for k, (ch, lab, col) in enumerate(opts):
         p = prog(t, 0.15 + k * 0.35, 0.45)
         if p <= 0: continue
-        cx = W / 2 + (-1 if k == 0 else 1) * 235
+        cx = CFG.get("cx", W / 2) + (-1 if k == 0 else 1) * 235
         c = RED if col == "red" else GOLD
         fill = (60, 14, 16, 235) if col == "red" else (12, 52, 40, 235)
         lay = Image.new("RGBA", (420, 520), (0, 0, 0, 0)); d = ImageDraw.Draw(lay)
@@ -380,7 +380,7 @@ def v_choice(dst, t, dur, v):
         a = ease(p) * (0.45 if (pick >= 0 and pick != k and t > 1.2) else 1.0)
         paste(dst, lay, cx, cy + math.sin(t * 2 + k) * 10, sc, a, (-4 if k == 0 else 4))
     q = prog(t, 0.5, 0.4)
-    if q > 0: paste(dst, gold_text("VS", 110), W / 2, cy, 0.5 + 0.5 * eback(q, 2.4), ease(q))
+    if q > 0: paste(dst, gold_text("VS", 110), CFG.get("cx", W / 2), cy, 0.5 + 0.5 * eback(q, 2.4), ease(q))
 
 # --- camisa rota por detrás ---
 def v_shirt(dst, t, dur, v):

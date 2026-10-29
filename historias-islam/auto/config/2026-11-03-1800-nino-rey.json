@@ -1,0 +1,311 @@
+{
+ "label": "HISTORIA REAL",
+ "times": "2026-11-03-1800-nino-rey.tiempos.json",
+ "tail": 1.2,
+ "cx": 510,
+ "cap_maxw": 800,
+ "title_maxw": 820,
+ "scenes": [
+  {
+   "title": [
+    "Un rey vs",
+    "un niño"
+   ],
+   "tint": "red",
+   "hi": [
+    "matar",
+    "cómo"
+   ],
+   "vis": {
+    "type": "choice",
+    "opts": [
+     [
+      "👑",
+      "EL REY",
+      "red"
+     ],
+     [
+      "👦",
+      "EL NIÑO",
+      "gold"
+     ]
+    ],
+    "y": 900
+   },
+   "cap": "Un rey quiso matar a un niño… y el niño le explicó cómo hacerlo."
+  },
+  {
+   "title": [
+    "Historia",
+    "real"
+   ],
+   "tint": "night",
+   "hi": [
+    "real,",
+    "Profeta,"
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "📜",
+    "orbit": [
+     "🌙",
+     "⏳"
+    ],
+    "y": 900
+   },
+   "cap": "Es una historia real, que contó el Profeta, la paz sea con él."
+  },
+  {
+   "title": [
+    "Se creía",
+    "un dios"
+   ],
+   "tint": "red",
+   "hi": [
+    "dios.",
+    "Allah."
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "👑",
+    "orbit": [
+     "🙇",
+     "🙇",
+     "🙇"
+    ],
+    "y": 900
+   },
+   "cap": "El rey se creía un dios. Pero el niño solo adoraba a Allah."
+  },
+  {
+   "title": [
+    "Intento 1:",
+    "la montaña"
+   ],
+   "tint": "night",
+   "hi": [
+    "montaña",
+    "tembló."
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "⛰️",
+    "orbit": [
+     "💥",
+     "🪨",
+     "💨"
+    ],
+    "y": 900
+   },
+   "cap": "Lo subieron a una montaña para tirarlo… y la montaña tembló."
+  },
+  {
+   "title": [
+    "Intento 2:",
+    "el mar"
+   ],
+   "tint": "blue",
+   "hi": [
+    "mar…",
+    "volcó.",
+    "vivo."
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "🌊",
+    "orbit": [
+     "⛵",
+     "💥",
+     "👦"
+    ],
+    "y": 900
+   },
+   "cap": "Lo echaron al mar… y el barco volcó. Y el niño volvió vivo."
+  },
+  {
+   "title": [
+    "«Solo podrás",
+    "matarme así»"
+   ],
+   "tint": "night",
+   "hi": [
+    "así."
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "👦",
+    "orbit": [
+     "👑",
+     "❓"
+    ],
+    "y": 900
+   },
+   "cap": "Entonces le dijo al rey: Solo podrás matarme así."
+  },
+  {
+   "title": [
+    "Todo",
+    "el pueblo"
+   ],
+   "tint": "night",
+   "hi": [
+    "pueblo,",
+    "flecha,"
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "🏹",
+    "orbit": [
+     "👥",
+     "👥",
+     "👥",
+     "👥"
+    ],
+    "y": 900
+   },
+   "cap": "Reúne a todo el pueblo, y al disparar la flecha, di:"
+  },
+  {
+   "tint": "gold",
+   "hi": [
+    "Allah,",
+    "niño."
+   ],
+   "vis": {
+    "type": "quote",
+    "lines": [
+     "«En el nombre de Allah,",
+     "el Señor",
+     "de este niño»"
+    ],
+    "src": "SAHIH MUSLIM 3005",
+    "size": 54,
+    "y": 860
+   },
+   "cap": "En el nombre de Allah, el Señor de este niño."
+  },
+  {
+   "title": [
+    "Intento 3…"
+   ],
+   "tint": "red",
+   "hi": [
+    "alcanzó."
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "🏹",
+    "orbit": [
+     "💔"
+    ],
+    "y": 900
+   },
+   "cap": "El rey lo hizo… y la flecha lo alcanzó."
+  },
+  {
+   "title": [
+    "«¡Creemos en",
+    "el Señor del niño!»"
+   ],
+   "tint": "gold",
+   "hi": [
+    "pueblo",
+    "Creemos"
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "🙌",
+    "orbit": [
+     "🙌",
+     "🙌",
+     "🙌",
+     "🙌"
+    ],
+    "y": 900
+   },
+   "cap": "Pero todo el pueblo gritó: ¡Creemos en el Señor del niño!"
+  },
+  {
+   "title": [
+    "Quiso apagar",
+    "su fe…"
+   ],
+   "tint": "green",
+   "hi": [
+    "apagar",
+    "encendió"
+   ],
+   "vis": {
+    "type": "steps",
+    "items": [
+     [
+      "👑",
+      "APAGAR"
+     ],
+     [
+      "🏹",
+      "FLECHA"
+     ],
+     [
+      "🔥",
+      "UN PUEBLO"
+     ]
+    ],
+    "y": 920
+   },
+   "cap": "El rey quería apagar su fe… y la encendió en todo un pueblo."
+  },
+  {
+   "title": [
+    "Hadiz",
+    "auténtico"
+   ],
+   "tint": "green",
+   "hi": [
+    "Sahih",
+    "Muslim,"
+   ],
+   "vis": {
+    "type": "big",
+    "words": [
+     "SAHIH MUSLIM",
+     "3005"
+    ],
+    "size": 92,
+    "y": 860,
+    "e": "📖"
+   },
+   "cap": "Lo recoge Sahih Muslim, en el hadiz 3005."
+  },
+  {
+   "title": [
+    "¿Quién ganó",
+    "de verdad?"
+   ],
+   "tint": "gold",
+   "hi": [
+    "rey…",
+    "verdad?"
+   ],
+   "vis": {
+    "type": "choice",
+    "opts": [
+     [
+      "👑",
+      "EL REY",
+      "red"
+     ],
+     [
+      "👦",
+      "EL NIÑO",
+      "gold"
+     ]
+    ],
+    "y": 900
+   },
+   "cap": "Un niño contra un rey… ¿quién ganó de verdad? Te leo abajo."
+  }
+ ],
+ "instant": true,
+ "step_gap": 300
+}
