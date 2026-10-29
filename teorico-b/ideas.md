@@ -3,9 +3,7 @@ Formato | bloque | gancho | dato (verificar SIEMPRE que sigue vigente antes de u
 
 ## Pendientes
 Prioridad ALTA = encaja con lo que funciona (pregunta tipo test A/B/C con trampa, gancho de reto, cuenta atrás y "comenta la letra"; ver que-funciona.md).
-1. [ALTA] ¿QUIÉN PASA PRIMERO? (parte 2) | prioridad, cruces y rotondas | reto | En una glorieta tienen prioridad los que ya circulan por ella frente a los que entran (art. 57 RGC) | boe.es RGC art. 57; revista.dgt.es
 2. SEÑAL MISTERIOSA | señales | pregunta directa | Señal R-1 "Ceda el paso" (triángulo invertido) vs R-2 "STOP": con STOP hay que detenerse siempre | boe.es RGC art. 151; dgt.es
-3. [ALTA → hacerla como ¿APROBARÍAS?] MITO O VERDAD | alcohol, drogas y móvil | polémica suave | Tasas de alcohol: general 0,25 mg/l aire (0,5 g/l sangre); noveles y profesionales 0,15 mg/l aire (0,3 g/l) — comprobar si la rebaja a 0,2 g/l ya está en vigor | boe.es RGC art. 20; dgt.es
 5. EN 3 PASOS | adelantamientos | POV | Cómo adelantar: comprobar, señalizar, adelantar y volver con margen; prohibido rebasar límite para adelantar | boe.es RGC arts. 82-89; revista.dgt.es
 6. CIFRA CLAVE | velocidad y distancias | estadística | 30 km/h en calles de un solo carril por sentido en ciudad (desde 2021) | boe.es RD 970/2020; dgt.es
 7. [ALTA] TRAMPAS DEL EXAMEN | conducción eficiente y clima | reto | Luz antiniebla trasera: solo con niebla densa, lluvia/nieve muy intensa; no por llovizna — OJO: una noticia de dgt.es (2021) dice que no se pone con lluvia; confirmar el texto literal del art. 106 RGC antes de usarla | boe.es RGC art. 106; dgt.es
@@ -13,7 +11,7 @@ Prioridad ALTA = encaja con lo que funciona (pregunta tipo test A/B/C con trampa
 11. CIFRA CLAVE | autopistas y autovías | urgencia | Velocidad mínima en autopista/autovía para turismos: 60 km/h — no confirmada aún en fuente oficial (dgt.es solo menciona 60 km/h para emergencias); verificar art. 49 RGC | boe.es RGC art. 49
 13. SEÑAL MISTERIOSA | señales | pregunta directa | Línea amarilla en zigzag: prohibido estacionar — OJO: el RD 465/2025 rehízo la señalización del RGC (catálogo de marcas en el anexo I); confirmar el texto vigente del zigzag antes de usarla | boe.es BOE-A-2025-12199 anexo I 5.2
 14. ERROR DE NOVATO | alcohol, drogas y móvil | estadística | Usar el móvil en la mano: 6 puntos (desde 2022) — confirmar multa oficial antes de citarla | boe.es Ley 18/2021; dgt.es
-15. EN 3 PASOS | prioridad, cruces y rotondas | POV | Salir de una rotonda: situarse en el carril derecho con antelación, señalizar y salir | revista.dgt.es; boe.es
+15. [ALTA → parte 3 de la serie ¿QUIÉN PASA PRIMERO?] EN 3 PASOS / ¿QUIÉN PASA PRIMERO? | prioridad, cruces y rotondas | POV | Salir de una rotonda: situarse en el carril derecho con antelación, señalizar y salir | revista.dgt.es; boe.es
 16. [ALTA] TRAMPAS DEL EXAMEN | velocidad y distancias | reto | Distancia de seguridad: en túneles al menos 100 m o 4 s (turismos) | boe.es RGC art. 54/ art. 18 RD túneles; dgt.es
 17. CIFRA CLAVE | documentación, puntos y noveles | estadística | ITV de turismos: primera a los 4 años, cada 2 años hasta 10, luego anual | boe.es RD 920/2017
 18. POV: ESTÁS CONDUCIENDO | conducción eficiente y clima | POV | Aquaplaning: no frenar bruscamente, sujetar el volante y soltar el acelerador | revista.dgt.es
@@ -24,7 +22,12 @@ Prioridad ALTA = encaja con lo que funciona (pregunta tipo test A/B/C con trampa
 23. [ALTA] ¿APROBARÍAS? | primeros auxilios y accidentes (PAS) | reto | Accidente en vía de doble sentido: ¿a cuántos metros se señaliza? (dgt.es habla de triángulos a 50 m; desde 2026 la V-16 es obligatoria: confirmar qué se pregunta HOY en el examen antes de usarla) | dgt.es
 24. ERROR DE NOVATO | vehículo y seguridad | polémica suave | Llevar a un niño de más de 135 cm sin elevador: la DGT recomienda SRI hasta 150 cm aunque no sea obligatorio (parte 2 sillitas; distinguir bien obligación vs recomendación) | dgt.es; revista.dgt.es
 25. [ALTA] ¿APROBARÍAS? | autopistas y autovías | reto | ¿Se puede circular marcha atrás en autopista/autovía? (prohibido, art. 80 RGC) — verificar texto vigente | boe.es RGC art. 80
-26. CIFRA CLAVE | alcohol, drogas y móvil | estadística | Tasa de alcohol de noveles: 0,15 mg/l en aire — verificar si ha cambiado en 2026 | boe.es RGC art. 20; dgt.es
+
+27. [ALTA] ¿QUIÉN PASA PRIMERO? (parte 3) | prioridad, cruces y rotondas | pregunta directa | Vehículo de emergencia con sirena en servicio urgente: tiene prioridad en el cruce sobre todos (vista cenital con ambulancia + 2 coches numerados) | boe.es RGC arts. 67-69; dgt.es
+28. [ALTA] ¿QUIÉN PASA PRIMERO? | prioridad, cruces y rotondas | reto | Agente de tráfico vs semáforo en verde: mandan las órdenes del agente (orden de prioridad de las señales, art. 133 RGC) | boe.es RGC art. 133
+29. [ALTA] ¿QUIÉN PASA PRIMERO? | prioridad, cruces y rotondas | pregunta directa | Incorporación desde un camino de tierra o una vía de servicio: cede siempre el que sale (art. 57.1.b RGC) | boe.es RGC art. 57
+30. MITO O VERDAD | alcohol, drogas y móvil | polémica suave | Sanciones por alcohol (DGT, 13/07/2026): de 0,25 a 0,50 mg/l en aire 500 € y 4 puntos; más de 0,50 mg/l 1.000 € y 6 puntos (confirmar que siguen así el día del vídeo) | dgt.es nota de prensa 20260713
+31. ESTO HA CAMBIADO | alcohol, drogas y móvil | sorpresa | Seguimiento de la rebaja a 0,2 g/l: hacer el vídeo SOLO cuando se publique en el BOE (hoy, 29/10/2026, solo ha pasado la toma en consideración) | boe.es; dgt.es
 
 ## Usadas
-- Baliza V-16 conectada (27/10) · Pasillo de emergencia (27/10) · Cruce sin señalizar, prioridad a la derecha (28/10) · Neumáticos 1,6 mm (28/10) · Puntos del novel 8→12→14→15 (29/10) · Adelantar ciclista −20 km/h, 1,5 m, cambio de carril (29/10) · Sillita hasta 1,35 m, detrás, −4 puntos (30/10) · Conducta PAS (30/10)
+- Baliza V-16 conectada (27/10) · Pasillo de emergencia (27/10) · Cruce sin señalizar, prioridad a la derecha (28/10) · Neumáticos 1,6 mm (28/10) · Puntos del novel 8→12→14→15 (29/10) · Adelantar ciclista −20 km/h, 1,5 m, cambio de carril (29/10) · Sillita hasta 1,35 m, detrás, −4 puntos (30/10) · Conducta PAS (30/10) · Glorieta: preferencia del que está dentro (31/10) · Tasa de alcohol del novel 0,15 mg/l (31/10)

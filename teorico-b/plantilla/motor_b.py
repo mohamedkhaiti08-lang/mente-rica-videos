@@ -11,7 +11,8 @@
 #   nocross, save, sign, mito, stat (admite "dec": 1 para decimales), cruce (cruce sin señales con coches numerados),
 #   tyre (neumático: tread | gauge | wet | compare), puntos (carné por puntos: card | steps),
 #   bike (ciclista cenital y adelantamiento: approach | pass | twolanes), speedo (cuentakilómetros que baja de from a to),
-#   sillita (tallímetro 1,35 m: measure | coche con sillita detrás: seat), pas (accidente: crash | tarjetas P·A·S: steps).
+#   sillita (tallímetro 1,35 m: measure | coche con sillita detrás: seat), pas (accidente: crash | tarjetas P·A·S: steps),
+#   glorieta (rotonda cenital con coches numerados dentro/entrando), alcohol (alcoholímetro: zero | trap | minor | limit | units | years | pending).
 #   hook admite "img": "seat" (sillita) y "stamp_x" (posición del sello).
 import math, json, sys, os, subprocess
 from functools import lru_cache
@@ -1127,6 +1128,200 @@ def vis_pas(dst, t, v, i):
             paste(dst, chip_ok(ch.lstrip("!"), ok), W / 2 - 40, cy + chh / 2 + 90 + j * 125, scale=1.3 * (.8 + .2 * eback(cp)), alpha=ease(cp * 2))
         if v.get("big"):
             bp = prog(t, .4, .4); paste(dst, text(v["big"], 120, YEL, BLACK), W / 2, cy + chh / 2 + 150, scale=eback(bp), alpha=ease(bp * 2))
+
+# --- glorieta vista desde arriba con coches numerados (formato ¿QUIÉN PASA PRIMERO?, parte 2) ---
+# vis: {"type": "glorieta", "tag": "...", "still": true, "inside": [1, 3], "move": [[n, inicio, dur]], "done": [n],
+#       "countdown": [t1, t2, t3], "rank": ["1", "3", "2"], "rank_at": [...], "focus": true (anillo en verde),
+#       "right": "POR LA DERECHA" (resalta al que entra), "xright": t (tacha la pill)}
+GL_C = (W / 2 - 30, CY - 30); GL_R0, GL_R1, GL_RL = 150, 300, 225
+GL_TH0 = {1: 235, 3: 165}
+def gl_pos(n, k):
+    cx, cy = GL_C
+    if n in GL_TH0:
+        th = GL_TH0[n] + 170 * k; r = math.radians(th)
+        return cx + GL_RL * math.cos(r), cy - GL_RL * math.sin(r), th
+    # coche 2: espera en el brazo sur (carril derecho) y entra girando en sentido antihorario
+    th_in = 285; jx, jy = cx + GL_RL * math.cos(math.radians(th_in)), cy - GL_RL * math.sin(math.radians(th_in))
+    if k < .35:
+        q = k / .35; return lerp(cx + 60, jx, q), lerp(cy + 400, jy, q), 0
+    q = (k - .35) / .65; th = th_in + 140 * q; r = math.radians(th)
+    return cx + GL_RL * math.cos(r), cy - GL_RL * math.sin(r), lerp(0, th - 360, clamp(q / .25))
+
+def vis_glorieta(dst, t, v, i):
+    if i == 0: t = t + 0.6  # primer fotograma: coches y pregunta ya en pantalla
+    lay = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(lay, "RGBA")
+    top, bot = VZ[0] + 10, VZ[1] + 20; cx, cy = GL_C; AW = 120
+    d.rectangle((40, top, W - 40, bot), fill=(64, 92, 60, 255))
+    for k in range(40):
+        gx, gy = 60 + (k * 263) % (W - 120), top + (k * 157) % (bot - top)
+        d.ellipse((gx - 30, gy - 18, gx + 30, gy + 18), fill=(74, 104, 68, 255))
+    road = (36, 40, 50, 255)
+    d.rectangle((cx - AW, top, cx + AW, bot), fill=road); d.rectangle((40, cy - AW, W - 40, cy + AW), fill=road)
+    d.ellipse((cx - GL_R1, cy - GL_R1, cx + GL_R1, cy + GL_R1), fill=road)
+    for x0, x1 in ((40, cx - GL_R1), (cx + GL_R1, W - 40)):  # eje discontinuo de los brazos
+        x = x0 + 10
+        while x < x1 - 40: d.line([(x, cy), (x + 44, cy)], fill=(255, 255, 255, 200), width=7); x += 85
+    for y0, y1 in ((top, cy - GL_R1), (cy + GL_R1, bot)):
+        y = y0 + 10
+        while y < y1 - 40: d.line([(cx, y), (cx, y + 44)], fill=(255, 255, 255, 200), width=7); y += 85
+    for k in range(48):  # línea discontinua exterior del anillo
+        a0 = k * 7.5
+        if any(abs(((a0 - c + 180) % 360) - 180) < 22 for c in (0, 90, 180, 270)): continue
+        r = GL_R1 - 10; d.arc((cx - r, cy - r, cx + r, cy + r), -a0, -a0 + 4, fill=(255, 255, 255, 200), width=6)
+    if v.get("focus"):  # anillo de "dentro" en verde
+        pa = ease(prog(t, .2, .5)); a = int(130 * pa * (.7 + .3 * math.sin(t * 6)))
+        d.ellipse((cx - GL_R1 + 14, cy - GL_R1 + 14, cx + GL_R1 - 14, cy + GL_R1 - 14), fill=(34, 197, 94, a))
+        d.ellipse((cx - GL_R0 - 8, cy - GL_R0 - 8, cx + GL_R0 + 8, cy + GL_R0 + 8), fill=road)
+    d.ellipse((cx - GL_R0 - 10, cy - GL_R0 - 10, cx + GL_R0 + 10, cy + GL_R0 + 10), fill=(235, 235, 235, 255))  # bordillo
+    d.ellipse((cx - GL_R0, cy - GL_R0, cx + GL_R0, cy + GL_R0), fill=(78, 140, 70, 255))
+    for k in range(6):  # arbustos de la isleta
+        an = k * math.pi / 3 + .4; bx, by = cx + math.cos(an) * 80, cy + math.sin(an) * 80
+        d.ellipse((bx - 30, by - 30, bx + 30, by + 30), fill=(54, 112, 52, 255))
+    d.ellipse((cx - 38, cy - 38, cx + 38, cy + 38), fill=(255, 196, 0, 255))
+    # flechas de sentido de giro (antihorario) en el anillo
+    for c in (45, 135, 225, 315):
+        r = math.radians(c); ax, ay = cx + GL_RL * math.cos(r), cy - GL_RL * math.sin(r)
+        hd = r + math.pi / 2; dx, dy = math.cos(hd), -math.sin(hd); px, py = -dy, dx
+        al = int(110 + 60 * math.sin(t * 4 + c))
+        d.polygon([(ax + dx * 34, ay + dy * 34), (ax - dx * 10 + px * 26, ay - dy * 10 + py * 26), (ax - dx * 10 - px * 26, ay - dy * 10 - py * 26)], fill=(255, 255, 255, al))
+    done = set(v.get("done", [])); moves = {m[0]: (m[1], m[2]) for m in v.get("move", [])}
+    if v.get("right") and 2 not in done and (2 not in moves or t < moves[2][0]):  # halo en el coche que quiere entrar
+        x, y, _ = gl_pos(2, 0); pa = .6 + .4 * math.sin(t * 7)
+        g = Image.new("RGBA", (W, H), (0, 0, 0, 0)); ImageDraw.Draw(g).ellipse((x - 110, y - 150, x + 110, y + 150), fill=(255, 196, 0, int(150 * pa)))
+        lay.alpha_composite(g.filter(ImageFilter.GaussianBlur(18)))
+    for n in (3, 1, 2):
+        if n in done: continue
+        k = 0.0
+        if n in moves: s, du = moves[n]; k = ease(prog(t, s, du))
+        x, y, rot = gl_pos(n, k)
+        if k == 0 and not v.get("still") and n in GL_TH0:  # al empezar, ya van girando
+            k2 = -.12 * (1 - eout(prog(t, 0, .6))); x, y, rot = gl_pos(n, k2)
+        paste(lay, car_top(CRUCE_COLS[n], 110), x, y, rot=rot)
+        paste(lay, num_badge(n, 74), x, y, scale=eback(prog(t, .1 + n * .1, .35)) if not v.get("still") else 1)  # número sobre el techo
+    m = Image.new("L", (W, H), 0); ImageDraw.Draw(m).rounded_rectangle((40, top, W - 40, bot), radius=36, fill=255)
+    lay.putalpha(Image.fromarray(np.minimum(np.array(lay.split()[3]), np.array(m)))); dst.alpha_composite(lay)
+    if v.get("right"):
+        p = prog(t, .3, .35); pl = pill(v["right"], 40, YEL, NAVY); px, py = 60 + pl.width / 2, bot - 120
+        paste(dst, pl, px, py, scale=eback(p), alpha=ease(p * 2))
+        xr = v.get("xright")
+        if xr is not None and t > xr: paste(dst, icon_x(90), px + pl.width / 2 + 10, py - 50, scale=eback(prog(t, xr, .3)))
+    cd = v.get("countdown")
+    if cd:
+        n = sum(1 for s in cd if t >= s); ix, iy = 110, top + 170
+        paste(dst, semaphore(n).resize((115, 300), Image.LANCZOS), ix, iy, scale=eback(prog(t, 0, .4)))
+        if n:
+            pk = prog(t, cd[n - 1], .25)
+            paste(dst, text(str(4 - n), 190, [RED, (255, 176, 0), GREEN][n - 1], BLACK), 110, iy + 300, scale=lerp(1.6, 1, eout(pk)), alpha=ease(pk * 2))
+    rk = v.get("rank")
+    if rk:
+        ra = v.get("rank_at", [0] * len(rk))
+        for j, (lab, at) in enumerate(zip(rk, ra)):
+            p = prog(t, at, .35)
+            if p > 0: paste(dst, rank_chip(j + 1, int(lab)), 160, top + 70 + j * 92, scale=eback(p), alpha=ease(p * 2))
+    if v.get("tag"):
+        tp = prog(t, .35, .4) if i else 1.0
+        paste(dst, pill(v["tag"], 58 if i == 0 else 42, YEL, NAVY), W / 2 - 30, bot - 50 if v.get("tag_low") else top + 60, scale=eback(tp), alpha=ease(tp * 2))
+
+# --- alcoholímetro (formato TRAMPAS DEL EXAMEN, bloque alcohol, drogas y móvil) ---
+# vis: {"type": "alcohol", "mode": "zero" | "trap" | "minor" | "limit" | "units" | "years" | "pending", ...}
+@lru_cache(maxsize=64)
+def breathalyzer(val, col=GREEN, w=330, h=560):
+    im = ss(w, h + 150); d = ImageDraw.Draw(im); X, Y = w * 2, (h + 150) * 2; o = 300
+    d.rounded_rectangle((X * .4, 0, X * .6, o + 40), radius=26, fill=(235, 240, 248))           # boquilla
+    d.rounded_rectangle((X * .43, 20, X * .57, 60), radius=12, fill=(190, 200, 215))
+    d.rounded_rectangle((0, o, X - 1, Y - 1), radius=int(X * .18), fill=(28, 36, 54))            # cuerpo
+    d.rounded_rectangle((14, o + 14, X - 15, Y - 15), radius=int(X * .16), outline=(70, 84, 110), width=10)
+    d.rounded_rectangle((X * .1, o + 90, X * .9, o + 430), radius=36, fill=(12, 18, 14))         # pantalla
+    d.rounded_rectangle((X * .13, o + 112, X * .87, o + 408), radius=26, fill=mix(col, (10, 16, 12), .78))
+    f = F(BLACK, 170); bb = f.getbbox(val); d.text((X / 2 - (bb[0] + bb[2]) / 2, o + 230 - (bb[1] + bb[3]) / 2), val, font=f, fill=col)
+    f2 = F(XB, 52); u = "mg/l aire"; bb = f2.getbbox(u); d.text((X / 2 - (bb[0] + bb[2]) / 2, o + 350 - (bb[1] + bb[3]) / 2), u, font=f2, fill=col)
+    for k, c in enumerate(((34, 197, 94), (255, 196, 0), (239, 68, 68))):                          # leds
+        cx = X * (.3 + .2 * k); d.ellipse((cx - 30, o + 500, cx + 30, o + 560), fill=c if c == col else mix(c, (28, 36, 54), .7))
+    d.rounded_rectangle((X * .25, Y - 230, X * .75, Y - 120), radius=50, fill=(18, 86, 190))      # botón
+    return down(im)
+
+@lru_cache(maxsize=4)
+def drop_icon(s=160):
+    im = ss(s, s); d = ImageDraw.Draw(im); S = s * 2
+    d.polygon([(S / 2, S * .04), (S * .2, S * .55), (S * .8, S * .55)], fill=RED); d.ellipse((S * .18, S * .34, S * .82, S * .96), fill=RED)
+    d.ellipse((S * .3, S * .55, S * .44, S * .72), fill=(255, 170, 170)); return down(im)
+
+@lru_cache(maxsize=4)
+def breath_icon(s=160):
+    im = ss(s, s); d = ImageDraw.Draw(im); S = s * 2; c = BLUE_L
+    for k, (x, y, r) in enumerate(((.3, .55, .2), (.52, .42, .24), (.72, .58, .18), (.5, .66, .2))):
+        d.ellipse((S * (x - r), S * (y - r), S * (x + r), S * (y + r)), fill=c)
+    for k in range(3): d.arc((S * .08, S * (.1 + k * .1), S * .5, S * (.4 + k * .1)), 200, 320, fill=WHITE, width=12)
+    return down(im)
+
+@lru_cache(maxsize=8)
+def calendar_page(lab, s=250):
+    im = ss(s, int(s * 1.1)); d = ImageDraw.Draw(im); S = s * 2; Hh = int(S * 1.1)
+    d.rounded_rectangle((0, 20, S - 1, Hh - 1), radius=40, fill=WHITE); d.rounded_rectangle((0, 20, S - 1, S * .34), radius=40, fill=RED)
+    d.rectangle((0, S * .22, S - 1, S * .34), fill=RED)
+    for x in (.28, .72): d.rounded_rectangle((S * x - 14, 0, S * x + 14, 70), radius=12, fill=(60, 70, 90))
+    f = F(BLACK, int(S * .13)); bb = f.getbbox("AÑO"); d.text((S / 2 - (bb[0] + bb[2]) / 2, S * .2 - (bb[1] + bb[3]) / 2), "AÑO", font=f, fill=WHITE)
+    f = F(BLACK, int(S * .5)); bb = f.getbbox(lab); d.text((S / 2 - (bb[0] + bb[2]) / 2, S * .7 - (bb[1] + bb[3]) / 2), lab, font=f, fill=DARK)
+    return down(im)
+
+def vis_alcohol(dst, t, v, i):
+    mode = v.get("mode", "zero")
+    if i == 0: t = t + 0.6  # primer fotograma: gancho ya en pantalla
+    bx, by = W / 2 - 40, CY + 130
+    if mode in ("zero", "trap", "minor", "limit"):
+        if mode == "limit":
+            val = v.get("value", .15) * eout(prog(t, .2, 1.4)); s = f"{val:.2f}".replace(".", ",")
+            col = GREEN if val < v.get("value", .15) - .001 else (255, 196, 0)
+        else: s, col = "0,00", (GREEN if mode == "minor" else (255, 196, 0))
+        p = eback(prog(t, 0, .5)); wob = math.sin(t * 3) * 3
+        cx = bx - (170 if mode in ("limit", "minor") else 0)
+        paste(dst, breathalyzer(s, col, 290, 490), cx, by + (1 - p) * 160 + (math.sin(t * 2.5) * 10 if mode != "limit" else 0), alpha=ease(prog(t, 0, .25)), rot=wob if mode != "limit" else 0)
+        if mode in ("zero", "trap"):
+            big_lines(dst, v.get("lines", ["¿NOVEL =", "TASA CERO?"]), t, VZ[0] + 70, [tuple(c) for c in v.get("cols", [])] or [WHITE, YEL], size=120, stagger=.18)
+            if mode == "zero":
+                qp = prog(t, .5, .4); paste(dst, text("?", 220, YEL, BLACK), bx + 250, by - 120 + math.sin(t * 5) * 14, scale=eback(qp), alpha=ease(qp * 2), rot=-10)
+            else:
+                sp = prog(t, .35, .2)
+                if sp > 0: paste(dst, stamp_col("TRAMPA", RED), bx + 20, by + 40, scale=lerp(2.2, 1, eout(sp)), alpha=ease(sp * 1.6), rot=-12)
+        if mode == "minor":
+            paste(dst, pill(v.get("tag", "MENORES DE EDAD"), 40, GREEN, WHITE), W / 2 + 170, CY - 80, scale=eback(prog(t, .3, .35)), alpha=ease(prog(t, .3, .3)))
+            paste(dst, text("0,0", 190, WHITE, BLACK), W / 2 + 170, CY + 90, scale=eback(prog(t, .5, .35)), alpha=ease(prog(t, .5, .3)))
+        if mode == "limit":  # barra con el límite del novel
+            gx, g0, g1 = W / 2 + 230, VZ[1] - 40, VZ[0] + 60; d = ImageDraw.Draw(dst, "RGBA"); vmax = .30
+            yv = lambda q: g0 - (g0 - g1) * q / vmax
+            a = ease(prog(t, 0, .3)); lim = v.get("value", .15)
+            d.rounded_rectangle((gx - 55, g1, gx + 55, g0), radius=30, fill=(255, 255, 255, int(40 * a)))
+            d.rounded_rectangle((gx - 55, g1, gx + 55, yv(lim)), radius=30, fill=RED + (int(140 * a),))
+            d.rectangle((gx - 55, yv(lim), gx + 55, g0 - 30), fill=GREEN + (int(140 * a),))
+            d.rounded_rectangle((gx - 55, g0 - 60, gx + 55, g0), radius=30, fill=GREEN + (int(140 * a),))
+            d.rounded_rectangle((gx - 34, min(yv(val), g0 - 60), gx + 34, g0 - 14), radius=22, fill=WHITE + (int(230 * a),))
+            for q, lab in ((0, "0"), (.15, "0,15"), (.25, "0,25")):
+                d.line([(gx - 75, yv(q)), (gx - 55, yv(q))], fill=WHITE + (int(200 * a),), width=6)
+                paste(dst, text(lab, 34, WHITE, XB, shadow=False), gx - 130, yv(q), alpha=a)
+            lp = prog(t, 1.4, .35)
+            paste(dst, pill(v.get("tag", "LÍMITE NOVEL"), 40, YEL, NAVY), W / 2 - 90, VZ[0] + 70, scale=eback(lp), alpha=ease(lp * 2))
+    elif mode == "units":
+        for k, (ic, big, unit, lab) in enumerate(((breath_icon, "0,15", "mg/l", "EN AIRE"), (drop_icon, "0,3", "g/l", "EN SANGRE"))):
+            p = eback(prog(t, k * .45, .45)); a = ease(prog(t, k * .45, .3)); x = W / 2 - 40 + (k * 2 - 1) * 225; y = CY + 10 + (1 - p) * 150
+            paste(dst, card(400, 600, fill=(255, 255, 255, 250), r=40, border=YEL if k else None, bw=8 if k else 0), x, y, alpha=a)
+            paste(dst, pill(lab, 34, BLUE if not k else RED, WHITE), x, y - 240, alpha=a)
+            paste(dst, ic(170), x, y - 80, alpha=a, scale=1 + .04 * math.sin(t * 5 + k))
+            paste(dst, text(big, 120, DARK, BLACK, shadow=False), x, y + 100, alpha=a)
+            paste(dst, text(unit, 50, (90, 96, 110), XB, shadow=False), x, y + 200, alpha=a)
+        ep = prog(t, .9, .3); paste(dst, text("=", 120, YEL, BLACK), W / 2 - 40, CY + 10, scale=eback(ep), alpha=ease(ep * 2))
+    elif mode == "years":
+        for k in range(2):
+            p = prog(t, .1 + k * .5, .4); x = W / 2 - 40 + (k * 2 - 1) * 170
+            paste(dst, calendar_page(str(k + 1)), x, CY - 40 + (1 - eback(p)) * 120, alpha=ease(p * 2), rot=(1 - eout(p)) * 15 * (k * 2 - 1))
+            if t > .5 + k * .5: paste(dst, icon_check(80), x + 95, CY - 170, scale=eback(prog(t, .5 + k * .5, .3)))
+        paste(dst, pill(v.get("tag", "PERMISO NOVEL: 0,15"), 46, YEL, NAVY), W / 2 - 40, CY + 260, scale=eback(prog(t, 1.2, .35)), alpha=ease(prog(t, 1.2, .3)))
+    else:  # pending: documento con sello rojo "NO EN VIGOR"
+        p = eback(prog(t, 0, .5)); c = doc_card(); paste(dst, c, W / 2 - 40, CY + (1 - p) * 220, alpha=ease(prog(t, 0, .25)), rot=(1 - p) * 6)
+        paste(dst, text(v.get("title1", "Rebaja a 0,2 g/l"), 54, DARK, BLACK, shadow=False), W / 2 - 40, CY - 130, alpha=ease(prog(t, .2, .3)))
+        paste(dst, text(v.get("title2", "en el Congreso"), 46, (90, 96, 110), XB, shadow=False), W / 2 - 40, CY - 65, alpha=ease(prog(t, .2, .3)))
+        sp = prog(t, .7, .22)
+        if sp > 0: paste(dst, stamp_col(v.get("stamp", "NO EN VIGOR"), RED), W / 2 - 20, CY + 110, scale=lerp(2.2, 1, eout(sp)) * .8, alpha=ease(sp * 1.6), rot=-8)
+        if v.get("badge"): paste(dst, pill(v["badge"], 40, YEL, NAVY), W / 2 - 40, CY + 330, scale=eback(prog(t, 1.1, .4)), alpha=ease(prog(t, 1.1, .3)))
 
 VIS = {k[4:]: v for k, v in globals().items() if k.startswith("vis_")}
 

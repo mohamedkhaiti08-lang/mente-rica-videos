@@ -1,0 +1,12 @@
+{"label": "TRAMPAS DEL EXAMEN", "times": "tiempos.json", "voice": "voz.wav", "tail": 1.3,
+ "sfx": [{"t": 4.3, "type": "buzz"}, {"t": 11.3, "type": "ding"}, {"t": 22.3, "type": "buzz"}],
+ "scenes": [
+  {"cap": "Mucha gente cree que un conductor novel tiene que dar 0,0 en alcohol.", "hi": ["novel", "0,0"], "vis": {"type": "alcohol", "mode": "zero", "lines": ["¿NOVEL =", "TASA CERO?"]}},
+  {"cap": "Y esa es la trampa del examen. ¿Sabes cuál es su límite?", "hi": ["trampa", "límite?"], "vis": {"type": "alcohol", "mode": "trap", "lines": ["PREGUNTA", "TRAMPA"], "cols": [[255,255,255],[239,68,68]]}},
+  {"cap": "El 0,0 es solo para los menores de edad.", "hi": ["0,0", "menores"], "vis": {"type": "alcohol", "mode": "minor", "tag": "MENORES DE EDAD"}},
+  {"cap": "Para un novel, el límite es 0,15 mg/l en aire espirado.", "hi": ["0,15", "mg/l"], "vis": {"type": "alcohol", "mode": "limit", "value": 0.15, "tag": "LÍMITE NOVEL: 0,15"}},
+  {"cap": "O lo que es lo mismo: 0,3 g/l en sangre.", "hi": ["0,3", "sangre."], "vis": {"type": "alcohol", "mode": "units"}},
+  {"cap": "Y se aplica durante los 2 primeros años del carné.", "hi": ["2", "años"], "vis": {"type": "alcohol", "mode": "years", "tag": "2 AÑOS: 0,15 mg/l"}},
+  {"cap": "Ojo: la bajada a 0,2 todavía NO está en vigor.", "hi": ["0,2", "NO"], "vis": {"type": "alcohol", "mode": "pending", "title1": "Rebaja a 0,2 g/l", "title2": "en el Congreso", "stamp": "NO EN VIGOR", "badge": "Hoy: 0,15 aire · 0,3 sangre"}},
+  {"cap": "Guárdalo, que esta cae en el examen.", "hi": ["Guárdalo,", "examen."], "vis": {"type": "save", "big": "GUÁRDALO", "small": "Esta cae en el examen"}}
+ ]}

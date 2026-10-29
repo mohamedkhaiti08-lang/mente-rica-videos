@@ -1,0 +1,15 @@
+{
+ "speed": 1.08,
+ "pause": 0.3,
+ "lines": [
+  "Parte dos. ¿Quién pasa primero en esta rotonda?",
+  "El uno y el tres ya están dentro, dando la vuelta.",
+  "El dos quiere entrar, y les viene por la derecha.",
+  "Tienes tres segundos.",
+  "¡Primero el uno, y luego el tres! Ya están dentro.",
+  "El dos espera, aunque venga por la derecha.",
+  "En una glorieta, tiene preferencia el que ya circula por dentro.",
+  "¿Te la sabías? Pon sí o no en comentarios, y hago la parte tres."
+ ],
+ "gaps": {"3": 2.6}
+}
