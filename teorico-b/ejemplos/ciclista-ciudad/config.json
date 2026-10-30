@@ -1,0 +1,172 @@
+{
+ "label": "POV: ESTÁS CONDUCIENDO · PARTE 2",
+ "times": "tiempos.json",
+ "voice": "voz.wav",
+ "tail": 1.3,
+ "sfx": [
+  {
+   "t": 6.75,
+   "type": "buzz"
+  },
+  {
+   "t": 17.13,
+   "type": "beep"
+  },
+  {
+   "t": 18.03,
+   "type": "beep"
+  },
+  {
+   "t": 18.93,
+   "type": "beep"
+  },
+  {
+   "t": 19.8,
+   "type": "ding"
+  },
+  {
+   "t": 23.35,
+   "type": "buzz"
+  }
+ ],
+ "scenes": [
+  {
+   "cap": "Parte 2. Vas por la ciudad y llevas un ciclista delante, en mitad de tu carril.",
+   "hi": [
+    "ciudad",
+    "ciclista",
+    "mitad"
+   ],
+   "vis": {
+    "type": "pov",
+    "mode": "approach",
+    "z0": 0.12,
+    "z": 0.5,
+    "tag": "¿A CUÁNTOS METROS VAS?",
+    "tag_at": 0,
+    "lab": "EN MITAD DE TU CARRIL",
+    "lab_at": 2.6
+   }
+  },
+  {
+   "cap": "¿Le pitas para que se aparte?",
+   "hi": [
+    "pitas"
+   ],
+   "vis": {
+    "type": "pov",
+    "mode": "horn",
+    "tag": "¿QUÉ HACES?",
+    "tag_at": 0.1,
+    "z": 0.5
+   }
+  },
+  {
+   "cap": "No. En ciudad, el ciclista puede ir por el centro del carril.",
+   "hi": [
+    "No.",
+    "centro"
+   ],
+   "vis": {
+    "type": "pov",
+    "mode": "center",
+    "lab": "PUEDE IR POR EL CENTRO",
+    "z": 0.5
+   }
+  },
+  {
+   "cap": "Entonces, ¿a cuántos metros vas detrás, como mínimo? ¿2, 5 o 10?",
+   "hi": [
+    "metros",
+    "mínimo?"
+   ],
+   "vis": {
+    "type": "pov",
+    "mode": "options",
+    "opts": [
+     "2 m",
+     "5 m",
+     "10 m"
+    ],
+    "opts_at": [
+     2.45,
+     2.95,
+     3.4
+    ],
+    "tag": "DISTANCIA MÍNIMA DETRÁS",
+    "tag_at": 0.2,
+    "z": 0.5
+   }
+  },
+  {
+   "cap": "Pon tu letra en comentarios. Tienes 3 segundos.",
+   "hi": [
+    "letra",
+    "comentarios."
+   ],
+   "vis": {
+    "type": "pov",
+    "mode": "options",
+    "opts": [
+     "2 m",
+     "5 m",
+     "10 m"
+    ],
+    "opts_on": true,
+    "countdown": [
+     2.95,
+     3.85,
+     4.75
+    ],
+    "lab": "¿A, B o C? COMENTA",
+    "lab_at": 0.2,
+    "z": 0.5
+   }
+  },
+  {
+   "cap": "¡5 metros, como mínimo, detrás de la bici!",
+   "hi": [
+    "5",
+    "metros,"
+   ],
+   "vis": {
+    "type": "pov",
+    "mode": "gap",
+    "opts": [
+     "2 m",
+     "5 m",
+     "10 m"
+    ],
+    "opts_on": true,
+    "ok": 1,
+    "reveal": true,
+    "gap": "5 m MÍNIMO",
+    "z": 0.5
+   }
+  },
+  {
+   "cap": "Es norma nueva, desde el 1 de octubre de 2026.",
+   "hi": [
+    "nueva,",
+    "2026."
+   ],
+   "vis": {
+    "type": "law",
+    "stamp": "R.D. 518/2026",
+    "badge": "VÍAS URBANAS · EN VIGOR 1/10/2026"
+   }
+  },
+  {
+   "cap": "Mándaselo a quien se esté sacando el carnet.",
+   "hi": [
+    "Mándaselo",
+    "carnet."
+   ],
+   "vis": {
+    "type": "cta",
+    "big": "¡Mándaselo!",
+    "small": "a quien se esté sacando el carnet"
+   }
+  }
+ ]
+}

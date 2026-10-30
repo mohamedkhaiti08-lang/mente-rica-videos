@@ -2,7 +2,7 @@
 Formato | bloque | gancho | dato (verificar SIEMPRE que sigue vigente antes de usarlo) | fuente a consultar
 
 ## Pendientes
-Prioridad ALTA = encaja con lo que funciona (pregunta tipo test A/B/C con trampa, gancho de reto, cuenta atrás y "comenta la letra"; ver que-funciona.md).
+Prioridad ALTA = encaja con lo que funciona (30/10: situación de carretera que se entiende sin leer —cenital o POV— con pregunta en la primera frase, adivinar con cuenta atrás y final que pide comentar o la parte siguiente; ver que-funciona.md).
 2. SEÑAL MISTERIOSA | señales | pregunta directa | Señal R-1 "Ceda el paso" (triángulo invertido) vs R-2 "STOP": con STOP hay que detenerse siempre | boe.es RGC art. 151; dgt.es
 5. EN 3 PASOS | adelantamientos | POV | Cómo adelantar: comprobar, señalizar, adelantar y volver con margen; prohibido rebasar límite para adelantar | boe.es RGC arts. 82-89; revista.dgt.es
 6. CIFRA CLAVE | velocidad y distancias | estadística | 30 km/h en calles de un solo carril por sentido en ciudad (desde 2021) | boe.es RD 970/2020; dgt.es
@@ -25,9 +25,11 @@ Prioridad ALTA = encaja con lo que funciona (pregunta tipo test A/B/C con trampa
 
 27. [ALTA] ¿QUIÉN PASA PRIMERO? (parte 3) | prioridad, cruces y rotondas | pregunta directa | Vehículo de emergencia con sirena en servicio urgente: tiene prioridad en el cruce sobre todos (vista cenital con ambulancia + 2 coches numerados) | boe.es RGC arts. 67-69; dgt.es
 28. [ALTA] ¿QUIÉN PASA PRIMERO? | prioridad, cruces y rotondas | reto | Agente de tráfico vs semáforo en verde: mandan las órdenes del agente (orden de prioridad de las señales, art. 133 RGC) | boe.es RGC art. 133
-29. [ALTA] ¿QUIÉN PASA PRIMERO? | prioridad, cruces y rotondas | pregunta directa | Incorporación desde un camino de tierra o una vía de servicio: cede siempre el que sale (art. 57.1.b RGC) | boe.es RGC art. 57
 30. MITO O VERDAD | alcohol, drogas y móvil | polémica suave | Sanciones por alcohol (DGT, 13/07/2026): de 0,25 a 0,50 mg/l en aire 500 € y 4 puntos; más de 0,50 mg/l 1.000 € y 6 puntos (confirmar que siguen así el día del vídeo) | dgt.es nota de prensa 20260713
 31. ESTO HA CAMBIADO | alcohol, drogas y móvil | sorpresa | Seguimiento de la rebaja a 0,2 g/l: hacer el vídeo SOLO cuando se publique en el BOE (hoy, 29/10/2026, solo ha pasado la toma en consideración) | boe.es; dgt.es
+32. [ALTA] ¿QUIÉN PASA PRIMERO? (parte 4) | prioridad, cruces y rotondas | pregunta directa | Tranvía: los vehículos que circulan por raíles tienen preferencia sobre los demás aunque vengan por la izquierda (Ley de Tráfico art. 23.2.b, verificado en boe.es el 30/10/2026; volver a mirar que sigue igual) | boe.es BOE-A-2015-11722
+33. [ALTA] POV: ESTÁS CONDUCIENDO (parte 3 ciclistas) | peatones, ciclistas y patinetes | POV | Calle de un solo carril a 30 o menos con bicis en doble sentido señalizado: arrímate a la derecha para dejarlas pasar (nuevo art. 153.6 RGC, RD 518/2026) — usar el visual "pov" en primera persona | boe.es BOE-A-2026-13889
+34. [ALTA] POV: ESTÁS CONDUCIENDO | peatones, ciclistas y patinetes | POV | Ciclista en ciudad: no puede ir por la acera (salvo menores de 12 acompañados si lo permite el ayuntamiento; art. 153.2 RGC, RD 518/2026) | boe.es BOE-A-2026-13889
 
 ## Usadas
-- Baliza V-16 conectada (27/10) · Pasillo de emergencia (27/10) · Cruce sin señalizar, prioridad a la derecha (28/10) · Neumáticos 1,6 mm (28/10) · Puntos del novel 8→12→14→15 (29/10) · Adelantar ciclista −20 km/h, 1,5 m, cambio de carril (29/10) · Sillita hasta 1,35 m, detrás, −4 puntos (30/10) · Conducta PAS (30/10) · Glorieta: preferencia del que está dentro (31/10) · Tasa de alcohol del novel 0,15 mg/l (31/10)
+- Baliza V-16 conectada (27/10) · Pasillo de emergencia (27/10) · Cruce sin señalizar, prioridad a la derecha (28/10) · Neumáticos 1,6 mm (28/10) · Puntos del novel 8→12→14→15 (29/10) · Adelantar ciclista −20 km/h, 1,5 m, cambio de carril (29/10) · Sillita hasta 1,35 m, detrás, −4 puntos (30/10) · Conducta PAS (30/10) · Glorieta: preferencia del que está dentro (31/10) · Tasa de alcohol del novel 0,15 mg/l (31/10) · Ciclista en ciudad: centro del carril y 5 m detrás (1/11) · Camino de tierra cede al asfalto, parte 3 prioridad (1/11)

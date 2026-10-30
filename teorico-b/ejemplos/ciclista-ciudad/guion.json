@@ -1,0 +1,17 @@
+{
+ "speed": 1.06,
+ "pause": 0.28,
+ "gaps": {
+  "4": 2.6
+ },
+ "lines": [
+  "Parte dos. Vas por la ciudad, y llevas un ciclista delante, en mitad de tu carril.",
+  "¿Le pitas para que se aparte?",
+  "No. En ciudad, el ciclista puede ir por el centro del carril.",
+  "Entonces, ¿a cuántos metros vas detrás, como mínimo? ¿Dos, cinco, o diez?",
+  "Pon tu letra en comentarios. Tienes tres segundos.",
+  "¡Cinco metros, como mínimo, detrás de la bici!",
+  "Es norma nueva, desde el uno de octubre de dos mil veintiséis.",
+  "Mándaselo a quien se esté sacando el carnet."
+ ]
+}

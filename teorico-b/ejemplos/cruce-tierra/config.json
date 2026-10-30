@@ -1,0 +1,12 @@
+{"label": "¿QUIÉN PASA PRIMERO? · PARTE 3", "times": "tiempos.json", "voice": "voz.wav", "tail": 1.3,
+ "sfx": [{"t": 3.25, "type": "buzz"}, {"t": 9.14, "type": "beep"}, {"t": 10.04, "type": "beep"}, {"t": 10.94, "type": "beep"}, {"t": 11.8, "type": "ding"}],
+ "scenes": [
+  {"cap": "Parte 3. ¿Quién pasa primero en este cruce?", "hi": ["primero", "cruce?"], "vis": {"type": "cruce", "dirt": true, "tag": "¿1, 2 o 3?"}},
+  {"cap": "Ojo: el 2 sale de un camino de tierra.", "hi": ["2", "tierra."], "vis": {"type": "cruce", "dirt": true, "dirt_hl": true, "still": true, "tag": "CAMINO DE TIERRA"}},
+  {"cap": "Y al 1, el 2 le viene por la derecha.", "hi": ["1,", "derecha."], "vis": {"type": "cruce", "dirt": true, "still": true, "focus": 1, "tag": "POR LA DERECHA DEL 1"}},
+  {"cap": "Tienes 3 segundos.", "hi": ["3"], "vis": {"type": "cruce", "dirt": true, "still": true, "countdown": [1.47, 2.37, 3.27], "tag": "¿1, 2 o 3?"}},
+  {"cap": "¡Primero el 1! El 2 viene de tierra y cede a todos.", "hi": ["1!", "tierra", "todos."], "vis": {"type": "cruce", "dirt": true, "still": true, "move": [[1, 0.3, 1.4]], "rank": ["1"], "rank_at": [0.2]}},
+  {"cap": "Luego el 3, que tiene al 1 a su derecha. Y el último, el 2.", "hi": ["3,", "último,", "2."], "vis": {"type": "cruce", "dirt": true, "still": true, "done": [1], "move": [[3, 0.3, 1.4], [2, 2.3, 1.2]], "rank": ["1", "3", "2"], "rank_at": [0, 0.4, 2.4]}},
+  {"cap": "El que sale de un camino sin asfaltar cede siempre al que va por el asfalto.", "hi": ["sin", "asfaltar", "asfalto."], "vis": {"type": "cruce", "dirt": true, "dirt_hl": true, "still": true, "tag": "ASFALTO ANTES QUE TIERRA"}},
+  {"cap": "¿Acertaste? Pon el orden en comentarios. ¿Parte 4, con tranvía?", "hi": ["orden", "tranvía?"], "vis": {"type": "cta", "big": "¿Acertaste?", "small": "Pon el orden · ¿Parte 4 con tranvía?"}}
+ ]}

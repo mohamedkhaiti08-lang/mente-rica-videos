@@ -12,6 +12,8 @@
 #   tyre (neumático: tread | gauge | wet | compare), puntos (carné por puntos: card | steps),
 #   bike (ciclista cenital y adelantamiento: approach | pass | twolanes), speedo (cuentakilómetros que baja de from a to),
 #   sillita (tallímetro 1,35 m: measure | coche con sillita detrás: seat), pas (accidente: crash | tarjetas P·A·S: steps),
+#   pov (calle urbana en primera persona con salpicadero y ciclista delante: approach | center | horn | options | gap),
+#   cruce admite "dirt": true (brazo este = camino de tierra) y "dirt_hl".
 #   glorieta (rotonda cenital con coches numerados dentro/entrando), alcohol (alcoholímetro: zero | trap | minor | limit | units | years | pending).
 #   hook admite "img": "seat" (sillita) y "stamp_x" (posición del sello).
 import math, json, sys, os, subprocess
@@ -661,6 +663,7 @@ def sign_ceda(s=170):
     return down(im)
 
 def vis_cruce(dst, t, v, i):
+    if i == 0: t = t + 0.6  # primer fotograma: coches, números y pregunta ya en pantalla
     lay = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(lay, "RGBA")
     top, bot = VZ[0] + 10, VZ[1] + 20; cx, cy = W / 2, CY
     d.rectangle((40, top, W - 40, bot), fill=(64, 92, 60, 255))
@@ -679,6 +682,21 @@ def vis_cruce(dst, t, v, i):
         d.line([(cx + RW - 8, y0), (cx + RW - 8, y1)], fill=(255, 255, 255, 220), width=6)
         y = y0 + 10
         while y < y1 - 40: d.line([(cx, y), (cx, y + 50)], fill=(255, 255, 255, 200), width=7); y += 95
+    if v.get("dirt"):  # brazo este = camino de tierra (sin asfaltar): sin marcas, bordes irregulares, piedras y rodadas
+        x0 = cx + RW; d.rectangle((x0, cy - RW - 14, W - 40, cy + RW + 14), fill=(64, 92, 60, 255))
+        for k in range(8): gx = x0 + 40 + k * 70; d.ellipse((gx - 30, cy - RW - 30, gx + 30, cy - RW + 6), fill=(74, 104, 68, 255))
+        L = W - 40 - x0
+        up = [(x0, cy - RW)] + [(x0 + L * (k + 1) / 13, cy - RW + 12 + 10 * math.sin(k * 1.7)) for k in range(12)] + [(W - 40, cy - RW + 14)]
+        lo = [(W - 40, cy + RW - 14)] + [(W - 40 - L * (k + 1) / 13, cy + RW - 12 - 10 * math.sin(k * 2.3)) for k in range(12)] + [(x0, cy + RW)]
+        d.polygon(up + lo, fill=(158, 118, 72, 255))
+        for k in range(60):  # gravilla
+            gx = x0 + 20 + (k * 97) % (W - 80 - x0); gy = cy - RW + 30 + (k * 53) % (2 * RW - 60); r = 4 + (k % 4) * 2
+            d.ellipse((gx - r, gy - r, gx + r, gy + r), fill=(120, 88, 52, 255) if k % 3 else (190, 160, 120, 255))
+        for ty in (cy - RW / 2 - 40, cy - RW / 2 + 40, cy + RW / 2 - 40, cy + RW / 2 + 40):  # rodadas
+            d.line([(x0 + 10, ty), (W - 40, ty + 6 * math.sin(ty))], fill=(132, 96, 58, 255), width=14)
+        if v.get("dirt_hl"):
+            pa = ease(prog(t, .2, .4)); a = int(255 * pa * (.6 + .4 * math.sin(t * 7)))
+            d.rounded_rectangle((x0 + 4, cy - RW - 6, W - 44, cy + RW + 6), radius=20, outline=ORANGE + (a,), width=12)
     fc = v.get("focus")
     if fc:  # zona "su derecha" resaltada para el coche fc (1 = brazo este)
         pa = ease(prog(t, .3, .5)); a = int(120 * pa * (.75 + .25 * math.sin(t * 6)))
@@ -1322,6 +1340,143 @@ def vis_alcohol(dst, t, v, i):
         sp = prog(t, .7, .22)
         if sp > 0: paste(dst, stamp_col(v.get("stamp", "NO EN VIGOR"), RED), W / 2 - 20, CY + 110, scale=lerp(2.2, 1, eout(sp)) * .8, alpha=ease(sp * 1.6), rot=-8)
         if v.get("badge"): paste(dst, pill(v["badge"], 40, YEL, NAVY), W / 2 - 40, CY + 330, scale=eback(prog(t, 1.1, .4)), alpha=ease(prog(t, 1.1, .3)))
+
+# --- POV en primera persona: calle urbana vista desde el asiento del conductor (salpicadero, volante) con ciclista delante ---
+# vis: {"type": "pov", "mode": "approach" | "center" | "horn" | "options" | "gap",
+#       "z": 0.45 (profundidad del ciclista 0 horizonte..1 cerca), "z0": 0.25 (approach: desde), "tag": "...", "tag_at": .4,
+#       "opts": ["2 m", "5 m", "10 m"], "ok": 1 (índice correcto, se marca si "reveal": true), "countdown": [t1, t2, t3],
+#       "gap": "5 m", "horn_x": true, "speed": 30}
+@lru_cache(maxsize=8)
+def cyclist_rear(ph=0, s=240):
+    w, h = s, int(s * 1.9); im = ss(w, h); d = ImageDraw.Draw(im); X, Y = w * 2, h * 2
+    d.rounded_rectangle((X * .44, Y * .62, X * .56, Y * .99), radius=int(X * .06), fill=(20, 20, 24))           # rueda trasera
+    d.rounded_rectangle((X * .42, Y * .6, X * .58, Y * .66), radius=8, fill=(60, 64, 76))                       # guardabarros
+    d.rounded_rectangle((X * .45, Y * .66, X * .55, Y * .72), radius=6, fill=(255, 40, 40))                     # piloto trasero
+    lo = (1 if ph % 2 else -1) * Y * .04
+    for sx, off in ((-1, lo), (1, -lo)):                                                                      # piernas
+        d.rounded_rectangle((X * .5 + sx * X * .16 - X * .07, Y * .45 + off, X * .5 + sx * X * .16 + X * .07, Y * .78 + off), radius=20, fill=(30, 40, 70))
+        d.rounded_rectangle((X * .5 + sx * X * .16 - X * .08, Y * .76 + off, X * .5 + sx * X * .16 + X * .08, Y * .81 + off), radius=10, fill=(15, 15, 18))
+    d.rounded_rectangle((X * .34, Y * .4, X * .66, Y * .5), radius=30, fill=(30, 40, 70))                       # culotte
+    d.rounded_rectangle((X * .24, Y * .16, X * .76, Y * .46), radius=int(X * .16), fill=ORANGE)                 # espalda
+    d.rectangle((X * .47, Y * .18, X * .53, Y * .44), fill=(255, 196, 0))
+    d.line([(X * .27, Y * .22), (X * .08, Y * .3)], fill=(240, 200, 170), width=int(X * .08))                   # brazos
+    d.line([(X * .73, Y * .22), (X * .92, Y * .3)], fill=(240, 200, 170), width=int(X * .08))
+    d.line([(X * .02, Y * .3), (X * .98, Y * .3)], fill=(40, 40, 46), width=int(X * .05))                       # manillar
+    d.ellipse((X * .33, Y * .02, X * .67, Y * .2), fill=WHITE)                                                  # casco
+    d.rectangle((X * .47, Y * .02, X * .53, Y * .2), fill=RED)
+    return down(im)
+
+@lru_cache(maxsize=4)
+def horn_icon(s=170):
+    im = ss(s, s); d = ImageDraw.Draw(im); S = s * 2
+    d.polygon([(S * .12, S * .38), (S * .3, S * .38), (S * .58, S * .16), (S * .58, S * .84), (S * .3, S * .62), (S * .12, S * .62)], fill=YEL)
+    for k, r in enumerate((.18, .3)):
+        d.arc((S * (.58 - r), S * (.5 - r * 1.3), S * (.58 + r), S * (.5 + r * 1.3)), -50, 50, fill=YEL, width=int(S * .06))
+    return glow(down(im), 16, .6)
+
+def pov_scene(dst, t, v):
+    lay = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(lay, "RGBA")
+    top, bot = VZ[0] + 10, VZ[1] + 20; hz = top + 300; vx = W / 2 + 40
+    for y in range(top, hz):  # cielo
+        k = (y - top) / (hz - top); d.line([(40, y), (W - 40, y)], fill=mix((70, 120, 200), (190, 215, 240), k) + (255,))
+    # edificios al fondo
+    for k, (bx, bw, bh, col) in enumerate(((60, 170, 210, (120, 130, 160)), (220, 140, 260, (150, 120, 110)), (350, 120, 170, (110, 140, 150)),
+                                           (650, 130, 190, (160, 140, 120)), (770, 150, 250, (110, 120, 150)), (910, 140, 200, (140, 110, 120)))):
+        d.rectangle((bx, hz - bh, bx + bw, hz), fill=col + (255,))
+        for wy in range(int(hz - bh + 20), int(hz - 20), 40):
+            for wx in range(bx + 16, bx + bw - 26, 36): d.rectangle((wx, wy, wx + 18, wy + 22), fill=(230, 235, 245, 200) if (wx + wy) % 3 else (255, 220, 140, 220))
+    # aceras y calzada
+    d.polygon([(40, hz), (vx - 70, hz), (vx - 900, bot), (40, bot)], fill=(150, 154, 164, 255))
+    d.polygon([(vx + 70, hz), (W - 40, hz), (W - 40, bot), (vx + 900, bot)], fill=(150, 154, 164, 255))
+    d.polygon([(vx - 70, hz), (vx + 70, hz), (vx + 900, bot), (vx - 900, bot)], fill=(46, 50, 60, 255))
+    for sx in (-1, 1): d.line([(vx + sx * 70, hz), (vx + sx * 900, bot)], fill=(230, 230, 230, 255), width=10)  # bordillos
+    # farolas / árboles a los lados que pasan
+    for k in range(4):
+        z = ((k / 4) + t * 0.45) % 1.0; zz = z ** 2; y = hz + (bot - hz) * zz
+        for sx in (-1, 1):
+            x = vx + sx * (100 + 1000 * zz); hgt = 40 + 520 * zz
+            d.line([(x, y), (x, y - hgt)], fill=(40, 44, 52, 255), width=max(2, int(16 * zz)))
+            d.ellipse((x - 10 - 30 * zz, y - hgt - 8 - 20 * zz, x + 10 + 30 * zz, y - hgt + 8 + 20 * zz), fill=(255, 230, 150, 255))
+    # línea discontinua del eje (a la izquierda: sentido contrario)
+    for k in range(9):
+        z = ((k / 9) + t * 0.55) % 1.0; z2 = min(1, z + .045)
+        x1, y1 = vx - 40 - 460 * z ** 2, hz + (bot - hz) * z ** 2; x2, y2 = vx - 40 - 460 * z2 ** 2, hz + (bot - hz) * z2 ** 2
+        d.line([(x1, y1), (x2, y2)], fill=(255, 255, 255, 230), width=max(3, int(16 * z)))
+    m = Image.new("L", (W, H), 0); ImageDraw.Draw(m).rounded_rectangle((40, top, W - 40, bot), radius=36, fill=255)
+    lay.putalpha(Image.fromarray(np.minimum(np.array(lay.split()[3]), np.array(m)))); dst.alpha_composite(lay)
+    return top, bot, hz, vx
+
+def pov_dash(dst, t, v, top, bot):
+    lay = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(lay, "RGBA"); dy = bot - 150
+    d.ellipse((-200, dy, W + 200, dy + 420), fill=(18, 20, 26, 255))                               # salpicadero
+    d.ellipse((-200, dy - 6, W + 200, dy + 410), outline=(60, 64, 78, 255), width=6)
+    d.ellipse((90, dy + 20, 640, dy + 570), outline=(28, 30, 36, 255), width=54)                    # volante
+    d.ellipse((90, dy + 20, 640, dy + 570), outline=(50, 54, 64, 255), width=8)
+    d.rounded_rectangle((700, dy + 40, 900, dy + 120), radius=20, fill=(8, 10, 14, 255), outline=(60, 64, 78, 255), width=4)
+    sp = str(v.get("speed", 30)); d.text((740, dy + 52), sp, font=F(BLACK, 54), fill=(120, 220, 255)); d.text((815, dy + 70), "km/h", font=F(XB, 26), fill=(120, 160, 200))
+    m = Image.new("L", (W, H), 0); ImageDraw.Draw(m).rounded_rectangle((40, top, W - 40, bot), radius=36, fill=255)
+    lay.putalpha(Image.fromarray(np.minimum(np.array(lay.split()[3]), np.array(m)))); dst.alpha_composite(lay)
+    return dy
+
+def vis_pov(dst, t, v, i):
+    if i == 0: t = t + 0.6
+    mode = v.get("mode", "approach"); top, bot, hz, vx = pov_scene(dst, t, v)
+    z = v.get("z", .45)
+    if mode == "approach": z = lerp(v.get("z0", .22), z, eout(prog(t, 0, 1.6)))
+    zz = z ** 1.5; cyx = vx + 15 + 185 * zz; cyy = hz + (bot - hz) * zz; sc = .3 + 1.4 * zz
+    clip = Image.new("L", (W, H), 0); ImageDraw.Draw(clip).rounded_rectangle((40, top, W - 40, bot), radius=36, fill=255); clip = np.array(clip)
+    def put(ov):
+        ov.putalpha(Image.fromarray(np.minimum(np.array(ov.split()[3]), clip))); dst.alpha_composite(ov)
+    if mode == "center":  # carril propio resaltado
+        pa = ease(prog(t, .2, .5)); a = int(110 * pa * (.75 + .25 * math.sin(t * 6)))
+        ov = Image.new("RGBA", (W, H), (0, 0, 0, 0)); od = ImageDraw.Draw(ov)
+        od.polygon([(vx - 40, hz), (vx + 70, hz), (vx + 900, bot), (vx - 500, bot)], fill=(34, 197, 94, a)); put(ov)
+    if mode == "gap":  # escalera de distancia en el suelo, del capó a la rueda del ciclista
+        ov = Image.new("RGBA", (W, H), (0, 0, 0, 0)); od = ImageDraw.Draw(ov); pg = ease(prog(t, .05, .8)); n = 5; u0 = (bot - 150 - hz) / (bot - hz)
+        labs = []
+        for k in range(n + 1):
+            f = k / n
+            if f > pg + 1e-3: break
+            u = lerp(u0, zz, f); y = hz + (bot - hz) * u; xl, xr = vx - 40 - 460 * u, vx + 70 + 830 * u
+            od.line([(xl, y), (xr, y)], fill=YEL + (235,), width=max(4, int(16 * u)))
+            if 0 < k: labs.append((k, xl + 50 + 30 * u, y + 30 * u, u))
+        put(ov)
+        for k, x, y, u in labs: paste(dst, text(f"{n - k + 1}" if False else f"{k}", int(34 + 50 * u), YEL, BLACK), max(110, x), y - 34 * u - 6)
+    paste(dst, cyclist_rear(int(t * 5) % 2), cyx, cyy - 230 * sc, scale=sc)
+    dy = pov_dash(dst, t, v, top, bot)
+    if mode == "gap":
+        pa = prog(t, .7, .4); paste(dst, pill(v.get("gap", "5 m"), 60, YEL, NAVY), 290, hz + 70, scale=eback(pa), alpha=ease(pa * 2))
+    if mode == "center":
+        p = prog(t, .6, .35); paste(dst, icon_check(110), cyx + 150 * sc + 40, cyy - 300 * sc, scale=eback(p))
+        paste(dst, pill(v.get("lab", "CENTRO DEL CARRIL"), 40, GREEN, WHITE), W / 2 - 40, dy - 40, scale=eback(prog(t, .9, .35)), alpha=ease(prog(t, .9, .3)))
+    if mode != "center" and v.get("lab"):
+        la = v.get("lab_at", 0); paste(dst, pill(v["lab"], 40, YEL, NAVY), W / 2 - 40, dy - 40, scale=eback(prog(t, la, .35)), alpha=ease(prog(t, la, .3)))
+    if mode == "horn":
+        pk = .5 + .5 * math.sin(t * 14); p = prog(t, .2, .35)
+        paste(dst, horn_icon(190), W / 2 - 200, hz + 150, scale=eback(p) * (.95 + .08 * pk), alpha=ease(p * 2))
+        paste(dst, text("¡PII!", 110, YEL, BLACK), W / 2 - 60, hz - 110, scale=eback(prog(t, .35, .3)) * (.95 + .05 * pk), alpha=ease(prog(t, .35, .2)), rot=6)
+        if v.get("horn_x") and t > .9: paste(dst, icon_x(130), W / 2 - 130, hz + 230, scale=eback(prog(t, .9, .3)))
+    opts = v.get("opts")
+    if opts:
+        ok = v.get("ok", 1); rv = v.get("reveal", False); ra = eout(prog(t, .05, .4)) if rv else 0
+        for k, o in enumerate(opts):
+            p = prog(t, v.get("opts_at", [.15, .37, .59])[k], .3) if not v.get("opts_on") else 1
+            good = rv and k == ok
+            bg = mix(WHITE, GREEN, ra) if good else (mix(WHITE, (150, 156, 170), ra) if rv else WHITE)
+            im = pill(f"{'ABC'[k]}  {o}", 52, bg, WHITE if good and ra > .5 else NAVY, padx=30)
+            x = W / 2 - 60 + (k - 1) * 270; y = top + 70
+            paste(dst, im, x, y, scale=eback(p) * (1 + .12 * ra if good else 1), alpha=ease(p * 2) * (1 - .45 * ra if rv and not good else 1))
+            if good and t > .4: paste(dst, icon_check(70), x + 115, y - 40, scale=eback(prog(t, .4, .3)))
+    cd = v.get("countdown")
+    if cd:
+        n = sum(1 for s_ in cd if t >= s_); ix, iy = 150, hz + 30
+        paste(dst, semaphore(n).resize((105, 275), Image.LANCZOS), ix, iy, scale=eback(prog(t, 0, .4)))
+        if n:
+            pk = prog(t, cd[n - 1], .25)
+            paste(dst, text(str(4 - n), 190, [RED, (255, 176, 0), GREEN][n - 1], BLACK), ix + 170, iy + 10, scale=lerp(1.6, 1, eout(pk)), alpha=ease(pk * 2))
+    if v.get("tag"):
+        at = v.get("tag_at", .3); ty = top + 60 if not opts else top + 170
+        paste(dst, pill(v["tag"], 44, YEL, NAVY), W / 2 - 40, ty, scale=eback(prog(t, at, .4)), alpha=ease(prog(t, at, .3)))
 
 VIS = {k[4:]: v for k, v in globals().items() if k.startswith("vis_")}
 
