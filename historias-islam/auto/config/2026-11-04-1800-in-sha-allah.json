@@ -1,0 +1,308 @@
+{
+ "label": "CURIOSIDAD",
+ "times": "2026-11-04-1800-in-sha-allah.tiempos.json",
+ "tail": 1.6,
+ "cx": 510,
+ "cap_maxw": 800,
+ "title_maxw": 820,
+ "instant": true,
+ "step_gap": 290,
+ "scenes": [
+  {
+   "title": [
+    "«In sha Allah»…",
+    "¿significa NO?"
+   ],
+   "tint": "gold",
+   "hi": [
+    "Allah…",
+    "no?"
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "🤔",
+    "orbit": [
+     "🤲",
+     "❌",
+     "😅"
+    ],
+    "y": 900
+   },
+   "cap": "Si un musulmán te dice «in sha Allah»… ¿en realidad te está diciendo que no?"
+  },
+  {
+   "title": [
+    "Le pides algo",
+    "a tu madre…"
+   ],
+   "tint": "night",
+   "hi": [
+    "madre,",
+    "Allah.»"
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "🎮",
+    "orbit": [
+     "🙏",
+     "💬",
+     "👀"
+    ],
+    "y": 900
+   },
+   "cap": "Le pides algo a tu madre, y te responde: «In sha Allah.»"
+  },
+  {
+   "title": [
+    "Traducción:"
+   ],
+   "tint": "red",
+   "hi": [
+    "significa…",
+    "no."
+   ],
+   "vis": {
+    "type": "big",
+    "words": [
+     "NO"
+    ],
+    "size": 280,
+    "y": 860,
+    "e": "😅"
+   },
+   "cap": "Y ya sabes lo que significa… que no."
+  },
+  {
+   "title": [
+    "Pero de verdad",
+    "significa…"
+   ],
+   "tint": "green",
+   "hi": [
+    "Allah",
+    "quiere."
+   ],
+   "vis": {
+    "type": "big",
+    "words": [
+     "SI ALLAH",
+     "QUIERE"
+    ],
+    "size": 130,
+    "gap": 170,
+    "y": 860,
+    "e": "🤲"
+   },
+   "cap": "Pero de verdad, «in sha Allah» significa: si Allah quiere."
+  },
+  {
+   "title": [
+    "Viene",
+    "del Corán"
+   ],
+   "tint": "night",
+   "hi": [
+    "costumbre",
+    "Corán."
+   ],
+   "vis": {
+    "type": "book",
+    "src": "CORÁN 18:23-24",
+    "y": 900
+   },
+   "cap": "Y no es una costumbre sin más. Viene del Corán."
+  },
+  {
+   "title": [
+    "Allah le dijo",
+    "al Profeta"
+   ],
+   "tint": "blue",
+   "hi": [
+    "Allah",
+    "Profeta,"
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "🌙",
+    "orbit": [
+     "✨",
+     "📖",
+     "✨"
+    ],
+    "y": 900
+   },
+   "cap": "Allah le dijo al Profeta, la paz sea con él:"
+  },
+  {
+   "tint": "gold",
+   "hi": [
+    "Nunca",
+    "mañana»,"
+   ],
+   "vis": {
+    "type": "quote",
+    "lines": [
+     "«Y nunca digas de algo:",
+     "“Lo haré mañana”…"
+    ],
+    "src": "CORÁN 18:23 · SURA AL-KAHF",
+    "size": 56,
+    "y": 860
+   },
+   "cap": "«Nunca digas de algo: “Lo haré mañana”,"
+  },
+  {
+   "tint": "gold",
+   "hi": [
+    "añadir:",
+    "quiere."
+   ],
+   "vis": {
+    "type": "quote",
+    "lines": [
+     "…sin añadir:",
+     "“si Allah quiere”.»"
+    ],
+    "src": "CORÁN 18:24 · SURA AL-KAHF",
+    "size": 60,
+    "y": 860
+   },
+   "cap": "sin añadir: “si Allah quiere”.»"
+  },
+  {
+   "title": [
+    "Sura Al-Kahf"
+   ],
+   "tint": "green",
+   "hi": [
+    "Kahf,",
+    "24."
+   ],
+   "vis": {
+    "type": "big",
+    "words": [
+     "CORÁN",
+     "18:23-24"
+    ],
+    "size": 130,
+    "y": 860,
+    "e": "📖"
+   },
+   "cap": "Sura Al-Kahf, aleyas 23 y 24."
+  },
+  {
+   "title": [
+    "El mañana",
+    "no es tuyo"
+   ],
+   "tint": "night",
+   "hi": [
+    "intención",
+    "esfuerzo…",
+    "tuyo."
+   ],
+   "vis": {
+    "type": "steps",
+    "items": [
+     [
+      "💭",
+      "INTENCIÓN"
+     ],
+     [
+      "💪",
+      "ESFUERZO"
+     ],
+     [
+      "❓",
+      "MAÑANA"
+     ]
+    ],
+    "y": 920
+   },
+   "cap": "Tú pones la intención y el esfuerzo… pero el mañana no es tuyo."
+  },
+  {
+   "title": [
+    "Y una",
+    "curiosidad…"
+   ],
+   "tint": "gold",
+   "hi": [
+    "ojalá",
+    "árabe.",
+    "quiere."
+   ],
+   "vis": {
+    "type": "big",
+    "words": [
+     "OJALÁ"
+    ],
+    "size": 210,
+    "y": 860,
+    "e": "🤯"
+   },
+   "cap": "Y una curiosidad: tu palabra «ojalá» viene del árabe. Significa: si Allah quiere."
+  },
+  {
+   "title": [
+    "Tú también",
+    "lo dices"
+   ],
+   "tint": "blue",
+   "hi": [
+    "ojalá…",
+    "diciendo."
+   ],
+   "vis": {
+    "type": "big",
+    "words": [
+     "OJALÁ",
+     "=",
+     "IN SHA ALLAH"
+    ],
+    "size": 105,
+    "gap": 140,
+    "y": 860
+   },
+   "cap": "Así que cada vez que dices «ojalá»… tú también lo estás diciendo."
+  },
+  {
+   "title": [
+    "Dilo con",
+    "intención"
+   ],
+   "tint": "green",
+   "hi": [
+    "intención,",
+    "disimulado."
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "🤍",
+    "orbit": [
+     "💭",
+     "🤲",
+     "✨"
+    ],
+    "y": 900
+   },
+   "cap": "Dilo con intención, no como un «no» disimulado."
+  },
+  {
+   "tint": "green",
+   "hi": [
+    "Allah…",
+    "no?"
+   ],
+   "vis": {
+    "type": "cta",
+    "word": "¿ERA UN NO?",
+    "size": 100,
+    "e": "😅",
+    "y": 860
+   },
+   "cap": "¿A ti también te han dicho «in sha Allah»… y era un no? Te leo abajo."
+  }
+ ]
+}

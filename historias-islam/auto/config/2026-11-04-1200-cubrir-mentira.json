@@ -1,0 +1,326 @@
+{
+ "label": "AHMED VS BILAL",
+ "times": "2026-11-04-1200-cubrir-mentira.tiempos.json",
+ "tail": 1.4,
+ "cx": 510,
+ "cap_maxw": 800,
+ "title_maxw": 820,
+ "instant": true,
+ "step_gap": 290,
+ "scenes": [
+  {
+   "title": [
+    "¿Le cubres",
+    "la mentira?"
+   ],
+   "tint": "red",
+   "hi": [
+    "mentira",
+    "haces?"
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "🤥",
+    "orbit": [
+     "📱",
+     "🤫",
+     "👀"
+    ],
+    "y": 900
+   },
+   "cap": "Tu mejor amigo te pide que le cubras una mentira con sus padres… ¿lo haces?"
+  },
+  {
+   "title": [
+    "Te escribe…"
+   ],
+   "tint": "night",
+   "hi": [
+    "madre,",
+    "contigo.»"
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "📱",
+    "orbit": [
+     "💬",
+     "🤫",
+     "🏠"
+    ],
+    "y": 900
+   },
+   "cap": "Te escribe: «Si llama mi madre, dile que estoy contigo.»"
+  },
+  {
+   "title": [
+    "Y suena",
+    "el teléfono…"
+   ],
+   "tint": "red",
+   "hi": [
+    "contigo.",
+    "teléfono."
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "📞",
+    "orbit": [
+     "😰",
+     "📳",
+     "⏰"
+    ],
+    "y": 900
+   },
+   "cap": "Pero no está contigo. Y suena el teléfono."
+  },
+  {
+   "title": [
+    "Ahmed",
+    "miente"
+   ],
+   "tint": "red",
+   "hi": [
+    "Ahmed",
+    "conmigo."
+   ],
+   "vis": {
+    "type": "duo",
+    "focus": "ahmed",
+    "ahmed": "point",
+    "bilal": "down",
+    "ab": [
+     "¡Sí, sí, está",
+     "aquí conmigo!"
+    ],
+    "bat": 0.4,
+    "y": 940
+   },
+   "cap": "Ahmed contesta: «Sí, sí, está aquí conmigo. Tranquila.»"
+  },
+  {
+   "title": [
+    "Una mentira",
+    "tapa otra…"
+   ],
+   "tint": "night",
+   "hi": [
+    "mentira.",
+    "otra,",
+    "primera."
+   ],
+   "vis": {
+    "type": "steps",
+    "items": [
+     [
+      "🤥",
+      "UNA"
+     ],
+     [
+      "😬",
+      "OTRA"
+     ],
+     [
+      "💣",
+      "Y OTRA"
+     ]
+    ],
+    "y": 920
+   },
+   "cap": "Una mentira. Y luego otra, para tapar la primera."
+  },
+  {
+   "title": [
+    "Se entera",
+    "de todo"
+   ],
+   "tint": "red",
+   "hi": [
+    "entera.",
+    "ninguno."
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "💔",
+    "orbit": [
+     "😠",
+     "📵",
+     "🚫"
+    ],
+    "y": 900
+   },
+   "cap": "Al día siguiente, su madre se entera. Y ya no se fía de ninguno."
+  },
+  {
+   "title": [
+    "Bilal recibe",
+    "el mismo mensaje"
+   ],
+   "tint": "blue",
+   "hi": [
+    "Bilal",
+    "cuesta,"
+   ],
+   "vis": {
+    "type": "duo",
+    "focus": "bilal",
+    "ahmed": "down",
+    "bilal": "down",
+    "bm": "📱",
+    "mat": 0.5,
+    "y": 940
+   },
+   "cap": "Bilal recibe el mismo mensaje. Y le cuesta, es su amigo."
+  },
+  {
+   "title": [
+    "Bilal",
+    "responde"
+   ],
+   "tint": "green",
+   "hi": [
+    "ayudo",
+    "no.»"
+   ],
+   "vis": {
+    "type": "duo",
+    "focus": "bilal",
+    "ahmed": "down",
+    "bilal": "calm",
+    "bb": [
+     "Te ayudo en todo…",
+     "pero mintiendo no"
+    ],
+    "bat": 0.4,
+    "y": 940
+   },
+   "cap": "Pero le contesta: «Te ayudo en lo que quieras, pero mintiendo no.»"
+  },
+  {
+   "title": [
+    "Esa noche…"
+   ],
+   "tint": "green",
+   "hi": [
+    "enfada",
+    "hora."
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "🏠",
+    "orbit": [
+     "🌙",
+     "⏰",
+     "🤍"
+    ],
+    "y": 900
+   },
+   "cap": "Su amigo se enfada un rato… pero esa noche vuelve a casa a su hora."
+  },
+  {
+   "tint": "gold",
+   "hi": [
+    "claro:",
+    "bondad,"
+   ],
+   "vis": {
+    "type": "quote",
+    "lines": [
+     "«Ayudaos",
+     "en la bondad",
+     "y en el temor de Allah…"
+    ],
+    "src": "CORÁN 5:2 · SURA AL-MÁIDA",
+    "size": 56,
+    "y": 860
+   },
+   "cap": "Y Allah lo dice claro: «Ayudaos en la bondad, y en el temor de Allah."
+  },
+  {
+   "tint": "gold",
+   "hi": [
+    "pecado,",
+    "injusticia.»"
+   ],
+   "vis": {
+    "type": "quote",
+    "lines": [
+     "…y no os ayudéis",
+     "en el pecado",
+     "ni en la injusticia.»"
+    ],
+    "src": "CORÁN 5:2 · SURA AL-MÁIDA",
+    "size": 56,
+    "y": 860
+   },
+   "cap": "Y no os ayudéis en el pecado, ni en la injusticia.»"
+  },
+  {
+   "title": [
+    "Palabra",
+    "de Allah"
+   ],
+   "tint": "green",
+   "hi": [
+    "Máida,",
+    "dos."
+   ],
+   "vis": {
+    "type": "big",
+    "words": [
+     "CORÁN",
+     "5:2"
+    ],
+    "size": 150,
+    "y": 860,
+    "e": "📖"
+   },
+   "cap": "Sura Al-Máida, aleya 2."
+  },
+  {
+   "title": [
+    "Un buen amigo…"
+   ],
+   "tint": "night",
+   "hi": [
+    "tapa.",
+    "frena."
+   ],
+   "vis": {
+    "type": "choice",
+    "opts": [
+     [
+      "🙈",
+      "TE TAPA",
+      "red"
+     ],
+     [
+      "✋",
+      "TE FRENA",
+      "gold"
+     ]
+    ],
+    "pick": 1,
+    "y": 900
+   },
+   "cap": "Un buen amigo no es el que te tapa. Es el que te frena."
+  },
+  {
+   "title": [
+    "¿Y tú?"
+   ],
+   "tint": "green",
+   "hi": [
+    "Ahmed,",
+    "Bilal?"
+   ],
+   "vis": {
+    "type": "duo",
+    "focus": "both",
+    "ahmed": "down",
+    "bilal": "calm",
+    "y": 920
+   },
+   "cap": "¿Y tú? ¿Eres más Ahmed, o más Bilal? Te leo abajo."
+  }
+ ]
+}
