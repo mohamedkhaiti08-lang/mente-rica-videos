@@ -2,7 +2,7 @@
 Formato | bloque | gancho | dato (verificar SIEMPRE que sigue vigente antes de usarlo) | fuente a consultar
 
 ## Pendientes
-Prioridad ALTA = encaja con lo que funciona (30/10: situación de carretera que se entiende sin leer —cenital o POV— con pregunta en la primera frase, adivinar con cuenta atrás y final que pide comentar o la parte siguiente; ver que-funciona.md).
+Prioridad ALTA = encaja con lo que funciona (31/10: pregunta con respuesta concreta a una situación —vehículos o persona— en las 2 primeras frases, cuenta atrás, pide la letra; antes, 30/10: situación de carretera que se entiende sin leer —cenital o POV— con pregunta en la primera frase, adivinar con cuenta atrás y final que pide comentar o la parte siguiente; ver que-funciona.md).
 2. SEÑAL MISTERIOSA | señales | pregunta directa | Señal R-1 "Ceda el paso" (triángulo invertido) vs R-2 "STOP": con STOP hay que detenerse siempre | boe.es RGC art. 151; dgt.es
 5. EN 3 PASOS | adelantamientos | POV | Cómo adelantar: comprobar, señalizar, adelantar y volver con margen; prohibido rebasar límite para adelantar | boe.es RGC arts. 82-89; revista.dgt.es
 6. CIFRA CLAVE | velocidad y distancias | estadística | 30 km/h en calles de un solo carril por sentido en ciudad (desde 2021) | boe.es RD 970/2020; dgt.es
@@ -14,13 +14,11 @@ Prioridad ALTA = encaja con lo que funciona (30/10: situación de carretera que 
 15. [ALTA → parte 3 de la serie ¿QUIÉN PASA PRIMERO?] EN 3 PASOS / ¿QUIÉN PASA PRIMERO? | prioridad, cruces y rotondas | POV | Salir de una rotonda: situarse en el carril derecho con antelación, señalizar y salir | revista.dgt.es; boe.es
 16. [ALTA] TRAMPAS DEL EXAMEN | velocidad y distancias | reto | Distancia de seguridad: en túneles al menos 100 m o 4 s (turismos) | boe.es RGC art. 54/ art. 18 RD túneles; dgt.es
 17. CIFRA CLAVE | documentación, puntos y noveles | estadística | ITV de turismos: primera a los 4 años, cada 2 años hasta 10, luego anual | boe.es RD 920/2017
-18. POV: ESTÁS CONDUCIENDO | conducción eficiente y clima | POV | Aquaplaning: no frenar bruscamente, sujetar el volante y soltar el acelerador | revista.dgt.es
 19. [ALTA] ¿APROBARÍAS? | peatones, ciclistas y patinetes | reto | Patinetes eléctricos (VMP): prohibido circular por aceras y travesías interurbanas | dgt.es; boe.es RD 970/2020
 20. ESTO HA CAMBIADO | peatones, ciclistas y patinetes | sorpresa | RD 518/2026 (1 oct 2026): adelantar a peatones, animales, ciclomotores y VMP con 1,5 m y −20 km/h fuera de poblado (parte 2 del vídeo del ciclista) | boe.es BOE-A-2026-13889
 21. SEÑAL MISTERIOSA | señales | pregunta directa | Señales modificadas por el RD 465/2025 (señalización): elegir una nueva y comprobar su significado | boe.es BOE-A-2025-12199
 22. EN 3 PASOS | primeros auxilios y accidentes (PAS) | urgencia | Llamar al 112: qué decir (localización, vehículos implicados, nº de heridos, circunstancias especiales, teléfono de contacto) — parte 2 del vídeo PAS | dgt.es "Qué hacer ante un accidente de tráfico"
 23. [ALTA] ¿APROBARÍAS? | primeros auxilios y accidentes (PAS) | reto | Accidente en vía de doble sentido: ¿a cuántos metros se señaliza? (dgt.es habla de triángulos a 50 m; desde 2026 la V-16 es obligatoria: confirmar qué se pregunta HOY en el examen antes de usarla) | dgt.es
-24. ERROR DE NOVATO | vehículo y seguridad | polémica suave | Llevar a un niño de más de 135 cm sin elevador: la DGT recomienda SRI hasta 150 cm aunque no sea obligatorio (parte 2 sillitas; distinguir bien obligación vs recomendación) | dgt.es; revista.dgt.es
 25. [ALTA] ¿APROBARÍAS? | autopistas y autovías | reto | ¿Se puede circular marcha atrás en autopista/autovía? (prohibido, art. 80 RGC) — verificar texto vigente | boe.es RGC art. 80
 
 27. [ALTA] ¿QUIÉN PASA PRIMERO? (parte 3) | prioridad, cruces y rotondas | pregunta directa | Vehículo de emergencia con sirena en servicio urgente: tiene prioridad en el cruce sobre todos (vista cenital con ambulancia + 2 coches numerados) | boe.es RGC arts. 67-69; dgt.es
@@ -31,5 +29,9 @@ Prioridad ALTA = encaja con lo que funciona (30/10: situación de carretera que 
 33. [ALTA] POV: ESTÁS CONDUCIENDO (parte 3 ciclistas) | peatones, ciclistas y patinetes | POV | Calle de un solo carril a 30 o menos con bicis en doble sentido señalizado: arrímate a la derecha para dejarlas pasar (nuevo art. 153.6 RGC, RD 518/2026) — usar el visual "pov" en primera persona | boe.es BOE-A-2026-13889
 34. [ALTA] POV: ESTÁS CONDUCIENDO | peatones, ciclistas y patinetes | POV | Ciclista en ciudad: no puede ir por la acera (salvo menores de 12 acompañados si lo permite el ayuntamiento; art. 153.2 RGC, RD 518/2026) | boe.es BOE-A-2026-13889
 
+35. [ALTA] ¿APROBARÍAS? (parte 3 sillitas) | vehículo y seguridad | reto | ¿Puede un niño ir delante? Excepciones del art. 117 RGC (sin asientos traseros, todos ocupados por otros menores, o no se puede instalar el SRI detrás) — verificar texto vigente | boe.es RGC art. 117; dgt.es "Con niños"
+36. [ALTA] ¿APROBARÍAS? | conducción eficiente y clima | reto | Antiniebla trasera vs delantera: cuándo se puede encender (verificar art. 106 RGC antes; ver idea 7) | boe.es RGC art. 106
+37. [ALTA] ¿QUIÉN PASA PRIMERO? (parte 4/5) | prioridad, cruces y rotondas | pregunta directa | Incorporación desde una vía de servicio o desde un aparcamiento: cede a los que circulan por la vía (art. 72 RGC) — verificar | boe.es RGC art. 72
+
 ## Usadas
-- Baliza V-16 conectada (27/10) · Pasillo de emergencia (27/10) · Cruce sin señalizar, prioridad a la derecha (28/10) · Neumáticos 1,6 mm (28/10) · Puntos del novel 8→12→14→15 (29/10) · Adelantar ciclista −20 km/h, 1,5 m, cambio de carril (29/10) · Sillita hasta 1,35 m, detrás, −4 puntos (30/10) · Conducta PAS (30/10) · Glorieta: preferencia del que está dentro (31/10) · Tasa de alcohol del novel 0,15 mg/l (31/10) · Ciclista en ciudad: centro del carril y 5 m detrás (1/11) · Camino de tierra cede al asfalto, parte 3 prioridad (1/11)
+- Baliza V-16 conectada (27/10) · Pasillo de emergencia (27/10) · Cruce sin señalizar, prioridad a la derecha (28/10) · Neumáticos 1,6 mm (28/10) · Puntos del novel 8→12→14→15 (29/10) · Adelantar ciclista −20 km/h, 1,5 m, cambio de carril (29/10) · Sillita hasta 1,35 m, detrás, −4 puntos (30/10) · Conducta PAS (30/10) · Glorieta: preferencia del que está dentro (31/10) · Tasa de alcohol del novel 0,15 mg/l (31/10) · Ciclista en ciudad: centro del carril y 5 m detrás (1/11) · Camino de tierra cede al asfalto, parte 3 prioridad (1/11) · Aquaplaning en 3 pasos (2/11) · Niño de 1,40 m con cinturón, parte 2 sillitas (2/11)

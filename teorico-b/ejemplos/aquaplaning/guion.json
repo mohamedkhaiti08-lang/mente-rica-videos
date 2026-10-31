@@ -1,0 +1,13 @@
+{
+ "speed": 1.05,
+ "pause": 0.28,
+ "lines": [
+  "Tu coche flota con la lluvia y tienes un segundo. ¿Frenas? Error. Haz esto.",
+  "Se llama aquaplaning: la rueda no puede echar el agua y pierde el agarre.",
+  "Paso uno: levanta el pie del acelerador, suave.",
+  "Paso dos: sujeta el volante con firmeza, sin volantazos.",
+  "Paso tres: no frenes a fondo. Ni siquiera con ABS.",
+  "Y cuando notes que vuelve el agarre, corrige la trayectoria, suave.",
+  "Guárdalo antes de tu examen, y antes de la próxima tormenta."
+ ]
+}

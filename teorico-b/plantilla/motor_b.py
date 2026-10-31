@@ -16,6 +16,8 @@
 #   cruce admite "dirt": true (brazo este = camino de tierra) y "dirt_hl".
 #   glorieta (rotonda cenital con coches numerados dentro/entrando), alcohol (alcoholímetro: zero | trap | minor | limit | units | years | pending).
 #   hook admite "img": "seat" (sillita) y "stamp_x" (posición del sello).
+#   lluvia (carretera mojada / aquaplaning: slide | float | recover), pasos (EN 3 PASOS: tarjeta con n e icono gas | wheel | brake),
+#   cinturon (niño en el asiento trasero con cinturón: hook | fit | neck | booster con elevador).
 import math, json, sys, os, subprocess
 from functools import lru_cache
 from multiprocessing import Pool
@@ -1477,6 +1479,225 @@ def vis_pov(dst, t, v, i):
     if v.get("tag"):
         at = v.get("tag_at", .3); ty = top + 60 if not opts else top + 170
         paste(dst, pill(v["tag"], 44, YEL, NAVY), W / 2 - 40, ty, scale=eback(prog(t, at, .4)), alpha=ease(prog(t, at, .3)))
+
+# --- lluvia y aquaplaning (bloque conducción eficiente y clima) ---
+# vis: {"type": "lluvia", "mode": "slide" | "float" | "recover", "lines": [...], "cols": [...], "tag": "...", "tag_at": 1.0}
+#   slide: carretera mojada en perspectiva con lluvia, coche que culea y salpica | float: corte lateral de la rueda flotando sobre el agua
+#   recover: el coche se endereza y sigue recto (flecha verde)
+# vis: {"type": "pasos", "n": 1..3, "icon": "gas" | "wheel" | "brake", "title": "...", "sub": "...", "bad": false}
+def rain(dst, t, n=70, a=120, box=None):
+    x0, y0, x1, y1 = box or (40, VZ[0], W - 40, VZ[1] + 20); d = ImageDraw.Draw(dst, "RGBA")
+    for k in range(n):
+        sx = (k * 157.3) % (x1 - x0); sp = 1.4 + (k % 5) * .18; z = ((k * .137) + t * sp) % 1.0
+        x = x0 + (sx + z * 90) % (x1 - x0); y = y0 + z * (y1 - y0); L = 34 + (k % 4) * 12
+        if y + L < y1: d.line([(x, y), (x + L * .22, y + L)], fill=(200, 220, 255, a), width=3)
+
+def wet_road(dst, t, horizon=520):
+    lay = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(lay, "RGBA"); vx = W / 2; top, bot = horizon, VZ[1] + 20
+    for y in range(VZ[0], top):  # cielo gris de tormenta
+        k = (y - VZ[0]) / max(1, top - VZ[0]); d.line([(40, y), (W - 40, y)], fill=mix((50, 58, 74), (110, 120, 138), k) + (255,))
+    d.polygon([(40, top), (W - 40, top), (W - 40, bot), (40, bot)], fill=(52, 66, 58, 255))
+    d.polygon([(vx - 70, top), (vx + 70, top), (vx + 640, bot), (vx - 640, bot)], fill=(30, 36, 46, 255))
+    # reflejos del agua en el asfalto
+    for k in range(7):
+        z = ((k / 7) + t * .5) % 1.0; y = top + (bot - top) * z ** 1.5; wv = 60 + 380 * z ** 1.5
+        d.ellipse((vx - wv, y - 6 - 10 * z, vx + wv, y + 6 + 10 * z), fill=(120, 160, 220, int(60 * z)))
+    d.line([(vx - 70, top), (vx - 640, bot)], fill=(255, 255, 255, 200), width=8); d.line([(vx + 70, top), (vx + 640, bot)], fill=(255, 255, 255, 200), width=8)
+    for k in range(10):
+        z = ((k / 10) + t * 0.9) % 1.0; z2 = min(1, z + 0.05)
+        y1, y2 = top + (bot - top) * z ** 1.6, top + (bot - top) * z2 ** 1.6
+        x1 = vx + 0.0 * z; d.line([(vx, y1), (vx, y2)], fill=(255, 255, 255, int(220 * z)), width=max(2, int(12 * z)))
+    # gran charco
+    d.ellipse((vx - 420, bot - 330, vx + 420, bot - 130), fill=(90, 140, 210, 120))
+    m = Image.new("L", (W, H), 0); ImageDraw.Draw(m).rounded_rectangle((40, VZ[0], W - 40, bot), radius=36, fill=255)
+    lay.putalpha(Image.fromarray(np.minimum(np.array(lay.split()[3]), np.array(m)))); dst.alpha_composite(lay)
+    return top, bot
+
+@lru_cache(maxsize=2)
+def splash(s=200):
+    im = Image.new("RGBA", (s, s), (0, 0, 0, 0)); d = ImageDraw.Draw(im)
+    for k in range(9):
+        an = math.pi + k * math.pi / 8; r = s * .38
+        d.ellipse((s / 2 + math.cos(an) * r - 16, s * .8 + math.sin(an) * r * .9 - 16, s / 2 + math.cos(an) * r + 16, s * .8 + math.sin(an) * r * .9 + 16), fill=(210, 230, 255, 210))
+    return im.filter(ImageFilter.GaussianBlur(3))
+
+def vis_lluvia(dst, t, v, i):
+    if i == 0: t = t + 0.6
+    mode = v.get("mode", "slide")
+    if mode in ("slide", "recover"):
+        top, bot = wet_road(dst, t)
+        if mode == "slide":
+            rot = 9 * math.sin(t * 3.2); dx = 70 * math.sin(t * 1.6)
+        else:
+            k = eout(prog(t, .1, 1.2)); rot = 10 * (1 - k) * math.cos(t * 4); dx = 60 * (1 - k)
+        y = bot - 250; car = car_rear(470)
+        for sx in (-1, 1):
+            z = (t * 3 + (sx + 1) * .3) % 1
+            paste(dst, splash(220), W / 2 + dx + sx * 190, y + 120, scale=.8 + .5 * z, alpha=.9 * (1 - z * .6))
+        paste(dst, car, W / 2 + dx, y, rot=rot)
+        if mode == "recover":
+            pa = ease(prog(t, .7, .6)); d = ImageDraw.Draw(dst, "RGBA")
+            if pa > 0:
+                y0, y1 = y - 210, lerp(y - 210, top + 40, pa)
+                d.line([(W / 2, y0), (W / 2, y1)], fill=GREEN + (230,), width=22)
+                if pa > .95: d.polygon([(W / 2 - 40, y1 + 20), (W / 2 + 40, y1 + 20), (W / 2, y1 - 40)], fill=GREEN + (230,))
+        rain(dst, t, 90, 150)
+    else:  # float: corte lateral
+        d = ImageDraw.Draw(dst, "RGBA"); g = CY + 250; a = ease(prog(t, 0, .25))
+        d.rounded_rectangle((60, g, W - 60, g + 70), radius=20, fill=(38, 42, 52, int(255 * a)))   # asfalto
+        wp = eout(prog(t, .2, 1.0)); lift = 34 * wp
+        # cuña de agua que entra por delante de la rueda
+        wx = lerp(W - 60, W / 2 - 160, wp)
+        d.polygon([(W - 60, g - 70), (W - 60, g + 4), (wx, g + 4), (wx + 40, g - lift - 4)], fill=(70, 150, 255, int(200 * a)))
+        d.rectangle((60, g - 14, W - 60, g + 4), fill=(70, 150, 255, int(150 * a)))
+        for k in range(6):  # ondas
+            x = (W - 120) * ((k / 6 + t * .4) % 1) + 60; d.arc((x - 40, g - 40, x + 40, g), 200, 340, fill=(190, 220, 255, int(200 * a)), width=5)
+        r = 240; cx, cy = W / 2 + 20, g - r - lift + 6
+        d.ellipse((cx - r, cy - r, cx + r, cy + r), fill=(24, 24, 28, 255))
+        for k in range(16):  # dibujo del neumático
+            an = k * math.pi / 8 + t * 2.5
+            x1, y1 = cx + math.cos(an) * (r - 4), cy + math.sin(an) * (r - 4); x2, y2 = cx + math.cos(an) * (r - 40), cy + math.sin(an) * (r - 40)
+            d.line([(x1, y1), (x2, y2)], fill=(70, 72, 80, 255), width=12)
+        d.ellipse((cx - r * .58, cy - r * .58, cx + r * .58, cy + r * .58), fill=(170, 176, 190, 255))
+        d.ellipse((cx - r * .18, cy - r * .18, cx + r * .18, cy + r * .18), fill=(90, 96, 110, 255))
+        if wp > .6:  # hueco bajo la rueda resaltado
+            pk = .5 + .5 * math.sin(t * 8)
+            d.ellipse((cx - 120, g - lift - 30, cx + 120, g + 20), outline=RED + (int(160 + 90 * pk),), width=8)
+        paste(dst, pill("AGUA", 40, (70, 150, 255), WHITE), W - 220, g - 130, alpha=ease(prog(t, .5, .3)))
+        rain(dst, t, 50, 90)
+    if v.get("lines"):
+        cols = [tuple(c) for c in v.get("cols", [])] or None
+        big_lines(dst, v["lines"], t, VZ[0] + 110, cols, size=120)
+    if v.get("stamp"):
+        sp = prog(t, v.get("stamp_at", 1.0), .2)
+        if sp > 0: paste(dst, stamp_img(v["stamp"]), W / 2 + 60, VZ[0] + 400, scale=lerp(2.2, 1.0, eout(sp)), alpha=ease(sp * 1.5), rot=-12)
+    if v.get("tag"):
+        tp = prog(t, v.get("tag_at", 1.0), .35); col = GREEN if v.get("ok") else (RED if v.get("bad") else YEL)
+        paste(dst, pill(v["tag"], 46, col, NAVY if col == YEL else WHITE), W / 2, VZ[1] - 40 if mode == "float" else VZ[0] + 70, scale=eback(tp), alpha=ease(tp * 2))
+
+@lru_cache(maxsize=4)
+def wheel_icon(s=420):
+    im = ss(s, s); d = ImageDraw.Draw(im); S = s * 2
+    d.ellipse((S * .04, S * .04, S * .96, S * .96), outline=(30, 32, 40), width=int(S * .1))
+    d.ellipse((S * .04, S * .04, S * .96, S * .96), outline=(70, 74, 86), width=10)
+    d.ellipse((S * .38, S * .38, S * .62, S * .62), fill=(40, 42, 50))
+    for an in (180, 0, 90):
+        r1, r2 = S * .12, S * .42; a = math.radians(an)
+        d.line([(S / 2 + math.cos(a) * r1, S / 2 + math.sin(a) * r1), (S / 2 + math.cos(a) * r2, S / 2 + math.sin(a) * r2)], fill=(40, 42, 50), width=int(S * .08))
+    d.ellipse((S * .44, S * .44, S * .56, S * .56), fill=YEL)
+    return down(im)
+
+@lru_cache(maxsize=4)
+def pedal_icon(kind="gas", s=300):
+    w, h = s, int(s * 1.25); im = ss(w, h); d = ImageDraw.Draw(im); X, Y = w * 2, h * 2
+    if kind == "gas": box = (X * .3, Y * .06, X * .7, Y * .94)
+    else: box = (X * .12, Y * .3, X * .88, Y * .8)
+    d.rounded_rectangle(box, radius=int(X * .1), fill=(40, 42, 50), outline=(110, 116, 130), width=10)
+    for k in range(5 if kind == "gas" else 3):
+        if kind == "gas": y = Y * (.18 + k * .15); d.rounded_rectangle((X * .37, y, X * .63, y + Y * .05), radius=10, fill=(80, 84, 96))
+        else: y = Y * (.4 + k * .12); d.rounded_rectangle((X * .2, y, X * .8, y + Y * .05), radius=10, fill=(80, 84, 96))
+    return down(im)
+
+@lru_cache(maxsize=2)
+def shoe(s=230):
+    im = ss(s, s); d = ImageDraw.Draw(im); S = s * 2
+    d.rounded_rectangle((S * .2, S * .05, S * .8, S * .95), radius=int(S * .3), fill=(230, 235, 245))
+    d.rounded_rectangle((S * .2, S * .6, S * .8, S * .95), radius=int(S * .3), fill=(60, 64, 76))
+    return down(im)
+
+def vis_pasos(dst, t, v, i):
+    n = v.get("n", 1); ic = v.get("icon", "gas"); rain(dst, t, 40, 70); d = ImageDraw.Draw(dst, "RGBA")
+    # puntos de progreso 1-2-3
+    for k in range(3):
+        on = k + 1 <= n; x = W / 2 + (k - 1) * 150; y = VZ[0] + 40
+        paste(dst, num_badge(k + 1, 84, YEL if on else (70, 80, 100), NAVY if on else (150, 160, 180)), x, y, scale=(1.15 if k + 1 == n else 1) * (eback(prog(t, 0, .4)) if k + 1 == n else 1))
+        if k < 2: d.line([(x + 50, y), (x + 100, y)], fill=(255, 255, 255, 120 if k + 1 < n else 50), width=6)
+    p = eback(prog(t, 0, .45)); c = card(860, 720, fill=(255, 255, 255, 248), r=48)
+    cy = CY + 60; paste(dst, c, W / 2, cy + (1 - p) * 160, alpha=ease(prog(t, 0, .2)))
+    off = (1 - p) * 160
+    paste(dst, text(f"PASO {n}", 46, BLUE, BLACK, shadow=False), W / 2, cy - 300 + off)
+    tl = wrap(v.get("title", ""), 64, BLACK, 760)
+    for k, l in enumerate(tl): paste(dst, text(l, 64, DARK, BLACK, shadow=False), W / 2, cy - 215 + k * 72 + off)
+    iy = cy + 120 + off
+    if ic == "gas":
+        paste(dst, pedal_icon("gas", 250), W / 2 - 90, iy + 30)
+        up = eout(prog(t, .5, 1.0)); paste(dst, shoe(200), W / 2 - 90, iy - 10 - 150 * up, rot=-15)
+        if up > .3:
+            for k in range(3):
+                y = iy - 60 - k * 60 - 80 * up; d.polygon([(W / 2 + 140, y), (W / 2 + 190, y + 50), (W / 2 + 90, y + 50)], fill=GREEN + (int(255 * min(1, up * 1.5)) ,))
+        paste(dst, pill(v.get("chip", "SUAVE"), 38, GREEN, WHITE), W / 2 + 170, iy + 160, alpha=ease(prog(t, .9, .3)))
+    elif ic == "wheel":
+        sh = 7 * math.sin(t * 22) * (1 - eout(prog(t, .6, .6)))
+        paste(dst, wheel_icon(360), W / 2, iy + 20, rot=sh)
+        for sx in (-1, 1):  # manos
+            hp = eback(prog(t, .3, .4)); paste(dst, shoe(110), W / 2 + sx * 172, iy + 20 - 10, scale=hp, rot=sx * 90)
+        paste(dst, pill(v.get("chip", "FIRME, SIN VOLANTAZOS"), 38, GREEN, WHITE), W / 2, iy - 150, alpha=ease(prog(t, .9, .3)))
+    else:  # brake
+        paste(dst, pedal_icon("brake", 300), W / 2, iy + 20)
+        bp = prog(t, .4, .5); paste(dst, shoe(200), W / 2, iy - 140 + 60 * math.sin(clamp(bp) * math.pi), rot=-10)
+        xp = prog(t, .9, .25)
+        if xp > 0: paste(dst, icon_x(170), W / 2 + 240, iy - 40, scale=lerp(2, 1, eout(xp)), alpha=ease(xp * 2))
+        paste(dst, pill(v.get("chip", "NI A FONDO"), 38, RED, WHITE), W / 2 + 240, iy + 110, alpha=ease(prog(t, 1.0, .3)))
+
+# --- cinturón y elevador (bloque vehículo y seguridad, parte 2 de sillitas) ---
+# vis: {"type": "cinturon", "mode": "hook" | "fit" | "neck" | "booster", "lines": [...], "tag": "...", "stamp": "SUSPENSO"}
+def kid_front(dst, cx, hip, a=1.0, swing=0.0):
+    d = ImageDraw.Draw(dst, "RGBA"); al = int(255 * a); skin = (240, 200, 170, al); shirt = (60, 140, 255, al); pants = (30, 40, 70, al)
+    sh_y = hip - 250
+    for sx in (-1, 1):  # piernas
+        d.rounded_rectangle((cx + sx * 55 - 34, hip - 20, cx + sx * 55 + 34, hip + 150 + sx * swing), radius=30, fill=pants)
+        d.rounded_rectangle((cx + sx * 55 - 38, hip + 140 + sx * swing, cx + sx * 55 + 38, hip + 175 + sx * swing), radius=16, fill=(20, 20, 24, al))
+    d.rounded_rectangle((cx - 110, sh_y, cx + 110, hip + 10), radius=60, fill=shirt)                 # torso
+    for sx in (-1, 1): d.rounded_rectangle((cx + sx * 140 - 30, sh_y + 20, cx + sx * 140 + 30, hip - 10), radius=30, fill=shirt)  # brazos
+    d.rounded_rectangle((cx - 30, sh_y - 40, cx + 30, sh_y + 10), radius=14, fill=skin)            # cuello
+    d.ellipse((cx - 85, sh_y - 200, cx + 85, sh_y - 30), fill=skin)                                   # cabeza
+    d.pieslice((cx - 90, sh_y - 210, cx + 90, sh_y - 60), 180, 360, fill=(90, 60, 40, al))           # pelo
+    for sx in (-1, 1): d.ellipse((cx + sx * 32 - 9, sh_y - 120, cx + sx * 32 + 9, sh_y - 102), fill=(30, 30, 40, al))
+    d.arc((cx - 30, sh_y - 100, cx + 30, sh_y - 60), 20, 160, fill=(150, 60, 60, al), width=6)
+    return sh_y
+
+def vis_cinturon(dst, t, v, i):
+    if i == 0: t = t + 0.6
+    mode = v.get("mode", "fit"); d = ImageDraw.Draw(dst, "RGBA"); cx = W / 2 - 20
+    seat_y = CY + 230 if not v.get("lines") else CY + 300
+    # asiento trasero
+    d.rounded_rectangle((cx - 230, seat_y - 470, cx + 230, seat_y + 30), radius=70, fill=(70, 78, 96, 255))
+    d.rounded_rectangle((cx - 120, seat_y - 600, cx + 120, seat_y - 470), radius=40, fill=(56, 62, 78, 255))
+    d.rounded_rectangle((cx - 270, seat_y, cx + 270, seat_y + 90), radius=40, fill=(84, 92, 112, 255))
+    lift = 0.0; booster_a = 0.0
+    if mode == "fit": lift = 70
+    elif mode == "booster":
+        bp = eout(prog(t, .6, .6)); lift = 70 * bp; booster_a = ease(prog(t, .3, .4))
+    if mode in ("booster",):
+        bx = lerp(cx - 600, cx, eout(prog(t, .3, .5)))
+        d.rounded_rectangle((bx - 170, seat_y - 72, bx + 170, seat_y + 4), radius=24, fill=YEL + (int(255 * booster_a),))
+        if booster_a > .5: paste(dst, pill("ELEVADOR", 36, YEL, NAVY), bx, seat_y + 150)
+    hip = seat_y - 10 - lift; sw = 14 * math.sin(t * 5)
+    sh_y = kid_front(dst, cx, hip, 1.0, sw)
+    if mode == "hook":
+        pk = .5 + .5 * math.sin(t * 6)
+        paste(dst, text("?", 260, YEL, BLACK), cx + 300, sh_y - 120, scale=(.9 + .1 * pk) * eback(prog(t, .2, .4)), rot=10)
+    else:
+        good = (mode == "fit") or (mode == "booster" and lift > 60)
+        anc = (cx + 235, seat_y - 300); buck = (cx - 120, seat_y - 30)
+        contact = (cx + 60, seat_y - 285)
+        col = GREEN if good else RED
+        ba = ease(prog(t, .1, .3))
+        d.line([anc, contact, buck], fill=(26, 28, 34, int(255 * ba)), width=46, joint="curve")
+        d.line([anc, contact, buck], fill=col + (int(255 * ba),), width=14, joint="curve")
+        d.line([(cx - 140, hip - 20), (cx + 150, hip - 20)], fill=(26, 28, 34, int(255 * ba)), width=40)
+        d.ellipse((buck[0] - 26, buck[1] - 26, buck[0] + 26, buck[1] + 26), fill=(200, 205, 215, int(255 * ba)))
+        ip = prog(t, .5 if mode != "booster" else 1.2, .3)
+        if ip > 0: paste(dst, (icon_check if good else icon_x)(120), cx + 330, contact[1], scale=eback(ip))
+    if v.get("lines"):
+        cols = [tuple(c) for c in v.get("cols", [])] or None
+        big_lines(dst, v["lines"], t, VZ[0] + 60, cols, size=118)
+    if v.get("stamp"):
+        sp = prog(t, v.get("stamp_at", 1.0), .2)
+        if sp > 0: paste(dst, stamp_img(v["stamp"]), cx - 250, seat_y - 150, scale=lerp(2.2, .8, eout(sp)), alpha=ease(sp * 1.5), rot=-12)
+    if v.get("tag"):
+        tp = prog(t, v.get("tag_at", 1.0), .35); good_t = v.get("ok", mode != "neck")
+        paste(dst, pill(v["tag"], 44, GREEN if good_t else RED, WHITE), W / 2, VZ[0] + 50, scale=eback(tp), alpha=ease(tp * 2))
 
 VIS = {k[4:]: v for k, v in globals().items() if k.startswith("vis_")}
 

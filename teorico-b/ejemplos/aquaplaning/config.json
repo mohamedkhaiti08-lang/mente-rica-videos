@@ -1,0 +1,126 @@
+{
+ "label": "EN 3 PASOS",
+ "times": "tiempos.json",
+ "voice": "voz.wav",
+ "tail": 1.3,
+ "sfx": [
+  {
+   "t": 2.9,
+   "type": "buzz"
+  }
+ ],
+ "scenes": [
+  {
+   "cap": "Tu coche flota con la lluvia y tienes 1 segundo. ¿Frenas? Error. Haz esto.",
+   "hi": [
+    "flota",
+    "¿Frenas?",
+    "Error."
+   ],
+   "vis": {
+    "type": "lluvia",
+    "mode": "slide",
+    "lines": [
+     "¡TU COCHE",
+     "FLOTA!"
+    ],
+    "cols": [
+     [
+      255,
+      255,
+      255
+     ],
+     [
+      255,
+      196,
+      0
+     ]
+    ],
+    "stamp": "¿FRENAR? NO",
+    "stamp_at": 3.5
+   }
+  },
+  {
+   "cap": "Se llama aquaplaning: la rueda no puede echar el agua y pierde el agarre.",
+   "hi": [
+    "aquaplaning:",
+    "agarre."
+   ],
+   "vis": {
+    "type": "lluvia",
+    "mode": "float",
+    "tag": "LA RUEDA FLOTA",
+    "tag_at": 1.6,
+    "bad": true
+   }
+  },
+  {
+   "cap": "Paso 1: levanta el pie del acelerador, suave.",
+   "hi": [
+    "acelerador,"
+   ],
+   "vis": {
+    "type": "pasos",
+    "n": 1,
+    "icon": "gas",
+    "title": "Pie fuera del acelerador",
+    "chip": "SUAVE"
+   }
+  },
+  {
+   "cap": "Paso 2: sujeta el volante con firmeza, sin volantazos.",
+   "hi": [
+    "volante",
+    "firmeza,"
+   ],
+   "vis": {
+    "type": "pasos",
+    "n": 2,
+    "icon": "wheel",
+    "title": "Volante firme",
+    "chip": "SIN VOLANTAZOS"
+   }
+  },
+  {
+   "cap": "Paso 3: no frenes a fondo. Ni siquiera con ABS.",
+   "hi": [
+    "no",
+    "frenes",
+    "ABS."
+   ],
+   "vis": {
+    "type": "pasos",
+    "n": 3,
+    "icon": "brake",
+    "title": "No frenes a fondo",
+    "chip": "NI CON ABS"
+   }
+  },
+  {
+   "cap": "Cuando vuelva el agarre, corrige la trayectoria, suave.",
+   "hi": [
+    "agarre,",
+    "suave."
+   ],
+   "vis": {
+    "type": "lluvia",
+    "mode": "recover",
+    "tag": "CORRIGE SUAVE",
+    "tag_at": 0.9,
+    "ok": true
+   }
+  },
+  {
+   "cap": "Guárdalo antes de tu examen… y de la próxima tormenta.",
+   "hi": [
+    "examen…",
+    "tormenta."
+   ],
+   "vis": {
+    "type": "save",
+    "big": "GUÁRDALO",
+    "small": "para tu examen y para la lluvia"
+   }
+  }
+ ]
+}
