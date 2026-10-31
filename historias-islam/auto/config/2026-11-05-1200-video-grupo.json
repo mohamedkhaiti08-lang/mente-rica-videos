@@ -1,0 +1,308 @@
+{
+ "tail": 1.4,
+ "cx": 490,
+ "cap_maxw": 800,
+ "title_maxw": 820,
+ "instant": true,
+ "step_gap": 290,
+ "label": "AHMED VS BILAL",
+ "times": "2026-11-05-1200-video-grupo.tiempos.json",
+ "scenes": [
+  {
+   "title": [
+    "¿Lo abres",
+    "o no?"
+   ],
+   "tint": "red",
+   "hi": [
+    "vídeo",
+    "abres?"
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "📱",
+    "orbit": [
+     "🙈",
+     "👀",
+     "🔥"
+    ],
+    "y": 900
+   },
+   "cap": "Te llega un vídeo al grupo de clase… y sabes que no deberías verlo. ¿Lo abres?"
+  },
+  {
+   "title": [
+    "Solo es",
+    "un clic…"
+   ],
+   "tint": "night",
+   "hi": [
+    "risas.",
+    "clic."
+   ],
+   "vis": {
+    "type": "steps",
+    "items": [
+     [
+      "😂",
+      "RISAS"
+     ],
+     [
+      "🤫",
+      "NADIE TE VE"
+     ],
+     [
+      "👆",
+      "UN CLIC"
+     ]
+    ],
+    "y": 920
+   },
+   "cap": "Todos mandan risas. Nadie te ve. Solo es un clic."
+  },
+  {
+   "title": [
+    "Ahmed",
+    "lo abre"
+   ],
+   "tint": "red",
+   "hi": [
+    "Ahmed",
+    "reenvía,"
+   ],
+   "vis": {
+    "type": "duo",
+    "focus": "ahmed",
+    "ahmed": "point",
+    "bilal": "down",
+    "ab": [
+     "¡Mirad esto,",
+     "jajaja!"
+    ],
+    "bat": 0.4,
+    "y": 940
+   },
+   "cap": "Ahmed lo abre. Y luego lo reenvía, por las risas."
+  },
+  {
+   "title": [
+    "Y ya",
+    "no se va…"
+   ],
+   "tint": "red",
+   "hi": [
+    "cabeza.",
+    "va."
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "🧠",
+    "orbit": [
+     "🔁",
+     "😵",
+     "⚠️"
+    ],
+    "y": 900
+   },
+   "cap": "Esa imagen se le queda en la cabeza. Y ya no se va."
+  },
+  {
+   "title": [
+    "Desde",
+    "su móvil"
+   ],
+   "tint": "night",
+   "hi": [
+    "circulando…",
+    "móvil."
+   ],
+   "vis": {
+    "type": "counter",
+    "seq": [
+     "1",
+     "10",
+     "100",
+     "∞"
+    ],
+    "last_red": true,
+    "sub": "VECES REENVIADO",
+    "e": "📲",
+    "y": 880
+   },
+   "cap": "Y el vídeo sigue circulando… reenviado desde su móvil."
+  },
+  {
+   "title": [
+    "Bilal recibe",
+    "el mismo vídeo"
+   ],
+   "tint": "blue",
+   "hi": [
+    "Bilal",
+    "aprieta."
+   ],
+   "vis": {
+    "type": "duo",
+    "focus": "bilal",
+    "ahmed": "down",
+    "bilal": "down",
+    "bm": "📱",
+    "mat": 0.5,
+    "y": 940
+   },
+   "cap": "Bilal recibe el mismo vídeo. Y la curiosidad aprieta."
+  },
+  {
+   "title": [
+    "Bilal",
+    "lo borra"
+   ],
+   "tint": "green",
+   "hi": [
+    "mirada,",
+    "no.»"
+   ],
+   "vis": {
+    "type": "duo",
+    "focus": "bilal",
+    "ahmed": "down",
+    "bilal": "calm",
+    "bb": [
+     "Esto aquí no."
+    ],
+    "bat": 0.9,
+    "y": 940
+   },
+   "cap": "Pero baja la mirada, lo borra, y escribe en el grupo: «Esto aquí no.»"
+  },
+  {
+   "title": [
+    "Nadie",
+    "le aplaude…"
+   ],
+   "tint": "green",
+   "hi": [
+    "aplaude.",
+    "visto."
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "🤍",
+    "orbit": [
+     "✨",
+     "🌙",
+     "🕊️"
+    ],
+    "y": 900
+   },
+   "cap": "Nadie le aplaude. Pero Allah lo ha visto."
+  },
+  {
+   "tint": "gold",
+   "hi": [
+    "Corán:",
+    "mirada,»"
+   ],
+   "vis": {
+    "type": "quote",
+    "lines": [
+     "«Di a los creyentes",
+     "que bajen",
+     "la mirada…"
+    ],
+    "src": "CORÁN 24:30 · SURA AN-NUR",
+    "size": 58,
+    "y": 860
+   },
+   "cap": "Allah dice en el Corán: «Di a los creyentes que bajen la mirada,"
+  },
+  {
+   "tint": "gold",
+   "hi": [
+    "castidad.",
+    "puro"
+   ],
+   "vis": {
+    "type": "quote",
+    "lines": [
+     "…y que guarden",
+     "su castidad.",
+     "Eso es más puro",
+     "para ellos.»"
+    ],
+    "src": "CORÁN 24:30 · SURA AN-NUR",
+    "size": 54,
+    "y": 860
+   },
+   "cap": "y que guarden su castidad. Eso es más puro para ellos.»"
+  },
+  {
+   "title": [
+    "Palabra",
+    "de Allah"
+   ],
+   "tint": "green",
+   "hi": [
+    "Nur,",
+    "30."
+   ],
+   "vis": {
+    "type": "big",
+    "words": [
+     "CORÁN",
+     "24:30"
+    ],
+    "size": 150,
+    "y": 860,
+    "e": "📖"
+   },
+   "cap": "Sura An-Nur, aleya 30."
+  },
+  {
+   "title": [
+    "Un clic…"
+   ],
+   "tint": "night",
+   "hi": [
+    "segundo.",
+    "queda."
+   ],
+   "vis": {
+    "type": "choice",
+    "opts": [
+     [
+      "👆",
+      "1 SEGUNDO",
+      "gold"
+     ],
+     [
+      "🧠",
+      "SE QUEDA",
+      "red"
+     ]
+    ],
+    "pick": 1,
+    "y": 900
+   },
+   "cap": "Un clic dura un segundo. Lo que ves… se queda."
+  },
+  {
+   "title": [
+    "¿Y tú?"
+   ],
+   "tint": "green",
+   "hi": [
+    "Ahmed,",
+    "Bilal?"
+   ],
+   "vis": {
+    "type": "duo",
+    "focus": "both",
+    "ahmed": "down",
+    "bilal": "calm",
+    "y": 920
+   },
+   "cap": "¿Y tú? ¿Eres más Ahmed, o más Bilal? Sé sincero, te leo abajo."
+  }
+ ]
+}

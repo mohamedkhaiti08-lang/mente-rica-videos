@@ -1,0 +1,306 @@
+{
+ "tail": 1.4,
+ "cx": 490,
+ "cap_maxw": 800,
+ "title_maxw": 820,
+ "instant": true,
+ "step_gap": 290,
+ "label": "MITO VS REALIDAD",
+ "times": "2026-11-05-1800-mito-adorar.tiempos.json",
+ "scenes": [
+  {
+   "title": [
+    "¿Adoran",
+    "a Mahoma?"
+   ],
+   "tint": "red",
+   "hi": [
+    "adoran",
+    "mito."
+   ],
+   "vis": {
+    "type": "choice",
+    "opts": [
+     [
+      "❌",
+      "MITO",
+      "red"
+     ],
+     [
+      "✅",
+      "REALIDAD",
+      "gold"
+     ]
+    ],
+    "pick": 0,
+    "y": 900
+   },
+   "cap": "¿Tú también crees que los musulmanes adoran a Mahoma? Es un mito."
+  },
+  {
+   "title": [
+    "Le quieren",
+    "muchísimo"
+   ],
+   "tint": "green",
+   "hi": [
+    "Muhammad.",
+    "muchísimo."
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "🤍",
+    "orbit": [
+     "🕌",
+     "📿",
+     "✨"
+    ],
+    "y": 900
+   },
+   "cap": "Los musulmanes le llaman Muhammad. Y le quieren muchísimo."
+  },
+  {
+   "title": [
+    "Pero…"
+   ],
+   "tint": "night",
+   "hi": [
+    "rezan.",
+    "adoran."
+   ],
+   "vis": {
+    "type": "steps",
+    "items": [
+     [
+      "🚫",
+      "NO LE REZAN"
+     ],
+     [
+      "🚫",
+      "NO LE PIDEN"
+     ],
+     [
+      "🚫",
+      "NO LE ADORAN"
+     ]
+    ],
+    "y": 920
+   },
+   "cap": "Pero no le rezan. No le piden. No le adoran."
+  },
+  {
+   "title": [
+    "Un día",
+    "lo demuestra"
+   ],
+   "tint": "gold",
+   "hi": [
+    "día",
+    "demuestra."
+   ],
+   "vis": {
+    "type": "big",
+    "words": [
+     "UN DÍA…"
+    ],
+    "size": 170,
+    "y": 880,
+    "e": "⏳"
+   },
+   "cap": "Y hay un día que lo demuestra."
+  },
+  {
+   "title": [
+    "Medina,",
+    "en shock"
+   ],
+   "tint": "night",
+   "hi": [
+    "murió",
+    "shock."
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "🕌",
+    "orbit": [
+     "😢",
+     "🌑",
+     "💔"
+    ],
+    "y": 900
+   },
+   "cap": "El día que murió el Profeta, la paz sea con él, Medina entera se quedó en shock."
+  },
+  {
+   "title": [
+    "Umar no",
+    "se lo creía"
+   ],
+   "tint": "red",
+   "hi": [
+    "Umar,",
+    "muerto!»"
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "😨",
+    "orbit": [
+     "❗",
+     "💔",
+     "❓"
+    ],
+    "y": 900
+   },
+   "cap": "Umar, uno de los más fuertes, no se lo creía: «¡No ha muerto!»"
+  },
+  {
+   "title": [
+    "Llega",
+    "Abu Bakr"
+   ],
+   "tint": "blue",
+   "hi": [
+    "Abu",
+    "Bakr,",
+    "todos:"
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "🗣️",
+    "orbit": [
+     "👥",
+     "🤍",
+     "🕌"
+    ],
+    "y": 900
+   },
+   "cap": "Entonces llegó Abu Bakr, su mejor amigo, y dijo a todos:"
+  },
+  {
+   "tint": "gold",
+   "hi": [
+    "adoraba",
+    "muerto."
+   ],
+   "vis": {
+    "type": "quote",
+    "lines": [
+     "«Quien adoraba",
+     "a Muhammad…",
+     "Muhammad ha muerto."
+    ],
+    "src": "SAHIH AL-BUJARI 3668",
+    "size": 58,
+    "y": 860
+   },
+   "cap": "«Quien adoraba a Muhammad… Muhammad ha muerto."
+  },
+  {
+   "tint": "gold",
+   "hi": [
+    "Allah…",
+    "nunca"
+   ],
+   "vis": {
+    "type": "quote",
+    "lines": [
+     "Y quien adora a Allah…",
+     "Allah está vivo",
+     "y nunca muere.»"
+    ],
+    "src": "SAHIH AL-BUJARI 3668",
+    "size": 58,
+    "y": 860
+   },
+   "cap": "Y quien adora a Allah… Allah está vivo, y nunca muere.»"
+  },
+  {
+   "tint": "gold",
+   "hi": [
+    "mensajero.",
+    "otros.»"
+   ],
+   "vis": {
+    "type": "quote",
+    "lines": [
+     "«Muhammad no es más",
+     "que un mensajero.",
+     "Antes de él",
+     "pasaron otros…»"
+    ],
+    "src": "CORÁN 3:144 · SURA AL IMRÁN",
+    "size": 54,
+    "y": 860
+   },
+   "cap": "Y recitó: «Muhammad no es más que un mensajero. Antes de él pasaron otros.»"
+  },
+  {
+   "title": [
+    "Palabra",
+    "de Allah"
+   ],
+   "tint": "green",
+   "hi": [
+    "Imrán,",
+    "144."
+   ],
+   "vis": {
+    "type": "big",
+    "words": [
+     "CORÁN",
+     "3:144"
+    ],
+    "size": 150,
+    "y": 860,
+    "e": "📖"
+   },
+   "cap": "Sura Al Imrán, aleya 144."
+  },
+  {
+   "title": [
+    "La realidad"
+   ],
+   "tint": "green",
+   "hi": [
+    "Allah.",
+    "siguen."
+   ],
+   "vis": {
+    "type": "choice",
+    "opts": [
+     [
+      "🤲",
+      "ADORAN A ALLAH",
+      "gold"
+     ],
+     [
+      "👣",
+      "SIGUEN AL PROFETA",
+      "gold"
+     ]
+    ],
+    "pick": -1,
+    "y": 900
+   },
+   "cap": "Los musulmanes solo adoran a Allah. A Muhammad, le siguen."
+  },
+  {
+   "title": [
+    "¿Otro mito?"
+   ],
+   "tint": "night",
+   "hi": [
+    "mito",
+    "abajo."
+   ],
+   "vis": {
+    "type": "cta",
+    "word": "COMENTA",
+    "size": 130,
+    "e": "💬",
+    "y": 900
+   },
+   "cap": "¿Qué otro mito sobre el islam has escuchado? Te leo abajo."
+  }
+ ]
+}
