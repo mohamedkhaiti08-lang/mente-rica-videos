@@ -1,0 +1,303 @@
+{
+ "tail": 1.2,
+ "cx": 510,
+ "cap_maxw": 800,
+ "title_maxw": 820,
+ "instant": true,
+ "step_gap": 300,
+ "label": "HISTORIAS DEL CORÁN",
+ "times": "2026-11-06-1800-ibrahim-fuego.tiempos.json",
+ "scenes": [
+  {
+   "title": [
+    "El fuego",
+    "no le quemó"
+   ],
+   "tint": "red",
+   "hi": [
+    "hoguera",
+    "quemó."
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "🔥",
+    "orbit": [
+     "😳",
+     "🧍",
+     "❓"
+    ],
+    "y": 900
+   },
+   "cap": "Lo lanzaron a una hoguera gigante… y el fuego no le quemó. ¿Cómo es posible?"
+  },
+  {
+   "title": [
+    "El profeta",
+    "Ibrahim"
+   ],
+   "tint": "night",
+   "hi": [
+    "Ibrahim.",
+    "Corán."
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "📜",
+    "orbit": [
+     "🌙",
+     "✨",
+     "📖"
+    ],
+    "y": 900
+   },
+   "cap": "Es el profeta Ibrahim. Y está en el Corán."
+  },
+  {
+   "title": [
+    "Estatuas",
+    "de piedra"
+   ],
+   "tint": "night",
+   "hi": [
+    "piedra.",
+    "padre."
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "🗿",
+    "orbit": [
+     "🙇",
+     "🙇",
+     "🙇"
+    ],
+    "y": 900
+   },
+   "cap": "Su pueblo adoraba estatuas de piedra. Hasta su propio padre."
+  },
+  {
+   "title": [
+    "Rompe",
+    "los ídolos"
+   ],
+   "tint": "red",
+   "hi": [
+    "rompió",
+    "grande."
+   ],
+   "vis": {
+    "type": "steps",
+    "items": [
+     [
+      "🗿",
+      "ÍDOLOS"
+     ],
+     [
+      "🪓",
+      "ROTOS"
+     ],
+     [
+      "🗿",
+      "EL GRANDE"
+     ]
+    ],
+    "y": 920
+   },
+   "cap": "Un día, cuando todos se fueron, Ibrahim rompió los ídolos… menos el más grande."
+  },
+  {
+   "tint": "gold",
+   "hi": [
+    "grande,",
+    "habla."
+   ],
+   "vis": {
+    "type": "quote",
+    "lines": [
+     "«Preguntadle",
+     "al grande,",
+     "si es que habla»"
+    ],
+    "src": "CORÁN 21:63",
+    "size": 58,
+    "y": 860
+   },
+   "cap": "Cuando le preguntaron, dijo: «Preguntadle al grande, si es que habla.»"
+  },
+  {
+   "title": [
+    "Silencio…"
+   ],
+   "tint": "blue",
+   "hi": [
+    "callados.",
+    "hablan."
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "😶",
+    "orbit": [
+     "🗿",
+     "🤐",
+     "🗿"
+    ],
+    "y": 900
+   },
+   "cap": "Se quedaron callados. Porque las piedras no hablan."
+  },
+  {
+   "title": [
+    "En vez",
+    "de pensar…"
+   ],
+   "tint": "red",
+   "hi": [
+    "pensar,",
+    "Quemadlo!»"
+   ],
+   "vis": {
+    "type": "big",
+    "words": [
+     "¡QUEMADLO!"
+    ],
+    "size": 100,
+    "y": 860,
+    "e": "😡"
+   },
+   "cap": "Y en vez de pensar, gritaron: «¡Quemadlo!»"
+  },
+  {
+   "title": [
+    "Una hoguera",
+    "enorme"
+   ],
+   "tint": "red",
+   "hi": [
+    "enorme.",
+    "dentro."
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "🔥",
+    "orbit": [
+     "🔥",
+     "🪵",
+     "🔥",
+     "💨"
+    ],
+    "size": 340,
+    "y": 900
+   },
+   "cap": "Encendieron una hoguera enorme. Y lo lanzaron dentro."
+  },
+  {
+   "tint": "gold",
+   "hi": [
+    "basta."
+   ],
+   "vis": {
+    "type": "quote",
+    "lines": [
+     "«Hasbunallahu",
+     "wa ni'mal wakil»",
+     "Allah me basta"
+    ],
+    "src": "SAHIH AL-BUJARI 4563",
+    "size": 58,
+    "y": 860
+   },
+   "cap": "Y Ibrahim dijo: «Hasbunallahu wa ni'mal wakil». Allah me basta."
+  },
+  {
+   "title": [
+    "«¡Oh fuego, sé",
+    "frescor y paz!»"
+   ],
+   "tint": "blue",
+   "hi": [
+    "frescor",
+    "paz"
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "❄️",
+    "orbit": [
+     "🔥",
+     "🕊️",
+     "✨"
+    ],
+    "y": 920
+   },
+   "cap": "Entonces Allah dijo: «¡Oh fuego, sé frescor y paz para Ibrahim!»"
+  },
+  {
+   "title": [
+    "Ellos",
+    "perdieron"
+   ],
+   "tint": "night",
+   "hi": [
+    "destruirle…",
+    "ellos."
+   ],
+   "vis": {
+    "type": "steps",
+    "items": [
+     [
+      "🔥",
+      "SU PLAN"
+     ],
+     [
+      "❄️",
+      "FRESCOR"
+     ],
+     [
+      "🏳️",
+      "PERDIERON"
+     ]
+    ],
+    "y": 920
+   },
+   "cap": "Quisieron destruirle… y los que perdieron fueron ellos."
+  },
+  {
+   "title": [
+    "Sura",
+    "Al-Anbiya"
+   ],
+   "tint": "green",
+   "hi": [
+    "Al-Anbiya,",
+    "70."
+   ],
+   "vis": {
+    "type": "big",
+    "words": [
+     "CORÁN",
+     "21:68-70"
+    ],
+    "size": 120,
+    "y": 860,
+    "e": "📖"
+   },
+   "cap": "Sura Al-Anbiya, aleyas 68 a 70."
+  },
+  {
+   "title": [
+    "Allah",
+    "me basta"
+   ],
+   "tint": "gold",
+   "hi": [
+    "fuego",
+    "basta."
+   ],
+   "vis": {
+    "type": "cta",
+    "word": "¿Y TÚ?",
+    "e": "🤲",
+    "y": 900
+   },
+   "cap": "Y tú, ¿qué fuego estás pasando? Di lo mismo: Allah me basta. Te leo abajo."
+  }
+ ]
+}

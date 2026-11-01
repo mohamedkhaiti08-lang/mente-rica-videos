@@ -1,0 +1,310 @@
+{
+ "tail": 1.3,
+ "cx": 510,
+ "cap_maxw": 800,
+ "title_maxw": 820,
+ "instant": true,
+ "step_gap": 300,
+ "label": "AHMED VS BILAL",
+ "times": "2026-11-06-1200-amigo-espaldas.tiempos.json",
+ "scenes": [
+  {
+   "title": [
+    "¿Le devuelves",
+    "la jugada?"
+   ],
+   "tint": "red",
+   "hi": [
+    "espaldas…",
+    "jugada?"
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "🗣️",
+    "orbit": [
+     "🤫",
+     "📱",
+     "😡"
+    ],
+    "y": 900
+   },
+   "cap": "Tu mejor amigo habla mal de ti a tus espaldas… y te enteras. ¿Le devuelves la jugada?"
+  },
+  {
+   "title": [
+    "Una captura…"
+   ],
+   "tint": "night",
+   "hi": [
+    "captura.",
+    "leído."
+   ],
+   "vis": {
+    "type": "steps",
+    "items": [
+     [
+      "📱",
+      "CAPTURA"
+     ],
+     [
+      "👥",
+      "EL GRUPO"
+     ],
+     [
+      "😳",
+      "TODOS"
+     ]
+    ],
+    "y": 920
+   },
+   "cap": "Te lo enseñan en una captura. Y todo el grupo lo ha leído."
+  },
+  {
+   "title": [
+    "Ahmed",
+    "se calienta"
+   ],
+   "tint": "red",
+   "hi": [
+    "calienta:",
+    "secretos."
+   ],
+   "vis": {
+    "type": "duo",
+    "focus": "ahmed",
+    "ahmed": "point",
+    "bilal": "down",
+    "ab": [
+     "¡Pues ahora",
+     "cuento yo",
+     "sus secretos!"
+    ],
+    "bat": 0.4,
+    "y": 960
+   },
+   "cap": "Ahmed se calienta: ¿Ah, sí? Pues ahora cuento yo sus secretos."
+  },
+  {
+   "title": [
+    "Uno",
+    "por uno"
+   ],
+   "tint": "red",
+   "hi": [
+    "Todos.",
+    "uno."
+   ],
+   "vis": {
+    "type": "counter",
+    "seq": [
+     "1",
+     "2",
+     "3",
+     "∞"
+    ],
+    "last_red": true,
+    "sub": "SECRETOS CONTADOS",
+    "e": "🔓",
+    "y": 880
+   },
+   "cap": "Y los cuenta. Todos. Uno por uno."
+  },
+  {
+   "title": [
+    "Amistad",
+    "rota"
+   ],
+   "tint": "red",
+   "hi": [
+    "mal…",
+    "rota."
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "💔",
+    "orbit": [
+     "😬",
+     "👎",
+     "🔥"
+    ],
+    "y": 900
+   },
+   "cap": "Ahora los dos quedan mal… y la amistad, rota."
+  },
+  {
+   "title": [
+    "Bilal lee",
+    "lo mismo"
+   ],
+   "tint": "blue",
+   "hi": [
+    "Bilal",
+    "duele"
+   ],
+   "vis": {
+    "type": "duo",
+    "focus": "bilal",
+    "ahmed": "down",
+    "bilal": "down",
+    "bm": "📱",
+    "mat": 0.4,
+    "y": 960
+   },
+   "cap": "Bilal lee la misma captura. Y le duele igual."
+  },
+  {
+   "title": [
+    "Bilal no",
+    "lo cuenta"
+   ],
+   "tint": "green",
+   "hi": [
+    "nada.",
+    "privado:"
+   ],
+   "vis": {
+    "type": "duo",
+    "focus": "bilal",
+    "ahmed": "down",
+    "bilal": "calm",
+    "bb": [
+     "Me ha dolido.",
+     "¿Hablamos?"
+    ],
+    "bat": 0.8,
+    "y": 960
+   },
+   "cap": "Pero no cuenta nada. Le escribe en privado: «Me ha dolido. ¿Hablamos?»"
+  },
+  {
+   "title": [
+    "Le pide",
+    "perdón"
+   ],
+   "tint": "green",
+   "hi": [
+    "palabras…",
+    "perdón."
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "🤝",
+    "orbit": [
+     "🥺",
+     "🤍",
+     "✨"
+    ],
+    "y": 900
+   },
+   "cap": "Su amigo se queda sin palabras… y le pide perdón."
+  },
+  {
+   "tint": "gold",
+   "hi": [
+    "Corán:",
+    "espaldas."
+   ],
+   "vis": {
+    "type": "quote",
+    "lines": [
+     "«No habléis mal",
+     "unos de otros",
+     "a sus espaldas»"
+    ],
+    "src": "CORÁN 49:12 · SURA AL-HUJURAT",
+    "size": 58,
+    "y": 860
+   },
+   "cap": "Allah dice en el Corán: «No habléis mal unos de otros a sus espaldas.»"
+  },
+  {
+   "title": [
+    "Palabra",
+    "de Allah"
+   ],
+   "tint": "green",
+   "hi": [
+    "Al-Hujurat,",
+    "12."
+   ],
+   "vis": {
+    "type": "big",
+    "words": [
+     "CORÁN",
+     "49:12"
+    ],
+    "size": 150,
+    "y": 860,
+    "e": "📖"
+   },
+   "cap": "Sura Al-Hujurat, aleya 12."
+  },
+  {
+   "tint": "gold",
+   "hi": [
+    "perdona,",
+    "honor."
+   ],
+   "vis": {
+    "type": "quote",
+    "lines": [
+     "«A quien perdona,",
+     "Allah le aumenta",
+     "en honor»"
+    ],
+    "src": "SAHIH MUSLIM 2588",
+    "size": 58,
+    "y": 860
+   },
+   "cap": "Y el Profeta, la paz sea con él, dijo: «A quien perdona, Allah le aumenta en honor.»"
+  },
+  {
+   "title": [
+    "5 minutos",
+    "vs para siempre"
+   ],
+   "tint": "night",
+   "hi": [
+    "cinco",
+    "siempre."
+   ],
+   "vis": {
+    "type": "steps",
+    "items": [
+     [
+      "😤",
+      "VENGANZA"
+     ],
+     [
+      "⏳",
+      "5 MIN"
+     ],
+     [
+      "👑",
+      "HONOR"
+     ]
+    ],
+    "y": 920
+   },
+   "cap": "Vengarte dura cinco minutos. Perdonar te hace grande para siempre."
+  },
+  {
+   "title": [
+    "¿Y tú?"
+   ],
+   "tint": "green",
+   "hi": [
+    "Ahmed,",
+    "Bilal?"
+   ],
+   "vis": {
+    "type": "duo",
+    "focus": "both",
+    "ahmed": "down",
+    "bilal": "calm",
+    "y": 940
+   },
+   "cap": "¿Y tú? ¿Eres más Ahmed, o más Bilal? Sé sincero, te leo abajo."
+  }
+ ]
+}
