@@ -1,0 +1,190 @@
+{
+ "label": "¿QUIÉN PASA PRIMERO? · PARTE 4",
+ "times": "tiempos.json",
+ "voice": "voz.wav",
+ "tail": 1.1,
+ "sfx": [
+  {
+   "t": 3.7,
+   "type": "buzz"
+  },
+  {
+   "t": 9.9,
+   "type": "beep"
+  },
+  {
+   "t": 10.8,
+   "type": "beep"
+  },
+  {
+   "t": 11.7,
+   "type": "beep"
+  },
+  {
+   "t": 12.55,
+   "type": "ding"
+  }
+ ],
+ "scenes": [
+  {
+   "cap": "Parte 4. ¿Quién pasa primero en este cruce sin señales?",
+   "hi": [
+    "primero",
+    "cruce"
+   ],
+   "vis": {
+    "type": "cruce",
+    "tram": true,
+    "tag": "¿1, 2 o 3?"
+   }
+  },
+  {
+   "cap": "Ojo: el 3 es un tranvía, y al 1 le viene por la izquierda.",
+   "hi": [
+    "tranvía,",
+    "izquierda."
+   ],
+   "vis": {
+    "type": "cruce",
+    "tram": true,
+    "rails_hl": true,
+    "still": true,
+    "focus": 3,
+    "tag": "TRANVÍA POR LA IZQUIERDA DEL 1"
+   }
+  },
+  {
+   "cap": "Pon el orden en comentarios. Tienes 3 segundos.",
+   "hi": [
+    "orden",
+    "3"
+   ],
+   "vis": {
+    "type": "cruce",
+    "tram": true,
+    "still": true,
+    "countdown": [
+     2.91,
+     3.81,
+     4.71
+    ],
+    "tag": "¿1, 2 o 3?"
+   }
+  },
+  {
+   "cap": "¡Primero el tranvía! Los que van sobre raíles tienen preferencia.",
+   "hi": [
+    "tranvía!",
+    "raíles"
+   ],
+   "vis": {
+    "type": "cruce",
+    "tram": true,
+    "rails_hl": true,
+    "still": true,
+    "move": [
+     [
+      3,
+      0.3,
+      1.6
+     ]
+    ],
+    "rank": [
+     "3"
+    ],
+    "rank_at": [
+     0.2
+    ]
+   }
+  },
+  {
+   "cap": "Luego el 2, por la derecha del 1. Y el último, el 1.",
+   "hi": [
+    "2,",
+    "último,",
+    "1."
+   ],
+   "vis": {
+    "type": "cruce",
+    "tram": true,
+    "still": true,
+    "done": [
+     3
+    ],
+    "move": [
+     [
+      2,
+      0.3,
+      1.3
+     ],
+     [
+      1,
+      1.9,
+      1.1
+     ]
+    ],
+    "rank": [
+     "3",
+     "2",
+     "1"
+    ],
+    "rank_at": [
+     0,
+     0.4,
+     1.9
+    ]
+   }
+  },
+  {
+   "cap": "En la parte 1, el 3 iba el último. Hoy, el primero.",
+   "hi": [
+    "último.",
+    "primero."
+   ],
+   "vis": {
+    "type": "cruce",
+    "tram": true,
+    "still": true,
+    "rank": [
+     "3",
+     "2",
+     "1"
+    ],
+    "rank_at": [
+     0,
+     0,
+     0
+    ],
+    "tag": "PARTE 1: 2-1-3 · HOY: 3-2-1",
+    "tag_bottom": true
+   }
+  },
+  {
+   "cap": "Sin señales, el tranvía pasa aunque venga por la izquierda.",
+   "hi": [
+    "tranvía",
+    "izquierda."
+   ],
+   "vis": {
+    "type": "cruce",
+    "tram": true,
+    "rails_hl": true,
+    "still": true,
+    "focus": 3,
+    "tag": "RAÍLES = PREFERENCIA"
+   }
+  },
+  {
+   "cap": "¿Acertaste? Comenta el orden. ¿Parte 5, con ambulancia?",
+   "hi": [
+    "orden.",
+    "ambulancia?"
+   ],
+   "vis": {
+    "type": "cta",
+    "big": "¿Acertaste?",
+    "small": "Comenta el orden · ¿Parte 5?"
+   }
+  }
+ ]
+}

@@ -1,0 +1,152 @@
+{
+ "label": "SEÑAL MISTERIOSA",
+ "times": "tiempos.json",
+ "voice": "voz.wav",
+ "tail": 1.3,
+ "sfx": [
+  {
+   "t": 10.55,
+   "type": "beep"
+  },
+  {
+   "t": 11.45,
+   "type": "beep"
+  },
+  {
+   "t": 12.35,
+   "type": "beep"
+  },
+  {
+   "t": 13.2,
+   "type": "ding"
+  },
+  {
+   "t": 17.6,
+   "type": "buzz"
+  }
+ ],
+ "scenes": [
+  {
+   "cap": "Antes de tu examen, mira esta señal vacía. ¿Qué significa?",
+   "hi": [
+    "examen,",
+    "vacía.",
+    "significa?"
+   ],
+   "vis": {
+    "type": "senal",
+    "mode": "hook",
+    "kind": "empty",
+    "lines": [
+     "¿QUÉ",
+     "SIGNIFICA?"
+    ],
+    "cols": [
+     [
+      255,
+      255,
+      255
+     ],
+     [
+      255,
+      196,
+      0
+     ]
+    ],
+    "tag": "3 SEGUNDOS PARA ADIVINAR"
+   }
+  },
+  {
+   "cap": "¿A, dirección prohibida? ¿B, prohibido a todos los vehículos? ¿O C, nada?",
+   "hi": [
+    "A,",
+    "B,",
+    "C,"
+   ],
+   "vis": {
+    "type": "quiz",
+    "sign": "empty",
+    "q": "Esta señal, ¿qué significa?",
+    "opts": [
+     "Dirección prohibida",
+     "Prohibido a todo vehículo",
+     "Nada: está vacía"
+    ],
+    "correct": 1,
+    "opt_at": [
+     0.05,
+     1.45,
+     2.95
+    ]
+   }
+  },
+  {
+   "cap": "Pon tu letra en comentarios. Tienes 3 segundos.",
+   "hi": [
+    "letra",
+    "comentarios.",
+    "3"
+   ],
+   "vis": {
+    "type": "countdown",
+    "quiz_scene": 1,
+    "at": [
+     2.98,
+     3.88,
+     4.78
+    ]
+   }
+  },
+  {
+   "cap": "¡Es la B! Circulación prohibida: no pasa ningún vehículo, en ningún sentido.",
+   "hi": [
+    "B!",
+    "ningún",
+    "sentido."
+   ],
+   "vis": {
+    "type": "reveal",
+    "quiz_scene": 1
+   }
+  },
+  {
+   "cap": "No la confundas con la de entrada prohibida, la roja con franja blanca.",
+   "hi": [
+    "confundas",
+    "entrada",
+    "prohibida,"
+   ],
+   "vis": {
+    "type": "senal",
+    "mode": "pair",
+    "hl": 1,
+    "tag": "NO LAS CONFUNDAS"
+   }
+  },
+  {
+   "cap": "Esa solo te cierra un lado. La vacía, los dos.",
+   "hi": [
+    "un",
+    "lado.",
+    "dos."
+   ],
+   "vis": {
+    "type": "senal",
+    "mode": "streets",
+    "at2": 0.9
+   }
+  },
+  {
+   "cap": "Guárdalo, y etiqueta a quien se examine esta semana.",
+   "hi": [
+    "Guárdalo,",
+    "etiqueta"
+   ],
+   "vis": {
+    "type": "save",
+    "big": "GUÁRDALO",
+    "small": "y etiqueta a quien se examine"
+   }
+  }
+ ]
+}

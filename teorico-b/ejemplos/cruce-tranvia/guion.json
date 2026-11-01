@@ -1,0 +1,17 @@
+{
+ "speed": 1.12,
+ "pause": 0.28,
+ "gaps": {
+  "2": 2.6
+ },
+ "lines": [
+  "Parte cuatro. ¿Quién pasa primero en este cruce sin señales?",
+  "Ojo: el tres es un tranvía, y al uno le viene por la izquierda.",
+  "Pon el orden en comentarios. Tienes tres segundos.",
+  "¡Primero el tranvía! Los que van sobre raíles tienen preferencia.",
+  "Luego el dos, por la derecha del uno. Y el último, el uno.",
+  "En la parte uno, el tres iba el último. Hoy, el primero.",
+  "Sin señales, el tranvía pasa aunque venga por la izquierda.",
+  "¿Acertaste? Comenta el orden. ¿Parte cinco, con ambulancia?"
+ ]
+}

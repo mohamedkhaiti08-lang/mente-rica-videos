@@ -18,6 +18,9 @@
 #   hook admite "img": "seat" (sillita) y "stamp_x" (posición del sello).
 #   lluvia (carretera mojada / aquaplaning: slide | float | recover), pasos (EN 3 PASOS: tarjeta con n e icono gas | wheel | brake),
 #   cinturon (niño en el asiento trasero con cinturón: hook | fit | neck | booster con elevador).
+#   cruce admite "tram": true (el 3 es un tranvía sobre raíles, viene del oeste), "rails_hl" y "focus": 3 (brazo izquierdo del 1).
+#   senal (SEÑAL MISTERIOSA: hook = señal girando con "?" | pair = R-101 vs R-100 | streets = qué permite cada una);
+#   sign admite "kind": "empty" (R-100 vacía) y quiz admite "sign": "empty" | "noentry" (señal en la esquina de la tarjeta).
 import math, json, sys, os, subprocess
 from functools import lru_cache
 from multiprocessing import Pool
@@ -391,6 +394,7 @@ def quiz_card(dst, v, t, state, enter=0.0):
     paste(dst, c, W / 2, cy + (1 - p) * 200, alpha=ease(prog(t, enter, .25)))
     a = ease(prog(t, enter, .25)); off = (1 - p) * 200
     paste(dst, pill("PREGUNTA DE EXAMEN", 30, BLUE, WHITE), W / 2, top + 50 + off, alpha=a)
+    if v.get("sign"): paste(dst, sign_generic(v["sign"], 0, 150), W / 2 - 360, top + 10 + off, alpha=a, rot=8 * math.sin(t * 2.5))
     for k, l in enumerate(ql):
         paste(dst, text(l, qs, DARK, XB, shadow=False), W / 2, top + 120 + k * qs * 1.2 + qs / 2 + off, alpha=a)
     oy = top + 150 + len(ql) * qs * 1.2 + 20
@@ -624,7 +628,7 @@ def vis_sign(dst, t, v, i):
     if v.get("tag"): paste(dst, pill(v["tag"], 40, YEL, NAVY), W / 2, CY + 330, scale=eback(prog(t, .5, .35)), alpha=ease(prog(t, .5, .3)))
 
 @lru_cache(maxsize=16)
-def sign_generic(kind, n, s):
+def sign_generic(kind, n, s, flat=False):
     im = ss(s, s); d = ImageDraw.Draw(im); S = s * 2
     if kind == "speed":
         d.ellipse((0, 0, S - 1, S - 1), fill=(220, 30, 40)); d.ellipse((S * .12, S * .12, S * .88, S * .88), fill=WHITE)
@@ -632,9 +636,11 @@ def sign_generic(kind, n, s):
         d.text((S / 2 - (bb[0] + bb[2]) / 2, S / 2 - (bb[1] + bb[3]) / 2), txt, font=f, fill=(20, 20, 20))
     elif kind == "noentry":
         d.ellipse((0, 0, S - 1, S - 1), fill=(220, 30, 40)); d.rounded_rectangle((S * .16, S * .42, S * .84, S * .58), radius=10, fill=WHITE)
+    elif kind == "empty":  # R-100 circulación prohibida: blanca con borde rojo, vacía
+        d.ellipse((0, 0, S - 1, S - 1), fill=(220, 30, 40)); d.ellipse((S * .12, S * .12, S * .88, S * .88), fill=WHITE)
     else:
         return sign_b(s)
-    return glow(down(im), 30, .5)
+    return down(im) if flat else glow(down(im), 30, .5)
 
 # --- cruce sin señalizar visto desde arriba con coches numerados (formato ¿QUIÉN PASA PRIMERO?) ---
 # coche 1: sube (viene del sur); coche 2: viene por el este hacia el oeste; coche 3: viene del oeste hacia el este.
@@ -699,7 +705,19 @@ def vis_cruce(dst, t, v, i):
         if v.get("dirt_hl"):
             pa = ease(prog(t, .2, .4)); a = int(255 * pa * (.6 + .4 * math.sin(t * 7)))
             d.rounded_rectangle((x0 + 4, cy - RW - 6, W - 44, cy + RW + 6), radius=20, outline=ORANGE + (a,), width=12)
+    if v.get("tram"):  # vías del tranvía en el carril sur del brazo horizontal (por donde viene el 3, desde el oeste)
+        ry = cy + RW / 2; hl = v.get("rails_hl")
+        for k in range(0, W, 46): d.rectangle((40 + k, ry - 52, 40 + k + 14, ry + 52), fill=(58, 60, 66, 255))
+        for dy in (-36, 36):
+            d.line([(40, ry + dy), (W - 40, ry + dy)], fill=(20, 20, 24, 255), width=16)
+            d.line([(40, ry + dy - 3), (W - 40, ry + dy - 3)], fill=(196, 200, 210, 255), width=7)
+        if hl:
+            pa = ease(prog(t, .2, .4)); a = int(255 * pa * (.6 + .4 * math.sin(t * 7)))
+            d.rounded_rectangle((44, ry - 66, W - 44, ry + 66), radius=24, outline=ORANGE + (a,), width=10)
     fc = v.get("focus")
+    if fc == 3 and v.get("tram"):  # el tranvía viene por la IZQUIERDA del 1: brazo oeste resaltado
+        pa = ease(prog(t, .3, .5)); a = int(255 * pa * (.6 + .4 * math.sin(t * 6)))
+        d.rounded_rectangle((48, cy - RW + 4, cx - RW - 4, cy + RW - 4), radius=22, outline=YEL + (a,), width=12); fc = None
     if fc:  # zona "su derecha" resaltada para el coche fc (1 = brazo este)
         pa = ease(prog(t, .3, .5)); a = int(120 * pa * (.75 + .25 * math.sin(t * 6)))
         d.rectangle((cx + RW, cy - RW, W - 40, cy + RW), fill=(34, 197, 94, a))
@@ -709,15 +727,17 @@ def vis_cruce(dst, t, v, i):
         k = 0.0
         if n in moves: s, du = moves[n]; k = ease(prog(t, s, du)) ** 1.4
         x, y, rot = cruce_pos(n, k)
+        istram = n == 3 and v.get("tram")
+        if istram: x = lerp(cx - RW - 260, W + 420, k)
         x0, y0, _ = cruce_pos(n, 0.0)
         if k == 0 and t < .5 and not v.get("still"):  # entrada al cruce
             e = eout(prog(t, 0, .5)); dx, dy = {1: (0, 160), 2: (160, 0), 3: (-160, 0)}[n]; x += dx * (1 - e); y += dy * (1 - e)
-        car = car_top(CRUCE_COLS[n], 120); paste(lay, car, x, y, rot=rot)
+        car = tram_top() if istram else car_top(CRUCE_COLS[n], 120); paste(lay, car, x, y, rot=rot)
         if k < .02:  # flecha de dirección
             al = int(230 * (.6 + .4 * math.sin(t * 5)))
             if n == 1: arrow_v(d, x, y - 175, -1, al)
-            else: arrow(d, x + (-150 if n == 2 else 150), y, -1 if n == 2 else 1, al)
-        bx, by = {1: (x + 125, y + 30), 2: (x + 20, y - 125), 3: (x - 20, y + 125)}[n]
+            else: arrow(d, x + (-150 if n == 2 else (290 if istram else 150)), y, -1 if n == 2 else 1, al)
+        bx, by = {1: (x + 125, y + 30), 2: (x + 20, y - 125), 3: (x + (60 if istram else -20), y + (140 if istram else 125))}[n]
         paste(lay, num_badge(n), bx, by, scale=eback(prog(t, .15 + n * .12, .35)) if not v.get("still") else 1)
     m = Image.new("L", (W, H), 0); ImageDraw.Draw(m).rounded_rectangle((40, top, W - 40, bot), radius=36, fill=255)
     lay.putalpha(Image.fromarray(np.minimum(np.array(lay.split()[3]), np.array(m)))); dst.alpha_composite(lay)
@@ -740,7 +760,8 @@ def vis_cruce(dst, t, v, i):
             p = prog(t, at, .35)
             if p > 0: paste(dst, rank_chip(j + 1, int(lab)), cx - RW - 205, top + 62 + j * 90, scale=eback(p), alpha=ease(p * 2))
     if v.get("tag"):
-        paste(dst, pill(v["tag"], 40, YEL, NAVY), W / 2, top + 60, scale=eback(prog(t, .4, .4)), alpha=ease(prog(t, .4, .3)))
+        ty = bot - 70 if v.get("tag_bottom") else top + 60
+        paste(dst, pill(v["tag"], 40, YEL, NAVY), W / 2, ty, scale=eback(prog(t, .4, .4)), alpha=ease(prog(t, .4, .3)))
 
 @lru_cache(maxsize=16)
 def rank_chip(pos, car):
@@ -1698,6 +1719,81 @@ def vis_cinturon(dst, t, v, i):
     if v.get("tag"):
         tp = prog(t, v.get("tag_at", 1.0), .35); good_t = v.get("ok", mode != "neck")
         paste(dst, pill(v["tag"], 44, GREEN if good_t else RED, WHITE), W / 2, VZ[0] + 50, scale=eback(tp), alpha=ease(tp * 2))
+
+# --- tranvía visto desde arriba (para el cruce: "tram": true sustituye al coche 3) ---
+@lru_cache(maxsize=2)
+def tram_top(w=124, L=470):
+    im = ss(w, L); d = ImageDraw.Draw(im); X, Y = w * 2, L * 2
+    for y0, y1 in ((0, Y * .49), (Y * .51, Y - 1)):  # dos módulos articulados
+        d.rounded_rectangle((0, y0, X - 1, y1), radius=int(X * .22), fill=(236, 238, 242))
+        d.rectangle((X * .06, y0 + 30, X * .16, y1 - 30), fill=(220, 40, 50)); d.rectangle((X * .84, y0 + 30, X * .94, y1 - 30), fill=(220, 40, 50))
+        for k in range(4): yy = y0 + 60 + k * (y1 - y0 - 120) / 4; d.rounded_rectangle((X * .3, yy, X * .7, yy + 50), radius=10, fill=(200, 205, 214))
+    d.rectangle((X * .25, Y * .47, X * .75, Y * .53), fill=(60, 64, 72))  # fuelle
+    d.rounded_rectangle((X * .1, 8, X * .9, Y * .07), radius=int(X * .18), fill=(40, 60, 90))  # parabrisas delantero
+    d.rounded_rectangle((X * .14, Y * .95, X * .86, Y - 10), radius=20, fill=(40, 60, 90))
+    px, py = X / 2, Y * .25  # pantógrafo
+    d.polygon([(px, py - 90), (px + 70, py), (px, py + 90), (px - 70, py)], outline=(30, 30, 34), width=10)
+    d.line([(px - 100, py), (px + 100, py)], fill=(30, 30, 34), width=12)
+    for x0 in (.08, .72): d.rounded_rectangle((X * x0, 2, X * (x0 + .2), 26), radius=8, fill=(255, 240, 200))
+    im = down(im); sh = Image.new("RGBA", (w + 40, L + 40), (0, 0, 0, 0))
+    ImageDraw.Draw(sh).rounded_rectangle((20, 26, w + 20, L + 26), radius=int(w * .22), fill=(0, 0, 0, 140))
+    sh = sh.filter(ImageFilter.GaussianBlur(10)); sh.alpha_composite(im, (20, 20)); return sh
+
+# --- SEÑAL MISTERIOSA: señal que entra girando con "?" | pareja de señales | dos calles con lo que permite cada una ---
+# vis: {"type": "senal", "mode": "hook" | "pair" | "streets", "kind": "empty", "lines": [...], "tag": "...", "hl": 1}
+def street_mini(dst, t, cx, kind, label, ok_down, at=0.0):
+    d = ImageDraw.Draw(dst, "RGBA"); top, bot = VZ[0] + 260, VZ[1] - 40; hw = 120; a = int(255 * ease(prog(t, at, .3)))
+    paste(dst, sign_generic(kind, 0, 150), cx, VZ[0] + 95, alpha=a / 255, scale=eback(prog(t, at, .4)))
+    paste(dst, pill(label, 30, WHITE, NAVY, padx=22), cx, VZ[0] + 205, alpha=a / 255)
+    d.rounded_rectangle((cx - hw - 26, top, cx + hw + 26, bot), radius=26, fill=(64, 92, 60, a))
+    d.rectangle((cx - hw, top, cx + hw, bot), fill=(36, 40, 50, a))
+    for x in (cx - hw + 7, cx + hw - 7): d.line([(x, top), (x, bot)], fill=(255, 255, 255, int(a * .85)), width=6)
+    y = top + 20
+    while y < bot - 40: d.line([(cx, y), (cx, y + 40)], fill=(255, 255, 255, int(a * .8)), width=6); y += 76
+    ly = bot - 170; d.line([(cx + 4, ly), (cx + hw - 10, ly)], fill=(255, 255, 255, a), width=12)  # entrada (donde está la señal)
+    # coche que quiere entrar subiendo (carril derecho): se para en la línea
+    k = eout(prog(t, at + .2, .8)); yu = lerp(bot + 60, ly + 100, k)
+    car = car_top((226, 69, 60), 96); paste(dst, car, cx + 60, min(yu, bot - car.height / 2 + 10), alpha=a / 255)
+    if t > at + .9: paste(dst, icon_x(76), cx + 60, ly - 55, scale=eback(prog(t, at + .9, .3)))
+    # coche que baja por el otro carril: con R-101 circula; con R-100 tampoco puede circular
+    if ok_down:
+        yd = lerp(top + 40, bot - 60, (prog(t, at + .2, 2.4)) % 1.0)
+        paste(dst, car_top((60, 140, 255), 96), cx - 60, yd, rot=180, alpha=a / 255)
+        if t > at + 1.1: paste(dst, icon_check(76), cx - 60, top - 0, scale=eback(prog(t, at + 1.1, .3)))
+    else:
+        paste(dst, car_top((60, 140, 255), 96), cx - 60, top + 130, rot=180, alpha=a / 255)
+        if t > at + 1.1: paste(dst, icon_x(76), cx - 60, top + 270, scale=eback(prog(t, at + 1.1, .3)))
+
+def vis_senal(dst, t, v, i):
+    if i == 0: t = t + 0.6  # primer fotograma: texto y señal ya en pantalla
+    mode = v.get("mode", "hook"); kind = v.get("kind", "empty")
+    if mode == "hook":
+        lines = v.get("lines", [])
+        if lines: big_lines(dst, lines, t, VZ[0] + 70, [tuple(c) for c in v.get("cols", [])] or None, size=118)
+        p = eback(prog(t, 0, .55)); sy = CY + 120 + math.sin(t * 2.2) * 10
+        d = ImageDraw.Draw(dst, "RGBA"); d.rounded_rectangle((W / 2 - 16, sy + 200, W / 2 + 16, VZ[1] + 40), radius=8, fill=(150, 160, 175, 255))  # poste
+        for k in range(3):  # ondas de "misterio"
+            z = (t * .7 + k / 3) % 1; r = 260 + 200 * z
+            d.ellipse((W / 2 - r, sy - r, W / 2 + r, sy + r), outline=(255, 196, 0, int(120 * (1 - z))), width=8)
+        paste(dst, sign_generic(kind, 0, 480), W / 2, sy, scale=.4 + .6 * p, rot=(1 - p) * 200 + 4 * math.sin(t * 3))
+        if v.get("q", True):
+            pk = .5 + .5 * math.sin(t * 6); paste(dst, text("?", 260, (30, 30, 36), BLACK, shadow=False), W / 2, sy, scale=(.9 + .1 * pk) * eback(prog(t, .35, .4)), alpha=ease(prog(t, .35, .2)))
+        if v.get("tag"): paste(dst, pill(v["tag"], 40, YEL, NAVY), W / 2, VZ[1] - 20, scale=eback(prog(t, .1, .35)), alpha=ease(prog(t, .1, .3)))
+    elif mode == "pair":
+        data = [("noentry", "ENTRADA PROHIBIDA", "Roja con franja"), ("empty", "CIRCULACIÓN PROHIBIDA", "Blanca y vacía")]
+        hl = v.get("hl", 1)
+        for k, (kd, name, sub) in enumerate(data):
+            px = W / 2 + (-215 if k == 0 else 215); p = eback(prog(t, k * .45, .45)); a = ease(prog(t, k * .45, .3))
+            y = CY + 20 + (1 - p) * 160
+            paste(dst, card(400, 640, fill=(255, 255, 255, 250), r=40, border=(GREEN if k == hl else None), bw=(8 if k == hl else 0)), px, y, alpha=a)
+            paste(dst, sign_generic(kd, 0, 270, True), px, y - 110, alpha=a, scale=.7 + .3 * p)
+            nm = name.split(" ")
+            for j, l in enumerate(nm): paste(dst, text(l, 40, DARK, BLACK, shadow=False), px, y + 100 + j * 50, alpha=a)
+            paste(dst, text(sub, 32, (90, 96, 110), XB, shadow=False), px, y + 220, alpha=a)
+        if v.get("tag"): paste(dst, pill(v["tag"], 40, YEL, NAVY), W / 2, VZ[0] + 20, scale=eback(prog(t, 1.0, .35)), alpha=ease(prog(t, 1.0, .3)))
+    else:  # streets
+        street_mini(dst, t, W / 2 - 235, "noentry", "ENTRADA PROHIBIDA", True, 0.0)
+        street_mini(dst, t, W / 2 + 190, "empty", "CIRCULACIÓN PROHIBIDA", False, v.get("at2", 0.9))
 
 VIS = {k[4:]: v for k, v in globals().items() if k.startswith("vis_")}
 
