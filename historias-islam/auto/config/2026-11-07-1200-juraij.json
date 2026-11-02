@@ -1,0 +1,309 @@
+{
+ "tail": 1.3,
+ "cx": 490,
+ "cap_maxw": 800,
+ "title_maxw": 820,
+ "instant": true,
+ "step_gap": 290,
+ "label": "HISTORIA REAL",
+ "times": "2026-11-07-1200-juraij.tiempos.json",
+ "scenes": [
+  {
+   "title": [
+    "Acusado",
+    "injustamente"
+   ],
+   "tint": "red",
+   "hi": [
+    "padre",
+    "bebé",
+    "habló."
+   ],
+   "vis": {
+    "type": "choice",
+    "opts": [
+     [
+      "😡",
+      "CULPABLE",
+      "red"
+     ],
+     [
+      "👶",
+      "EL BEBÉ HABLA",
+      "gold"
+     ]
+    ],
+    "pick": 1,
+    "y": 900
+   },
+   "cap": "Le acusaron de ser el padre de un bebé… y el bebé habló."
+  },
+  {
+   "title": [
+    "Historia",
+    "real"
+   ],
+   "tint": "night",
+   "hi": [
+    "real,",
+    "Profeta,"
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "📜",
+    "orbit": [
+     "🌙",
+     "⏳"
+    ],
+    "y": 900
+   },
+   "cap": "Historia real, contada por el Profeta, la paz sea con él."
+  },
+  {
+   "title": [
+    "Un hombre",
+    "de oración"
+   ],
+   "tint": "green",
+   "hi": [
+    "Juraij",
+    "rezando"
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "🛖",
+    "orbit": [
+     "🤲",
+     "📿",
+     "✨"
+    ],
+    "y": 900
+   },
+   "cap": "Juraij pasaba los días rezando en su ermita."
+  },
+  {
+   "title": [
+    "La",
+    "tentación"
+   ],
+   "tint": "red",
+   "hi": [
+    "seducirle…",
+    "no."
+   ],
+   "vis": {
+    "type": "choice",
+    "opts": [
+     [
+      "😈",
+      "CEDER",
+      "red"
+     ],
+     [
+      "✋",
+      "«NO»",
+      "gold"
+     ]
+    ],
+    "pick": 1,
+    "y": 900
+   },
+   "cap": "Una mujer intentó seducirle… y él dijo que no."
+  },
+  {
+   "title": [
+    "Su",
+    "venganza"
+   ],
+   "tint": "red",
+   "hi": [
+    "vengó:",
+    "Juraij."
+   ],
+   "vis": {
+    "type": "steps",
+    "items": [
+     [
+      "✋",
+      "DIJO NO"
+     ],
+     [
+      "👶",
+      "UN HIJO"
+     ],
+     [
+      "🫵",
+      "«ES SUYO»"
+     ]
+    ],
+    "y": 920
+   },
+   "cap": "Ella se vengó: tuvo un hijo, y dijo que era de Juraij."
+  },
+  {
+   "title": [
+    "Todos",
+    "contra él"
+   ],
+   "tint": "red",
+   "hi": [
+    "golpes,",
+    "destrozó"
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "💥",
+    "orbit": [
+     "😡",
+     "🪨",
+     "😡",
+     "🛖"
+    ],
+    "y": 900
+   },
+   "cap": "El pueblo le sacó a golpes, y le destrozó la ermita."
+  },
+  {
+   "title": [
+    "¿Y él?"
+   ],
+   "tint": "night",
+   "hi": [
+    "Rezó…",
+    "bebé."
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "🤲",
+    "orbit": [
+     "👶"
+    ],
+    "y": 900
+   },
+   "cap": "¿Y él? Rezó… y se acercó al bebé."
+  },
+  {
+   "title": [
+    "El bebé",
+    "habló"
+   ],
+   "tint": "gold",
+   "hi": [
+    "padre?»",
+    "pastor!»"
+   ],
+   "vis": {
+    "type": "quote",
+    "lines": [
+     "«¿Quién es tu padre?»",
+     "…",
+     "«¡El pastor!»"
+    ],
+    "src": "SAHIH AL-BUJARI 3436",
+    "size": 60,
+    "y": 880
+   },
+   "cap": "«¿Quién es tu padre?» Y el bebé contestó: «¡El pastor!»"
+  },
+  {
+   "title": [
+    "Oro o",
+    "barro"
+   ],
+   "tint": "gold",
+   "hi": [
+    "oro.",
+    "barro,"
+   ],
+   "vis": {
+    "type": "choice",
+    "opts": [
+     [
+      "🪙",
+      "DE ORO",
+      "red"
+     ],
+     [
+      "🧱",
+      "DE BARRO",
+      "gold"
+     ]
+    ],
+    "pick": 1,
+    "y": 900
+   },
+   "cap": "Le ofrecieron una ermita de oro. Él dijo: «De barro, como antes.»"
+  },
+  {
+   "title": [
+    "La",
+    "lección"
+   ],
+   "tint": "green",
+   "hi": [
+    "inocente,",
+    "Reza.",
+    "verdad"
+   ],
+   "vis": {
+    "type": "steps",
+    "items": [
+     [
+      "🤐",
+      "NO GRITES"
+     ],
+     [
+      "🤲",
+      "REZA"
+     ],
+     [
+      "☀️",
+      "LA VERDAD SALE"
+     ]
+    ],
+    "y": 920
+   },
+   "cap": "Si te acusan siendo inocente, no grites. Reza. La verdad sale."
+  },
+  {
+   "title": [
+    "Hadiz",
+    "auténtico"
+   ],
+   "tint": "green",
+   "hi": [
+    "Sahih",
+    "al-Bujari,"
+   ],
+   "vis": {
+    "type": "big",
+    "words": [
+     "SAHIH AL-BUJARI",
+     "3436"
+    ],
+    "size": 86,
+    "y": 860,
+    "e": "📖"
+   },
+   "cap": "Sahih al-Bujari, hadiz 3436."
+  },
+  {
+   "title": [
+    "¿Y a ti?"
+   ],
+   "tint": "night",
+   "hi": [
+    "acusaron",
+    "abajo."
+   ],
+   "vis": {
+    "type": "cta",
+    "word": "COMENTA",
+    "size": 130,
+    "e": "💬",
+    "y": 900
+   },
+   "cap": "¿Alguna vez te acusaron de algo que no hiciste? Te leo abajo."
+  }
+ ]
+}

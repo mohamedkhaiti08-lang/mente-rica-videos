@@ -1,0 +1,270 @@
+{
+ "tail": 1.3,
+ "cx": 490,
+ "cap_maxw": 800,
+ "title_maxw": 820,
+ "instant": true,
+ "step_gap": 290,
+ "label": "MITO VS REALIDAD",
+ "times": "2026-11-07-1800-mito-obligar.tiempos.json",
+ "scenes": [
+  {
+   "title": [
+    "¿El islam",
+    "obliga?"
+   ],
+   "tint": "red",
+   "hi": [
+    "obliga",
+    "mito."
+   ],
+   "vis": {
+    "type": "choice",
+    "opts": [
+     [
+      "❌",
+      "MITO",
+      "red"
+     ],
+     [
+      "✅",
+      "REALIDAD",
+      "gold"
+     ]
+    ],
+    "pick": 0,
+    "y": 900
+   },
+   "cap": "¿Tú también crees que el islam obliga a la gente a hacerse musulmana? Es un mito."
+  },
+  {
+   "title": [
+    "Una historia",
+    "real"
+   ],
+   "tint": "gold",
+   "hi": [
+    "historia",
+    "real"
+   ],
+   "vis": {
+    "type": "big",
+    "words": [
+     "LA",
+     "PRUEBA"
+    ],
+    "size": 140,
+    "gap": 170,
+    "y": 860,
+    "e": "⏳"
+   },
+   "cap": "Y hay una historia real que lo demuestra."
+  },
+  {
+   "title": [
+    "Medina"
+   ],
+   "tint": "night",
+   "hi": [
+    "padres",
+    "otra"
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "🕌",
+    "orbit": [
+     "👨",
+     "👦",
+     "👦"
+    ],
+    "y": 900
+   },
+   "cap": "En Medina, unos padres musulmanes tenían hijos de otra religión."
+  },
+  {
+   "title": [
+    "«¡No los",
+    "dejamos ir!»"
+   ],
+   "tint": "red",
+   "hi": [
+    "hijos",
+    "dejamos"
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "✋",
+    "orbit": [
+     "👦",
+     "👦",
+     "🚶"
+    ],
+    "y": 900
+   },
+   "cap": "Cuando esa tribu se fue, dijeron: «¡A nuestros hijos no los dejamos ir!»"
+  },
+  {
+   "title": [
+    "Y Allah",
+    "reveló…"
+   ],
+   "tint": "gold",
+   "hi": [
+    "Allah",
+    "reveló:"
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "📖",
+    "orbit": [
+     "✨",
+     "✨",
+     "✨"
+    ],
+    "y": 900
+   },
+   "cap": "Y Allah reveló:"
+  },
+  {
+   "tint": "gold",
+   "hi": [
+    "coacción",
+    "verdad"
+   ],
+   "vis": {
+    "type": "quote",
+    "lines": [
+     "«No hay coacción",
+     "en la religión.",
+     "La verdad ya se",
+     "distingue del error»"
+    ],
+    "src": "CORÁN 2:256 · SURA AL BAQARA",
+    "size": 56,
+    "y": 860
+   },
+   "cap": "«No hay coacción en la religión. La verdad ya se distingue del error.»"
+  },
+  {
+   "title": [
+    "Palabra",
+    "de Allah"
+   ],
+   "tint": "green",
+   "hi": [
+    "Baqara,",
+    "256."
+   ],
+   "vis": {
+    "type": "big",
+    "words": [
+     "CORÁN",
+     "2:256"
+    ],
+    "size": 150,
+    "y": 860,
+    "e": "📖"
+   },
+   "cap": "Sura Al Baqara, aleya 256."
+  },
+  {
+   "title": [
+    "Ni siquiera",
+    "unos padres"
+   ],
+   "tint": "red",
+   "hi": [
+    "padres",
+    "obligar"
+   ],
+   "vis": {
+    "type": "steps",
+    "items": [
+     [
+      "👨",
+      "PADRES"
+     ],
+     [
+      "🚫",
+      "OBLIGAR"
+     ],
+     [
+      "👦",
+      "HIJOS"
+     ]
+    ],
+    "y": 920
+   },
+   "cap": "Ni siquiera unos padres podían obligar a sus propios hijos."
+  },
+  {
+   "title": [
+    "La fe está",
+    "en el corazón"
+   ],
+   "tint": "green",
+   "hi": [
+    "corazón…",
+    "obliga."
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "🤍",
+    "orbit": [
+     "🔒",
+     "❌",
+     "✨"
+    ],
+    "y": 900
+   },
+   "cap": "Porque la fe está en el corazón… y al corazón no se le obliga."
+  },
+  {
+   "title": [
+    "La",
+    "realidad"
+   ],
+   "tint": "green",
+   "hi": [
+    "impone.",
+    "elige."
+   ],
+   "vis": {
+    "type": "choice",
+    "opts": [
+     [
+      "⛓️",
+      "SE IMPONE",
+      "red"
+     ],
+     [
+      "🤍",
+      "SE ELIGE",
+      "gold"
+     ]
+    ],
+    "pick": 1,
+    "y": 900
+   },
+   "cap": "Mito: el islam se impone. Realidad: la fe se elige."
+  },
+  {
+   "title": [
+    "¿Otro mito?"
+   ],
+   "tint": "night",
+   "hi": [
+    "mito",
+    "abajo."
+   ],
+   "vis": {
+    "type": "cta",
+    "word": "COMENTA",
+    "size": 130,
+    "e": "💬",
+    "y": 900
+   },
+   "cap": "¿Qué otro mito sobre el islam has escuchado? Te leo abajo."
+  }
+ ]
+}
