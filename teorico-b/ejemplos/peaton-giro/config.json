@@ -1,0 +1,12 @@
+{"label": "¿QUIÉN PASA PRIMERO?", "times": "tiempos.json", "voice": "voz.wav", "tail": 1.1,
+ "sfx": [{"t": 10.7, "type": "beep"}, {"t": 11.6, "type": "beep"}, {"t": 12.5, "type": "beep"}, {"t": 13.35, "type": "ding"}],
+ "scenes": [
+  {"cap": "¿Quién pasa primero: el coche que gira, o el peatón?", "hi": ["primero:", "peatón?"], "vis": {"type": "giro", "ped": [990, 990, 0, 1], "walk_idle": true, "tag": "¿1 o 2?"}},
+  {"cap": "El 1 gira a la derecha. El 2 cruza esa calle, y no hay paso de cebra.", "hi": ["derecha.", "cebra."], "vis": {"type": "giro", "car": [0, 200, 0.4, 1.6], "ped": [990, 900, 0.8, 0.9], "nozebra": true, "noarrow": true, "tag": "SIN PASO DE CEBRA", "tag_bottom": false}},
+  {"cap": "Escribe 1 o 2 en comentarios. Tienes 3 segundos.", "hi": ["1", "2", "3"], "vis": {"type": "giro", "car": [200, 200, 0, 1], "ped": [900, 900, 0, 1], "countdown": [3.35, 4.25, 5.15], "tag": "¿1 o 2?"}},
+  {"cap": "¡Pasa el peatón! El coche espera.", "hi": ["peatón!", "espera."], "vis": {"type": "giro", "car": [200, 200, 0, 1], "ped": [900, 570, 0.1, 1.5], "rank": ["P"], "rank_at": [0.3]}},
+  {"cap": "Al girar para entrar en otra calle, cedes el paso a los peatones que la cruzan.", "hi": ["girar", "peatones"], "vis": {"type": "giro", "car": [200, 1150, 0.6, 2.2], "ped": [570, 570, 0, 1], "rank": ["P", "1"], "rank_at": [0, 0.7], "tag": "AL GIRAR: CEDE AL PEATÓN", "tag_bottom": true}},
+  {"cap": "Aunque no haya paso de cebra. Artículo 65 del Reglamento.", "hi": ["cebra.", "65"], "vis": {"type": "law", "title1": "Reglamento General", "title2": "de Circulación", "stamp": "ART. 65.1.b", "badge": "Aunque no haya paso de cebra"}},
+  {"cap": "Y vale igual si giras a la izquierda.", "hi": ["igual", "izquierda."], "vis": {"type": "giro", "both": true, "ped": [880, 880, 0, 1], "ped2": [760, 760, 0, 1], "walk_idle": true, "tag": "DERECHA O IZQUIERDA: PEATÓN"}},
+  {"cap": "¿Acertaste? Etiqueta a quien se examine esta semana.", "hi": ["Acertaste?", "Etiqueta"], "vis": {"type": "cta", "big": "¿Acertaste?", "small": "Etiqueta a quien se examine"}}
+ ]}

@@ -1,0 +1,11 @@
+{"label": "TRAMPAS DEL EXAMEN", "times": "tiempos.json", "voice": "voz.wav", "tail": 1.2,
+ "sfx": [{"t": 11.16, "type": "beep"}, {"t": 12.06, "type": "beep"}, {"t": 12.96, "type": "beep"}, {"t": 13.86, "type": "ding"}, {"t": 17.45, "type": "buzz"}],
+ "scenes": [
+  {"cap": "Si fallas esta, suspendes. ¿Qué distancia dejas en un túnel?", "hi": ["suspendes.", "túnel?"], "vis": {"type": "tunel", "mode": "hook", "lines": ["¿QUÉ DISTANCIA", "EN UN TÚNEL?"], "cols": [[255,255,255],[255,196,0]], "tag": "SI FALLAS, SUSPENDES"}},
+  {"cap": "Vas en turismo y no quieres adelantar. ¿Cuál es la distancia mínima?", "hi": ["turismo", "mínima?"], "vis": {"type": "quiz", "q": "En un túnel, sin intención de adelantar, ¿qué distancia mínima dejas?", "opts": ["2 segundos", "50 metros", "100 metros o 4 segundos"], "correct": 2, "opt_at": [0.05, 0.35, 0.65]}},
+  {"cap": "Escribe tu letra en comentarios. Tienes 3 segundos.", "hi": ["letra", "3"], "vis": {"type": "countdown", "quiz_scene": 1, "at": [3.24, 4.14, 5.04]}},
+  {"cap": "¡La C! Al menos 100 metros, o 4 segundos.", "hi": ["C!", "100", "4"], "vis": {"type": "reveal", "quiz_scene": 1}},
+  {"cap": "La trampa: fuera, la DGT pide 2 segundos. En el túnel, el doble.", "hi": ["trampa:", "doble."], "vis": {"type": "tunel", "mode": "trap", "tag": "FUERA: 2 s · TÚNEL: 4 s"}},
+  {"cap": "Para medirlo, cuenta desde que el de delante pasa una marca hasta que la pasas tú.", "hi": ["cuenta", "marca"], "vis": {"type": "tunel", "mode": "count"}},
+  {"cap": "¿La sabías? Comenta cuántos segundos dejabas tú.", "hi": ["Comenta", "segundos"], "vis": {"type": "cta", "big": "¿Cuántos segundos?", "small": "Comenta cuántos dejabas tú"}}
+ ]}

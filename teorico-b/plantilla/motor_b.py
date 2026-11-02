@@ -21,6 +21,8 @@
 #   cruce admite "tram": true (el 3 es un tranvía sobre raíles, viene del oeste), "rails_hl" y "focus": 3 (brazo izquierdo del 1).
 #   senal (SEÑAL MISTERIOSA: hook = señal girando con "?" | pair = R-101 vs R-100 | streets = qué permite cada una);
 #   sign admite "kind": "empty" (R-100 vacía) y quiz admite "sign": "empty" | "noentry" (señal en la esquina de la tarjeta).
+#   tunel (túnel: hook = perspectiva desde el coche con luces | trap = distancia 2 s vs 100 m/4 s con cronómetro | count = contar segundos con una marca),
+#   giro (cruce con coche 1 que gira a la derecha y peatón 2 que cruza sin paso de cebra: car, ped, nozebra, both, rank con "P").
 import math, json, sys, os, subprocess
 from functools import lru_cache
 from multiprocessing import Pool
@@ -1794,6 +1796,209 @@ def vis_senal(dst, t, v, i):
     else:  # streets
         street_mini(dst, t, W / 2 - 235, "noentry", "ENTRADA PROHIBIDA", True, 0.0)
         street_mini(dst, t, W / 2 + 190, "empty", "CIRCULACIÓN PROHIBIDA", False, v.get("at2", 0.9))
+
+# --- TÚNEL: perspectiva desde el coche (hook) | vista cenital con distancia 2 s vs 4 s (trap) | contar segundos con una marca (count) ---
+# vis: {"type": "tunel", "mode": "hook" | "trap" | "count", "lines": [...], "cols": [...], "tag": "..."}
+def tunnel_persp(dst, t, top):
+    lay = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(lay, "RGBA")
+    x0, x1, bot = 40, W - 40, VZ[1] + 20; vx, vy = W / 2, top + (bot - top) * .42
+    d.rectangle((x0, top, x1, bot), fill=(18, 20, 26, 255))
+    # boca del túnel al fondo (luz)
+    for k in range(6):
+        r = 40 + k * 14; d.ellipse((vx - r * 1.3, vy - r, vx + r * 1.3, vy + r), fill=(255, 236, 190, 40))
+    d.ellipse((vx - 52, vy - 40, vx + 52, vy + 40), fill=(255, 244, 214, 255))
+    # paredes, techo y calzada en perspectiva
+    d.polygon([(x0, top), (vx - 60, vy - 45), (vx - 60, vy + 40), (x0, bot)], fill=(70, 74, 84, 255))
+    d.polygon([(x1, top), (vx + 60, vy - 45), (vx + 60, vy + 40), (x1, bot)], fill=(62, 66, 76, 255))
+    d.polygon([(x0, top), (x1, top), (vx + 60, vy - 45), (vx - 60, vy - 45)], fill=(40, 42, 50, 255))
+    d.polygon([(x0 + 70, bot), (x1 - 70, bot), (vx + 50, vy + 40), (vx - 50, vy + 40)], fill=(44, 46, 54, 255))
+    # azulejos de la pared y luces del techo que vienen hacia nosotros
+    for k in range(16):
+        z = ((k / 16) + t * .55) % 1.0; z2 = min(1.0, z + .03); e, e2 = z ** 2.2, z2 ** 2.2
+        for side in (-1, 1):
+            # luces del techo (dos filas)
+            for off in (.28, .62):
+                ax, ay = vx + side * 60 * off, vy - 45
+                bx, by = vx + side * (W / 2 - 40) * off, top
+                p1 = (lerp(ax, bx, e), lerp(ay, by, e)); p2 = (lerp(ax, bx, e2), lerp(ay, by, e2))
+                d.line([p1, p2], fill=(255, 200, 90, int(80 + 175 * z)), width=max(2, int(18 * z)))
+            # franja de la pared
+            ax, ay = vx + side * 60, vy + 10; bx, by = (x0 if side < 0 else x1), top + (bot - top) * .55
+            p1 = (lerp(ax, bx, e), lerp(ay, by, e)); p2 = (lerp(ax, bx, e2), lerp(ay, by, e2))
+            d.line([p1, p2], fill=(120, 190, 120, int(60 + 120 * z)), width=max(2, int(20 * z)))
+        # discontinua central
+        p1 = (vx, lerp(vy + 40, bot, e)); p2 = (vx, lerp(vy + 40, bot, e2))
+        d.line([p1, p2], fill=(255, 255, 255, int(90 + 165 * z)), width=max(2, int(26 * z)))
+    m = Image.new("L", (W, H), 0); ImageDraw.Draw(m).rounded_rectangle((x0, top, x1, bot), radius=36, fill=255)
+    lay.putalpha(Image.fromarray(np.minimum(np.array(lay.split()[3]), np.array(m)))); dst.alpha_composite(lay)
+    # coche de delante (cerca: demasiado pegado)
+    cy = vy + (bot - vy) * .42 + math.sin(t * 9) * 2; car = car_rear(300)
+    paste(dst, car, vx + 70, cy)
+    return vx, vy, bot
+
+def stopwatch(dst, cx, cy, secs, a=1.0, col=YEL, r=88):
+    d = ImageDraw.Draw(dst, "RGBA"); al = int(255 * a)
+    d.ellipse((cx - r, cy - r, cx + r, cy + r), fill=(255, 255, 255, al), outline=NAVY + (al,), width=10)
+    d.rounded_rectangle((cx - 18, cy - r - 30, cx + 18, cy - r - 4), radius=6, fill=NAVY + (al,))
+    frac = clamp(secs / 4.0)
+    if frac > 0: d.pieslice((cx - r + 16, cy - r + 16, cx + r - 16, cy + r - 16), -90, -90 + 360 * frac, fill=col + (int(al * .55),))
+    s = f"{int(secs)} s" if secs >= 1 else "0 s"
+    paste(dst, text(s, 60, NAVY, BLACK, shadow=False), cx, cy + 4, alpha=a)
+
+TUN = (330, 750)  # calzada del túnel (x)
+def tunnel_top(dst, t, scroll=True):
+    lay = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(lay, "RGBA")
+    top, bot = VZ[0] + 10, VZ[1] + 20; a, b = TUN
+    d.rectangle((40, top, W - 40, bot), fill=(58, 54, 50, 255))
+    for k in range(30):  # roca
+        gx, gy = 60 + (k * 263) % (W - 120), top + (k * 157) % (bot - top)
+        d.ellipse((gx - 34, gy - 22, gx + 34, gy + 22), fill=(68, 63, 58, 255))
+    d.rectangle((a - 60, top, b + 60, bot), fill=(150, 154, 162, 255))  # paredes
+    d.rectangle((a, top, b, bot), fill=(40, 43, 52, 255))
+    off = (t * 260) % 95 if scroll else 0
+    y = top - 95 + off
+    while y < bot:
+        d.line([((a + b) / 2, y), ((a + b) / 2, y + 50)], fill=(255, 255, 255, 200), width=7)
+        for wx in (a - 30, b + 30): d.ellipse((wx - 11, y + 20, wx + 11, y + 42), fill=(255, 210, 110, 255))  # luces
+        y += 95
+    for x in (a + 8, b - 8): d.line([(x, top), (x, bot)], fill=(255, 255, 255, 220), width=6)
+    return lay, top, bot
+
+def clip_vz(dst, lay, top, bot):
+    m = Image.new("L", (W, H), 0); ImageDraw.Draw(m).rounded_rectangle((40, top, W - 40, bot), radius=36, fill=255)
+    lay.putalpha(Image.fromarray(np.minimum(np.array(lay.split()[3]), np.array(m)))); dst.alpha_composite(lay)
+
+def gap_bracket(d, x, y1, y2, col, a):
+    d.line([(x, y1), (x, y2)], fill=col + (a,), width=8)
+    for y, s in ((y1, 1), (y2, -1)): d.polygon([(x, y), (x - 22, y + s * 32), (x + 22, y + s * 32)], fill=col + (a,))
+
+def vis_tunel(dst, t, v, i):
+    if i == 0: t = t + 0.6  # primer fotograma: texto y túnel ya en pantalla
+    mode = v.get("mode", "hook"); lane = TUN[0] + (TUN[1] - TUN[0]) * .75
+    if mode == "hook":
+        lines = v.get("lines", [])
+        if lines: big_lines(dst, lines, t, VZ[0] + 40, [tuple(c) for c in v.get("cols", [])] or None, size=110)
+        vx, vy, bot = tunnel_persp(dst, t, VZ[0] + 250)
+        if v.get("tag"): paste(dst, pill(v["tag"], 40, RED, WHITE), W / 2, VZ[1] - 30, scale=eback(prog(t, .2, .35)), alpha=ease(prog(t, .2, .3)))
+        return
+    lay, top, bot = tunnel_top(dst, t, scroll=(mode != "count")); d = ImageDraw.Draw(lay, "RGBA")
+    if mode == "trap":
+        yf = top + 170; k = ease(prog(t, 1.6, .9)); gap2, gap4 = 300, 640
+        yr = yf + lerp(gap2, gap4, k)
+        paste(lay, car_top((60, 140, 255), 120), lane, yf); paste(lay, car_top((226, 69, 60), 120), lane, yr)
+        clip_vz(dst, lay, top, bot); d = ImageDraw.Draw(dst, "RGBA")
+        y1, y2 = yf + 115, yr - 115; col = RED if k < .5 else GREEN
+        gap_bracket(d, lane - 120, y1, y2, col, int(255 * ease(prog(t, .2, .3))))
+        lab = "2 s" if k < .5 else "100 m · 4 s"
+        paste(dst, pill(lab, 44, col, WHITE), lane - 120, (y1 + y2) / 2, alpha=ease(prog(t, .3, .3)))
+        if t > .7 and k < .5: paste(dst, icon_x(96), lane - 120, (y1 + y2) / 2 + 90, scale=eback(prog(t, .7, .3)))
+        if k >= .99: paste(dst, icon_check(96), lane - 120, (y1 + y2) / 2 + 90, scale=eback(prog(t, 2.5, .3)))
+        stopwatch(dst, 150, CY + 120, 2 + 2 * k, a=ease(prog(t, .2, .3)), col=(RED if k < .5 else GREEN))
+        if v.get("tag"): paste(dst, pill(v["tag"], 38, YEL, NAVY), W / 2, top + 50, scale=eback(prog(t, .5, .35)), alpha=ease(prog(t, .5, .3)))
+        return
+    # count: marca fija en la calzada; el de delante la pasa y empezamos a contar hasta que la pasamos nosotros
+    dur = LINES[i][1] - LINES[i][0]; T = clamp(dur - .3, 3.0, 4.6); ym = top + 260
+    G = 560; vel = G / T; yf0 = ym + 30
+    yf = yf0 - vel * t; yr = yf + G
+    d.rectangle((TUN[0] + 10, ym - 10, TUN[1] - 10, ym + 10), fill=YEL + (255,))
+    paste(lay, car_top((60, 140, 255), 120), lane, yf); paste(lay, car_top((226, 69, 60), 120), lane, yr)
+    clip_vz(dst, lay, top, bot)
+    paste(dst, pill("MARCA", 34, YEL, NAVY), TUN[0] + 95, ym - 46)
+    t0 = 30 / vel; el = t - t0; n = 0 if el < 0 else min(4, int(el / (T / 4)) + 1)
+    if yr <= ym + 4: n = 4
+    stopwatch(dst, 150, CY + 120, n if n else 0, a=1.0, col=(GREEN if n >= 4 else YEL))
+    if n:
+        pk = prog(el, (n - 1) * T / 4, .25)
+        paste(dst, text(str(n), 210, GREEN if n >= 4 else YEL, BLACK), 150, CY - 130, scale=lerp(1.6, 1, eout(pk)), alpha=ease(pk * 2))
+    if yr <= ym + 4: paste(dst, icon_check(110), lane, ym - 110, scale=eback(prog(t, T + t0 - .1, .3)))
+
+# --- peatón visto desde arriba + coche que gira (formato ¿QUIÉN PASA PRIMERO?, bloque peatones) ---
+# vis: {"type": "giro", "car": [s0, s1, at, dur], "ped": [y0, y1, at, dur], "countdown": [...], "rank": ["P", "1"], "rank_at": [..],
+#       "tag": "...", "nozebra": true, "both": true}
+@lru_cache(maxsize=8)
+def ped_top_img(ph, s=132):
+    im = ss(s, s); d = ImageDraw.Draw(im); S = s * 2
+    for k, sx in enumerate((-.16, .16)):  # pies (alternan)
+        fy = S * (.5 + (.26 if (k == 0) == (ph == 0) else -.26))
+        d.ellipse((S / 2 + sx * S - S * .08, fy - S * .1, S / 2 + sx * S + S * .08, fy + S * .1), fill=(30, 30, 36))
+    d.ellipse((S * .14, S * .34, S * .86, S * .66), fill=(34, 160, 90))  # hombros
+    for sx in (.1, .9): d.ellipse((S * sx - S * .08, S * (.5 - .08 + (.1 if (sx < .5) == (ph == 0) else -.1)), S * sx + S * .08, S * (.5 + .08 + (.1 if (sx < .5) == (ph == 0) else -.1))), fill=(240, 196, 160))
+    d.ellipse((S * .32, S * .3, S * .68, S * .66), fill=(60, 40, 30))  # cabeza (pelo)
+    im = down(im); sh = Image.new("RGBA", (s + 30, s + 30), (0, 0, 0, 0))
+    ImageDraw.Draw(sh).ellipse((15, 22, s + 15, s + 22), fill=(0, 0, 0, 110))
+    sh = sh.filter(ImageFilter.GaussianBlur(8)); sh.alpha_composite(im, (15, 15)); return sh
+
+GX = W / 2 + RW + 180  # x por donde cruza el peatón (brazo este)
+def giro_pos(s):
+    """coche 1: sube por el carril derecho y gira a la derecha hacia el brazo este. s en píxeles recorridos."""
+    cx, cy = W / 2, CY; x0 = cx + RW / 2; ys = cy + RW + 140; L1 = ys - (cy + RW); R = RW / 2; L2 = math.pi / 2 * R
+    if s <= L1: return x0, ys - s, 0
+    if s <= L1 + L2:
+        a = (s - L1) / R  # 0..pi/2
+        ccx, ccy = cx + RW, cy + RW
+        return ccx - R * math.cos(a), ccy - R * math.sin(a), -math.degrees(a)
+    return cx + RW + (s - L1 - L2), cy + RW / 2, -90
+GIRO_WAIT = 140 + math.pi / 2 * RW / 2  # final de la curva (el coche espera a mitad de curva, s≈200)
+
+def curve_arrow(d, a, left=False):
+    cx, cy = W / 2, CY; col = YEL + (a,)
+    if not left:
+        R = RW / 2; ccx, ccy = cx + RW, cy + RW
+        pts = [(ccx - R * math.cos(k / 12 * math.pi / 2), ccy - R * math.sin(k / 12 * math.pi / 2)) for k in range(13)] + [(cx + RW + 70, cy + RW / 2)]
+        d.line(pts, fill=col, width=30, joint="curve"); ex, ey = cx + RW + 70, cy + RW / 2
+        d.polygon([(ex + 60, ey), (ex, ey - 42), (ex, ey + 42)], fill=col)
+    else:
+        x = cx + RW / 2; R = RW; ccx, ccy = cx - RW / 2 + 0, cy - RW / 2 + RW
+        pts = [(x, cy + RW)] + [(ccx + R * math.cos(k / 12 * math.pi / 2), ccy - R * math.sin(k / 12 * math.pi / 2)) for k in range(13)] + [(cx - RW - 60, cy - RW / 2)]
+        d.line(pts, fill=col, width=30, joint="curve"); ex, ey = cx - RW - 60, cy - RW / 2
+        d.polygon([(ex - 60, ey), (ex, ey - 42), (ex, ey + 42)], fill=col)
+
+@lru_cache(maxsize=8)
+def rank_chip_ped(pos):
+    p = pill(f"{pos}º", 44, NAVY if pos > 1 else YEL, WHITE if pos > 1 else NAVY, padx=26); b = num_badge(2, 74, mix((34, 160, 90), WHITE, .2), NAVY)
+    im = Image.new("RGBA", (p.width + b.width + 12, max(p.height, b.height)), (0, 0, 0, 0))
+    im.alpha_composite(p, (0, (im.height - p.height) // 2)); im.alpha_composite(b, (p.width + 12, (im.height - b.height) // 2)); return im
+
+def vis_giro(dst, t, v, i):
+    tt = t + 0.6 if i == 0 else t
+    base = {"done": [1, 2, 3], "countdown": v.get("countdown")}
+    vis_cruce(dst, t, base, i)
+    cx, cy = W / 2, CY; top, bot = VZ[0] + 10, VZ[1] + 20
+    lay = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(lay, "RGBA")
+    if v.get("nozebra"):  # dónde NO hay paso de cebra: contorno discontinuo naranja en el cruce del peatón
+        a = int(255 * ease(prog(tt, .2, .4)) * (.6 + .4 * math.sin(tt * 7)))
+        for y in range(int(cy - RW), int(cy + RW), 40): d.line([(GX - 70, y), (GX - 70, y + 22)], fill=ORANGE + (a,), width=8); d.line([(GX + 70, y), (GX + 70, y + 22)], fill=ORANGE + (a,), width=8)
+        nz = True
+    s0, s1, cat, cdu = v.get("car", [0, 0, 0, 1]); s = lerp(s0, s1, ease(prog(tt, cat, cdu)))
+    if s0 == 0 and s1 == 0 and i == 0: s = -160 * (1 - eout(prog(tt, 0, .5)))
+    if s < .5 and not v.get("noarrow"):
+        al = int(230 * (.6 + .4 * math.sin(tt * 5))); curve_arrow(d, al)
+        if v.get("both"): curve_arrow(d, al, left=True)
+    peds = [v.get("ped", [cy + RW + 60, cy + RW + 60, 0, 1])]
+    if v.get("both"): peds.append(v.get("ped2"))
+    for j, pd in enumerate(peds):
+        y0, y1, pat, pdu = pd; pk = prog(tt, pat, pdu); py = lerp(y0, y1, ease(pk)); px = GX if j == 0 else W / 2 - RW - 180
+        walking = 0 < pk < 1 or v.get("walk_idle")
+        paste(lay, ped_top_img(int(tt * 6) % 2 if walking else 0), px, py)
+        paste(lay, num_badge(2, 74, mix((34, 160, 90), WHITE, .2), NAVY), px + 95, py + 20)
+    x, y, rot = giro_pos(max(0, s)); 
+    if s < 0: y -= s
+    paste(lay, car_top(CRUCE_COLS[1], 120), x, y, rot=rot)
+    bx, by = (x + 100, y + 40) if rot > -45 else (x - 30, y - 100)
+    paste(lay, num_badge(1), bx, by)
+    clip_vz(dst, lay, top, bot)
+    if v.get("nozebra"): paste(dst, icon_x(80), GX + 120, CY - RW - 60, scale=eback(prog(tt, .5, .3)))
+    if v.get("both"):
+        for px in (GX, W / 2 - RW - 180): paste(dst, icon_check(84), px, cy - RW - 70, scale=eback(prog(tt, .9, .3)))
+    rk = v.get("rank")
+    if rk:
+        ra = v.get("rank_at", [0] * len(rk))
+        for j, (lab, at) in enumerate(zip(rk, ra)):
+            p = prog(tt, at, .35)
+            if p > 0: paste(dst, rank_chip_ped(j + 1) if lab == "P" else rank_chip(j + 1, int(lab)), cx - RW - 205, top + 62 + j * 90, scale=eback(p), alpha=ease(p * 2))
+    if v.get("tag"):
+        ty = bot - 70 if v.get("tag_bottom") else top + 60
+        paste(dst, pill(v["tag"], 38, YEL, NAVY), W / 2, ty, scale=eback(prog(tt, .4, .4)), alpha=ease(prog(tt, .4, .3)))
 
 VIS = {k[4:]: v for k, v in globals().items() if k.startswith("vis_")}
 
