@@ -1,0 +1,231 @@
+{
+ "tail": 1.3,
+ "cx": 510,
+ "cap_maxw": 800,
+ "title_maxw": 820,
+ "instant": true,
+ "step_gap": 290,
+ "label": "CURIOSIDAD",
+ "times": "2026-11-08-1800-primer-salam.tiempos.json",
+ "scenes": [
+  {
+   "tint": "gold",
+   "hi": [
+    "primer",
+    "dijo?"
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "🤔",
+    "orbit": [
+     "👋",
+     "❓",
+     "🌍"
+    ],
+    "y": 900
+   },
+   "cap": "El primer «as-salamu alaykum» de la historia… ¿sabes quién lo dijo?",
+   "title": [
+    "El primer",
+    "«salam» de la historia"
+   ]
+  },
+  {
+   "tint": "night",
+   "hi": [
+    "rey.",
+    "Adam."
+   ],
+   "vis": {
+    "type": "big",
+    "words": [
+     "ADAM"
+    ],
+    "size": 240,
+    "y": 860,
+    "e": "🤯"
+   },
+   "cap": "No fue un sabio, ni un rey. Fue el primer ser humano: Adam.",
+   "title": [
+    "No fue",
+    "un rey…"
+   ]
+  },
+  {
+   "tint": "blue",
+   "hi": [
+    "altísimo:",
+    "metros."
+   ],
+   "vis": {
+    "type": "counter",
+    "seq": [
+     "10",
+     "20",
+     "30 m"
+    ],
+    "sub": "60 CODOS DE ALTO",
+    "e": "📏",
+    "y": 880
+   },
+   "cap": "Allah lo creó altísimo: unos treinta metros.",
+   "title": [
+    "Altísimo"
+   ]
+  },
+  {
+   "tint": "night",
+   "hi": [
+    "saludar:",
+    "responden.»"
+   ],
+   "vis": {
+    "type": "steps",
+    "items": [
+     [
+      "👤",
+      "ADAM"
+     ],
+     [
+      "👋",
+      "SALUDA"
+     ],
+     [
+      "✨",
+      "ÁNGELES"
+     ]
+    ],
+    "y": 920
+   },
+   "cap": "Le mandó saludar: «Ve a esos ángeles y escucha qué te responden.»",
+   "title": [
+    "Lo primero:",
+    "saludar"
+   ]
+  },
+  {
+   "tint": "gold",
+   "hi": [
+    "dijo:",
+    "alaykum.»"
+   ],
+   "vis": {
+    "type": "big",
+    "words": [
+     "AS-SALAMU",
+     "ALAYKUM"
+    ],
+    "size": 120,
+    "gap": 160,
+    "y": 860,
+    "e": "👋"
+   },
+   "cap": "Adam dijo: «As-salamu alaykum.»",
+   "title": [
+    "Adam dijo…"
+   ]
+  },
+  {
+   "tint": "green",
+   "hi": [
+    "respondieron:",
+    "rahmatullah.»"
+   ],
+   "vis": {
+    "type": "quote",
+    "lines": [
+     "«Wa alaykum as-salam",
+     "wa rahmatullah»"
+    ],
+    "src": "Y SOBRE TI LA PAZ Y LA MISERICORDIA DE ALLAH",
+    "size": 60,
+    "y": 860
+   },
+   "cap": "Y le respondieron: «Wa alaykum as-salam wa rahmatullah.»"
+  },
+  {
+   "tint": "blue",
+   "hi": [
+    "todos",
+    "hoy."
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "🌍",
+    "orbit": [
+     "👋",
+     "🤝",
+     "🕌"
+    ],
+    "y": 900
+   },
+   "cap": "Y ese sería el saludo de todos sus hijos. Hasta hoy.",
+   "title": [
+    "El saludo de",
+    "todos sus hijos"
+   ]
+  },
+  {
+   "tint": "green",
+   "hi": [
+    "Profeta,",
+    "6227."
+   ],
+   "vis": {
+    "type": "book",
+    "src": "SAHIH AL-BUJARI 6227",
+    "y": 900
+   },
+   "cap": "Lo contó el Profeta, la paz sea con él. Sahih al-Bujari, 6227.",
+   "title": [
+    "Hadiz",
+    "auténtico"
+   ]
+  },
+  {
+   "tint": "gold",
+   "hi": [
+    "dices",
+    "Adam."
+   ],
+   "vis": {
+    "type": "steps",
+    "items": [
+     [
+      "👤",
+      "ADAM"
+     ],
+     [
+      "⏳",
+      "SIGLOS"
+     ],
+     [
+      "🫵",
+      "TÚ"
+     ]
+    ],
+    "y": 920
+   },
+   "cap": "Cada vez que dices «salam»… repites las palabras de Adam.",
+   "title": [
+    "Repites a",
+    "Adam"
+   ]
+  },
+  {
+   "tint": "green",
+   "hi": [
+    "sabías?",
+    "alaykum»."
+   ],
+   "vis": {
+    "type": "cta",
+    "word": "¿LO SABÍAS?",
+    "size": 100,
+    "e": "👋",
+    "y": 860
+   },
+   "cap": "¿Lo sabías? Escríbeme abajo: «as-salamu alaykum»."
+  }
+ ]
+}

@@ -1,0 +1,249 @@
+{
+ "tail": 1.3,
+ "cx": 510,
+ "cap_maxw": 800,
+ "title_maxw": 820,
+ "instant": true,
+ "step_gap": 290,
+ "label": "AHMED VS BILAL",
+ "times": "2026-11-08-1200-rezar-risas.tiempos.json",
+ "scenes": [
+  {
+   "tint": "red",
+   "hi": [
+    "rezar…",
+    "todos?"
+   ],
+   "vis": {
+    "type": "choice",
+    "opts": [
+     [
+      "🙈",
+      "DEJO DE REZAR",
+      "red"
+     ],
+     [
+      "🤲",
+      "REZO IGUAL",
+      "gold"
+     ]
+    ],
+    "y": 900
+   },
+   "cap": "Tus amigos se ríen de ti por ir a rezar… ¿Dejas de rezar, o rezas delante de todos?",
+   "title": [
+    "¿Dejas de rezar",
+    "o rezas igual?"
+   ]
+  },
+  {
+   "tint": "night",
+   "hi": [
+    "Asr.",
+    "grupo."
+   ],
+   "vis": {
+    "type": "steps",
+    "items": [
+     [
+      "🕓",
+      "ASR"
+     ],
+     [
+      "👥",
+      "EL GRUPO"
+     ],
+     [
+      "😏",
+      "RISAS"
+     ]
+    ],
+    "y": 920
+   },
+   "cap": "Es la hora del Asr. Y estás con todo el grupo.",
+   "title": [
+    "Hora del Asr…"
+   ]
+  },
+  {
+   "tint": "red",
+   "hi": [
+    "levanta…",
+    "Jajaja."
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "😂",
+    "orbit": [
+     "🤣",
+     "👉",
+     "😏"
+    ],
+    "y": 900
+   },
+   "cap": "Ahmed se levanta… y alguien suelta: «¿Otra vez a rezar? Jajaja.»",
+   "title": [
+    "«¿Otra vez",
+    "a rezar?»"
+   ]
+  },
+  {
+   "tint": "red",
+   "hi": [
+    "rojo.",
+    "pasa."
+   ],
+   "vis": {
+    "type": "duo",
+    "focus": "ahmed",
+    "ahmed": "down",
+    "bilal": "down",
+    "ab": [
+     "Bueno…",
+     "luego rezo"
+    ],
+    "bat": 1.2,
+    "y": 960
+   },
+   "cap": "Ahmed se pone rojo. Se vuelve a sentar… y la oración se le pasa.",
+   "title": [
+    "Ahmed se",
+    "vuelve a sentar"
+   ]
+  },
+  {
+   "tint": "green",
+   "hi": [
+    "sonríe:",
+    "vuelvo.»"
+   ],
+   "vis": {
+    "type": "duo",
+    "focus": "bilal",
+    "ahmed": "down",
+    "bilal": "calm",
+    "bb": [
+     "Dadme 5 minutos.",
+     "Ahora vuelvo."
+    ],
+    "bat": 1.2,
+    "y": 960
+   },
+   "cap": "Bilal oye la misma risa. Pero sonríe: «Dadme cinco minutos, ahora vuelvo.»",
+   "title": [
+    "Bilal",
+    "sonríe"
+   ]
+  },
+  {
+   "tint": "green",
+   "hi": [
+    "baja:",
+    "enseñas?»"
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "🤝",
+    "orbit": [
+     "🤲",
+     "✨",
+     "🕌"
+    ],
+    "y": 900
+   },
+   "cap": "Cuando vuelve, uno le pregunta en voz baja: «Oye… ¿me enseñas?»",
+   "title": [
+    "«Oye…",
+    "¿me enseñas?»"
+   ]
+  },
+  {
+   "tint": "gold",
+   "hi": [
+    "Corán:",
+    "creían.»"
+   ],
+   "vis": {
+    "type": "quote",
+    "lines": [
+     "«Los que hacían el mal",
+     "se reían de",
+     "los que creían»"
+    ],
+    "src": "CORÁN 83:29 · SURA AL-MUTAFFIFIN",
+    "size": 58,
+    "y": 860
+   },
+   "cap": "Allah dice en el Corán: «Los que hacían el mal se reían de los que creían.»"
+  },
+  {
+   "tint": "green",
+   "hi": [
+    "creyentes",
+    "rían."
+   ],
+   "vis": {
+    "type": "big",
+    "words": [
+     "CORÁN",
+     "83:34"
+    ],
+    "size": 150,
+    "y": 860,
+    "e": "😊"
+   },
+   "cap": "Y ese día, dice Allah, serán los creyentes los que rían.",
+   "title": [
+    "Ese día ríen",
+    "los creyentes"
+   ]
+  },
+  {
+   "tint": "night",
+   "hi": [
+    "minuto.",
+    "siempre."
+   ],
+   "vis": {
+    "type": "choice",
+    "opts": [
+     [
+      "😂",
+      "1 MINUTO",
+      "red"
+     ],
+     [
+      "🤲",
+      "PARA SIEMPRE",
+      "gold"
+     ]
+    ],
+    "pick": 1,
+    "y": 900
+   },
+   "cap": "Su risa dura un minuto. Tu oración se queda para siempre.",
+   "title": [
+    "Su risa vs",
+    "tu oración"
+   ]
+  },
+  {
+   "tint": "green",
+   "hi": [
+    "Ahmed,",
+    "Bilal?"
+   ],
+   "vis": {
+    "type": "duo",
+    "focus": "both",
+    "ahmed": "down",
+    "bilal": "calm",
+    "y": 940
+   },
+   "cap": "¿Y tú? ¿Eres más Ahmed, o más Bilal? Sé sincero, te leo abajo.",
+   "title": [
+    "¿Y tú?"
+   ]
+  }
+ ]
+}
