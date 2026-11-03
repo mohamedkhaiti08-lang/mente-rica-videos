@@ -22,6 +22,8 @@
 #   senal (SEÑAL MISTERIOSA: hook = señal girando con "?" | pair = R-101 vs R-100 | streets = qué permite cada una);
 #   sign admite "kind": "empty" (R-100 vacía) y quiz admite "sign": "empty" | "noentry" (señal en la esquina de la tarjeta).
 #   tunel (túnel: hook = perspectiva desde el coche con luces | trap = distancia 2 s vs 100 m/4 s con cronómetro | count = contar segundos con una marca),
+#   autovia (autovía en 1ª persona al atardecer: hook | count | band = franja mín/máx | limit = señal del tramo | except = atasco/niebla/avería | exit = warnings y SALIDA),
+#   cruce admite "amb": n (el vehículo de la posición n es una ambulancia con sirena: ondas y destellos), "labels": {"3": 1} (número que se ve en cada posición) y "amb_tag"; sfx admite "siren".
 #   giro (cruce con coche 1 que gira a la derecha y peatón 2 que cruza sin paso de cebra: car, ped, nozebra, both, rank con "P").
 import math, json, sys, os, subprocess
 from functools import lru_cache
@@ -734,13 +736,22 @@ def vis_cruce(dst, t, v, i):
         x0, y0, _ = cruce_pos(n, 0.0)
         if k == 0 and t < .5 and not v.get("still"):  # entrada al cruce
             e = eout(prog(t, 0, .5)); dx, dy = {1: (0, 160), 2: (160, 0), 3: (-160, 0)}[n]; x += dx * (1 - e); y += dy * (1 - e)
-        car = tram_top() if istram else car_top(CRUCE_COLS[n], 120); paste(lay, car, x, y, rot=rot)
+        isamb = n == v.get("amb")
+        if isamb:  # destellos azules en el asfalto + ondas de sirena hacia delante
+            ph = int(t * 6) % 2; ga = int(90 + 60 * math.sin(t * 12))
+            fx, fy, a0 = {1: (0, -60, 200), 2: (-60, 0, 110), 3: (60, 0, -70)}[n]
+            for kk in range(3):
+                z = (t * .9 + kk / 3) % 1; r = 150 + 210 * z; al = int(200 * (1 - z))
+                d.arc((x + fx - r, y + fy - r, x + fx + r, y + fy + r), a0, a0 + 140, fill=((60, 140, 255) if (kk + ph) % 2 else (255, 70, 70)) + (al,), width=12)
+            car = ambulance_top(124, ph)
+        else: car = tram_top() if istram else car_top(CRUCE_COLS[n], 120)
+        paste(lay, car, x, y, rot=rot)
         if k < .02:  # flecha de dirección
             al = int(230 * (.6 + .4 * math.sin(t * 5)))
             if n == 1: arrow_v(d, x, y - 175, -1, al)
             else: arrow(d, x + (-150 if n == 2 else (290 if istram else 150)), y, -1 if n == 2 else 1, al)
         bx, by = {1: (x + 125, y + 30), 2: (x + 20, y - 125), 3: (x + (60 if istram else -20), y + (140 if istram else 125))}[n]
-        paste(lay, num_badge(n), bx, by, scale=eback(prog(t, .15 + n * .12, .35)) if not v.get("still") else 1)
+        paste(lay, num_badge(int(v.get("labels", {}).get(str(n), n))), bx, by, scale=eback(prog(t, .15 + n * .12, .35)) if not v.get("still") else 1)
     m = Image.new("L", (W, H), 0); ImageDraw.Draw(m).rounded_rectangle((40, top, W - 40, bot), radius=36, fill=255)
     lay.putalpha(Image.fromarray(np.minimum(np.array(lay.split()[3]), np.array(m)))); dst.alpha_composite(lay)
     if v.get("nosigns"):  # sin señales: ceda y semáforo tachados en las esquinas
@@ -760,14 +771,16 @@ def vis_cruce(dst, t, v, i):
         ra = v.get("rank_at", [0] * len(rk))
         for j, (lab, at) in enumerate(zip(rk, ra)):
             p = prog(t, at, .35)
-            if p > 0: paste(dst, rank_chip(j + 1, int(lab)), cx - RW - 205, top + 62 + j * 90, scale=eback(p), alpha=ease(p * 2))
+            if p > 0: paste(dst, rank_chip(j + 1, int(lab), int(v.get("labels", {}).get(str(lab), lab)), (WHITE if int(lab) == v.get("amb") else None)), cx - RW - 205, top + 62 + j * 90, scale=eback(p), alpha=ease(p * 2))
+    if v.get("amb_tag"):  # rótulo "SERVICIO URGENTE" que parpadea en azul/rojo junto a la ambulancia
+        ph = int(t * 3) % 2; paste(dst, pill(v["amb_tag"], 36, (40, 110, 255) if ph else (220, 40, 50), WHITE), W / 2, top + 60, scale=eback(prog(t, .3, .35)), alpha=ease(prog(t, .3, .3)))
     if v.get("tag"):
         ty = bot - 70 if v.get("tag_bottom") else top + 60
         paste(dst, pill(v["tag"], 40, YEL, NAVY), W / 2, ty, scale=eback(prog(t, .4, .4)), alpha=ease(prog(t, .4, .3)))
 
 @lru_cache(maxsize=16)
-def rank_chip(pos, car):
-    p = pill(f"{pos}º", 44, NAVY if pos > 1 else YEL, WHITE if pos > 1 else NAVY, padx=26); b = num_badge(car, 74, mix(CRUCE_COLS[car], WHITE, .15), NAVY)
+def rank_chip(pos, car, lab=None, col=None):
+    p = pill(f"{pos}º", 44, NAVY if pos > 1 else YEL, WHITE if pos > 1 else NAVY, padx=26); b = num_badge(lab or car, 74, col or mix(CRUCE_COLS[car], WHITE, .15), NAVY)
     im = Image.new("RGBA", (p.width + b.width + 12, max(p.height, b.height)), (0, 0, 0, 0))
     im.alpha_composite(p, (0, (im.height - p.height) // 2)); im.alpha_composite(b, (p.width + 12, (im.height - b.height) // 2)); return im
 
@@ -1260,7 +1273,7 @@ def vis_glorieta(dst, t, v, i):
         ra = v.get("rank_at", [0] * len(rk))
         for j, (lab, at) in enumerate(zip(rk, ra)):
             p = prog(t, at, .35)
-            if p > 0: paste(dst, rank_chip(j + 1, int(lab)), 160, top + 70 + j * 92, scale=eback(p), alpha=ease(p * 2))
+            if p > 0: paste(dst, rank_chip(j + 1, int(lab), int(v.get("labels", {}).get(str(lab), lab)), (WHITE if int(lab) == v.get("amb") else None)), 160, top + 70 + j * 92, scale=eback(p), alpha=ease(p * 2))
     if v.get("tag"):
         tp = prog(t, .35, .4) if i else 1.0
         paste(dst, pill(v["tag"], 58 if i == 0 else 42, YEL, NAVY), W / 2 - 30, bot - 50 if v.get("tag_low") else top + 60, scale=eback(tp), alpha=ease(tp * 2))
@@ -2000,6 +2013,165 @@ def vis_giro(dst, t, v, i):
         ty = bot - 70 if v.get("tag_bottom") else top + 60
         paste(dst, pill(v["tag"], 38, YEL, NAVY), W / 2, ty, scale=eback(prog(tt, .4, .4)), alpha=ease(prog(tt, .4, .3)))
 
+# --- AUTOVÍA en primera persona al atardecer: mediana con bionda, 2 carriles, arcén; coche lento delante,
+#     franja de velocidades mín/máx, señal de límite, excepciones (atasco, niebla, avería) y salida con warnings ---
+# vis: {"type": "autovia", "mode": "hook" | "count" | "band" | "limit" | "except" | "exit",
+#       "lines": [...], "cols": [...], "slow": 50, "max": 120, "lim": 80, "countdown": [t1,t2,t3], "tag": "..."}
+def av_scene(dst, t, v, flow=1.0, fog=0.0):
+    lay = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(lay, "RGBA")
+    top, bot = VZ[0] + 10, VZ[1] + 20; hz = top + 330; vx = W / 2 - 20
+    for y in range(top, hz):  # cielo de atardecer
+        k = (y - top) / (hz - top); d.line([(40, y), (W - 40, y)], fill=mix((22, 34, 78), (250, 150, 80), k ** 1.4) + (255,))
+    d.ellipse((W - 330, hz - 120, W - 170, hz + 40), fill=(255, 210, 120, 255))  # sol bajo
+    for k, (bx, bw, bh) in enumerate(((40, 260, 60), (260, 300, 90), (520, 260, 50), (740, 320, 80))):  # colinas
+        d.ellipse((bx - 40, hz - bh, bx + bw + 40, hz + bh), fill=(70, 66, 96, 255))
+    d.rectangle((40, hz, W - 40, bot), fill=(84, 110, 70, 255))  # campo
+    U = lambda u: hz + (bot - hz) * u
+    X = lambda lat, u: vx + (lat - .5) * 1500 * u + (lat - .5) * 26
+    def quad(l0, l1, u0, u1, col):
+        d.polygon([(X(l0, u0), U(u0)), (X(l1, u0), U(u0)), (X(l1, u1), U(u1)), (X(l0, u1), U(u1))], fill=col)
+    quad(-1.45, -1.0, 0, 1, (96, 120, 80, 255))      # mediana con hierba
+    quad(-1.0, 1.3, 0, 1, (48, 52, 62, 255))         # calzada (2 carriles + arcén)
+    d.line([(X(-1, 0), U(0)), (X(-1, 1), U(1))], fill=(240, 240, 240, 255), width=10)   # borde izquierdo
+    d.line([(X(1, 0), U(0)), (X(1, 1), U(1))], fill=(240, 240, 240, 255), width=12)     # línea continua del arcén
+    for k in range(10):  # línea discontinua entre carriles (se mueve)
+        z = ((k / 10) + t * .6 * flow) % 1.0; z2 = min(1, z + .05)
+        d.line([(X(0, z ** 2), U(z ** 2)), (X(0, z2 ** 2), U(z2 ** 2))], fill=(255, 255, 255, 235), width=max(3, int(18 * z)))
+    for k in range(14):  # bionda (barrera metálica) con postes que pasan
+        z = ((k / 14) + t * .6 * flow) % 1.0; zz = z ** 2; y = U(zz); x = X(-1.18, zz)
+        d.line([(x, y), (x, y - 70 * zz - 4)], fill=(150, 156, 168, 255), width=max(2, int(12 * zz)))
+    d.line([(X(-1.18, 0), U(0) - 3), (X(-1.18, 1), U(1) - 70)], fill=(200, 206, 216, 255), width=16)
+    for k in range(5):  # adelfas en la mediana
+        z = ((k / 5 + .1) + t * .6 * flow) % 1.0; zz = z ** 2; x = X(-1.32, zz); y = U(zz); r = 8 + 70 * zz
+        d.ellipse((x - r, y - 1.6 * r, x + r, y), fill=(56, 110, 64, 255)); d.ellipse((x - r * .4, y - 1.5 * r, x - r * .1, y - 1.2 * r), fill=(240, 120, 170, 255))
+    if fog > 0:  # niebla
+        fg = Image.new("RGBA", (W, H), (0, 0, 0, 0)); fd = ImageDraw.Draw(fg)
+        for k in range(6): yy = hz - 60 + k * 70 + 10 * math.sin(t + k); fd.rectangle((40, yy, W - 40, yy + 90), fill=(225, 228, 235, int(120 * fog)))
+        lay.alpha_composite(fg.filter(ImageFilter.GaussianBlur(26)))
+    m = Image.new("L", (W, H), 0); ImageDraw.Draw(m).rounded_rectangle((40, top, W - 40, bot), radius=36, fill=255)
+    lay.putalpha(Image.fromarray(np.minimum(np.array(lay.split()[3]), np.array(m)))); dst.alpha_composite(lay)
+    return top, bot, hz, vx, U, X
+
+def av_dash(dst, sp, top, bot, warn=False, t=0):
+    lay = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(lay, "RGBA"); dy = bot - 120
+    d.ellipse((-200, dy, W + 200, dy + 420), fill=(18, 20, 26, 255)); d.ellipse((-200, dy - 6, W + 200, dy + 410), outline=(60, 64, 78, 255), width=6)
+    d.ellipse((120, dy + 30, 620, dy + 530), outline=(30, 32, 38, 255), width=50)
+    d.rounded_rectangle((W / 2 - 110, dy + 34, W / 2 + 110, dy + 106), radius=20, fill=(8, 10, 14, 255), outline=(60, 64, 78, 255), width=4)
+    d.text((W / 2 - 92, dy + 44), str(sp), font=F(BLACK, 50), fill=(120, 220, 255)); d.text((W / 2 + 6, dy + 62), "km/h", font=F(XB, 26), fill=(120, 160, 200))
+    if warn:  # botón de warnings que parpadea
+        on = int(t * 2.5) % 2 == 0; c = (255, 150, 0) if on else (110, 70, 20); bx, by = W / 2 + 200, dy + 70
+        d.polygon([(bx, by - 34), (bx + 38, by + 26), (bx - 38, by + 26)], outline=c + (255,), width=9)
+    m = Image.new("L", (W, H), 0); ImageDraw.Draw(m).rounded_rectangle((40, top, W - 40, bot), radius=36, fill=255)
+    lay.putalpha(Image.fromarray(np.minimum(np.array(lay.split()[3]), np.array(m)))); dst.alpha_composite(lay)
+
+def speed_band(dst, t, y, vmin=60, vmax=120, lim=None, at=0.0, marker=None):
+    """franja 0-130 km/h: rojo por debajo del mínimo, verde entre mínimo y máximo (o el límite del tramo)."""
+    a = ease(prog(t, at, .3)); x0, x1 = 120, 900; sc = lambda kmh: x0 + (x1 - x0) * kmh / 130
+    paste(dst, card(860, 250, fill=(255, 255, 255, 248), r=36), W / 2 - 5, y, alpha=a)
+    if a < .05: return
+    d = ImageDraw.Draw(dst, "RGBA"); al = int(255 * a); top = vmax if lim is None else lim
+    k = ease(prog(t, at + .2, .7))
+    d.rounded_rectangle((x0, y - 30, x1, y + 30), radius=30, fill=(225, 229, 236, al))
+    d.rounded_rectangle((x0, y - 30, lerp(x0, sc(vmin), k), y + 30), radius=30, fill=RED + (al,))
+    if k > .99:
+        k2 = ease(prog(t, at + .9, .6)); d.rectangle((sc(vmin), y - 30, lerp(sc(vmin), sc(top), k2), y + 30), fill=GREEN + (al,))
+    for kmh in (0, 60, 120) if lim is None else (0, 60, lim, 120):
+        x = sc(kmh); d.line([(x, y + 34), (x, y + 52)], fill=(60, 66, 80, al), width=5)
+        paste(dst, text(str(kmh), 34, DARK, XB, shadow=False), x, y + 80, alpha=a)
+    paste(dst, text("MÁS LENTO, NO", 30, RED, BLACK, shadow=False), (x0 + sc(vmin)) / 2 + 8, y - 70, alpha=ease(prog(t, at + .6, .3)))
+    paste(dst, text("PERMITIDO", 30, (20, 140, 70), BLACK, shadow=False), (sc(vmin) + sc(top)) / 2, y - 70, alpha=ease(prog(t, at + 1.2, .3)))
+    if marker is not None:
+        mx = sc(marker); d.polygon([(mx, y - 4), (mx - 22, y - 44), (mx + 22, y - 44)], fill=NAVY + (al,))
+
+def slow_car(dst, t, U, X, u, label=None, col=RED, hazard_on=False):
+    y = U(u); x = X(.5, u); sc = .12 + 1.0 * u; car = car_rear(560, (245, 245, 245))
+    paste(dst, car, x, y - car.height * sc / 2, scale=sc)
+    if hazard_on and int(t * 2.5) % 2 == 0:
+        for sx in (-.4, .4): paste(dst, hazard(110), x + sx * 560 * sc, y - car.height * sc * .5, scale=sc * 1.4)
+    if label:
+        pk = eback(prog(t, .25, .4)); bob = math.sin(t * 5) * 6
+        paste(dst, pill(label, 46, col, WHITE), x, y - car.height * sc - 60 + bob, scale=pk, alpha=ease(prog(t, .25, .2)))
+
+def exit_panel(s=1.0):
+    w, h = 420, 230; im = ss(w, h); dd = ImageDraw.Draw(im); X2, Y2 = w * 2, h * 2
+    dd.rounded_rectangle((0, 0, X2 - 1, Y2 - 1), radius=30, fill=(18, 86, 190), outline=WHITE, width=12)
+    dd.text((50, 40), "SALIDA", font=F(BLACK, 96), fill=WHITE)
+    dd.line([(X2 * .7, Y2 * .82), (X2 * .7, Y2 * .5), (X2 * .86, Y2 * .3)], fill=WHITE, width=28, joint="curve")
+    dd.polygon([(X2 * .93, Y2 * .2), (X2 * .78, Y2 * .26), (X2 * .9, Y2 * .38)], fill=WHITE)
+    dd.text((50, Y2 * .55), "1 km", font=F(XB, 70), fill=(210, 225, 255))
+    return down(im)
+
+def vis_autovia(dst, t, v, i):
+    if i == 0: t = t + 0.6  # primer fotograma: texto, coche lento y su velocidad ya en pantalla
+    mode = v.get("mode", "hook")
+    fog = 0.0; flow = .55 if mode in ("hook", "count") else 1.0
+    top, bot, hz, vx, U, X = av_scene(dst, t, v, flow, fog)
+    if mode in ("hook", "count"):
+        u = lerp(.3, .42, eout(prog(t, 0, 1.6))) if mode == "hook" else .42
+        slow_car(dst, t, U, X, u, f"{v.get('slow', 50)} km/h")
+        av_dash(dst, v.get("ours", 50), top, bot)
+        lines = v.get("lines", [])
+        if lines: big_lines(dst, lines, t, VZ[0] + 70, [tuple(c) for c in v.get("cols", [])] or None, size=112)
+        cd = v.get("countdown")
+        if cd:
+            n = sum(1 for s in cd if t >= s); ix, iy = 180, top + 210
+            paste(dst, semaphore(n).resize((115, 300), Image.LANCZOS), ix, iy, scale=eback(prog(t, 0, .4)))
+            if n:
+                pk = prog(t, cd[n - 1], .25)
+                paste(dst, text(str(4 - n), 170, [RED, (255, 176, 0), GREEN][n - 1], BLACK), 305, iy, scale=lerp(1.6, 1, eout(pk)), alpha=ease(pk * 2))
+            paste(dst, pill("MÍNIMO: ¿? km/h", 50, YEL, NAVY), W / 2, bot - 250, scale=eback(prog(t, .2, .35)), alpha=ease(prog(t, .2, .3)))
+    elif mode == "band":
+        slow_car(dst, t, U, X, .3, None)
+        paste(dst, pill(f"{v.get('slow', 50)} km/h", 42, RED, WHITE), X(.5, .3) + 230, U(.3) - 60, alpha=ease(prog(t, .2, .3)))
+        if t > 1.6: paste(dst, icon_x(90), X(.5, .3) + 230, U(.3) + 30, scale=eback(prog(t, 1.6, .3)))
+        speed_band(dst, t, top + 170, 60, v.get("max", 120), None, 0.1, marker=v.get("slow", 50))
+        p = prog(t, .9, .5); paste(dst, text("60", 210, YEL, BLACK), W / 2 - 250, bot - 200, scale=.6 + .4 * eback(p), alpha=ease(p * 2))
+        paste(dst, pill("MÍNIMO", 34, YEL, NAVY), W / 2 - 250, bot - 100, alpha=ease(prog(t, 1.1, .3)))
+    elif mode == "limit":
+        lim = v.get("lim", 80); u = (prog(t, 0, 3.2) * .9 + .05) ** 1.5; sx = X(1.42, u); sy = U(u); s = 70 + 300 * u
+        dd = ImageDraw.Draw(dst, "RGBA"); dd.line([(sx, sy), (sx, sy - s * 1.25)], fill=(150, 156, 168, 255), width=max(3, int(14 * u)))
+        paste(dst, sign_generic("speed", lim, 300, True), min(sx, W - 160 - s / 2), max(sy - s * 1.25, top + 310 + s / 2), scale=s / 300)
+        av_dash(dst, 70, top, bot)
+        speed_band(dst, t, top + 170, 60, 120, lim, 0.0, marker=70)
+        if t > 1.4: paste(dst, pill(f"MÍNIMO SIGUE EN 60", 42, YEL, NAVY), W / 2 - 160, CY + 150, scale=eback(prog(t, 1.4, .35)))
+    elif mode == "except":  # tres tarjetas: atasco, niebla, avería
+        dark = Image.new("RGBA", (W, H), (0, 0, 0, 0)); ImageDraw.Draw(dark).rounded_rectangle((40, top, W - 40, bot), radius=36, fill=(6, 20, 43, 170)); dst.alpha_composite(dark)
+        items = [("ATASCO", "jam"), ("OBRAS", "works"), ("AVERÍA", "fail")]
+        for k, (lab, ic) in enumerate(items):
+            p = eback(prog(t, .1 + k * .45, .4)); a = ease(prog(t, .1 + k * .45, .25)); cx = W / 2 - 290 + k * 280; cy = CY - 30
+            paste(dst, card(250, 400, fill=(255, 255, 255, 250), r=34), cx, cy + (1 - p) * 120, alpha=a)
+            if a < .05: continue
+            icon = Image.new("RGBA", (220, 220), (0, 0, 0, 0)); idr = ImageDraw.Draw(icon, "RGBA")
+            idr.rounded_rectangle((20, 10, 200, 210), radius=24, fill=(48, 52, 62, 255))
+            if ic == "jam":
+                for r in range(3):
+                    for c in range(2): icon.alpha_composite(car_top([(226, 69, 60), (60, 140, 255), (255, 196, 0)][(r + c) % 3], 40).resize((40, 72)), (55 + c * 70, 18 + r * 64))
+            elif ic == "works":  # conos de obra
+                for cxx, cyy, cs in ((70, 150, 1.0), (150, 150, 1.0), (110, 80, .7)):
+                    idr.polygon([(cxx, cyy - 70 * cs), (cxx + 34 * cs, cyy), (cxx - 34 * cs, cyy)], fill=(255, 120, 0, 255))
+                    idr.polygon([(cxx - 13 * cs, cyy - 40 * cs), (cxx + 13 * cs, cyy - 40 * cs), (cxx + 19 * cs, cyy - 26 * cs), (cxx - 19 * cs, cyy - 26 * cs)], fill=WHITE + (255,))
+                    idr.rectangle((cxx - 44 * cs, cyy, cxx + 44 * cs, cyy + 10 * cs), fill=(255, 120, 0, 255))
+            else:
+                cr = car_rear(150, (245, 245, 245)); icon.alpha_composite(cr, (35, 95))
+                if int(t * 2.5) % 2 == 0:
+                    for hx in (52, 168): idr.ellipse((hx - 16, 120, hx + 16, 152), fill=(255, 150, 0, 255))
+                idr.polygon([(110, 26), (150, 86), (70, 86)], outline=(255, 150, 0, 255), width=8)
+            paste(dst, icon, cx, cy - 50 + (1 - p) * 120, alpha=a)
+            paste(dst, text(lab, 40, DARK, BLACK, shadow=False), cx, cy + 130 + (1 - p) * 120, alpha=a)
+        if v.get("tag"): paste(dst, pill(v["tag"], 42, YEL, NAVY), W / 2, top + 70, scale=eback(prog(t, 1.5, .35)), alpha=ease(prog(t, 1.5, .3)))
+    elif mode == "exit":  # avería: warnings y salida por la primera salida
+        u = (prog(t, 0, 3.0) * .75 + .1) ** 1.4; px = X(1.6, u); py = U(u) - (60 + 380 * u)
+        sc_ = .25 + .8 * u; paste(dst, exit_panel(), min(px, W - 160 - 210 * sc_), py, scale=sc_)
+        av_dash(dst, 40, top, bot, warn=True, t=t)
+        if int(t * 2.5) % 2 == 0:  # reflejo naranja de los warnings
+            g = Image.new("RGBA", (W, H), (0, 0, 0, 0)); gd = ImageDraw.Draw(g)
+            for gx in (90, W - 90): gd.ellipse((gx - 120, bot - 260, gx + 120, bot - 20), fill=(255, 150, 0, 110))
+            dst.alpha_composite(g.filter(ImageFilter.GaussianBlur(40)))
+        d = ImageDraw.Draw(dst, "RGBA"); a = int(255 * ease(prog(t, .5, .4)))
+        pts = [(X(.5, .9), U(.9)), (X(.75, .5), U(.5)), (X(1.15, .25), U(.25))]
+        d.line(pts, fill=YEL + (a,), width=26, joint="curve")
+        if v.get("tag"): paste(dst, pill(v["tag"], 42, ORANGE, WHITE), W / 2 - 120, top + 70, scale=eback(prog(t, .3, .35)), alpha=ease(prog(t, .3, .3)))
+
 VIS = {k[4:]: v for k, v in globals().items() if k.startswith("vis_")}
 
 def frame(n):
@@ -2032,6 +2204,12 @@ def sfx_wave(kind, sr=24000):
     if kind == "ding": return np.concatenate([tone(1046, .12, sr, .25, 5), tone(1568, .45, sr, .25, 5)])
     if kind == "buzz":
         t = np.arange(int(sr * .35)) / sr; return (np.sign(np.sin(2 * np.pi * 140 * t)) * .08 * np.exp(-t * 4)).astype(np.float32)
+    if kind == "siren":  # dos tonos alternos (ni-no ni-no), suave
+        seg = []
+        for k in range(4):
+            f = 660 if k % 2 == 0 else 880; tt = np.arange(int(sr * .32)) / sr
+            seg.append((np.sin(2 * np.pi * f * tt) * .07 * np.minimum(1, tt * 40) * np.minimum(1, (.32 - tt) * 40)).astype(np.float32))
+        return np.concatenate(seg)
     if kind == "whoosh":
         n = int(sr * .3); x = np.random.default_rng(1).standard_normal(n).astype(np.float32)
         x = np.convolve(x, np.ones(30) / 30, mode="same"); env = np.sin(np.linspace(0, np.pi, n)) ** 2; return (x * env * .12).astype(np.float32)

@@ -1,0 +1,138 @@
+{
+ "label": "CIFRA CLAVE",
+ "times": "tiempos.json",
+ "voice": "voz.wav",
+ "tail": 1.2,
+ "sfx": [
+  {
+   "t": 6.6,
+   "type": "beep"
+  },
+  {
+   "t": 7.5,
+   "type": "beep"
+  },
+  {
+   "t": 8.4,
+   "type": "beep"
+  },
+  {
+   "t": 9.25,
+   "type": "ding"
+  },
+  {
+   "t": 14.55,
+   "type": "buzz"
+  }
+ ],
+ "scenes": [
+  {
+   "cap": "Vas por la autovía y el de delante va a 50. ¿Puede ir tan lento?",
+   "hi": [
+    "autovía",
+    "50."
+   ],
+   "vis": {
+    "type": "autovia",
+    "mode": "hook",
+    "slow": 50,
+    "ours": 50,
+    "lines": [
+     "¿PUEDE IR A 50",
+     "EN AUTOVÍA?"
+    ],
+    "cols": [
+     [
+      255,
+      255,
+      255
+     ],
+     [
+      255,
+      196,
+      0
+     ]
+    ]
+   }
+  },
+  {
+   "cap": "¿Cuál es el mínimo? Tienes 3 segundos.",
+   "hi": [
+    "mínimo?",
+    "3"
+   ],
+   "vis": {
+    "type": "autovia",
+    "mode": "count",
+    "slow": 50,
+    "ours": 50,
+    "countdown": [
+     2.53,
+     3.43,
+     4.33
+    ]
+   }
+  },
+  {
+   "cap": "No. En autopista y autovía, el mínimo es 60 km/h.",
+   "hi": [
+    "60",
+    "km/h."
+   ],
+   "vis": {
+    "type": "autovia",
+    "mode": "band",
+    "slow": 50
+   }
+  },
+  {
+   "cap": "Aunque el tramo esté limitado a 80, sigue siendo 60.",
+   "hi": [
+    "80,",
+    "60."
+   ],
+   "vis": {
+    "type": "autovia",
+    "mode": "limit",
+    "lim": 80
+   }
+  },
+  {
+   "cap": "Solo puedes ir más lento por un atasco, unas obras o una avería.",
+   "hi": [
+    "atasco,",
+    "obras",
+    "avería."
+   ],
+   "vis": {
+    "type": "autovia",
+    "mode": "except",
+    "tag": "SOLO SI TE OBLIGA"
+   }
+  },
+  {
+   "cap": "Si es una avería: warnings, y fuera por la primera salida.",
+   "hi": [
+    "warnings,",
+    "salida."
+   ],
+   "vis": {
+    "type": "autovia",
+    "mode": "exit",
+    "tag": "WARNINGS + 1ª SALIDA"
+   }
+  },
+  {
+   "cap": "¿Y en carretera convencional? Pista: la mitad. Escribe el mínimo abajo.",
+   "hi": [
+    "convencional?",
+    "mitad."
+   ],
+   "vis": {
+    "type": "cta",
+    "big": "¿Y en convencional?",
+    "small": "Pista: la mitad · Comenta el mínimo"
+   }
+  }
+ ]
+}

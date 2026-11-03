@@ -1,0 +1,228 @@
+{
+ "label": "¿QUIÉN PASA PRIMERO? · PARTE 5",
+ "times": "tiempos.json",
+ "voice": "voz.wav",
+ "tail": 1.1,
+ "sfx": [
+  {
+   "t": 0.1,
+   "type": "siren"
+  },
+  {
+   "t": 10.79,
+   "type": "beep"
+  },
+  {
+   "t": 11.69,
+   "type": "beep"
+  },
+  {
+   "t": 12.59,
+   "type": "beep"
+  },
+  {
+   "t": 13.44,
+   "type": "ding"
+  },
+  {
+   "t": 13.79,
+   "type": "siren"
+  },
+  {
+   "t": 23.56,
+   "type": "siren"
+  }
+ ],
+ "scenes": [
+  {
+   "cap": "Parte 5. Llega una ambulancia con sirena. ¿Quién pasa primero?",
+   "hi": [
+    "ambulancia",
+    "primero?"
+   ],
+   "vis": {
+    "type": "cruce",
+    "amb": 3,
+    "labels": {
+     "3": 1,
+     "1": 2,
+     "2": 3
+    },
+    "tag": "¿1, 2 o 3?"
+   }
+  },
+  {
+   "cap": "La ambulancia es el 1. Y al 2, el 3 le viene por la derecha.",
+   "hi": [
+    "1.",
+    "derecha."
+   ],
+   "vis": {
+    "type": "cruce",
+    "amb": 3,
+    "labels": {
+     "3": 1,
+     "1": 2,
+     "2": 3
+    },
+    "still": true,
+    "focus": 1,
+    "tag": "AL 2 LE VIENE EL 3 POR LA DERECHA",
+    "tag_bottom": true
+   }
+  },
+  {
+   "cap": "Escribe el orden en comentarios. Tienes 3 segundos.",
+   "hi": [
+    "orden",
+    "3"
+   ],
+   "vis": {
+    "type": "cruce",
+    "amb": 3,
+    "labels": {
+     "3": 1,
+     "1": 2,
+     "2": 3
+    },
+    "still": true,
+    "countdown": [
+     3.2,
+     4.1,
+     5.0
+    ],
+    "tag": "¿1, 2 o 3?"
+   }
+  },
+  {
+   "cap": "¡Primero la ambulancia! En servicio de urgencia, pasa antes que todos.",
+   "hi": [
+    "ambulancia!",
+    "urgencia,"
+   ],
+   "vis": {
+    "type": "cruce",
+    "amb": 3,
+    "labels": {
+     "3": 1,
+     "1": 2,
+     "2": 3
+    },
+    "still": true,
+    "move": [
+     [
+      3,
+      0.3,
+      1.6
+     ]
+    ],
+    "rank": [
+     "3"
+    ],
+    "rank_at": [
+     0.2
+    ],
+    "amb_tag": "SERVICIO URGENTE"
+   }
+  },
+  {
+   "cap": "Luego el 3, por la derecha del 2. Y el último, el 2.",
+   "hi": [
+    "3,",
+    "último,",
+    "2."
+   ],
+   "vis": {
+    "type": "cruce",
+    "amb": 3,
+    "labels": {
+     "3": 1,
+     "1": 2,
+     "2": 3
+    },
+    "still": true,
+    "done": [
+     3
+    ],
+    "move": [
+     [
+      2,
+      0.3,
+      1.3
+     ],
+     [
+      1,
+      1.9,
+      1.1
+     ]
+    ],
+    "rank": [
+     "3",
+     "2",
+     "1"
+    ],
+    "rank_at": [
+     0,
+     0.4,
+     1.9
+    ]
+   }
+  },
+  {
+   "cap": "Sin servicio de urgencia, pasaría la última.",
+   "hi": [
+    "Sin",
+    "última."
+   ],
+   "vis": {
+    "type": "cruce",
+    "amb": 3,
+    "labels": {
+     "3": 1,
+     "1": 2,
+     "2": 3
+    },
+    "still": true,
+    "tag": "NORMAL: 3-2-1 · URGENCIA: 1-3-2",
+    "tag_bottom": true
+   }
+  },
+  {
+   "cap": "Tú, sin frenazos: facilítale el paso y no bloquees el cruce.",
+   "hi": [
+    "frenazos:",
+    "bloquees"
+   ],
+   "vis": {
+    "type": "cruce",
+    "amb": 3,
+    "labels": {
+     "3": 1,
+     "1": 2,
+     "2": 3
+    },
+    "still": true,
+    "move": [
+     [
+      3,
+      0.4,
+      2.2
+     ]
+    ],
+    "tag": "NO BLOQUEES EL CRUCE"
+   }
+  },
+  {
+   "cap": "¿Acertaste? Comenta el orden. ¿Quieres la parte 6?",
+   "hi": [
+    "orden.",
+    "6?"
+   ],
+   "vis": {
+    "type": "cta",
+    "big": "¿Acertaste?",
+    "small": "Comenta el orden · ¿Parte 6?"
+   }
+  }
+ ]
+}
