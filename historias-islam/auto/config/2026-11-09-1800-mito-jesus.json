@@ -1,0 +1,223 @@
+{
+ "tail": 1.3,
+ "cx": 470,
+ "cap_maxw": 800,
+ "title_maxw": 820,
+ "instant": true,
+ "step_gap": 290,
+ "label": "MITO VS REALIDAD",
+ "times": "2026-11-09-1800-mito-jesus.tiempos.json",
+ "scenes": [
+  {
+   "tint": "red",
+   "hi": [
+    "Jesús?",
+    "mito."
+   ],
+   "title": [
+    "¿No creen",
+    "en Jesús?"
+   ],
+   "vis": {
+    "type": "choice",
+    "opts": [
+     [
+      "❌",
+      "MITO",
+      "red"
+     ],
+     [
+      "✅",
+      "REALIDAD",
+      "gold"
+     ]
+    ],
+    "pick": 0,
+    "y": 900
+   },
+   "cap": "¿Tú también crees que los musulmanes no creen en Jesús? Es un mito."
+  },
+  {
+   "tint": "gold",
+   "hi": [
+    "Corán",
+    "sorprender."
+   ],
+   "title": [
+    "Lo que dice",
+    "el Corán"
+   ],
+   "vis": {
+    "type": "big",
+    "words": [
+     "EL",
+     "CORÁN"
+    ],
+    "size": 150,
+    "gap": 170,
+    "y": 860,
+    "e": "📖"
+   },
+   "cap": "Y el Corán te va a sorprender."
+  },
+  {
+   "tint": "green",
+   "hi": [
+    "Isa.",
+    "grandes."
+   ],
+   "title": [
+    "Jesús = Isa"
+   ],
+   "vis": {
+    "type": "steps",
+    "items": [
+     [
+      "💬",
+      "JESÚS"
+     ],
+     [
+      "🌙",
+      "ISA"
+     ],
+     [
+      "🌟",
+      "PROFETA"
+     ]
+    ],
+    "y": 920
+   },
+   "cap": "Para los musulmanes, Jesús se llama Isa. Y es uno de los profetas más grandes."
+  },
+  {
+   "tint": "night",
+   "hi": [
+    "María,",
+    "milagro"
+   ],
+   "title": [
+    "Un milagro"
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "👶",
+    "orbit": [
+     "✨",
+     "🤍",
+     "🌙"
+    ],
+    "y": 900
+   },
+   "cap": "El Corán cuenta que nació de María, sin padre. Un milagro de Allah."
+  },
+  {
+   "tint": "gold",
+   "hi": [
+    "ángeles",
+    "María:"
+   ],
+   "title": [
+    "Los ángeles",
+    "a María…"
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "🕊️",
+    "orbit": [
+     "✨",
+     "✨",
+     "✨"
+    ],
+    "y": 900
+   },
+   "cap": "Los ángeles le dijeron a María:"
+  },
+  {
+   "tint": "gold",
+   "hi": [
+    "Mesías,",
+    "María.»"
+   ],
+   "vis": {
+    "type": "quote",
+    "lines": [
+     "«Allah te anuncia",
+     "una palabra Suya.",
+     "Su nombre es el Mesías,",
+     "Isa, hijo de María»"
+    ],
+    "src": "CORÁN 3:45 · SURA AL IMRÁN",
+    "size": 54,
+    "y": 860
+   },
+   "cap": "«Allah te anuncia una palabra Suya. Su nombre es el Mesías, Isa, hijo de María.»"
+  },
+  {
+   "tint": "green",
+   "hi": [
+    "cercano",
+    "María.»"
+   ],
+   "vis": {
+    "type": "quote",
+    "lines": [
+     "«Yo soy el más",
+     "cercano de toda",
+     "la gente al",
+     "hijo de María»"
+    ],
+    "src": "SAHIH AL-BUJARI 3442 · HADIZ",
+    "size": 58,
+    "y": 860
+   },
+   "cap": "El Profeta Muhammad, la paz sea con él, dijo: «Yo soy el más cercano de toda la gente al hijo de María.»"
+  },
+  {
+   "tint": "green",
+   "hi": [
+    "Jesús.",
+    "fe."
+   ],
+   "title": [
+    "La",
+    "realidad"
+   ],
+   "vis": {
+    "type": "choice",
+    "opts": [
+     [
+      "🚫",
+      "NO CREEN",
+      "red"
+     ],
+     [
+      "🤍",
+      "CREEN EN ÉL",
+      "gold"
+     ]
+    ],
+    "pick": 1,
+    "y": 900
+   },
+   "cap": "Mito: no creen en Jesús. Realidad: creer en él es parte de la fe."
+  },
+  {
+   "tint": "night",
+   "hi": [
+    "mito",
+    "abajo."
+   ],
+   "title": [
+    "¿Otro mito?"
+   ],
+   "vis": {
+    "type": "cta",
+    "word": "COMENTA",
+    "size": 130,
+    "e": "💬",
+    "y": 900
+   },
+   "cap": "¿Qué otro mito sobre el islam has escuchado? Te leo abajo."
+  }
+ ]
+}

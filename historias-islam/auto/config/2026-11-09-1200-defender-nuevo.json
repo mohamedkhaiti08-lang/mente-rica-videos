@@ -1,0 +1,259 @@
+{
+ "tail": 1.3,
+ "cx": 470,
+ "cap_maxw": 800,
+ "title_maxw": 820,
+ "instant": true,
+ "step_gap": 290,
+ "label": "AHMED VS BILAL",
+ "times": "2026-11-09-1200-defender-nuevo.tiempos.json",
+ "scenes": [
+  {
+   "tint": "red",
+   "hi": [
+    "nuevo",
+    "defiendes?"
+   ],
+   "title": [
+    "¿Te ríes",
+    "o le defiendes?"
+   ],
+   "vis": {
+    "type": "choice",
+    "opts": [
+     [
+      "😂",
+      "ME RÍO",
+      "red"
+     ],
+     [
+      "🛡️",
+      "LE DEFIENDO",
+      "gold"
+     ]
+    ],
+    "y": 900
+   },
+   "cap": "Humillan al nuevo delante de toda la clase… ¿Te ríes con ellos, o le defiendes?"
+  },
+  {
+   "tint": "night",
+   "hi": [
+    "primer",
+    "mote."
+   ],
+   "title": [
+    "Su primer día"
+   ],
+   "vis": {
+    "type": "steps",
+    "items": [
+     [
+      "🎒",
+      "1er DÍA"
+     ],
+     [
+      "👥",
+      "LA CLASE"
+     ],
+     [
+      "🤡",
+      "EL MOTE"
+     ]
+    ],
+    "y": 920
+   },
+   "cap": "Es su primer día. Y ya le han puesto un mote."
+  },
+  {
+   "tint": "red",
+   "hi": [
+    "graba,",
+    "todos."
+   ],
+   "title": [
+    "Ahmed lo graba"
+   ],
+   "vis": {
+    "type": "duo",
+    "focus": "ahmed",
+    "ahmed": "point",
+    "bilal": "down",
+    "ab": [
+     "Jajaja",
+     "¡mirad!"
+    ],
+    "am": "📱",
+    "bat": 0.6,
+    "mat": 1.0,
+    "y": 960
+   },
+   "cap": "Ahmed saca el móvil… lo graba, y se ríe con todos."
+  },
+  {
+   "tint": "night",
+   "hi": [
+    "miedo.",
+    "mal."
+   ],
+   "title": [
+    "Bilal también",
+    "tiene miedo"
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "😰",
+    "orbit": [
+     "👀",
+     "😂",
+     "📱"
+    ],
+    "y": 900
+   },
+   "cap": "Bilal también tiene miedo. Miedo a quedar mal."
+  },
+  {
+   "tint": "green",
+   "hi": [
+    "levanta:",
+    "nosotros.»"
+   ],
+   "title": [
+    "Bilal",
+    "se levanta"
+   ],
+   "vis": {
+    "type": "duo",
+    "focus": "bilal",
+    "ahmed": "point",
+    "bilal": "calm",
+    "bb": [
+     "Ya vale.",
+     "Ven, siéntate."
+    ],
+    "bat": 0.8,
+    "y": 960
+   },
+   "cap": "Pero se levanta: «Ya vale. Ven, siéntate con nosotros.»"
+  },
+  {
+   "tint": "gold",
+   "hi": [
+    "siguiente,",
+    "nunca.»"
+   ],
+   "title": [
+    "«Ayer pensaba",
+    "no volver»"
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "🥹",
+    "orbit": [
+     "🤝",
+     "✨",
+     "🎒"
+    ],
+    "y": 900
+   },
+   "cap": "Al día siguiente, el nuevo le dice: «Ayer pensaba no volver nunca.»"
+  },
+  {
+   "tint": "gold",
+   "hi": [
+    "mal,",
+    "mano.»"
+   ],
+   "vis": {
+    "type": "quote",
+    "lines": [
+     "«Quien de vosotros",
+     "vea un mal,",
+     "que lo cambie",
+     "con su mano…»"
+    ],
+    "src": "SAHIH MUSLIM 49 · HADIZ",
+    "size": 58,
+    "y": 860
+   },
+   "cap": "El Profeta, la paz sea con él, dijo: «Quien vea un mal, que lo cambie con su mano.»"
+  },
+  {
+   "tint": "green",
+   "hi": [
+    "lengua.",
+    "corazón."
+   ],
+   "title": [
+    "Mano, lengua",
+    "o corazón"
+   ],
+   "vis": {
+    "type": "steps",
+    "items": [
+     [
+      "✋",
+      "MANO"
+     ],
+     [
+      "🗣️",
+      "LENGUA"
+     ],
+     [
+      "🤍",
+      "CORAZÓN"
+     ]
+    ],
+    "y": 920
+   },
+   "cap": "«Si no puede, con su lengua. Y si no puede, con su corazón.» Sahih Muslim 49."
+  },
+  {
+   "tint": "night",
+   "hi": [
+    "fácil.",
+    "valiente."
+   ],
+   "title": [
+    "Eso es",
+    "ser valiente"
+   ],
+   "vis": {
+    "type": "choice",
+    "opts": [
+     [
+      "😂",
+      "REÍRSE",
+      "red"
+     ],
+     [
+      "🛡️",
+      "DEFENDER",
+      "gold"
+     ]
+    ],
+    "pick": 1,
+    "y": 900
+   },
+   "cap": "Reírte es fácil. Defender al que está solo, eso es ser valiente."
+  },
+  {
+   "tint": "green",
+   "hi": [
+    "Ahmed,",
+    "Bilal?"
+   ],
+   "title": [
+    "¿Y tú?"
+   ],
+   "vis": {
+    "type": "duo",
+    "focus": "both",
+    "ahmed": "point",
+    "bilal": "calm",
+    "y": 940
+   },
+   "cap": "¿Y tú? ¿Eres más Ahmed, o más Bilal? Sé sincero, te leo abajo."
+  }
+ ]
+}
