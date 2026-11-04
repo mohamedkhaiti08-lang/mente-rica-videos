@@ -1,0 +1,16 @@
+{"label": "ERROR DE NOVATO", "times": "tiempos.json", "voice": "voz.wav", "tail": 1.2,
+ "sfx": [{"t": 0.1, "type": "notif"}, {"t": 1.4, "type": "notif"}, {"t": 14.95, "type": "beep"}, {"t": 15.85, "type": "beep"}, {"t": 16.75, "type": "beep"},
+         {"t": 17.55, "type": "ding"}, {"t": 21.5, "type": "buzz"}],
+ "scenes": [
+  {"cap": "Más de 4 de cada 10 denuncias por distracción fueron por esto.", "hi": ["4", "10", "esto."],
+   "vis": {"type": "movil", "mode": "hook", "big": "4 DE CADA 10", "small": "DENUNCIAS POR DISTRACCIÓN · DGT, OCT. 2026"}},
+  {"cap": "Error de novato: cogerlo un segundo para mirar el mapa.", "hi": ["novato:", "segundo"], "vis": {"type": "movil", "mode": "glance"}},
+  {"cap": "A 50, en un segundo haces 14 metros a ciegas.", "hi": ["14", "ciegas."], "vis": {"type": "movil", "mode": "blind", "m": 14}},
+  {"cap": "¿Cuántos puntos te quita? ¿3, 4 o 6?", "hi": ["puntos", "quita?"],
+   "vis": {"type": "quiz", "q": "Conduces sujetando el móvil con la mano. ¿Cuántos puntos pierdes?", "opts": ["3 puntos", "4 puntos", "6 puntos"], "correct": 2, "opt_at": [0.55, 0.72, 0.88]}},
+  {"cap": "Pon tu letra. Tienes 3 segundos.", "hi": ["letra.", "3"], "vis": {"type": "countdown", "quiz_scene": 3, "at": [2.1, 3.0, 3.9]}},
+  {"cap": "¡La C, 6 puntos! Por sujetarlo con la mano conduciendo.", "hi": ["C,", "6", "mano"], "vis": {"type": "reveal", "quiz_scene": 3}},
+  {"cap": "Y un novel empieza con 8: se queda con 2.", "hi": ["8:", "2."], "vis": {"type": "puntos", "mode": "card", "from": 8, "n": 2, "count_at": 0.5, "tag": "−6", "tag_at": 0.5, "tag_red": true}},
+  {"cap": "Antes de arrancar, al soporte, y no lo toques.", "hi": ["soporte,", "toques."], "vis": {"type": "movil", "mode": "holder"}},
+  {"cap": "Etiqueta a quien siempre lo lleva en la mano.", "hi": ["Etiqueta"], "vis": {"type": "cta", "big": "¡Etiquétalo!", "small": "a quien siempre lo lleva en la mano"}}
+ ]}

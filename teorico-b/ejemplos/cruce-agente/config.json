@@ -1,0 +1,17 @@
+{"label": "¿QUIÉN PASA PRIMERO? · PARTE 6", "times": "tiempos.json", "voice": "voz.wav", "tail": 1.1,
+ "sfx": [{"t": 4.0, "type": "whoosh"}, {"t": 9.71, "type": "beep"}, {"t": 10.61, "type": "beep"}, {"t": 11.51, "type": "beep"}, {"t": 12.36, "type": "ding"}, {"t": 15.95, "type": "buzz"}, {"t": 20.3, "type": "buzz"}],
+ "scenes": [
+  {"cap": "Parte 6. El 1 tiene verde, y el 2, rojo. ¿Quién pasa primero?", "hi": ["verde,", "rojo.", "primero?"],
+   "vis": {"type": "cruce", "done": [3], "agent": true, "lights": {"1": "g", "2": "r"}, "tag": "¿1 O 2?"}},
+  {"cap": "Pero en el centro hay un agente, con los brazos así.", "hi": ["agente,", "así."], "vis": {"type": "agente", "tag": "BRAZOS EXTENDIDOS"}},
+  {"cap": "Escribe 1 o 2 en comentarios. Tienes 3 segundos.", "hi": ["1", "2", "3"],
+   "vis": {"type": "cruce", "done": [3], "agent": true, "agent_hl": true, "lights": {"1": "g", "2": "r"}, "still": true, "countdown": [3.2, 4.1, 5.0], "tag": "¿1 O 2?"}},
+  {"cap": "¡Pasa el 2! Manda el agente, aunque su semáforo esté en rojo.", "hi": ["2!", "agente,", "rojo."],
+   "vis": {"type": "cruce", "done": [3], "agent": true, "lights": {"1": "g", "2": "r"}, "light_x": 2, "still": true, "move": [[2, 0.3, 1.8]], "rank": ["2"], "rank_at": [0.2]}},
+  {"cap": "Brazos extendidos: se paran los que le llegan de frente y de espaldas.", "hi": ["paran", "frente", "espaldas."],
+   "vis": {"type": "cruce", "done": [2, 3], "agent": true, "agent_zones": true, "lights": {"1": "g", "2": "r"}, "still": true}},
+  {"cap": "Y el 1, con verde, espera a que el agente le deje.", "hi": ["verde,", "espera"], "vis": {"type": "agente", "raise": false, "sem": "g", "sem_x": true, "tag": "CON VERDE, ESPERA"}},
+  {"cap": "Primero el agente, luego las señales provisionales y después el semáforo.", "hi": ["agente,", "provisionales", "semáforo."],
+   "vis": {"type": "jerarquia", "at": [0, 0.8, 2.0, 2.5, 2.9], "tag": "ART. 133 DEL REGLAMENTO DE CIRCULACIÓN"}},
+  {"cap": "¿Acertaste? Comenta, y pide la parte 7.", "hi": ["Comenta,", "7."], "vis": {"type": "cta", "big": "¿Acertaste?", "small": "Comenta 1 o 2 · ¿Parte 7?"}}
+ ]}

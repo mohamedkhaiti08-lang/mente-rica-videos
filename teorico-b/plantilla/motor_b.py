@@ -24,6 +24,10 @@
 #   tunel (túnel: hook = perspectiva desde el coche con luces | trap = distancia 2 s vs 100 m/4 s con cronómetro | count = contar segundos con una marca),
 #   autovia (autovía en 1ª persona al atardecer: hook | count | band = franja mín/máx | limit = señal del tramo | except = atasco/niebla/avería | exit = warnings y SALIDA),
 #   cruce admite "amb": n (el vehículo de la posición n es una ambulancia con sirena: ondas y destellos), "labels": {"3": 1} (número que se ve en cada posición) y "amb_tag"; sfx admite "siren".
+#   movil (móvil en la mano al volante: hook | glance = mirar el mapa con cronómetro | blind = metros a ciegas | holder = soporte ✓ / mano ✗); sfx "notif".
+#   cruce admite "agent": true (agente cenital en el centro con brazos extendidos E-O), "agent_hl", "agent_zones" (ALTO N-S / PASAN E-O),
+#     "lights": {"1": "g", "2": "r"} (semáforo de cada brazo) y "light_x": n; agente (agente de frente que extiende los brazos: sem, sem_x, arrows, tag);
+#   jerarquia (orden de preferencia de las señales, art. 133 RGC: 5 filas que aparecen en "at"); puntos admite "tag_red".
 #   giro (cruce con coche 1 que gira a la derecha y peatón 2 que cruza sin paso de cebra: car, ped, nozebra, both, rank con "P").
 import math, json, sys, os, subprocess
 from functools import lru_cache
@@ -746,7 +750,7 @@ def vis_cruce(dst, t, v, i):
             car = ambulance_top(124, ph)
         else: car = tram_top() if istram else car_top(CRUCE_COLS[n], 120)
         paste(lay, car, x, y, rot=rot)
-        if k < .02:  # flecha de dirección
+        if k < .02 and not (v.get("agent") and n == 1):  # flecha de dirección
             al = int(230 * (.6 + .4 * math.sin(t * 5)))
             if n == 1: arrow_v(d, x, y - 175, -1, al)
             else: arrow(d, x + (-150 if n == 2 else (290 if istram else 150)), y, -1 if n == 2 else 1, al)
@@ -759,6 +763,7 @@ def vis_cruce(dst, t, v, i):
             p = prog(t, .2 + k * .35, .35); im = sign_ceda(170) if k == 0 else semaphore(0).resize((92, 240), Image.LANCZOS)
             paste(dst, im, ix, iy, scale=.6 + .4 * eback(p), alpha=ease(p * 2))
             if t > .55 + k * .35: paste(dst, icon_x(110), ix + 60, iy + 70, scale=eback(prog(t, .55 + k * .35, .3)))
+    cruce_extras(dst, t, v)
     cd = v.get("countdown")
     if cd:
         n = sum(1 for s in cd if t >= s); ix, iy = cx - RW - 270, top + 160
@@ -911,7 +916,7 @@ def vis_puntos(dst, t, v, i):
                 d.line([(cx - L, cyy - L * .7), (cx + L, cyy + L * .7)], fill=RED + (a,), width=26)
                 d.line([(cx - L, cyy + L * .7), (cx + L, cyy - L * .7)], fill=RED + (a,), width=26)
         if v.get("tag"):
-            paste(dst, pill(v["tag"], 44, RED if v.get("cross") else YEL, WHITE if v.get("cross") else NAVY), W / 2 + 200, cy + 215,
+            paste(dst, pill(v["tag"], 44, RED if (v.get("cross") or v.get("tag_red")) else YEL, WHITE if (v.get("cross") or v.get("tag_red")) else NAVY), W / 2 + 200, cy + 215,
                   scale=eback(prog(t, v.get("tag_at", 1.2), .35)), alpha=ease(prog(t, v.get("tag_at", 1.2), .3)), rot=-6)
     else:  # escalera de puntos
         steps = [(8, "INICIO"), (12, "+2 AÑOS"), (14, "+3 AÑOS"), (15, "+3 AÑOS")]; upto = v.get("upto", 3)
@@ -2172,6 +2177,206 @@ def vis_autovia(dst, t, v, i):
         d.line(pts, fill=YEL + (a,), width=26, joint="curve")
         if v.get("tag"): paste(dst, pill(v["tag"], 42, ORANGE, WHITE), W / 2 - 120, top + 70, scale=eback(prog(t, .3, .35)), alpha=ease(prog(t, .3, .3)))
 
+
+# --- móvil en la mano al volante (formato ERROR DE NOVATO, bloque alcohol, drogas y móvil) ---
+# vis: {"type": "movil", "mode": "hook" | "glance" | "blind" | "holder", "big": "4 DE CADA 10", "small": "...", "tag": "..."}
+SKIN = (233, 186, 150); SKIN_D = (205, 152, 118)
+@lru_cache(maxsize=8)
+def phone_img(screen="notif", w=250, h=500):
+    im = ss(w, h); d = ImageDraw.Draw(im); X, Y = w * 2, h * 2
+    d.rounded_rectangle((0, 0, X - 1, Y - 1), radius=int(X * .16), fill=(22, 24, 30), outline=(70, 74, 86), width=6)
+    sx0, sy0, sx1, sy1 = X * .06, Y * .035, X * .94, Y * .965
+    if screen == "map":
+        d.rounded_rectangle((sx0, sy0, sx1, sy1), radius=int(X * .12), fill=(226, 230, 222))
+        for k in range(6): d.line([(sx0, sy0 + Y * (.1 + k * .16)), (sx1, sy0 + Y * (.02 + k * .16))], fill=WHITE, width=22)
+        for k in range(4): d.line([(sx0 + X * (.1 + k * .26), sy0), (sx0 + X * (.2 + k * .22), sy1)], fill=WHITE, width=18)
+        d.rectangle((sx0 + X * .55, sy0 + Y * .2, sx0 + X * .8, sy0 + Y * .3), fill=(170, 214, 160))
+        route = [(X * .5, Y * .9), (X * .46, Y * .62), (X * .66, Y * .44), (X * .62, Y * .16)]
+        d.line(route, fill=(40, 120, 255), width=26, joint="curve")
+        d.polygon([(X * .5, Y * .8), (X * .44, Y * .88), (X * .56, Y * .88)], fill=(20, 60, 200))
+        d.rounded_rectangle((sx0 + 20, sy0 + 20, sx1 - 20, sy0 + Y * .11), radius=30, fill=(20, 110, 70))
+        d.polygon([(X * .2, sy0 + Y * .075), (X * .27, sy0 + Y * .04), (X * .27, sy0 + Y * .11)], fill=WHITE)
+        d.text((X * .33, sy0 + Y * .045), "300 m", font=F(BLACK, 60), fill=WHITE)
+    else:
+        d.rounded_rectangle((sx0, sy0, sx1, sy1), radius=int(X * .12), fill=(30, 60, 120))
+        d.text((X * .5 - F(BLACK, 110).getlength("10:00") / 2, Y * .12), "10:00", font=F(BLACK, 110), fill=WHITE)
+        for k in range(2):  # notificaciones
+            y0 = Y * (.34 + k * .2); d.rounded_rectangle((sx0 + 24, y0, sx1 - 24, y0 + Y * .16), radius=34, fill=(245, 247, 250))
+            d.ellipse((sx0 + 50, y0 + 30, sx0 + 150, y0 + 130), fill=(34, 197, 94) if k == 0 else (60, 140, 255))
+            d.rounded_rectangle((sx0 + 180, y0 + 40, sx1 - 70, y0 + 70), radius=14, fill=(60, 66, 80))
+            d.rounded_rectangle((sx0 + 180, y0 + 95, sx1 - 140, y0 + 120), radius=12, fill=(170, 176, 190))
+    return down(im)
+
+@lru_cache(maxsize=8)
+def hand_phone(screen="notif"):
+    w, h = 470, 820; im = Image.new("RGBA", (w, h), (0, 0, 0, 0)); ph = phone_img(screen)
+    lay = ss(w, h); d = ImageDraw.Draw(lay)
+    d.rounded_rectangle((w * .62, h * 1.18, w * 1.38, h * 2), radius=60, fill=(30, 52, 96))            # manga
+    d.rounded_rectangle((w * .66, h * 1.06, w * 1.34, h * 1.36), radius=80, fill=SKIN_D)              # muñeca
+    d.ellipse((w * .5, h * .78, w * 1.5, h * 1.3), fill=SKIN)                                          # palma
+    im.alpha_composite(down(lay)); im.alpha_composite(ph, ((w - ph.width) // 2, 40))
+    lay = ss(w, h); d = ImageDraw.Draw(lay)
+    for k in range(4):  # dedos por la derecha
+        y = h * (.86 + k * .17); d.rounded_rectangle((w * 1.36, y, w * 1.62, y + h * .14), radius=50, fill=SKIN if k % 2 == 0 else SKIN_D)
+    th = Image.new("RGBA", (120, 360), (0, 0, 0, 0)); ImageDraw.Draw(th).rounded_rectangle((0, 0, 119, 359), radius=60, fill=SKIN)   # pulgar
+    th = th.rotate(-28, resample=Image.BICUBIC, expand=True); lay.alpha_composite(th, (int(w * .36), int(h * .86)))
+    im.alpha_composite(down(lay)); return im
+
+def vis_movil(dst, t, v, i):
+    if i == 0: t = t + 0.6
+    mode = v.get("mode", "hook")
+    if mode in ("hook", "blind", "holder"):
+        top, bot, hz, vx = pov_scene(dst, t * (0.4 if mode == "blind" else 1), {})
+        dy = pov_dash(dst, t, {"speed": 50}, top, bot)
+    if mode == "hook":
+        hp = eback(prog(t, .1, .5)); buzz = math.sin(t * 70) * 6 * (1 if (t % 1.2) < .35 else 0)
+        paste(dst, hand_phone("notif"), 590 + buzz, 985 + (1 - hp) * 260, scale=.95, rot=-8 + buzz * .4)
+        d = ImageDraw.Draw(dst, "RGBA")
+        for k in range(3):  # ondas de vibración
+            z = (t * 1.4 + k / 3) % 1; r = 180 + 140 * z; a = int(150 * (1 - z))
+            d.arc((590 - r, 775 - r * .6, 590 + r, 775 + r * .6), 200, 340, fill=YEL + (a,), width=8)
+        big = v.get("big", "4 DE CADA 10"); s = fit([big], 128, BLACK, 900)
+        paste(dst, text(big, s, YEL, BLACK), W / 2, top + 95, scale=.8 + .2 * eback(prog(t, 0, .4)))
+        if v.get("small"): paste(dst, pill(v["small"], 34, WHITE, BLUE), W / 2, top + 205, alpha=ease(prog(t, .3, .3)))
+    elif mode == "glance":
+        lay = Image.new("RGBA", (W, H), (0, 0, 0, 0)); top, bot, hz, vx = pov_scene(lay, t, {}); pov_dash(lay, t, {"speed": 50}, top, bot)
+        dk = ease(prog(t, .2, .6)); paste(dst, lay.filter(ImageFilter.GaussianBlur(int(2 + 10 * dk))), W / 2, H / 2)
+        d = ImageDraw.Draw(dst, "RGBA"); d.rounded_rectangle((40, top, W - 40, bot), radius=36, fill=(0, 0, 0, int(110 * dk)))
+        hp = eout(prog(t, 0, .45)); paste(dst, hand_phone("map"), 560, lerp(1150, 870, hp), scale=lerp(.9, 1.12, hp), rot=lerp(-8, -3, hp))
+        stopwatch(dst, 230, top + 170, clamp((t - .3) / .8), a=ease(prog(t, .3, .3)))
+        paste(dst, pill("OJOS EN LA PANTALLA", 36, RED, WHITE), W / 2, bot - 60, alpha=ease(prog(t, .7, .3)), scale=eback(prog(t, .7, .35)))
+    elif mode == "blind":
+        d = ImageDraw.Draw(dst, "RGBA"); m = float(v.get("m", 14)); k = ease(prog(t, .3, 1.6))
+        # barra de distancia sobre la calzada: de los pies del coche hacia el horizonte
+        y0, y1 = dy - 20, hz + 40; yk = lerp(y0, y1 + (y0 - y1) * .25, k)
+        d.polygon([(vx - 300, y0), (vx + 300, y0), (vx + 300 * (yk - hz) / (y0 - hz) + 10, yk), (vx - 300 * (yk - hz) / (y0 - hz) - 10, yk)], fill=(255, 196, 0, 120))
+        d.line([(vx - 320 * (yk - hz) / (y0 - hz), yk), (vx + 320 * (yk - hz) / (y0 - hz), yk)], fill=YEL + (255,), width=10)
+        bl = .5 + .5 * math.sin(t * 5)  # "ojos cerrados": párpados que bajan
+        ea = ease(prog(t, .1, .4)); d.rectangle((40, top, W - 40, top + 120 * ea), fill=(0, 0, 0, 200)); 
+        paste(dst, text(f"{int(round(m * k))} m", 190, YEL, BLACK), W / 2, top + 170, scale=.8 + .2 * eback(prog(t, .2, .4)))
+        paste(dst, pill(v.get("tag", "A 50 KM/H · 1 SEGUNDO"), 38, WHITE, BLUE), W / 2, top + 300, alpha=ease(prog(t, .4, .3)))
+    elif mode == "holder":
+        hp = eback(prog(t, .1, .5)); hx, hy = 700, dy - 120
+        d = ImageDraw.Draw(dst, "RGBA")
+        d.rounded_rectangle((hx - 30, hy + 140, hx + 30, dy + 30), radius=14, fill=(40, 44, 52, 255))      # brazo del soporte
+        d.rounded_rectangle((hx - 150, hy - 220, hx + 150, hy + 160), radius=36, fill=(40, 44, 52, 255))  # pinza
+        paste(dst, phone_img("map", 230, 420), hx, hy - 30 - (1 - hp) * 80, alpha=ease(prog(t, .1, .25)))
+        paste(dst, icon_check(130), hx + 150, hy - 220, scale=eback(prog(t, .6, .35)))
+        paste(dst, hand_phone("notif"), 270, 1010, scale=.55, alpha=.85 * ease(prog(t, .3, .3)), rot=-10)
+        paste(dst, icon_x(110), 360, 860, scale=eback(prog(t, .8, .35)))
+        paste(dst, pill(v.get("tag", "EN EL SOPORTE, SIN TOCARLO"), 40, YEL, NAVY), W / 2, top + 70, scale=eback(prog(t, .4, .35)), alpha=ease(prog(t, .4, .3)))
+
+# --- agente de tráfico (QUIÉN PASA PRIMERO parte 6, bloque señales: orden de preferencia, art. 133 RGC) ---
+@lru_cache(maxsize=4)
+def agent_top(s=1.0):
+    w, h = int(300 * s), int(130 * s); im = ss(w, h); d = ImageDraw.Draw(im); X, Y = w * 2, h * 2; cx, cy = X / 2, Y / 2
+    d.rounded_rectangle((X * .05, cy - Y * .1, X * .95, cy + Y * .1), radius=int(Y * .1), fill=(255, 212, 0))   # brazos (manga de chaleco)
+    for sx in (X * .03, X * .97): d.ellipse((sx - Y * .14, cy - Y * .14, sx + Y * .14, cy + Y * .14), fill=WHITE)  # guantes
+    d.ellipse((cx - X * .2, cy - Y * .36, cx + X * .2, cy + Y * .36), fill=(255, 212, 0))                       # hombros con chaleco
+    d.line([(cx - X * .18, cy - Y * .12), (cx + X * .18, cy - Y * .12)], fill=(210, 214, 222), width=int(Y * .06))
+    d.ellipse((cx - Y * .24, cy - Y * .24, cx + Y * .24, cy + Y * .24), fill=(20, 34, 70))                      # gorra
+    d.ellipse((cx - Y * .12, cy - Y * .12, cx + Y * .12, cy + Y * .12), fill=WHITE)
+    im = down(im); sh = Image.new("RGBA", (w + 40, h + 40), (0, 0, 0, 0))
+    ImageDraw.Draw(sh).ellipse((20 + w * .3, 30, 20 + w * .7, 26 + h), fill=(0, 0, 0, 120)); sh = sh.filter(ImageFilter.GaussianBlur(10))
+    sh.alpha_composite(im, (20, 20)); return sh
+
+def agent_front(dst, cx, cy, arm=1.0, sc=1.0, a=1.0):
+    """agente de frente (pies en cy + 300*sc). arm: 0 brazos abajo, 1 extendidos en horizontal."""
+    w, h = 900, 760; lay = ss(w, h); d = ImageDraw.Draw(lay); X, Y = w * 2, h * 2; c = X / 2; S = 2
+    def R(x0, y0, x1, y1, col, r=20): d.rounded_rectangle((c + x0 * S, y0 * S, c + x1 * S, y1 * S), radius=r * S, fill=col)
+    R(-70, 470, -12, 740, (20, 34, 70), 18); R(12, 470, 70, 740, (20, 34, 70), 18)               # piernas
+    R(-90, 720, -6, 756, (14, 14, 18), 14); R(6, 720, 90, 756, (14, 14, 18), 14)                   # botas
+    for sx in (-1, 1):  # brazos
+        ang = math.radians(lerp(-80, 0, arm)) ; L = 250; x0, y0 = sx * 92, 260
+        x1, y1 = x0 + sx * L * math.cos(ang), y0 - L * math.sin(ang) * -1
+        d.line([(c + x0 * S, y0 * S), (c + x1 * S, y1 * S)], fill=(255, 212, 0), width=64 * S)
+        d.ellipse((c + x1 * S - 40 * S, y1 * S - 40 * S, c + x1 * S + 40 * S, y1 * S + 40 * S), fill=WHITE)
+    R(-105, 230, 105, 500, (255, 212, 0), 50)                                                       # chaleco
+    for yy in (330, 420): R(-105, yy, 105, yy + 26, (210, 214, 222), 6)                              # bandas reflectantes
+    R(-24, 230, 24, 500, (20, 34, 70), 10)
+    d.ellipse((c - 70 * S, 90 * S, c + 70 * S, 240 * S), fill=SKIN)                                 # cara
+    d.ellipse((c - 34 * S, 150 * S, c - 16 * S, 168 * S), fill=(30, 30, 40)); d.ellipse((c + 16 * S, 150 * S, c + 34 * S, 168 * S), fill=(30, 30, 40))
+    d.arc((c - 30 * S, 170 * S, c + 30 * S, 210 * S), 20, 160, fill=(120, 60, 50), width=6 * S)
+    R(-88, 70, 88, 130, (20, 34, 70), 26); R(-100, 118, 100, 140, (14, 24, 50), 10)                  # gorra
+    R(-88, 96, 88, 116, (255, 212, 0), 4)
+    paste(dst, down(lay), cx, cy, scale=sc, alpha=a)
+
+SEM_POS = {1: (W / 2 + RW + 190, CY + RW + 120), 2: (W / 2 + RW + 40, CY - RW - 90)}
+def cruce_extras(dst, t, v):
+    cx, cy = W / 2, CY
+    if v.get("agent_zones"):  # zonas: se paran (N y S, rojo) / pasan (E y O, verde)
+        lay = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(lay, "RGBA"); pa = ease(prog(t, .3, .5))
+        top, bot = VZ[0] + 10, VZ[1] + 20; a = int(110 * pa * (.8 + .2 * math.sin(t * 6)))
+        d.rectangle((cx - RW, top, cx + RW, cy - RW), fill=(239, 68, 68, a)); d.rectangle((cx - RW, cy + RW, cx + RW, bot), fill=(239, 68, 68, a))
+        d.rectangle((40, cy - RW, cx - RW, cy + RW), fill=(34, 197, 94, a)); d.rectangle((cx + RW, cy - RW, W - 40, cy + RW), fill=(34, 197, 94, a))
+        dst.alpha_composite(lay)
+        for (x, y, lab, col) in ((cx, top + 70, "ALTO", RED), (cx, bot - 40, "ALTO", RED), (220, cy, "PASAN", GREEN), (W - 240, cy, "PASAN", GREEN)):
+            paste(dst, pill(lab, 38, col, WHITE), x, y, scale=eback(prog(t, .5, .35)), alpha=ease(prog(t, .5, .3)))
+    for n, st in v.get("lights", {}).items():  # semáforo de cada brazo (r = rojo, g = verde)
+        x, y = SEM_POS[int(n)]; im = semaphore(1 if st == "r" else 3).resize((72, 188), Image.LANCZOS)
+        paste(dst, im, x, y, scale=eback(prog(t, .1, .35)) if not v.get("still") else 1)
+        if v.get("light_x") == int(n): paste(dst, icon_x(70), x + 40, y + 60, scale=eback(prog(t, .5, .3)))
+    if v.get("agent"):
+        ax, ay = cx, cy + 62
+        if v.get("agent_hl"):
+            d = ImageDraw.Draw(dst, "RGBA"); r = 175 + 12 * math.sin(t * 6); a = int(255 * ease(prog(t, .2, .3)))
+            d.ellipse((ax - r, ay - r * .62, ax + r, ay + r * .62), outline=YEL + (a,), width=10)
+        paste(dst, agent_top(0.95), ax, ay, scale=1 + (.06 * math.sin(t * 5) if v.get("agent_hl") else 0))
+
+def vis_agente(dst, t, v, i):
+    p = eback(prog(t, 0, .45)); arm = ease(prog(t, .2, .6)) if v.get("raise", True) else 1.0
+    c = card(900, 860, fill=(232, 238, 248, 255), r=46); paste(dst, c, W / 2, CY + 20, alpha=ease(prog(t, 0, .25)), scale=.9 + .1 * p)
+    d = ImageDraw.Draw(dst, "RGBA"); d.rectangle((W / 2 - 440, CY + 280, W / 2 + 440, CY + 420), fill=(56, 60, 70, 255))
+    for k in range(6): d.rectangle((W / 2 - 420 + k * 150, CY + 342, W / 2 - 340 + k * 150, CY + 356), fill=(255, 255, 255, 230))
+    agent_front(dst, W / 2, CY + 50, arm, sc=.95)
+    if v.get("sem"):
+        im = semaphore(3 if v["sem"] == "g" else 1).resize((96, 250), Image.LANCZOS); paste(dst, im, W / 2 + 350, CY - 150, scale=eback(prog(t, .3, .35)))
+        if v.get("sem_x"): paste(dst, icon_x(90), W / 2 + 380, CY - 70, scale=eback(prog(t, .8, .35)))
+    if v.get("arrows"):  # flechas: ALTO de frente / PASAN por los lados
+        a = int(255 * ease(prog(t, .7, .3)))
+        for sx in (-1, 1): arrow(d, W / 2 + sx * 400, CY - 330, sx, a)
+        paste(dst, pill("PASAN", 34, GREEN, WHITE), W / 2 - 330, CY - 400, alpha=a / 255); paste(dst, pill("PASAN", 34, GREEN, WHITE), W / 2 + 330, CY - 400, alpha=a / 255)
+        paste(dst, pill("ALTO: DE FRENTE Y DE ESPALDAS", 36, RED, WHITE), W / 2, CY + 470, scale=eback(prog(t, 1.0, .35)), alpha=ease(prog(t, 1.0, .3)))
+    if v.get("tag"): paste(dst, pill(v["tag"], 40, YEL, NAVY), W / 2, CY + 470, scale=eback(prog(t, .5, .35)), alpha=ease(prog(t, .5, .3)))
+
+@lru_cache(maxsize=8)
+def cone_icon(s=120):
+    im = ss(s, s); d = ImageDraw.Draw(im); S = s * 2
+    d.polygon([(S * .5, S * .06), (S * .78, S * .86), (S * .22, S * .86)], fill=(255, 110, 20))
+    d.polygon([(S * .4, S * .36), (S * .6, S * .36), (S * .66, S * .54), (S * .34, S * .54)], fill=WHITE)
+    d.rounded_rectangle((S * .1, S * .84, S * .9, S * .96), radius=10, fill=(230, 90, 10)); return down(im)
+
+@lru_cache(maxsize=8)
+def marks_icon(s=120):
+    im = ss(s, s); d = ImageDraw.Draw(im); S = s * 2
+    d.rounded_rectangle((0, S * .1, S, S * .9), radius=20, fill=(56, 60, 70))
+    for k in range(3): d.rectangle((S * (.08 + k * .32), S * .44, S * (.3 + k * .32), S * .56), fill=WHITE)
+    return down(im)
+
+def vis_jerarquia(dst, t, v, i):
+    rows = [("AGENTE", "agent"), ("SEÑALES PROVISIONALES", "cone"), ("SEMÁFORO", "sem"), ("SEÑAL VERTICAL", "sign"), ("MARCAS VIALES", "marks")]
+    top = VZ[0] + 60; rh = 150; d = ImageDraw.Draw(dst, "RGBA"); at = v.get("at", [0, .9, 1.8, 2.5, 3.0])
+    for k, (lab, ic) in enumerate(rows):
+        p = prog(t, at[k], .35)
+        if p <= 0: continue
+        y = top + k * rh + 70; wdt = 880 - k * 60; hl = k == 0
+        c = card(wdt, 120, fill=(255, 212, 0, 255) if hl else ((255, 255, 255, 245) if k != 2 else (226, 236, 255, 255)), r=34)
+        paste(dst, c, W / 2, y, scale=.85 + .15 * eback(p), alpha=ease(p * 2))
+        x0 = W / 2 - wdt / 2 + 70
+        paste(dst, num_badge(k + 1, 80, NAVY if hl else BLUE, WHITE if hl else WHITE), x0, y, alpha=ease(p * 2))
+        if ic == "agent": im = agent_top(.6)
+        elif ic == "cone": im = cone_icon(96)
+        elif ic == "sem": im = semaphore(3).resize((44, 116), Image.LANCZOS)
+        elif ic == "sign":
+            im = ss(92, 92); dd = ImageDraw.Draw(im); dd.ellipse((0, 0, 183, 183), fill=(220, 30, 40)); dd.ellipse((22, 22, 161, 161), fill=WHITE)
+            ff = F(BLACK, 76); bb = ff.getbbox("50"); dd.text((92 - (bb[0] + bb[2]) / 2, 92 - (bb[1] + bb[3]) / 2), "50", font=ff, fill=DARK); im = down(im)
+        else: im = marks_icon(96)
+        paste(dst, im, x0 + 110, y, alpha=ease(p * 2))
+        s = 46
+        while F(BLACK, s).getlength(lab) > wdt - 300: s -= 2
+        paste(dst, text(lab, s, NAVY if hl else DARK, BLACK, shadow=False), x0 + 180 + F(BLACK, s).getlength(lab) / 2, y, alpha=ease(p * 2))
+    if v.get("tag"): paste(dst, pill(v["tag"], 38, WHITE, BLUE), W / 2, VZ[1] - 20, alpha=ease(prog(t, .4, .3)))
+
 VIS = {k[4:]: v for k, v in globals().items() if k.startswith("vis_")}
 
 def frame(n):
@@ -2210,6 +2415,9 @@ def sfx_wave(kind, sr=24000):
             f = 660 if k % 2 == 0 else 880; tt = np.arange(int(sr * .32)) / sr
             seg.append((np.sin(2 * np.pi * f * tt) * .07 * np.minimum(1, tt * 40) * np.minimum(1, (.32 - tt) * 40)).astype(np.float32))
         return np.concatenate(seg)
+    if kind == "notif":  # aviso de mensaje del móvil (dos notas cortas) + vibración
+        t = np.arange(int(sr * .3)) / sr; vib = (np.sign(np.sin(2 * np.pi * 90 * t)) * .05 * np.exp(-t * 6)).astype(np.float32)
+        return np.concatenate([tone(1318, .09, sr, .2, 10), tone(1760, .2, sr, .2, 9), vib])
     if kind == "whoosh":
         n = int(sr * .3); x = np.random.default_rng(1).standard_normal(n).astype(np.float32)
         x = np.convolve(x, np.ones(30) / 30, mode="same"); env = np.sin(np.linspace(0, np.pi, n)) ** 2; return (x * env * .12).astype(np.float32)
