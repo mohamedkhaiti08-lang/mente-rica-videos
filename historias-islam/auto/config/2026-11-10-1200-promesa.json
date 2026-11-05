@@ -1,0 +1,251 @@
+{
+ "tail": 1.3,
+ "cx": 470,
+ "cap_maxw": 800,
+ "title_maxw": 820,
+ "instant": true,
+ "step_gap": 290,
+ "label": "AHMED VS BILAL",
+ "times": "2026-11-10-1200-promesa.tiempos.json",
+ "scenes": [
+  {
+   "tint": "red",
+   "hi": [
+    "mejor.",
+    "tirado?"
+   ],
+   "title": [
+    "¿Le dejas",
+    "tirado?"
+   ],
+   "vis": {
+    "type": "choice",
+    "opts": [
+     [
+      "🏖️",
+      "ME VOY",
+      "red"
+     ],
+     [
+      "🤝",
+      "CUMPLO",
+      "gold"
+     ]
+    ],
+    "y": 900
+   },
+   "cap": "Le prometiste ayuda a tu amigo… y te sale un plan mucho mejor. ¿Le dejas tirado?"
+  },
+  {
+   "tint": "night",
+   "hi": [
+    "Mudanza,",
+    "ascensor."
+   ],
+   "title": [
+    "Sábado, 9:00"
+   ],
+   "vis": {
+    "type": "steps",
+    "items": [
+     [
+      "📦",
+      "MUDANZA"
+     ],
+     [
+      "🛋️",
+      "UN SOFÁ"
+     ],
+     [
+      "🪜",
+      "4º SIN ASCENSOR"
+     ]
+    ],
+    "y": 920
+   },
+   "cap": "Sábado por la mañana. Mudanza, un cuarto piso, y sin ascensor."
+  },
+  {
+   "tint": "gold",
+   "hi": [
+    "barbacoa!",
+    "¡Vente!»"
+   ],
+   "title": [
+    "El grupo",
+    "te escribe…"
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "📱",
+    "orbit": [
+     "⚽",
+     "🍖",
+     "🔥"
+    ],
+    "y": 900
+   },
+   "cap": "Y el grupo te escribe: «¡Hoy partido y barbacoa! ¡Vente!»"
+  },
+  {
+   "tint": "red",
+   "hi": [
+    "surgido",
+    "va."
+   ],
+   "title": [
+    "Ahmed",
+    "se escaquea"
+   ],
+   "vis": {
+    "type": "duo",
+    "focus": "ahmed",
+    "ahmed": "point",
+    "bilal": "down",
+    "ab": [
+     "Tío, me ha",
+     "surgido algo"
+    ],
+    "am": "📱",
+    "bat": 0.6,
+    "mat": 1.0,
+    "y": 960
+   },
+   "cap": "Ahmed le manda un mensaje: «Tío, me ha surgido algo.» Y se va."
+  },
+  {
+   "tint": "green",
+   "hi": [
+    "apetece",
+    "promesa.»"
+   ],
+   "title": [
+    "Bilal",
+    "cumple"
+   ],
+   "vis": {
+    "type": "duo",
+    "focus": "bilal",
+    "ahmed": "point",
+    "bilal": "calm",
+    "bb": [
+     "Una promesa",
+     "es una promesa."
+    ],
+    "bat": 0.8,
+    "y": 960
+   },
+   "cap": "A Bilal también le apetece ir. Pero dice: «Una promesa es una promesa.»"
+  },
+  {
+   "tint": "gold",
+   "hi": [
+    "único",
+    "venido.»"
+   ],
+   "title": [
+    "«Eres el único",
+    "que ha venido»"
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "🥹",
+    "orbit": [
+     "📦",
+     "🤝",
+     "✨"
+    ],
+    "y": 900
+   },
+   "cap": "Sube cajas toda la mañana. Y su amigo le dice: «Eres el único que ha venido.»"
+  },
+  {
+   "tint": "night",
+   "hi": [
+    "hipócrita",
+    "tres.»"
+   ],
+   "title": [
+    "3 signos del",
+    "hipócrita"
+   ],
+   "vis": {
+    "type": "counter",
+    "seq": [
+     "3"
+    ],
+    "sub": "SIGNOS",
+    "e": "⚠️",
+    "y": 900
+   },
+   "cap": "El Profeta, la paz sea con él, dijo: «Los signos del hipócrita son tres.»"
+  },
+  {
+   "tint": "gold",
+   "hi": [
+    "miente.",
+    "falta."
+   ],
+   "vis": {
+    "type": "quote",
+    "lines": [
+     "«Cuando habla, miente;",
+     "cuando promete, falta;",
+     "y si le confías algo,",
+     "traiciona»"
+    ],
+    "src": "SAHIH AL-BUJARI 33 · HADIZ",
+    "size": 54,
+    "y": 860
+   },
+   "cap": "«Cuando habla, miente. Cuando promete, falta. Y si le confías algo, traiciona.» Sahih al-Bujari 33."
+  },
+  {
+   "tint": "green",
+   "hi": [
+    "repite.",
+    "olvida."
+   ],
+   "title": [
+    "Un amigo",
+    "no se olvida"
+   ],
+   "vis": {
+    "type": "choice",
+    "opts": [
+     [
+      "🍖",
+      "EL PLAN",
+      "red"
+     ],
+     [
+      "🤝",
+      "TU AMIGO",
+      "gold"
+     ]
+    ],
+    "pick": 1,
+    "y": 900
+   },
+   "cap": "Un plan se repite. Un amigo al que le fallas, no se olvida."
+  },
+  {
+   "tint": "green",
+   "hi": [
+    "Ahmed,",
+    "Bilal?"
+   ],
+   "title": [
+    "¿Y tú?"
+   ],
+   "vis": {
+    "type": "duo",
+    "focus": "both",
+    "ahmed": "point",
+    "bilal": "calm",
+    "y": 940
+   },
+   "cap": "¿Y tú? ¿Eres más Ahmed, o más Bilal? Sé sincero, te leo abajo."
+  }
+ ]
+}

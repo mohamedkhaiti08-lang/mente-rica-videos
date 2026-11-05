@@ -1,0 +1,228 @@
+{
+ "tail": 1.3,
+ "cx": 470,
+ "cap_maxw": 800,
+ "title_maxw": 820,
+ "instant": true,
+ "step_gap": 290,
+ "label": "CURIOSIDAD",
+ "times": "2026-11-10-1800-fatiha.tiempos.json",
+ "scenes": [
+  {
+   "tint": "gold",
+   "hi": [
+    "Fátiha…",
+    "contestando."
+   ],
+   "title": [
+    "Allah te está",
+    "contestando"
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "🤲",
+    "orbit": [
+     "✨",
+     "💬",
+     "🌙"
+    ],
+    "y": 900
+   },
+   "cap": "Cada vez que rezas Al-Fátiha… Allah te está contestando. ¿Lo sabías?"
+  },
+  {
+   "tint": "night",
+   "hi": [
+    "diecisiete",
+    "esto."
+   ],
+   "vis": {
+    "type": "counter",
+    "seq": [
+     "1",
+     "5",
+     "10",
+     "17"
+    ],
+    "sub": "VECES AL DÍA",
+    "e": "🕌",
+    "y": 880
+   },
+   "cap": "La dices diecisiete veces al día… y casi nadie sabe esto."
+  },
+  {
+   "tint": "green",
+   "hi": [
+    "dividido",
+    "siervo.»"
+   ],
+   "vis": {
+    "type": "quote",
+    "lines": [
+     "«He dividido",
+     "la oración entre Mí",
+     "y Mi siervo»"
+    ],
+    "src": "SAHIH MUSLIM 395 · HADIZ QUDSI",
+    "size": 58,
+    "y": 860
+   },
+   "cap": "El Profeta, la paz sea con él, contó que Allah dice: «He dividido la oración entre Mí y Mi siervo.»"
+  },
+  {
+   "tint": "gold",
+   "hi": [
+    "Al-hamdu",
+    "alabado.»"
+   ],
+   "title": [
+    "Al-hamdu lillahi",
+    "rabbil-alamin"
+   ],
+   "vis": {
+    "type": "big",
+    "words": [
+     "«ME HA",
+     "ALABADO»"
+    ],
+    "size": 112,
+    "gap": 160,
+    "y": 900,
+    "e": "💬"
+   },
+   "cap": "Tú dices: «Al-hamdu lillahi rabbil-alamin». Y Allah responde: «Mi siervo Me ha alabado.»"
+  },
+  {
+   "tint": "green",
+   "hi": [
+    "Ar-Rahman",
+    "ensalzado.»"
+   ],
+   "title": [
+    "Ar-Rahman",
+    "ar-Rahim"
+   ],
+   "vis": {
+    "type": "big",
+    "words": [
+     "«ME HA",
+     "ENSALZADO»"
+    ],
+    "size": 98,
+    "gap": 160,
+    "y": 900,
+    "e": "✨"
+   },
+   "cap": "Dices: «Ar-Rahman ar-Rahim». Y Él responde: «Mi siervo Me ha ensalzado.»"
+  },
+  {
+   "tint": "night",
+   "hi": [
+    "Maliki",
+    "glorificado.»"
+   ],
+   "title": [
+    "Maliki",
+    "yawmid-din"
+   ],
+   "vis": {
+    "type": "big",
+    "words": [
+     "«ME HA",
+     "GLORIFICADO»"
+    ],
+    "size": 84,
+    "gap": 160,
+    "y": 900,
+    "e": "👑"
+   },
+   "cap": "Dices: «Maliki yawmid-din». Y Él responde: «Mi siervo Me ha glorificado.»"
+  },
+  {
+   "tint": "gold",
+   "hi": [
+    "Iyyaka",
+    "nasta'in…»"
+   ],
+   "title": [
+    "Iyyaka na'budu…"
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "🤲",
+    "orbit": [
+     "🌙",
+     "✨",
+     "🤍"
+    ],
+    "y": 900
+   },
+   "cap": "Y cuando dices: «Iyyaka na'budu wa iyyaka nasta'in…»"
+  },
+  {
+   "tint": "green",
+   "hi": [
+    "tendrá",
+    "pida.»"
+   ],
+   "vis": {
+    "type": "quote",
+    "lines": [
+     "«Mi siervo",
+     "tendrá lo",
+     "que pida»"
+    ],
+    "src": "SAHIH MUSLIM 395 · HADIZ",
+    "size": 64,
+    "y": 860
+   },
+   "cap": "Él responde: «Mi siervo tendrá lo que pida.» Sahih Muslim 395."
+  },
+  {
+   "tint": "red",
+   "hi": [
+    "Diecisiete",
+    "deprisa?"
+   ],
+   "title": [
+    "¿La rezabas",
+    "deprisa?"
+   ],
+   "vis": {
+    "type": "choice",
+    "opts": [
+     [
+      "⚡",
+      "DEPRISA",
+      "red"
+     ],
+     [
+      "🤍",
+      "CON CALMA",
+      "gold"
+     ]
+    ],
+    "y": 900
+   },
+   "cap": "Diecisiete charlas al día con Allah… ¿y tú la rezabas deprisa?"
+  },
+  {
+   "tint": "night",
+   "hi": [
+    "Guárdalo.",
+    "contestando."
+   ],
+   "title": [
+    "Guárdalo"
+   ],
+   "vis": {
+    "type": "cta",
+    "word": "GUÁRDALO",
+    "size": 120,
+    "e": "🔖",
+    "y": 900
+   },
+   "cap": "Guárdalo. Y cuando reces, recuerda: Allah te está contestando."
+  }
+ ]
+}
