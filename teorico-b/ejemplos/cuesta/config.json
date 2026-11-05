@@ -1,0 +1,19 @@
+{"label": "¿QUIÉN PASA PRIMERO? · PARTE 7", "times": "tiempos.json", "voice": "voz.wav", "tail": 1.0,
+ "sfx": [{"t": 5.6, "type": "buzz"}, {"t": 11.55, "type": "beep"}, {"t": 12.45, "type": "beep"}, {"t": 13.35, "type": "beep"}, {"t": 14.11, "type": "ding"}, {"t": 22.6, "type": "buzz"}],
+ "scenes": [
+  {"cap": "Parte 7. Carretera de montaña: el 1 baja, y el 2 sube. ¿Quién pasa primero?", "hi": ["baja,", "sube.", "primero?"],
+   "vis": {"type": "cuesta", "mode": "side", "tag": "¿1 O 2?"}},
+  {"cap": "Es un tramo estrecho, no caben los dos, y no hay ninguna señal.", "hi": ["estrecho,", "señal."],
+   "vis": {"type": "cuesta", "mode": "side", "narrow": true, "nosigns": true, "tag": "SOLO CABE UNO", "tag_bottom": true}},
+  {"cap": "Escribe 1 o 2 en comentarios. Tienes 3 segundos.", "hi": ["1", "2", "3"],
+   "vis": {"type": "cuesta", "mode": "side", "narrow": true, "still": true, "countdown": [3.48, 4.38, 5.28], "tag": "¿1 O 2?"}},
+  {"cap": "¡Pasa el 2! En una cuesta estrecha, tiene preferencia el que sube.", "hi": ["2!", "sube."],
+   "vis": {"type": "cuesta", "mode": "side", "narrow": true, "move": [0.3, 1.8], "rank": true, "rank_at": 0.4, "tag": "PREFERENCIA: EL QUE SUBE", "tag_bottom": true}},
+  {"cap": "Y es gran pendiente a partir del 7 %.", "hi": ["gran", "pendiente", "7"],
+   "vis": {"type": "cuesta", "mode": "grade", "tag": "GRAN PENDIENTE"}},
+  {"cap": "Pero si el que sube puede llegar antes a un apartadero, se aparta él.", "hi": ["apartadero,", "él."],
+   "vis": {"type": "cuesta", "mode": "bay"}},
+  {"cap": "Sin cuesta, en un estrechamiento, pasa el que entró primero.", "hi": ["Sin", "cuesta,", "primero."],
+   "vis": {"type": "cuesta", "mode": "flat", "tag": "SIN CUESTA: EL QUE ENTRÓ PRIMERO"}},
+  {"cap": "¿Acertaste? Comenta, y te hago la parte 8.", "hi": ["Comenta,", "8."], "vis": {"type": "cta", "big": "¿Acertaste?", "small": "Comenta 1 o 2 · ¿Parte 8?"}}
+ ]}

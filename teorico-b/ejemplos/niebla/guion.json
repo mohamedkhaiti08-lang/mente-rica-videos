@@ -1,0 +1,17 @@
+{
+ "speed": 1.12,
+ "pause": 0.24,
+ "gaps": {
+  "3": 2.6
+ },
+ "lines": [
+  "Si fallas esta, no estás listo para la niebla.",
+  "Hay niebla, pero no es espesa. Ves bien al de delante.",
+  "¿Enciendes la antiniebla trasera? A, siempre que haya niebla. B, solo si es espesa. C, solo de noche.",
+  "Escribe tu letra en comentarios. Tienes tres segundos.",
+  "¡Es la B! La trasera, solo cuando la niebla es espesa.",
+  "O con lluvia muy intensa, nevada fuerte, o mucho polvo o humo.",
+  "La delantera, en cambio, también vale en vías estrechas con muchas curvas.",
+  "¿Acertaste? Guárdalo para el día del examen."
+ ]
+}

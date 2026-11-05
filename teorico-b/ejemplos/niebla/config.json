@@ -1,0 +1,19 @@
+{"label": "¿APROBARÍAS?", "times": "tiempos.json", "voice": "voz.wav", "tail": 1.0,
+ "sfx": [{"t": 1.0, "type": "buzz"}, {"t": 14.5, "type": "beep"}, {"t": 15.4, "type": "beep"}, {"t": 16.3, "type": "beep"}, {"t": 17.14, "type": "ding"}],
+ "scenes": [
+  {"cap": "Si fallas esta, no estás listo para la niebla.", "hi": ["fallas", "niebla."],
+   "vis": {"type": "niebla", "mode": "hook", "lines": ["SI FALLAS ESTA,", "SUSPENDES"], "cols": [[255, 255, 255], [255, 196, 0]]}},
+  {"cap": "Hay niebla, pero no es espesa. Ves bien al de delante.", "hi": ["no", "espesa."],
+   "vis": {"type": "niebla", "mode": "light", "lines": ["NIEBLA,", "PERO NO ESPESA"], "cols": [[255, 255, 255], [255, 196, 0]]}},
+  {"cap": "¿Enciendes la antiniebla trasera?", "hi": ["antiniebla", "trasera?"],
+   "vis": {"type": "quiz", "q": "Hay niebla, pero no es espesa. ¿Enciendes la antiniebla trasera?", "opts": ["Sí, siempre que haya niebla", "No, solo si es espesa", "Sí, pero solo de noche"], "correct": 1, "opt_at": [0.33, 0.6, 0.85]}},
+  {"cap": "Escribe tu letra en comentarios. Tienes 3 segundos.", "hi": ["letra", "3"],
+   "vis": {"type": "countdown", "quiz_scene": 2, "at": [3.18, 4.08, 4.98]}},
+  {"cap": "¡Es la B! La trasera, solo cuando la niebla es espesa.", "hi": ["B!", "espesa."],
+   "vis": {"type": "reveal", "quiz_scene": 2}},
+  {"cap": "O con lluvia muy intensa, nevada fuerte, o mucho polvo o humo.", "hi": ["lluvia", "nevada", "humo."],
+   "vis": {"type": "niebla", "mode": "list", "at": [0.0, 0.7, 1.5, 2.3], "tag": "ART. 106 DEL REGLAMENTO DE CIRCULACIÓN"}},
+  {"cap": "La delantera, en cambio, también vale en vías estrechas con muchas curvas.", "hi": ["delantera,", "curvas."],
+   "vis": {"type": "niebla", "mode": "front", "tag": ["ANTINIEBLA DELANTERA", "TAMBIÉN EN CURVAS ESTRECHAS"]}},
+  {"cap": "¿Acertaste? Guárdalo para el día del examen.", "hi": ["Guárdalo"], "vis": {"type": "save", "big": "GUÁRDALO", "small": "trasera = solo niebla espesa"}}
+ ]}

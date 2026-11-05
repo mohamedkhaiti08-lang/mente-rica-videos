@@ -29,6 +29,10 @@
 #     "lights": {"1": "g", "2": "r"} (semáforo de cada brazo) y "light_x": n; agente (agente de frente que extiende los brazos: sem, sem_x, arrows, tag);
 #   jerarquia (orden de preferencia de las señales, art. 133 RGC: 5 filas que aparecen en "at"); puntos admite "tag_red".
 #   giro (cruce con coche 1 que gira a la derecha y peatón 2 que cruza sin paso de cebra: car, ped, nozebra, both, rank con "P").
+#   niebla (carretera convencional con niebla en 1ª persona: hook = coche con antiniebla trasera | light = niebla no espesa con testigo "?" |
+#     list = 4 tarjetas niebla espesa / lluvia muy intensa / fuerte nevada / polvo o humo | front = curvas estrechas con antinieblas delanteras).
+#   cuesta (carretera de montaña estrecha: side = vista lateral con el 2 que sube y el 1 que baja, narrow, nosigns, countdown, move, rank |
+#     grade = triángulo 100 m / 7 m (gran pendiente ≥ 7 %) | bay = desde arriba, el que sube se mete en el apartadero | flat = llano con obras, pasa el que entró primero).
 import math, json, sys, os, subprocess
 from functools import lru_cache
 from multiprocessing import Pool
@@ -2376,6 +2380,359 @@ def vis_jerarquia(dst, t, v, i):
         while F(BLACK, s).getlength(lab) > wdt - 300: s -= 2
         paste(dst, text(lab, s, NAVY if hl else DARK, BLACK, shadow=False), x0 + 180 + F(BLACK, s).getlength(lab) / 2, y, alpha=ease(p * 2))
     if v.get("tag"): paste(dst, pill(v["tag"], 38, WHITE, BLUE), W / 2, VZ[1] - 20, alpha=ease(prog(t, .4, .3)))
+
+# --- niebla en carretera convencional en 1ª persona (antiniebla trasera / delantera, bloque conducción eficiente y clima) ---
+# vis: {"type": "niebla", "mode": "hook" | "light" | "list" | "front", "lines": [...], "cols": [...], "tag": "...", "dens": 0..1}
+def fog_road(dst, t, dens=.8, curve=0.0, flow=1.0):
+    lay = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(lay, "RGBA")
+    top, bot = VZ[0] + 10, VZ[1] + 20; hz = top + 300; vx = W / 2
+    for y in range(top, hz):  # cielo gris
+        k = (y - top) / (hz - top); d.line([(40, y), (W - 40, y)], fill=mix((120, 130, 146), (196, 202, 210), k) + (255,))
+    d.rectangle((40, hz, W - 40, bot), fill=(70, 86, 66, 255))  # campo
+    def cxu(u): return vx + curve * 520 * (1 - u) ** 2.2   # eje de la carretera (curva hacia el horizonte)
+    def hw(u): return 18 + 560 * u                           # media anchura
+    U = lambda u: hz + (bot - hz) * u
+    us = [k / 40 for k in range(41)]
+    left = [(cxu(u) - hw(u), U(u)) for u in us]; right = [(cxu(u) + hw(u), U(u)) for u in reversed(us)]
+    d.polygon(left + right, fill=(58, 62, 72, 255))
+    for side in (-1, 1):  # líneas de borde
+        d.line([(cxu(u) + side * hw(u) * .93, U(u)) for u in us], fill=(235, 235, 235, 255), width=8, joint="curve")
+    for k in range(9):  # línea central discontinua que avanza
+        z = ((k / 9) + t * .5 * flow) % 1.0; z2 = min(1, z + .045)
+        u1, u2 = z ** 2, z2 ** 2
+        d.line([(cxu(u1), U(u1)), (cxu(u2), U(u2))], fill=(255, 255, 255, 240), width=max(3, int(16 * u2)))
+    for k in range(8):  # hitos de arista con reflectante que pasan
+        z = ((k / 8) + t * .5 * flow) % 1.0; u = z ** 2
+        for side in (-1, 1):
+            x = cxu(u) + side * hw(u) * 1.12; y = U(u); hh = 8 + 120 * u; ww = 3 + 22 * u
+            d.rectangle((x - ww / 2, y - hh, x + ww / 2, y), fill=(236, 236, 236, 255))
+            d.rectangle((x - ww / 2, y - hh * .82, x + ww / 2, y - hh * .68), fill=(255, 150, 0, 255) if side > 0 else (230, 40, 40, 255))
+    for k in range(7):  # árboles a los lados (siluetas)
+        z = ((k / 7 + .07) + t * .5 * flow) % 1.0; u = z ** 2
+        for side in (-1, 1):
+            x = cxu(u) + side * (hw(u) * 1.5 + 40 + 200 * u); y = U(u); r = 10 + 120 * u
+            d.rectangle((x - r * .12, y - r * 1.2, x + r * .12, y), fill=(52, 46, 40, 255))
+            d.ellipse((x - r, y - r * 2.6, x + r, y - r * .9), fill=(46, 70, 50, 255))
+    # niebla: más densa cerca del horizonte, con bancos que se mueven
+    fg = Image.new("RGBA", (W, H), (0, 0, 0, 0)); fd = ImageDraw.Draw(fg)
+    for y in range(top, bot, 6):
+        k = clamp((y - top) / (bot - top)); a = dens * (235 * (1 - k) ** 1.2 + 40)
+        fd.rectangle((40, y, W - 40, y + 6), fill=(214, 218, 224, int(clamp(a, 0, 245))))
+    for k in range(7):
+        yy = hz - 120 + k * 95 + 14 * math.sin(t * .8 + k); xx = ((t * 40 * (1 + k % 3) + k * 210) % (W + 600)) - 300
+        fd.ellipse((xx - 420, yy, xx + 420, yy + 110), fill=(226, 230, 236, int(120 * dens)))
+    lay.alpha_composite(fg.filter(ImageFilter.GaussianBlur(22)))
+    m = Image.new("L", (W, H), 0); ImageDraw.Draw(m).rounded_rectangle((40, top, W - 40, bot), radius=36, fill=255)
+    lay.putalpha(Image.fromarray(np.minimum(np.array(lay.split()[3]), np.array(m)))); dst.alpha_composite(lay)
+    return top, bot, hz, U, cxu
+
+@lru_cache(maxsize=8)
+def fog_icon(kind="rear", s=120, col=None):
+    """testigo del salpicadero: trasera (ámbar, luz hacia la derecha con rayas horizontales) | delantera (verde, hacia la izquierda, rayas inclinadas)"""
+    col = col or ((255, 170, 0) if kind == "rear" else (40, 200, 90))
+    im = ss(s, s); d = ImageDraw.Draw(im); S = s * 2; wdt = int(S * .07)
+    if kind == "rear":
+        d.chord((S * .06, S * .2, S * .58, S * .8), -90, 90, outline=col, width=wdt)
+        d.line([(S * .32, S * .2), (S * .32, S * .8)], fill=col, width=wdt)
+        for k in range(3): y = S * (.32 + k * .18); d.line([(S * .66, y), (S * .94, y)], fill=col, width=wdt)
+        wav = [(S * (.8 + .05 * math.sin(k * .7)), S * (.18 + k * .052)) for k in range(13)]
+    else:
+        d.chord((S * .42, S * .2, S * .94, S * .8), 90, 270, outline=col, width=wdt)
+        d.line([(S * .68, S * .2), (S * .68, S * .8)], fill=col, width=wdt)
+        for k in range(3): y = S * (.3 + k * .18); d.line([(S * .34, y), (S * .06, y + S * .1)], fill=col, width=wdt)
+        wav = [(S * (.2 + .05 * math.sin(k * .7)), S * (.18 + k * .052)) for k in range(13)]
+    d.line(wav, fill=col, width=int(wdt * .8), joint="curve")
+    return down(im)
+
+def fog_car(dst, t, U, cxu, u, rearfog=True, dens=.8):
+    y = U(u); x = cxu(u); sc = .12 + 1.0 * u; car = car_rear(560, (60, 66, 80))
+    paste(dst, car, x, y - car.height * sc / 2, scale=sc, alpha=1 - .55 * dens)
+    for sx in (-.36, .36):  # pilotos de posición
+        g = hazard(110).copy(); paste(dst, red_glow(80), x + sx * 560 * sc, y - car.height * sc * .5, scale=sc * 1.6, alpha=.85)
+    if rearfog:  # antiniebla trasera: una luz roja muy intensa a la izquierda del paragolpes
+        pk = .85 + .15 * math.sin(t * 9)
+        paste(dst, red_glow(220), x - .3 * 560 * sc, y - car.height * sc * .2, scale=sc * 2.2 * pk)
+
+@lru_cache(maxsize=4)
+def red_glow(s=200):
+    im = Image.new("RGBA", (s * 2, s * 2), (0, 0, 0, 0)); d = ImageDraw.Draw(im)
+    d.ellipse((s * .7, s * .85, s * 1.3, s * 1.15), fill=(255, 40, 40, 255))
+    g = im.filter(ImageFilter.GaussianBlur(s * .18)); g.alpha_composite(im.filter(ImageFilter.GaussianBlur(4))); return g
+
+def fog_dash(dst, t, top, bot, icon=None, ask=False, on=True):
+    lay = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(lay, "RGBA"); dy = bot - 130
+    d.rectangle((40, dy + 40, W - 40, bot), fill=(18, 20, 26, 255))
+    d.ellipse((-160, dy, W + 160, dy + 300), fill=(18, 20, 26, 255))
+    d.arc((W / 2 - 300, dy + 40, W / 2 + 300, dy + 640), 200, 340, fill=(36, 38, 46, 255), width=46)  # volante
+    m = Image.new("L", (W, H), 0); ImageDraw.Draw(m).rounded_rectangle((40, top, W - 40, bot), radius=36, fill=255)
+    lay.putalpha(Image.fromarray(np.minimum(np.array(lay.split()[3]), np.array(m)))); dst.alpha_composite(lay)
+    if icon:
+        blink = on and (int(t * 2.6) % 2 == 0 or not ask)
+        ic = fog_icon(icon, 110) if blink else fog_icon(icon, 110, (90, 80, 60))
+        paste(dst, card(190, 150, fill=(8, 10, 14, 255), r=28), W / 2 + 290, dy + 40)
+        paste(dst, ic, W / 2 + 290, dy + 40)
+        if ask: paste(dst, text("?", 110, YEL, BLACK), W / 2 + 420, dy + 20, scale=.9 + .1 * math.sin(t * 6))
+
+def vis_niebla(dst, t, v, i):
+    if i == 0: t = t + 0.6  # primer fotograma: niebla, coche y texto ya en pantalla
+    mode = v.get("mode", "hook"); dens = v.get("dens", {"hook": .85, "light": .35, "list": .9, "front": .45}.get(mode, .7))
+    curve = (.85 + .12 * math.sin(t * .9)) if mode == "front" else 0.0
+    top, bot, hz, U, cxu = fog_road(dst, t, dens, curve, flow=.7)
+    if mode in ("hook", "light"):
+        u = lerp(.22, .36, eout(prog(t, 0, 2.0))) if mode == "hook" else .5
+        fog_car(dst, t, U, cxu, u, rearfog=v.get("rearfog", mode == "hook"), dens=dens * (.6 if mode == "light" else 1))
+        fog_dash(dst, t, top, bot, icon="rear", ask=(mode == "light"))
+        lines = v.get("lines", [])
+        if lines: big_lines(dst, lines, t, VZ[0] + 80, [tuple(c) for c in v.get("cols", [])] or None, size=118)
+        if mode == "light":
+            paste(dst, pill("SE VE BIEN AL DE DELANTE", 38, WHITE, BLUE), W / 2, U(.5) - 300, scale=eback(prog(t, .9, .35)), alpha=ease(prog(t, .9, .3)))
+    elif mode == "list":
+        dark = Image.new("RGBA", (W, H), (0, 0, 0, 0)); ImageDraw.Draw(dark).rounded_rectangle((40, top, W - 40, bot), radius=36, fill=(6, 20, 43, 175)); dst.alpha_composite(dark)
+        hp = eback(prog(t, 0, .4))
+        paste(dst, card(820, 130, fill=(8, 10, 14, 250), r=34), W / 2, top + 95, scale=.8 + .2 * hp, alpha=ease(prog(t, 0, .25)))
+        paste(dst, fog_icon("rear", 96), W / 2 - 320, top + 95, alpha=ease(prog(t, 0, .25)))
+        paste(dst, text("TRASERA, SOLO CON:", 50, (255, 170, 0), BLACK, shadow=False), W / 2 + 50, top + 95, alpha=ease(prog(t, .1, .25)))
+        items = [("NIEBLA", "ESPESA", "fog"), ("LLUVIA", "MUY INTENSA", "rain"), ("NEVADA", "FUERTE", "snow"), ("POLVO O", "HUMO DENSO", "smoke")]
+        at = v.get("at", [0.2, 0.9, 1.6, 2.3])
+        for k, (l1, l2, ic) in enumerate(items):
+            p = eback(prog(t, at[k], .4)); a = ease(prog(t, at[k], .25)); cx = W / 2 - 195 + (k % 2) * 390; cy = top + 330 + (k // 2) * 330
+            if a < .02: continue
+            paste(dst, card(360, 300, fill=(255, 255, 255, 250), r=34), cx, cy + (1 - p) * 90, alpha=a)
+            paste(dst, weather_icon(ic, int(t * 6) % 3), cx, cy - 50 + (1 - p) * 90, alpha=a)
+            paste(dst, text(l1, 40, DARK, BLACK, shadow=False), cx, cy + 62 + (1 - p) * 90, alpha=a)
+            paste(dst, text(l2, 34, (200, 110, 0), XB, shadow=False), cx, cy + 106 + (1 - p) * 90, alpha=a)
+        if v.get("tag"): paste(dst, pill(v["tag"], 32, WHITE, BLUE), W / 2, bot - 60, alpha=ease(prog(t, 2.6, .3)))
+    elif mode == "front":
+        # haces de las antinieblas delanteras: anchos y bajos, pegados al asfalto
+        beam = Image.new("RGBA", (W, H), (0, 0, 0, 0)); bd = ImageDraw.Draw(beam)
+        a = int(190 * ease(prog(t, .2, .5)))
+        for side in (-1, 1):
+            bx = W / 2 + side * 260
+            bd.polygon([(bx, bot - 120), (cxu(.45) + side * 430, U(.45)), (cxu(.45) + side * 40, U(.45))], fill=(255, 244, 200, a))
+        dst.alpha_composite(beam.filter(ImageFilter.GaussianBlur(30)))
+        # paneles de curva (flechas) en el exterior de la curva
+        cdir = 1 if curve >= 0 else -1; d = ImageDraw.Draw(dst, "RGBA")
+        for k in range(3):
+            u = .22 + k * .09; x = cxu(u) + cdir * -1 * (18 + 560 * u) * 1.25; y = U(u) - 40 - 40 * u; s = 30 + 90 * u
+            d.rectangle((x - s, y - s * .6, x + s, y + s * .6), fill=(30, 60, 160, 255))
+            for j in range(2):
+                ox = x - s * .5 + j * s * .6
+                d.line([(ox - cdir * s * .2, y - s * .4), (ox + cdir * s * .2, y), (ox - cdir * s * .2, y + s * .4)], fill=WHITE + (255,), width=max(3, int(s * .16)))
+        fog_dash(dst, t, top, bot, icon="front", on=True)
+        if v.get("tag"):
+            tl = v["tag"] if isinstance(v["tag"], list) else [v["tag"]]
+            for k, l in enumerate(tl):
+                paste(dst, pill(l, 40, (40, 200, 90), WHITE), W / 2, top + 70 + k * 84, scale=eback(prog(t, .4 + k * .4, .35)), alpha=ease(prog(t, .4 + k * .4, .3)))
+
+@lru_cache(maxsize=16)
+def weather_icon(kind, ph=0, s=170):
+    im = ss(s, s); d = ImageDraw.Draw(im); S = s * 2
+    cloud = (150, 160, 176)
+    if kind == "fog":
+        for k in range(4):
+            y = S * (.2 + k * .19); off = (ph + k) % 3 * S * .04
+            d.rounded_rectangle((S * .08 + off, y, S * .92 - (S * .08 - off), y + S * .09), radius=int(S * .045), fill=(160, 168, 182))
+    else:
+        d.ellipse((S * .1, S * .2, S * .55, S * .6), fill=cloud); d.ellipse((S * .35, S * .1, S * .9, S * .6), fill=cloud)
+        d.rounded_rectangle((S * .1, S * .38, S * .9, S * .6), radius=int(S * .1), fill=cloud)
+        if kind == "rain":
+            for k in range(7):
+                x = S * (.16 + k * .11); y = S * (.66 + ((k + ph) % 3) * .05)
+                d.line([(x, y), (x - S * .05, y + S * .16)], fill=(40, 120, 255), width=int(S * .045))
+        elif kind == "snow":
+            for k in range(5):
+                x = S * (.2 + k * .15); y = S * (.72 + ((k + ph) % 2) * .1); r = S * .05
+                for a in range(3):
+                    ang = a * math.pi / 3; d.line([(x - r * math.cos(ang), y - r * math.sin(ang)), (x + r * math.cos(ang), y + r * math.sin(ang))], fill=(90, 170, 255), width=int(S * .025))
+        else:  # polvo o humo: nubes oscuras que suben
+            d.rectangle((0, 0, S, S * .62), fill=(0, 0, 0, 0))
+            for k in range(4):
+                r = S * (.14 + k * .03); x = S * (.25 + k * .17); y = S * (.75 - k * .12 - ph * .02)
+                d.ellipse((x - r, y - r, x + r, y + r), fill=(110, 104, 98) if k % 2 else (150, 136, 116))
+    return down(im)
+
+# --- carretera de montaña estrecha vista de lado y desde arriba (¿QUIÉN PASA PRIMERO? parte 7: gran pendiente) ---
+# vis: {"type": "cuesta", "mode": "side" | "grade" | "bay" | "flat", "narrow": bool, "countdown": [...], "move": [at, dur],
+#       "rank": true, "rank_at": t, "tag": "...", "nosigns": bool}
+@lru_cache(maxsize=None)
+def car_side(col=(226, 69, 60), w=250, flip=False):
+    h = int(w * .5); im = ss(w, h); d = ImageDraw.Draw(im); X, Y = w * 2, h * 2
+    dk = mix(col, (0, 0, 0), .3)
+    d.polygon([(X * .24, Y * .42), (X * .36, Y * .08), (X * .7, Y * .08), (X * .84, Y * .42)], fill=dk)          # cabina
+    d.polygon([(X * .3, Y * .4), (X * .39, Y * .15), (X * .52, Y * .15), (X * .52, Y * .4)], fill=(150, 190, 230))   # ventana trasera
+    d.polygon([(X * .56, Y * .4), (X * .56, Y * .15), (X * .68, Y * .15), (X * .78, Y * .4)], fill=(150, 190, 230))  # ventana delantera
+    d.rounded_rectangle((X * .02, Y * .38, X * .98, Y * .78), radius=int(Y * .16), fill=col)                   # carrocería
+    d.rounded_rectangle((X * .9, Y * .46, X * .98, Y * .56), radius=8, fill=(255, 240, 190))                  # faro (delante = derecha)
+    d.rounded_rectangle((X * .02, Y * .46, X * .07, Y * .58), radius=8, fill=(200, 30, 30))                    # piloto
+    for x0 in (.24, .76):
+        d.ellipse((X * x0 - Y * .2, Y * .58, X * x0 + Y * .2, Y * .98), fill=(20, 20, 24)); d.ellipse((X * x0 - Y * .09, Y * .69, X * x0 + Y * .09, Y * .87), fill=(160, 166, 178))
+    im = down(im)
+    return im.transpose(Image.FLIP_LEFT_RIGHT) if flip else im
+
+SIDE = ((90, 1100), (930, 590))   # extremos del eje de la carretera en vista lateral (abajo-izquierda → arriba-derecha)
+def side_pt(s):
+    (x0, y0), (x1, y1) = SIDE; return lerp(x0, x1, s), lerp(y0, y1, s)
+SIDE_ANG = math.degrees(math.atan2(SIDE[0][1] - SIDE[1][1], SIDE[1][0] - SIDE[0][0]))
+
+def side_scene(dst, t, narrow=False):
+    lay = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(lay, "RGBA")
+    top, bot = VZ[0] + 10, VZ[1] + 20
+    for y in range(top, bot):  # cielo
+        k = (y - top) / (bot - top); d.line([(40, y), (W - 40, y)], fill=mix((120, 180, 240), (210, 230, 250), k) + (255,))
+    d.polygon([(40, top + 330), (240, top + 150), (420, top + 280), (640, top + 90), (860, top + 240), (W - 40, top + 160), (W - 40, bot), (40, bot)], fill=(150, 160, 190, 255))  # montañas lejanas
+    d.polygon([(560, top + 150), (640, top + 90), (700, top + 135), (660, top + 150), (620, top + 128)], fill=(245, 248, 252, 255))     # nieve en la cima
+    (x0, y0), (x1, y1) = SIDE; nx, ny = -math.sin(math.radians(SIDE_ANG)), -math.cos(math.radians(SIDE_ANG))
+    # ladera de roca por encima de la carretera
+    d.polygon([(x0 - 200, y0 - 70), (x1 + 200, y1 - 70 - 104), (W - 40, top + 250), (W - 40, top + 200), (700, y1 - 150), (300, y0 - 260), (40, y0 - 240)], fill=(122, 104, 88, 255))
+    for k in range(12):
+        s = k / 11; px, py = side_pt(s); d.ellipse((px - 40, py - 150 - 30 * (k % 3), px + 30, py - 90 - 30 * (k % 3)), fill=(104, 88, 74, 255))
+    # terraplén y barranco por debajo
+    d.polygon([(40, y0 + 18), (x1 + 100, y1 + 18 - 52), (W - 40, y1 - 30), (W - 40, bot), (40, bot)], fill=(84, 112, 70, 255))
+    for k in range(9):
+        s = k / 8; px, py = side_pt(s); d.ellipse((px - 30, py + 70, px + 50, py + 140), fill=(64, 94, 58, 255))
+    # calzada (banda gruesa) y quitamiedos
+    th = 34
+    d.polygon([(x0 - 60, y0 + 31), (x1 + 60, y1 - 31), (x1 + 60, y1 - 31 + th), (x0 - 60, y0 + 31 + th)], fill=(46, 50, 60, 255))
+    d.line([(x0 - 60, y0 + 31), (x1 + 60, y1 - 31)], fill=(70, 74, 86, 255), width=6)
+    for k in range(15):  # bionda en el borde del barranco (por debajo de la calzada)
+        s = k / 14; px, py = side_pt(s); d.line([(px, py + 34 + th), (px, py + 4 + th)], fill=(170, 176, 186, 255), width=7)
+    d.line([(x0 - 60, y0 + 31 + th + 4), (x1 + 60, y1 - 31 + th + 4)], fill=(200, 206, 216, 255), width=8)
+    m = Image.new("L", (W, H), 0); ImageDraw.Draw(m).rounded_rectangle((40, top, W - 40, bot), radius=36, fill=255)
+    lay.putalpha(Image.fromarray(np.minimum(np.array(lay.split()[3]), np.array(m)))); dst.alpha_composite(lay)
+    if narrow:  # tramo estrecho: contorno naranja discontinuo que parpadea
+        a = int(255 * (.55 + .45 * math.sin(t * 6)))
+        (ax, ay), (bx, by) = side_pt(.38), side_pt(.62); dd = ImageDraw.Draw(dst, "RGBA")
+        pts = [(ax, ay - 130), (bx, by - 130), (bx, by + 70), (ax, ay + 70)]
+        for k in range(4):
+            p0, p1 = pts[k], pts[(k + 1) % 4]
+            for j in range(10):
+                if j % 2: continue
+                q0, q1 = j / 10, (j + 1) / 10
+                dd.line([(lerp(p0[0], p1[0], q0), lerp(p0[1], p1[1], q0)), (lerp(p0[0], p1[0], q1), lerp(p0[1], p1[1], q1))], fill=ORANGE + (a,), width=10)
+    return top, bot
+
+def side_car(dst, s, n, col, flip, t=0, still=False):
+    px, py = side_pt(s); car = car_side(col, 250, flip); a = math.radians(SIDE_ANG)
+    cx = px - math.sin(a) * (car.height / 2 - 4); cy = py - math.cos(a) * (car.height / 2 - 4)
+    bob = 0 if still else math.sin(t * 9 + n) * 1.5
+    paste(dst, car, cx, cy + bob, rot=SIDE_ANG)
+    paste(dst, num_badge(n, 80), cx, cy - 120)
+    return cx, cy
+
+def vis_cuesta(dst, t, v, i):
+    if i == 0: t = t + 0.6  # primer fotograma: montaña, coches y números ya en pantalla
+    mode = v.get("mode", "side")
+    if mode in ("side", "grade"):
+        top, bot = side_scene(dst, t, v.get("narrow", False))
+        mv = v.get("move"); s2 = .16; s1 = .84
+        if mv: s2 = lerp(.16, .64, ease(prog(t, mv[0], mv[1])))
+        elif not v.get("still"): s2 = .16 + .015 * math.sin(t * 2); s1 = .84 - .015 * math.sin(t * 2)
+        if mode == "grade": c1 = c2 = (0, 0)
+        else:
+            c2 = side_car(dst, s2, 2, CRUCE_COLS[2], False, t, still=bool(mv) and t > mv[0] + mv[1])
+            c1 = side_car(dst, s1, 1, CRUCE_COLS[1], True, t, still=bool(mv))
+        if not mv and mode == "side":  # flechas de sentido
+            d = ImageDraw.Draw(dst, "RGBA"); al = int(255 * ease(prog(t, .2, .3)))
+            paste(dst, pill("SUBE ↗", 34, WHITE, NAVY), c2[0] + 40, c2[1] + 150, alpha=al / 255)
+            paste(dst, pill("↙ BAJA", 34, WHITE, NAVY), c1[0] - 20, c1[1] + 150, alpha=al / 255)
+        if v.get("nosigns"):
+            for k, (ix, iy) in enumerate(((190, top + 140), (380, top + 140))):
+                p = prog(t, .2 + k * .3, .35); im = sign_ceda(150) if k == 0 else stop_mini(150)
+                paste(dst, im, ix, iy, scale=.6 + .4 * eback(p), alpha=ease(p * 2))
+                if t > .55 + k * .3: paste(dst, icon_x(100), ix + 55, iy + 60, scale=eback(prog(t, .55 + k * .3, .3)))
+        if mv and v.get("rank"):
+            ra = v.get("rank_at", mv[0] + mv[1])
+            p = prog(t, ra, .35)
+            if p > 0:
+                paste(dst, pill("1º", 52, YEL, NAVY, padx=26), c2[0], c2[1] - 210, scale=eback(p), alpha=ease(p * 2))
+                paste(dst, pill("ESPERA", 36, NAVY, WHITE), c1[0], c1[1] - 210, scale=eback(prog(t, ra + .3, .35)), alpha=ease(prog(t, ra + .3, .3)))
+        cd = v.get("countdown")
+        if cd:
+            n = sum(1 for s in cd if t >= s); ix, iy = 150, top + 200
+            paste(dst, semaphore(n).resize((115, 300), Image.LANCZOS), ix, iy, scale=eback(prog(t, 0, .4)))
+            if n:
+                pk = prog(t, cd[n - 1], .25)
+                paste(dst, text(str(4 - n), 190, [RED, (255, 176, 0), GREEN][n - 1], BLACK), 290, iy, scale=lerp(1.6, 1, eout(pk)), alpha=ease(pk * 2))
+        if mode == "grade":
+            dark = Image.new("RGBA", (W, H), (0, 0, 0, 0)); ImageDraw.Draw(dark).rounded_rectangle((40, top, W - 40, bot), radius=36, fill=(6, 20, 43, 150)); dst.alpha_composite(dark)
+            p = eback(prog(t, 0, .45)); cy = CY + 10
+            paste(dst, card(860, 560, fill=(255, 255, 255, 250), r=40), W / 2, cy + (1 - p) * 120, alpha=ease(prog(t, 0, .25)))
+            d = ImageDraw.Draw(dst, "RGBA"); k = ease(prog(t, .3, .9)); al = int(255 * ease(prog(t, .2, .3)))
+            ax, ay = W / 2 - 330, cy + 170; bx = W / 2 + 330; by = ay - 210 * k
+            d.polygon([(ax, ay), (bx, ay), (bx, by)], fill=(255, 196, 0, int(al * .35)))
+            d.line([(ax, ay), (bx, ay)], fill=DARK + (al,), width=8); d.line([(bx, ay), (bx, by)], fill=RED + (al,), width=10)
+            d.line([(ax, ay), (bx, by)], fill=(46, 50, 60, al), width=22)
+            paste(dst, car_side(CRUCE_COLS[2], 150), lerp(ax, bx, .55), lerp(ay, by, .55) - 44, rot=math.degrees(math.atan2(ay - by, bx - ax)), alpha=al / 255)
+            paste(dst, text("100 m", 40, DARK, XB, shadow=False), W / 2, ay + 44, alpha=al / 255)
+            if k > .5: paste(dst, text("7 m", 40, RED, BLACK, shadow=False), bx - 70, (ay + by) / 2 + 10, alpha=ease(prog(t, .8, .3)))
+            val = 7 * eout(prog(t, .3, 1.0))
+            paste(dst, text(f"≥ {int(round(val))} %", 130, BLUE, BLACK, shadow=False), W / 2 - 150, cy - 160, scale=.8 + .2 * eback(prog(t, .3, .4)))
+            if v.get("tag"): paste(dst, pill(v["tag"], 38, YEL, NAVY), W / 2, top + 70, scale=eback(prog(t, 1.0, .35)), alpha=ease(prog(t, 1.0, .3)))
+            return
+        if v.get("tag"):
+            paste(dst, pill(v["tag"], 40, YEL, NAVY), W / 2, bot - 60 if v.get("tag_bottom") else top + 60, scale=eback(prog(t, .4, .4)), alpha=ease(prog(t, .4, .3)))
+        return
+    # vista desde arriba: carretera estrecha de montaña en vertical (el 2 sube desde abajo, el 1 baja desde arriba)
+    lay = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(lay, "RGBA")
+    top, bot = VZ[0] + 10, VZ[1] + 20; cx = W / 2
+    flat = mode == "flat"; hw = 210 if flat else 105
+    d.rectangle((40, top, W - 40, bot), fill=(84, 112, 70, 255) if flat else (118, 102, 86, 255))
+    for k in range(36):  # rocas o césped
+        gx, gy = 60 + (k * 263) % (W - 120), top + (k * 157) % (bot - top)
+        if abs(gx - cx) < hw + 60: continue
+        d.ellipse((gx - 34, gy - 22, gx + 34, gy + 22), fill=(74, 104, 68, 255) if flat else (100, 86, 72, 255))
+    d.rectangle((cx - hw, top, cx + hw, bot), fill=(46, 50, 60, 255))
+    bay_y = CY + 170
+    if mode == "bay":  # apartadero a la derecha, cerca del que sube
+        d.polygon([(cx + hw, bay_y - 190), (cx + hw + 190, bay_y - 110), (cx + hw + 190, bay_y + 110), (cx + hw, bay_y + 190)], fill=(46, 50, 60, 255))
+        d.line([(cx + hw, bay_y - 190), (cx + hw + 190, bay_y - 110), (cx + hw + 190, bay_y + 110), (cx + hw, bay_y + 190)], fill=(240, 240, 240, 255), width=6)
+    for side in (-1, 1):
+        x = cx + side * (hw - 8)
+        if mode == "bay" and side == 1:
+            d.line([(x, top), (x, bay_y - 190)], fill=(240, 240, 240, 255), width=6); d.line([(x, bay_y + 190), (x, bot)], fill=(240, 240, 240, 255), width=6)
+        else: d.line([(x, top), (x, bot)], fill=(240, 240, 240, 255), width=6)
+    if flat:  # eje discontinuo de una carretera llana de doble sentido
+        y = top + 10
+        while y < bot - 40: d.line([(cx, y), (cx, y + 50)], fill=(255, 255, 255, 200), width=7); y += 95
+    m = Image.new("L", (W, H), 0); ImageDraw.Draw(m).rounded_rectangle((40, top, W - 40, bot), radius=36, fill=255)
+    lay.putalpha(Image.fromarray(np.minimum(np.array(lay.split()[3]), np.array(m)))); dst.alpha_composite(lay)
+    if flat:
+        d = ImageDraw.Draw(dst, "RGBA"); d.rectangle((cx + 10, CY - 260, cx + hw - 10, CY + 140), fill=(255, 140, 0, 70))
+        for k in range(5): paste(dst, cone_icon(80), cx + 100, CY - 230 + k * 92)
+        paste(dst, pill("OBRAS", 34, ORANGE, WHITE), cx + hw + 120, CY - 60)
+        paste(dst, pill("LLANO", 34, WHITE, NAVY), cx - hw - 130, bot - 90)
+    else:  # indicador de pendiente
+        paste(dst, pill("SUBIDA ↑", 38, WHITE, NAVY), cx - hw - 200, bot - 90)
+        paste(dst, pill("≥ 7 %", 38, YEL, NAVY), cx - hw - 200, bot - 180)
+    if mode == "bay":
+        # el 2 sube hasta el apartadero y se mete; luego baja el 1
+        k1 = ease(prog(t, .1, 1.0)); k2 = ease(prog(t, 1.0, .7)); k3 = ease(prog(t, 1.6, 1.6))
+        y2 = lerp(bot - 110, bay_y + 60, k1); x2 = lerp(cx, cx + hw + 95, k2); r2 = -30 * math.sin(k2 * math.pi)
+        paste(dst, car_top(CRUCE_COLS[2], 120), x2, y2, rot=r2); paste(dst, num_badge(2, 70), x2 + (90 if k2 < .5 else 120), y2)
+        y1 = lerp(top + 120, bot + 200, k3)
+        paste(dst, car_top(CRUCE_COLS[1], 120), cx, y1, rot=180); paste(dst, num_badge(1, 70), cx - 110, y1)
+        ap = prog(t, .2, .4)
+        paste(dst, pill("APARTADERO", 36, YEL, NAVY), cx + hw + 95, bay_y - 250, scale=eback(ap), alpha=ease(ap * 2))
+        if k2 > .9: paste(dst, pill("SE APARTA EL QUE SUBE", 38, GREEN, WHITE), W / 2, top + 60, scale=eback(prog(t, 1.6, .35)), alpha=ease(prog(t, 1.6, .3)))
+    elif mode == "flat":
+        # el 1 ya está dentro del estrechamiento y sigue; el 2 espera en la entrada
+        k3 = ease(prog(t, .6, 2.2)); y1 = lerp(CY - 120, bot + 200, k3); x1 = cx - 95
+        paste(dst, car_top(CRUCE_COLS[1], 120), x1, y1, rot=180); paste(dst, num_badge(1, 70), x1 - 110, y1)
+        if t < 1.7: paste(dst, pill("ENTRÓ PRIMERO", 34, GREEN, WHITE), x1 - 10, y1 - 200, alpha=ease(prog(t, .1, .3)) * (1 - prog(t, 1.4, .3)))
+        k4 = ease(prog(t, 2.4, 1.2)); y2 = lerp(CY + 330, CY - 330, k4) + (4 * math.sin(t * 3) if k4 == 0 else 0)
+        x2 = cx + 95 - 190 * math.sin(clamp((CY + 200 - y2) / 500) * math.pi) if k4 > 0 else cx + 95
+        paste(dst, car_top(CRUCE_COLS[2], 120), x2, y2); paste(dst, num_badge(2, 70), x2 + 110, y2)
+        if k4 == 0: paste(dst, pill("ESPERA", 34, NAVY, WHITE), cx + 95, y2 + 200, alpha=ease(prog(t, .5, .3)))
+    if v.get("tag"):
+        paste(dst, pill(v["tag"], 40, YEL, NAVY), W / 2, top + 60 if mode != "bay" else top + 140, scale=eback(prog(t, .3, .4)), alpha=ease(prog(t, .3, .3)))
+
+@lru_cache(maxsize=4)
+def stop_mini(s=150):
+    im = ss(s, s); d = ImageDraw.Draw(im); S = s * 2; r = S / 2
+    pts = [(r + r * .96 * math.cos(math.radians(22.5 + 45 * k)), r + r * .96 * math.sin(math.radians(22.5 + 45 * k))) for k in range(8)]
+    d.polygon(pts, fill=(220, 30, 40)); f = F(BLACK, int(S * .3)); bb = f.getbbox("STOP")
+    d.text((r - (bb[0] + bb[2]) / 2, r - (bb[1] + bb[3]) / 2), "STOP", font=f, fill=WHITE); return down(im)
+
 
 VIS = {k[4:]: v for k, v in globals().items() if k.startswith("vis_")}
 
