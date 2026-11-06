@@ -1,0 +1,20 @@
+{"label": "¿QUIÉN PASA PRIMERO? · PARTE 8", "times": "tiempos.json", "voice": "voz.wav", "tail": 1.1,
+ "sfx": [{"t": 10.08, "type": "beep"}, {"t": 10.98, "type": "beep"}, {"t": 11.88, "type": "beep"}, {"t": 12.65, "type": "ding"}, {"t": 13.4, "type": "buzz"}, {"t": 24.41, "type": "buzz"}],
+ "scenes": [
+  {"cap": "Parte 8. Uno va por la autovía, y otro se incorpora. ¿Quién pasa primero?", "hi": ["autovía,", "incorpora.", "primero?"],
+   "vis": {"type": "incorpora", "mode": "hook", "lines": ["¿QUIÉN PASA", "PRIMERO?"], "cols": [[255, 255, 255], [255, 196, 0]], "tag": "¿1 O 2?", "tag_bottom": true}},
+  {"cap": "El 1, por el carril derecho. El 2, por el de aceleración.", "hi": ["1,", "2,", "aceleración."],
+   "vis": {"type": "incorpora", "mode": "labels"}},
+  {"cap": "¿1 o 2? Comenta. Tienes 3 segundos.", "hi": ["1", "2?", "3"],
+   "vis": {"type": "incorpora", "mode": "countdown", "still": true, "countdown": [2.49, 3.39, 4.29], "tag": "¿1 O 2?"}},
+  {"cap": "¡Pasa el 1! El que se incorpora cede el paso, aunque tenga carril de aceleración.", "hi": ["1!", "cede", "paso,"],
+   "vis": {"type": "incorpora", "mode": "answer", "tag": "CEDE EL QUE SE INCORPORA", "tag_bottom": true}},
+  {"cap": "El 2 mira al principio del carril, y luego acelera.", "hi": ["principio", "acelera."],
+   "vis": {"type": "incorpora", "mode": "check"}},
+  {"cap": "Y el 1, si puede, le facilita la entrada cambiándose de carril.", "hi": ["si", "puede,", "facilita"],
+   "vis": {"type": "incorpora", "mode": "facilita", "tag": "FACILITA LA ENTRADA"}},
+  {"cap": "Pero facilitar no es ceder: la preferencia es del 1.", "hi": ["facilitar", "ceder:", "1."],
+   "vis": {"type": "incorpora", "mode": "trap", "tag": "PREFERENCIA: EL 1"}},
+  {"cap": "¿Acertaste? Comenta, y hago la parte 9.", "hi": ["Comenta,", "9."],
+   "vis": {"type": "cta", "big": "¿Acertaste?", "small": "Comenta 1 o 2 · ¿Parte 9?"}}
+ ]}

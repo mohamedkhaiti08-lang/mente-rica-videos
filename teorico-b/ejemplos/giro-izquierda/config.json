@@ -1,0 +1,20 @@
+{"label": "SEÑAL MISTERIOSA", "times": "tiempos.json", "voice": "voz.wav", "tail": 1.2,
+ "sfx": [{"t": 11.35, "type": "beep"}, {"t": 12.25, "type": "beep"}, {"t": 13.15, "type": "beep"}, {"t": 13.95, "type": "ding"}, {"t": 18.8, "type": "buzz"}, {"t": 23.15, "type": "buzz"}],
+ "scenes": [
+  {"cap": "Antes de tu examen, mira esta señal. ¿Puedes dar la vuelta aquí?", "hi": ["examen,", "vuelta", "aquí?"],
+   "vis": {"type": "izq", "mode": "hook", "lines": ["¿PUEDES DAR", "LA VUELTA?"], "cols": [[255, 255, 255], [255, 196, 0]], "tag": "3 SEGUNDOS PARA PENSAR"}},
+  {"cap": "¿A, solo prohíbe girar? ¿B, también prohíbe cambiar de sentido? ¿O C, solo si no viene nadie?", "hi": ["A,", "B,", "C,"],
+   "vis": {"type": "quiz", "sign": "noleft", "q": "Con esta señal, ¿puedes cambiar de sentido?", "opts": ["Sí: solo prohíbe girar", "No, ni cambiar de sentido", "Solo si no viene nadie"], "correct": 1, "opt_at": [0.05, 1.4, 3.3]}},
+  {"cap": "Tu letra, en comentarios. Tienes 3 segundos.", "hi": ["letra,", "comentarios.", "3"],
+   "vis": {"type": "countdown", "quiz_scene": 1, "at": [2.74, 3.64, 4.54]}},
+  {"cap": "¡Es la B! Prohíbe girar a la izquierda, y también cambiar de sentido.", "hi": ["B!", "izquierda,", "sentido."],
+   "vis": {"type": "reveal", "quiz_scene": 1}},
+  {"cap": "En 700.000 test, salió entre las 10 señales más falladas.", "hi": ["700.000", "10", "falladas."],
+   "vis": {"type": "izq", "mode": "stat"}},
+  {"cap": "Aquí solo puedes seguir recto, o girar a la derecha.", "hi": ["recto,", "derecha."],
+   "vis": {"type": "izq", "mode": "paths", "tag": "PROHÍBE 2 COSAS"}},
+  {"cap": "Ojo: la de la flecha en U solo prohíbe el cambio de sentido.", "hi": ["U", "solo", "sentido."],
+   "vis": {"type": "izq", "mode": "pair", "tag": "NO LAS CONFUNDAS"}},
+  {"cap": "¿Te la sabías? Comenta sí o no.", "hi": ["sabías?", "sí", "no."],
+   "vis": {"type": "cta", "big": "¿SÍ o NO?", "small": "¿Te la sabías? Comenta"}}
+ ]}

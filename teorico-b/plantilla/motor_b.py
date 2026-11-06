@@ -33,6 +33,9 @@
 #     list = 4 tarjetas niebla espesa / lluvia muy intensa / fuerte nevada / polvo o humo | front = curvas estrechas con antinieblas delanteras).
 #   cuesta (carretera de montaña estrecha: side = vista lateral con el 2 que sube y el 1 que baja, narrow, nosigns, countdown, move, rank |
 #     grade = triángulo 100 m / 7 m (gran pendiente ≥ 7 %) | bay = desde arriba, el que sube se mete en el apartadero | flat = llano con obras, pasa el que entró primero).
+#   izq (SEÑAL R-303: hook = cruce urbano cenital con la señal y una trayectoria en U con "?" | paths = recto/derecha ✓, izquierda/media vuelta ✗ |
+#     stat = 700.000 test, TOP 10 más falladas | pair = R-303 vs R-304); sign_generic y quiz admiten "noleft" (R-303) y "nouturn" (R-304).
+#   incorpora (autovía cenital con carril de aceleración, coches 1 y 2: hook | labels | countdown | answer | check | facilita | trap).
 import math, json, sys, os, subprocess
 from functools import lru_cache
 from multiprocessing import Pool
@@ -2732,6 +2735,280 @@ def stop_mini(s=150):
     pts = [(r + r * .96 * math.cos(math.radians(22.5 + 45 * k)), r + r * .96 * math.sin(math.radians(22.5 + 45 * k))) for k in range(8)]
     d.polygon(pts, fill=(220, 30, 40)); f = F(BLACK, int(S * .3)); bb = f.getbbox("STOP")
     d.text((r - (bb[0] + bb[2]) / 2, r - (bb[1] + bb[3]) / 2), "STOP", font=f, fill=WHITE); return down(im)
+
+
+# --- SEÑAL R-303 (giro a la izquierda prohibido, que también prohíbe el cambio de sentido) y R-304 (media vuelta prohibida) ---
+# vis: {"type": "izq", "mode": "hook" | "paths" | "stat" | "pair", "lines": [...], "cols": [...], "tag": "..."}
+#   hook  = cruce cenital: nuestro coche sube, señal R-303 en la esquina y trayectoria en U que se dibuja con "?"
+#   paths = recto ✓, derecha ✓, izquierda ✗, media vuelta ✗
+#   stat  = "700.000 test" + "entre las 10 más falladas" (revista DGT)
+#   pair  = R-303 vs R-304
+#   sign_generic admite "noleft" (R-303) y "nouturn" (R-304); quiz admite "sign": "noleft".
+def _sign_arrow(d, S, kind):
+    k = S * .075; col = (20, 20, 22)
+    if kind == "noleft":
+        x, r, yb = S * .6, S * .16, S * .52
+        d.line([(x, S * .8), (x, yb)], fill=col, width=int(k))
+        d.arc((x - 2 * r - k / 2, yb - r - k / 2, x + k / 2, yb + r + k / 2), 270, 360, fill=col, width=int(k))
+        hy = yb - r
+        d.line([(x - r, hy), (S * .34, hy)], fill=col, width=int(k))
+        d.polygon([(S * .18, hy), (S * .37, hy - S * .13), (S * .37, hy + S * .13)], fill=col)
+    else:  # nouturn: flecha en U (sube por la derecha, gira y baja por la izquierda)
+        xr, xl, ytop = S * .63, S * .37, S * .3
+        d.line([(xr, S * .8), (xr, S * .44)], fill=col, width=int(k))
+        d.arc((xl, ytop, xr, ytop + (xr - xl)), 180, 360, fill=col, width=int(k))
+        d.line([(xl, ytop + (xr - xl) / 2), (xl, S * .6)], fill=col, width=int(k))
+        d.polygon([(xl, S * .76), (xl - S * .12, S * .58), (xl + S * .12, S * .58)], fill=col)
+
+@lru_cache(maxsize=16)
+def sign_turn(kind, s, flat=False):
+    im = ss(s, s); d = ImageDraw.Draw(im); S = s * 2
+    d.ellipse((0, 0, S - 1, S - 1), fill=(220, 30, 40)); d.ellipse((S * .12, S * .12, S * .88, S * .88), fill=WHITE)
+    _sign_arrow(d, S, kind)
+    # franja roja diagonal (de arriba a la izquierda a abajo a la derecha), recortada al círculo interior
+    bar = Image.new("RGBA", (S, S), (0, 0, 0, 0)); ImageDraw.Draw(bar).line([(S * .1, S * .1), (S * .9, S * .9)], fill=(220, 30, 40), width=int(S * .1))
+    m = Image.new("L", (S, S), 0); ImageDraw.Draw(m).ellipse((S * .1, S * .1, S * .9, S * .9), fill=255)
+    bar.putalpha(Image.fromarray(np.minimum(np.array(bar.split()[3]), np.array(m)))); im.alpha_composite(bar)
+    return down(im) if flat else glow(down(im), 30, .5)
+
+_old_sign_generic = sign_generic
+@lru_cache(maxsize=32)
+def sign_generic(kind, n, s, flat=False):
+    if kind in ("noleft", "nouturn"): return sign_turn(kind, s, flat)
+    return _old_sign_generic(kind, n, s, flat)
+
+def _bez(p0, p1, p2, p3, n=40):
+    out = []
+    for j in range(n + 1):
+        u = j / n; a, b, c, e = (1 - u) ** 3, 3 * (1 - u) ** 2 * u, 3 * (1 - u) * u * u, u ** 3
+        out.append((a * p0[0] + b * p1[0] + c * p2[0] + e * p3[0], a * p0[1] + b * p1[1] + c * p2[1] + e * p3[1]))
+    return out
+
+def izq_paths():
+    cx, cy = W / 2, CY + 110; hy = cy - 150; top, bot = VZ[0] + 10, VZ[1] + 20
+    st = (cx + 75, cy + 100)
+    return {
+        "straight": [st, (cx + 75, top + 60)],
+        "right": [st] + _bez((cx + 75, cy + 60), (cx + 75, hy + 75), (cx + 120, hy + 75), (cx + 230, hy + 75)) + [(W - 120, hy + 75)],
+        "left": [st] + _bez((cx + 75, cy + 40), (cx + 75, hy - 75), (cx - 20, hy - 75), (cx - 200, hy - 75)) + [(110, hy - 75)],
+        "uturn": [st] + _bez((cx + 75, cy + 20), (cx + 75, hy - 140), (cx - 75, hy - 140), (cx - 75, cy + 20)) + [(cx - 75, bot - 70)],
+    }
+
+def _poly_len(pts): return sum(math.dist(pts[j], pts[j + 1]) for j in range(len(pts) - 1))
+def _poly_cut(pts, frac):
+    L = _poly_len(pts) * clamp(frac); out = [pts[0]]; acc = 0
+    for j in range(len(pts) - 1):
+        seg = math.dist(pts[j], pts[j + 1])
+        if acc + seg >= L:
+            r = (L - acc) / seg if seg else 0; out.append((lerp(pts[j][0], pts[j + 1][0], r), lerp(pts[j][1], pts[j + 1][1], r))); return out
+        acc += seg; out.append(pts[j + 1])
+    return out
+
+def draw_path(d, pts, frac, col, a=255, width=22, dash=True):
+    if frac <= 0.01: return
+    cut = _poly_cut(pts, frac)
+    if dash:  # trazos discontinuos
+        L = _poly_len(cut); s = 0.0; on = True; step = 34
+        while s < L - 1:
+            seg = _poly_cut(cut, min(1, (s + step) / L)); seg0 = _poly_cut(cut, s / L)[-1]
+            if on: d.line([seg0] + [p for p in seg if math.dist(p, seg[-1]) < step + 2 and _poly_len([seg0, p]) <= step + 2][:-1] + [seg[-1]], fill=col + (a,), width=width, joint="curve")
+            s += step; on = not on
+    else: d.line(cut, fill=col + (a,), width=width, joint="curve")
+    if frac > .97:  # punta de flecha
+        (x1, y1), (x2, y2) = cut[-2], cut[-1]; ang = math.atan2(y2 - y1, x2 - x1); r = width * 2.2
+        d.polygon([(x2 + math.cos(ang) * r, y2 + math.sin(ang) * r), (x2 + math.cos(ang + 2.3) * r, y2 + math.sin(ang + 2.3) * r),
+                   (x2 + math.cos(ang - 2.3) * r, y2 + math.sin(ang - 2.3) * r)], fill=col + (a,))
+
+def izq_scene(dst, t):
+    lay = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(lay, "RGBA")
+    top, bot = VZ[0] + 10, VZ[1] + 20; cx, cy = W / 2, CY + 110; hy = cy - 150; rw = 150
+    d.rectangle((40, top, W - 40, bot), fill=(150, 146, 140, 255))  # acera / ciudad
+    for k in range(4):  # manzanas con tejados
+        x0 = 60 if k % 2 == 0 else cx + rw + 30; y0 = top + 20 if k < 2 else hy + rw + 30
+        x1 = cx - rw - 30 if k % 2 == 0 else W - 60; y1 = hy - rw - 30 if k < 2 else bot - 20
+        d.rounded_rectangle((x0, y0, x1, y1), radius=18, fill=[(176, 92, 70), (196, 120, 84), (160, 84, 66), (186, 108, 80)][k] + (255,))
+        for j in range(3): d.rectangle((x0 + 20, y0 + 20 + j * 70, x1 - 20, y0 + 50 + j * 70), fill=(0, 0, 0, 25))
+    d.rectangle((40, hy - rw, W - 40, hy + rw), fill=(40, 43, 52, 255)); d.rectangle((cx - rw, top, cx + rw, bot), fill=(40, 43, 52, 255))
+    y = hy + rw + 20  # eje discontinuo de la calle vertical (doble sentido)
+    while y < bot: d.line([(cx, y), (cx, y + 50)], fill=(255, 255, 255, 210), width=8); y += 95
+    y = top
+    while y < hy - rw - 20: d.line([(cx, y), (cx, y + 50)], fill=(255, 255, 255, 210), width=8); y += 95
+    x = 40
+    while x < W - 40:
+        if not (cx - rw - 20 < x < cx + rw + 20): d.line([(x, hy), (x + 50, hy)], fill=(255, 255, 255, 210), width=8)
+        x += 95
+    for k in range(6):  # paso de peatones antes del cruce
+        d.rectangle((cx + 10 + k * 23, hy + rw + 14, cx + 24 + k * 23, hy + rw + 70), fill=(240, 240, 240, 230))
+    d.line([(cx + 4, hy + rw + 80), (cx + rw - 4, hy + rw + 80)], fill=(255, 255, 255, 240), width=8)
+    m = Image.new("L", (W, H), 0); ImageDraw.Draw(m).rounded_rectangle((40, top, W - 40, bot), radius=36, fill=255)
+    lay.putalpha(Image.fromarray(np.minimum(np.array(lay.split()[3]), np.array(m)))); dst.alpha_composite(lay)
+    return top, bot, cx, cy, hy
+
+def vis_izq(dst, t, v, i):
+    if i == 0: t = t + 0.6  # primer fotograma: texto, señal y coche ya en pantalla
+    mode = v.get("mode", "hook")
+    if mode in ("hook", "paths"):
+        top, bot, cx, cy, hy = izq_scene(dst, t); P = izq_paths(); d = ImageDraw.Draw(dst, "RGBA")
+        cyc = cy + 220 - 60 * eout(prog(t, 0, 1.2)) + 3 * math.sin(t * 4)
+        if mode == "hook":
+            draw_path(d, P["uturn"], prog(t, .3, 1.3), YEL, 255, 22)
+            if t > 1.4:
+                pk = .5 + .5 * math.sin(t * 6); paste(dst, text("?", 210, YEL, BLACK), cx, hy - 40, scale=(.9 + .1 * pk) * eback(prog(t, 1.4, .4)))
+        else:
+            order = [("straight", GREEN, True), ("right", GREEN, True), ("left", RED, False), ("uturn", RED, False)]
+            for k, (nm, col, ok) in enumerate(order):
+                st = .1 + k * .55; f = prog(t, st, .6); draw_path(d, P[nm], f, col, 235, 20, dash=False)
+                if f > .97:
+                    end = P[nm][-1] if nm != "uturn" else (cx - 75, hy + 40)
+                    if nm == "left": end = (180, hy - 75)
+                    if nm == "right": end = (W - 190, hy + 75)
+                    if nm == "straight": end = (cx + 75, top + 150)
+                    paste(dst, (icon_check if ok else icon_x)(96), end[0] + (0 if nm in ("straight",) else 0), end[1] - (90 if nm in ("left", "right") else 0), scale=eback(prog(t, st + .6, .3)))
+            if v.get("tag"): paste(dst, pill(v["tag"], 42, RED, WHITE), W / 2 - 120, bot - 70, scale=eback(prog(t, 2.2, .35)), alpha=ease(prog(t, 2.2, .3)))
+        paste(dst, car_top(CRUCE_COLS[1], 118), cx + 75, cyc)
+        # señal R-303 en la esquina, de frente al conductor
+        sx, sy = cx + rw_sign(), hy + 300; sp = eback(prog(t, 0, .5))
+        d.rounded_rectangle((sx - 9, sy + 60, sx + 9, min(sy + 230, VZ[1] + 15)), radius=6, fill=(150, 156, 168, 255))
+        paste(dst, sign_generic("noleft", 0, 230 if mode == "hook" else 170), sx, sy + (0 if mode == "hook" else 40), scale=.5 + .5 * sp, rot=(1 - sp) * 90 + 2 * math.sin(t * 3))
+        if mode == "hook":
+            lines = v.get("lines", [])
+            if lines:
+                g = Image.new("RGBA", (W, H), (0, 0, 0, 0)); ImageDraw.Draw(g).rounded_rectangle((40, top, W - 40, top + 300), radius=36, fill=(6, 20, 43, 150)); dst.alpha_composite(g)
+                big_lines(dst, lines, t, top + 95, [tuple(c) for c in v.get("cols", [])] or None, size=104)
+            if v.get("tag"): paste(dst, pill(v["tag"], 38, YEL, NAVY), W / 2 - 150, bot - 60, scale=eback(prog(t, .1, .35)), alpha=ease(prog(t, .1, .3)))
+    elif mode == "stat":
+        p = eback(prog(t, 0, .45)); paste(dst, card(880, 760, fill=(255, 255, 255, 250), r=44), W / 2, CY + 20 + (1 - p) * 150, alpha=ease(prog(t, 0, .25)))
+        a = ease(prog(t, .1, .3)); top = CY - 360
+        paste(dst, sign_generic("noleft", 0, 220, True), W / 2, top + 150, alpha=a, rot=6 * math.sin(t * 2.5))
+        val = int(round(700000 * eout(prog(t, .2, 1.1)) / 1000)) * 1000
+        paste(dst, text(f"{val:,}".replace(",", "."), 120, BLUE, BLACK, shadow=False), W / 2, top + 350, alpha=a)
+        paste(dst, text("test de señales analizados", 42, (90, 96, 110), XB, shadow=False), W / 2, top + 445, alpha=a)
+        sp = prog(t, 1.2, .25)
+        if sp > 0: paste(dst, stamp_col("TOP 10", RED), W / 2, top + 590, scale=lerp(2.0, 1, eout(sp)), alpha=ease(sp * 1.6), rot=-6)
+        paste(dst, pill("ENTRE LAS MÁS FALLADAS", 36, NAVY, WHITE), W / 2, top + 720, alpha=ease(prog(t, 1.5, .3)))
+        paste(dst, text("Fuente: revista Tráfico y Seguridad Vial (DGT), 2020", 30, WHITE, SB), W / 2, VZ[0] - 0, alpha=ease(prog(t, 1.6, .3)))
+    else:  # pair: R-303 vs R-304
+        data = [("noleft", ["GIRO IZQ.", "PROHIBIDO"], ["✗ izquierda", "✗ cambio de sentido"]), ("nouturn", ["MEDIA VUELTA", "PROHIBIDA"], ["✗ cambio de sentido", "solo eso"])]
+        for k, (kd, nm, sub) in enumerate(data):
+            px = W / 2 + (-215 if k == 0 else 215); st = k * .5; p = eback(prog(t, st, .45)); a = ease(prog(t, st, .3)); y = CY + 20 + (1 - p) * 160
+            paste(dst, card(400, 660, fill=(255, 255, 255, 250), r=40, border=(RED if k == 0 else BLUE), bw=7), px, y, alpha=a)
+            paste(dst, sign_generic(kd, 0, 250, True), px, y - 150, alpha=a, scale=.7 + .3 * p)
+            for j, l in enumerate(nm): paste(dst, text(l, 40, DARK, BLACK, shadow=False), px, y + 50 + j * 50, alpha=a)
+            for j, l in enumerate(sub): paste(dst, text(l, 32, RED if (l.startswith("✗")) else (90, 96, 110), XB, shadow=False), px, y + 190 + j * 46, alpha=a)
+        if v.get("tag"): paste(dst, pill(v["tag"], 40, YEL, NAVY), W / 2, VZ[0] + 20, scale=eback(prog(t, 1.0, .35)), alpha=ease(prog(t, 1.0, .3)))
+
+def rw_sign(): return 290
+
+
+# --- INCORPORACIÓN A LA AUTOVÍA por el carril de aceleración, vista cenital (¿QUIÉN PASA PRIMERO? parte 8) ---
+# vis: {"type": "incorpora", "mode": "hook" | "labels" | "countdown" | "answer" | "check" | "facilita" | "trap",
+#       "countdown": [t1, t2, t3], "tag": "...", "lines": [...]}
+# Carriles (de izquierda a derecha): izquierdo, derecho y carril de aceleración (empieza abajo y se cierra arriba).
+INC_X = (W / 2 - 170, W / 2, W / 2 + 170)
+def inc_scene(dst, t, flow=1.0):
+    lay = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(lay, "RGBA")
+    top, bot = VZ[0] + 10, VZ[1] + 20; xl, xm, xa = INC_X; lw = 170
+    d.rectangle((40, top, W - 40, bot), fill=(92, 120, 74, 255))
+    for k in range(34):
+        gx, gy = 60 + (k * 263) % (W - 120), top + (k * 157) % (bot - top)
+        d.ellipse((gx - 30, gy - 18, gx + 30, gy + 18), fill=(102, 132, 82, 255))
+    ytaper0, ytaper1 = CY - 160, CY - 360  # el carril de aceleración se estrecha entre estas alturas
+    d.rectangle((xl - lw / 2 - 40, top, xm + lw / 2, bot), fill=(44, 47, 56, 255))  # arcén izq + 2 carriles
+    d.polygon([(xa - lw / 2, ytaper1), (xa - lw / 2, bot), (xa + lw / 2 + 30, bot), (xa + lw / 2 + 30, ytaper0)], fill=(44, 47, 56, 255))
+    # ramal de entrada que llega desde abajo a la derecha
+    d.polygon([(xa + lw / 2 + 30, bot), (xa - lw / 2, bot), (xa - lw / 2 + 40, bot - 40), (W - 40, bot - 330), (W - 40, bot - 140)], fill=(44, 47, 56, 255))
+    d.line([(xl - lw / 2 - 30, top), (xl - lw / 2 - 30, bot)], fill=(255, 255, 255, 230), width=7)  # borde izquierdo
+    d.rectangle((40, top, xl - lw / 2 - 52, bot), fill=(70, 98, 62, 255))  # mediana
+    off = (t * 240 * flow) % 95
+    y = top - 95 + off
+    while y < bot:
+        d.line([((xl + xm) / 2, y), ((xl + xm) / 2, y + 50)], fill=(255, 255, 255, 210), width=8)  # entre carriles
+        if y > ytaper1: d.line([((xm + xa) / 2, y), ((xm + xa) / 2, y + 22)], fill=(255, 255, 255, 230), width=12)  # marca del carril de aceleración
+        y += 95 / 2 if y > ytaper1 else 95
+    d.polygon([(xm + lw / 2 + 8, ytaper1 + 30), (xm + lw / 2 + 8, bot), (xa + lw / 2 + 24, bot - 140), (xa + lw / 2 + 24, ytaper0 + 10)], fill=(255, 196, 0, 38))
+    d.line([(xm + lw / 2, top), (xm + lw / 2, ytaper1)], fill=(255, 255, 255, 230), width=7)
+    d.line([(xm + lw / 2, ytaper1), (xa + lw / 2 + 30, ytaper0)], fill=(255, 255, 255, 230), width=7)
+    d.line([(xa + lw / 2 + 30, ytaper0), (xa + lw / 2 + 30, bot - 140)], fill=(255, 255, 255, 230), width=7)
+    d.rectangle((W - 140, top + 30, W - 52, top + 60), fill=(170, 176, 186, 255))  # bionda lateral
+    m = Image.new("L", (W, H), 0); ImageDraw.Draw(m).rounded_rectangle((40, top, W - 40, bot), radius=36, fill=255)
+    lay.putalpha(Image.fromarray(np.minimum(np.array(lay.split()[3]), np.array(m)))); dst.alpha_composite(lay)
+    return top, bot
+
+def inc_car(dst, n, x, y, t, rot=0, blink=None):
+    paste(dst, car_top(CRUCE_COLS[n], 112), x, y, rot=rot)
+    if blink and int(t * 3) % 2 == 0:  # intermitente
+        bx = x + (-44 if blink == "L" else 44)
+        g = Image.new("RGBA", (120, 120), (0, 0, 0, 0)); ImageDraw.Draw(g).ellipse((40, 40, 80, 80), fill=(255, 160, 0, 255))
+        paste(dst, glow(g.filter(ImageFilter.GaussianBlur(4)), 14, 1), bx, y - 90)
+    paste(dst, num_badge(n, 70), x + (-105 if n == 1 else 105), y)
+
+def vis_incorpora(dst, t, v, i):
+    if i == 0: t = t + 0.6  # primer fotograma: autovía, coches, números y pregunta ya en pantalla
+    mode = v.get("mode", "hook"); xl, xm, xa = INC_X
+    moving = mode in ("answer", "facilita")
+    top, bot = inc_scene(dst, t, 1.0 if not v.get("still") else 0.0)
+    y1, y2, x1, x2, r2 = CY + 230, CY + 40, xm, xa, 0
+    d = ImageDraw.Draw(dst, "RGBA")
+    if mode in ("hook", "labels", "countdown", "trap"):
+        y1 += 6 * math.sin(t * 2); y2 -= 4 * math.sin(t * 2)
+        if mode == "hook": y1 = lerp(CY + 330, CY + 230, eout(prog(t, 0, 1.0)))
+    if mode == "answer":  # el 1 sigue; el 2 ajusta y entra detrás
+        k1 = ease(prog(t, .2, 2.0)); y1 = lerp(CY + 230, VZ[0] + 150, k1)
+        k2 = ease(prog(t, 1.2, 1.6)); y2 = lerp(CY + 40, CY - 20, k2); x2 = lerp(xa, xm, ease(prog(t, 1.8, 1.0))); r2 = -14 * math.sin(math.pi * prog(t, 1.8, 1.0))
+    if mode == "check":  # el 2 mira al principio del carril y luego acelera
+        y2 = lerp(bot - 30, CY - 40, ease(prog(t, 1.5, 1.8))); x2 = xa
+        y1 = CY + 300 - 0 * t; x1 = xm
+        if t < 2.0:
+            a = int(120 * ease(prog(t, .2, .3)) * (1 - prog(t, 1.6, .4)))
+            d.polygon([(x2 - 30, y2 - 20), (xm - 120, bot + 60), (xm + 120, bot + 200)], fill=(255, 196, 0, a))
+            d.polygon([(x2 - 30, y2 - 20), (xm - 80, y2 - 380), (xm + 60, y2 - 420)], fill=(255, 196, 0, a))
+            paste(dst, pill("1) MIRA AL EMPEZAR", 36, YEL, NAVY), W / 2 - 120, top + 70, scale=eback(prog(t, .2, .35)), alpha=ease(prog(t, .2, .3)))
+        else:
+            paste(dst, pill("2) ACELERA", 40, GREEN, WHITE), W / 2 - 120, top + 70, scale=eback(prog(t, 2.0, .35)))
+        for k in range(4):  # rayas de velocidad tras el 2
+            if t > 1.6:
+                yy = y2 + 120 + k * 40; d.line([(x2 - 30 + k * 20, yy), (x2 - 30 + k * 20, yy + 60)], fill=(255, 255, 255, 120), width=6)
+        inc_car(dst, 2, x2, y2, t, blink="L"); return
+    if mode == "facilita":  # el 1 se cambia al carril izquierdo y el 2 entra
+        k = ease(prog(t, .3, 1.3)); x1 = lerp(xm, xl, k); y1 = lerp(CY + 230, CY + 60, ease(prog(t, 0, 2.6))); r1 = -12 * math.sin(math.pi * k)
+        k2 = ease(prog(t, 1.4, 1.2)); y2 = lerp(CY + 40, CY - 120, ease(prog(t, .6, 2.4))); x2 = lerp(xa, xm, k2); r2 = -14 * math.sin(math.pi * k2)
+        inc_car(dst, 1, x1, y1, t, rot=r1, blink="L" if k < .95 else None); inc_car(dst, 2, x2, y2, t, rot=r2)
+        if v.get("tag"): paste(dst, pill(v["tag"], 40, GREEN, WHITE), W / 2 - 100, top + 70, scale=eback(prog(t, .5, .35)), alpha=ease(prog(t, .5, .3)))
+        paste(dst, pill("SOLO SI PUEDE", 34, WHITE, NAVY), W / 2 - 100, top + 150, alpha=ease(prog(t, 1.4, .3)))
+        return
+    inc_car(dst, 1, x1, y1, t); inc_car(dst, 2, x2, y2, t, rot=r2, blink="L" if mode != "answer" or t < 2.6 else None)
+    if mode == "labels":
+        a1, a2 = ease(prog(t, .1, .3)), ease(prog(t, 1.0, .3))
+        paste(dst, pill("AUTOVÍA", 36, WHITE, NAVY), x1 - 40, y1 - 175, alpha=a1, scale=eback(prog(t, .1, .35)))
+        paste(dst, pill("CARRIL DE", 34, YEL, NAVY), x2 - 30, y2 - 230, alpha=a2, scale=eback(prog(t, 1.0, .35)))
+        paste(dst, pill("ACELERACIÓN", 34, YEL, NAVY), x2 - 30, y2 - 168, alpha=a2, scale=eback(prog(t, 1.0, .35)))
+    if mode == "hook":
+        lines = v.get("lines", [])
+        if lines:
+            g = Image.new("RGBA", (W, H), (0, 0, 0, 0)); ImageDraw.Draw(g).rounded_rectangle((40, top, W - 40, top + 300), radius=36, fill=(6, 20, 43, 150)); dst.alpha_composite(g)
+            big_lines(dst, lines, t, top + 95, [tuple(c) for c in v.get("cols", [])] or None, size=104)
+    cd = v.get("countdown")
+    if cd:
+        n = sum(1 for s in cd if t >= s); ix, iy = 150, top + 220
+        paste(dst, semaphore(n).resize((115, 300), Image.LANCZOS), ix, iy, scale=eback(prog(t, 0, .4)))
+        if n:
+            pk = prog(t, cd[n - 1], .25)
+            paste(dst, text(str(4 - n), 170, [RED, (255, 176, 0), GREEN][n - 1], BLACK), 150, iy + 270, scale=lerp(1.6, 1, eout(pk)), alpha=ease(pk * 2))
+    if mode == "answer":
+        p = prog(t, .5, .35)
+        if p > 0:
+            paste(dst, pill("1º", 52, YEL, NAVY, padx=26), x1 + 150, y1 - 30, scale=eback(p), alpha=ease(p * 2))
+            paste(dst, pill("CEDE", 38, RED, WHITE), x2 + 10, y2 - 150, scale=eback(prog(t, .8, .35)), alpha=ease(prog(t, .8, .3)))
+    if mode == "trap":
+        g = Image.new("RGBA", (W, H), (0, 0, 0, 0)); ImageDraw.Draw(g).rounded_rectangle((40, top, W - 40, bot), radius=36, fill=(6, 20, 43, 150)); dst.alpha_composite(g)
+        p = eback(prog(t, .1, .45)); paste(dst, card(820, 420, fill=(255, 255, 255, 250), r=40), W / 2, CY - 20 + (1 - p) * 120, alpha=ease(prog(t, .1, .25)))
+        a = ease(prog(t, .2, .3))
+        paste(dst, text("FACILITAR", 92, GREEN, BLACK, shadow=False), W / 2, CY - 130, alpha=a)
+        paste(dst, text("≠", 110, DARK, BLACK, shadow=False), W / 2, CY - 20, alpha=ease(prog(t, .6, .3)), scale=eback(prog(t, .6, .35)))
+        paste(dst, text("CEDER", 92, RED, BLACK, shadow=False), W / 2, CY + 90, alpha=ease(prog(t, .9, .3)))
+        if v.get("tag"): paste(dst, pill(v["tag"], 38, YEL, NAVY), W / 2, CY + 270, scale=eback(prog(t, 1.4, .35)), alpha=ease(prog(t, 1.4, .3)))
+    elif v.get("tag"):
+        paste(dst, pill(v["tag"], 40, YEL, NAVY), W / 2 - (100 if cd else 0), (bot - 60) if v.get("tag_bottom") else top + 60, scale=eback(prog(t, .4, .4)), alpha=ease(prog(t, .4, .3)))
 
 
 VIS = {k[4:]: v for k, v in globals().items() if k.startswith("vis_")}
