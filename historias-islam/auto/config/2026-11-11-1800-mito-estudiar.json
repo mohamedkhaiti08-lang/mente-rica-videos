@@ -1,0 +1,276 @@
+{
+ "tail": 1.3,
+ "cx": 470,
+ "cap_maxw": 800,
+ "title_maxw": 820,
+ "instant": true,
+ "step_gap": 290,
+ "label": "MITO VS REALIDAD",
+ "times": "2026-11-11-1800-mito-estudiar.tiempos.json",
+ "scenes": [
+  {
+   "title": [
+    "¿El islam, en contra",
+    "de estudiar?"
+   ],
+   "tint": "red",
+   "hi": [
+    "estudiar?",
+    "mito."
+   ],
+   "vis": {
+    "type": "choice",
+    "opts": [
+     [
+      "❌",
+      "MITO",
+      "red"
+     ],
+     [
+      "✅",
+      "REALIDAD",
+      "gold"
+     ]
+    ],
+    "pick": 0,
+    "y": 900
+   },
+   "cap": "¿El islam está en contra de estudiar? Es un mito."
+  },
+  {
+   "title": [
+    "La prueba",
+    "te va a sorprender"
+   ],
+   "tint": "gold",
+   "hi": [
+    "primera",
+    "palabra"
+   ],
+   "vis": {
+    "type": "big",
+    "words": [
+     "LA PRIMERA",
+     "PALABRA"
+    ],
+    "size": 108,
+    "gap": 150,
+    "y": 860,
+    "e": "📖"
+   },
+   "cap": "Y la primera palabra que Allah reveló te lo demuestra."
+  },
+  {
+   "title": [
+    "La cueva",
+    "de Hira"
+   ],
+   "tint": "night",
+   "hi": [
+    "solo,",
+    "Hira."
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "⛰️",
+    "orbit": [
+     "🌙",
+     "✨",
+     "⭐"
+    ],
+    "y": 900
+   },
+   "cap": "El Profeta, la paz sea con él, estaba solo, en la cueva de Hira."
+  },
+  {
+   "title": [
+    "El ángel Yibril",
+    "dijo una palabra:"
+   ],
+   "tint": "blue",
+   "hi": [
+    "yibril",
+    "palabra:"
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "✨",
+    "orbit": [
+     "🌟",
+     "✨",
+     "🌟"
+    ],
+    "y": 900
+   },
+   "cap": "Y el ángel Yibril le dijo una sola palabra:"
+  },
+  {
+   "tint": "gold",
+   "hi": [
+    "lee!"
+   ],
+   "vis": {
+    "type": "big",
+    "words": [
+     "¡LEE!"
+    ],
+    "size": 280,
+    "y": 880
+   },
+   "cap": "¡Lee!"
+  },
+  {
+   "title": [
+    "«No sé leer»"
+   ],
+   "tint": "night",
+   "hi": [
+    "leer."
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "📜",
+    "orbit": [
+     "❓"
+    ],
+    "y": 900
+   },
+   "cap": "Él contestó: No sé leer."
+  },
+  {
+   "tint": "gold",
+   "hi": [
+    "lee,",
+    "creó."
+   ],
+   "vis": {
+    "type": "quote",
+    "lines": [
+     "«Lee, en el nombre",
+     "de tu Señor,",
+     "que creó»"
+    ],
+    "src": "CORÁN 96:1 · SURA AL-ALAQ",
+    "size": 60,
+    "y": 860
+   },
+   "cap": "Y el ángel le recitó: Lee, en el nombre de tu Señor, que creó."
+  },
+  {
+   "tint": "green",
+   "hi": [
+    "cálamo.",
+    "sabía."
+   ],
+   "vis": {
+    "type": "quote",
+    "lines": [
+     "«Que enseñó por",
+     "medio del cálamo.",
+     "Enseñó al hombre",
+     "lo que no sabía»"
+    ],
+    "src": "CORÁN 96:4-5 · SURA AL-ALAQ",
+    "size": 56,
+    "y": 860
+   },
+   "cap": "Que enseñó por medio del cálamo. Enseñó al hombre lo que no sabía."
+  },
+  {
+   "title": [
+    "Lo primero",
+    "que bajó"
+   ],
+   "tint": "red",
+   "hi": [
+    "primero",
+    "lee!"
+   ],
+   "vis": {
+    "type": "choice",
+    "opts": [
+     [
+      "🕌",
+      "REZAR, AYUNAR",
+      "red"
+     ],
+     [
+      "📖",
+      "¡LEE!",
+      "gold"
+     ]
+    ],
+    "pick": 1,
+    "y": 900
+   },
+   "cap": "Lo primero que bajó no fue rezar, ni ayunar. Fue: ¡Lee!"
+  },
+  {
+   "tint": "night",
+   "hi": [
+    "iguales",
+    "saben?"
+   ],
+   "vis": {
+    "type": "quote",
+    "lines": [
+     "«¿Son iguales",
+     "los que saben",
+     "y los que",
+     "no saben?»"
+    ],
+    "src": "CORÁN 39:9 · SURA AZ-ZUMAR",
+    "size": 60,
+    "y": 860
+   },
+   "cap": "Y Allah pregunta en el Corán: ¿Son iguales los que saben y los que no saben?"
+  },
+  {
+   "title": [
+    "La",
+    "realidad"
+   ],
+   "tint": "green",
+   "hi": [
+    "mito:",
+    "realidad:"
+   ],
+   "vis": {
+    "type": "choice",
+    "opts": [
+     [
+      "🚫",
+      "CONTRA ESTUDIAR",
+      "red"
+     ],
+     [
+      "📚",
+      "«¡LEE!»",
+      "gold"
+     ]
+    ],
+    "pick": 1,
+    "y": 900
+   },
+   "cap": "Mito: el islam está en contra de estudiar. Realidad: su primera palabra fue lee."
+  },
+  {
+   "title": [
+    "¿Otro mito?"
+   ],
+   "tint": "night",
+   "hi": [
+    "mito",
+    "abajo."
+   ],
+   "vis": {
+    "type": "cta",
+    "word": "COMENTA",
+    "size": 130,
+    "e": "💬",
+    "y": 900
+   },
+   "cap": "¿Qué otro mito sobre el islam has escuchado? Te leo abajo."
+  }
+ ]
+}

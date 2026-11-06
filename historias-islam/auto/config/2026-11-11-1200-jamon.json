@@ -1,0 +1,288 @@
+{
+ "tail": 1.3,
+ "cx": 470,
+ "cap_maxw": 800,
+ "title_maxw": 820,
+ "instant": true,
+ "step_gap": 290,
+ "label": "TE PASA A TI",
+ "times": "2026-11-11-1200-jamon.tiempos.json",
+ "scenes": [
+  {
+   "title": [
+    "¿Te lo comes",
+    "para no quedar mal?"
+   ],
+   "tint": "red",
+   "hi": [
+    "jamón…",
+    "mal?"
+   ],
+   "vis": {
+    "type": "choice",
+    "opts": [
+     [
+      "🥪",
+      "ME LO COMO",
+      "red"
+     ],
+     [
+      "🙅",
+      "NO, GRACIAS",
+      "gold"
+     ]
+    ],
+    "y": 900
+   },
+   "cap": "La madre de tu amigo te pone un bocadillo de jamón… ¿te lo comes para no quedar mal?"
+  },
+  {
+   "title": [
+    "En casa",
+    "de tu amigo"
+   ],
+   "tint": "night",
+   "hi": [
+    "casa.",
+    "mira."
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "🍽️",
+    "orbit": [
+     "👀",
+     "👀",
+     "👀"
+    ],
+    "y": 900
+   },
+   "cap": "Estás en su casa. Toda la familia te mira."
+  },
+  {
+   "title": [
+    "Él no lo sabe"
+   ],
+   "tint": "blue",
+   "hi": [
+    "cerdo."
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "🤷",
+    "orbit": [
+     "🐷",
+     "❓"
+    ],
+    "y": 900
+   },
+   "cap": "Y tu amigo no sabe que no comes cerdo."
+  },
+  {
+   "title": [
+    "«Voy a quedar",
+    "fatal»"
+   ],
+   "tint": "red",
+   "hi": [
+    "fatal."
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "😰",
+    "orbit": [
+     "💭",
+     "😬",
+     "💭"
+    ],
+    "y": 900
+   },
+   "cap": "Piensas: Si digo que no, voy a quedar fatal."
+  },
+  {
+   "title": [
+    "Con el bocadillo",
+    "en la mano…"
+   ],
+   "tint": "red",
+   "hi": [
+    "segundos…"
+   ],
+   "vis": {
+    "type": "counter",
+    "seq": [
+     "1",
+     "2",
+     "3"
+    ],
+    "sub": "TODOS TE MIRAN",
+    "e": "🥪",
+    "last_red": true,
+    "y": 880
+   },
+   "cap": "Uno, dos, tres segundos… con el bocadillo en la mano."
+  },
+  {
+   "title": [
+    "«No como cerdo.",
+    "Soy musulmán»"
+   ],
+   "tint": "gold",
+   "hi": [
+    "cerdo.",
+    "musulmán."
+   ],
+   "vis": {
+    "type": "big",
+    "words": [
+     "SOY",
+     "MUSULMÁN"
+    ],
+    "size": 122,
+    "gap": 150,
+    "y": 860,
+    "e": "🤲"
+   },
+   "cap": "Y al final lo dices: Muchas gracias, pero no como cerdo. Soy musulmán."
+  },
+  {
+   "title": [
+    "Silencio…"
+   ],
+   "tint": "night",
+   "hi": [
+    "silencio"
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "😶",
+    "y": 900
+   },
+   "cap": "Silencio total."
+  },
+  {
+   "title": [
+    "«¡Ay, perdona!»"
+   ],
+   "tint": "green",
+   "hi": [
+    "sonríe:",
+    "tortilla."
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "😊",
+    "orbit": [
+     "🍳",
+     "🥚",
+     "✨"
+    ],
+    "y": 900
+   },
+   "cap": "Y la madre sonríe: ¡Ay, perdona! Ahora te hago una tortilla."
+  },
+  {
+   "title": [
+    "«Te respeto",
+    "más por eso»"
+   ],
+   "tint": "green",
+   "hi": [
+    "respeto"
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "🤝",
+    "orbit": [
+     "✨",
+     "💪",
+     "✨"
+    ],
+    "y": 900
+   },
+   "cap": "Y tu amigo te dice: Tío, te respeto más por eso."
+  },
+  {
+   "title": [
+    "En el Corán,",
+    "Allah dice:"
+   ],
+   "tint": "night",
+   "hi": [
+    "corán,",
+    "dice:"
+   ],
+   "vis": {
+    "type": "book",
+    "src": "CORÁN 2:173 · SURA AL-BÁQARA",
+    "y": 900
+   },
+   "cap": "Porque en el Corán, Allah dice:"
+  },
+  {
+   "tint": "gold",
+   "hi": [
+    "prohibido",
+    "cerdo."
+   ],
+   "vis": {
+    "type": "quote",
+    "lines": [
+     "«Solo os ha prohibido",
+     "el animal muerto,",
+     "la sangre y la",
+     "carne de cerdo…»"
+    ],
+    "src": "CORÁN 2:173 · SURA AL-BÁQARA",
+    "size": 56,
+    "y": 860
+   },
+   "cap": "Solo os ha prohibido el animal muerto, la sangre, y la carne de cerdo."
+  },
+  {
+   "title": [
+    "Quedar bien",
+    "con…"
+   ],
+   "tint": "green",
+   "hi": [
+    "minuto.",
+    "siempre."
+   ],
+   "vis": {
+    "type": "choice",
+    "opts": [
+     [
+      "👥",
+      "LA GENTE: 1 MIN",
+      "red"
+     ],
+     [
+      "🤲",
+      "ALLAH: SIEMPRE",
+      "gold"
+     ]
+    ],
+    "pick": 1,
+    "y": 900
+   },
+   "cap": "Quedar bien con la gente dura un minuto. Con Allah, para siempre."
+  },
+  {
+   "title": [
+    "¿Te ha pasado?"
+   ],
+   "tint": "night",
+   "hi": [
+    "pasado",
+    "abajo."
+   ],
+   "vis": {
+    "type": "cta",
+    "word": "¿Y TÚ?",
+    "e": "💬",
+    "y": 860
+   },
+   "cap": "¿Te ha pasado algo así? ¿Cómo lo dijiste tú? Te leo abajo."
+  }
+ ]
+}
