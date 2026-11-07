@@ -1,41 +1,48 @@
 # Qué funciona – Teórico B en 30s (TikTok @teoricoben30segundos)
 Horarios: 10:00 y 18:00 (Europe/Madrid) — valor por defecto (picos de audiencia de TikTok en España según Metricool) hasta que el informe semanal decida otros. Las publicaciones antiguas a 14:00 y 21:00 se quedan como están.
 
-## Datos (actualizado 06/11/2026, Metricool, TikTok últimos 14 días; 20 vídeos con datos)
+## Datos (actualizado 07/11/2026, Metricool, TikTok últimos 14 días; 22 vídeos con datos)
 | Publicado | Formato | Tema | Gancho | Dur. | Vistas | Likes | Coment. | Compart. |
 |---|---|---|---|---|---|---|---|---|
-| 28/10 14:00 | ¿QUIÉN PASA PRIMERO? | Cruce sin señales | pregunta directa | 25 s | **1.532** | 58 | 3 | 4 |
-| 3/11 10:00 | SEÑAL MISTERIOSA | R-100 vs R-101 | urgencia + pregunta | 28 s | **1.022** | 42 | 1 | 1 |
-| 5/11 10:00 | CIFRA CLAVE | Velocidad mínima autovía | POV + pregunta | 28 s | **1.009** | 33 | 0 | 0 |
-| 1/11 10:00 | POV P2 | Ciclista en ciudad, 5 m | POV + pregunta | 29 s | 1.003 | 33 | 1 | 0 |
-| 1/11 18:00 | ¿QUIÉN PASA PRIMERO? P3 | Camino de tierra | pregunta directa | 27 s | 982 | 38 | 1 | 3 |
-| 30/10 10:00 | ¿APROBARÍAS? | Sillita hasta 1,35 m | reto + pregunta | 29 s | 970 | 45 | 5 | 1 |
+| 28/10 14:00 | ¿QUIÉN PASA PRIMERO? | Cruce sin señales | pregunta directa | 25 s | **1.588** | 58 | 3 | 4 |
+| 3/11 10:00 | SEÑAL MISTERIOSA | R-100 vs R-101 | urgencia + pregunta | 28 s | **1.034** | 42 | 1 | 1 |
+| 5/11 10:00 | CIFRA CLAVE | Velocidad mínima autovía | POV + pregunta | 28 s | **1.022** | 33 | 0 | 0 |
+| 1/11 10:00 | POV P2 | Ciclista en ciudad, 5 m | POV + pregunta | 29 s | 1.004 | 33 | 1 | 0 |
+| 1/11 18:00 | ¿QUIÉN PASA PRIMERO? P3 | Camino de tierra | pregunta directa | 27 s | 984 | 38 | 1 | 3 |
+| 30/10 10:00 | ¿APROBARÍAS? | Sillita hasta 1,35 m | reto + pregunta | 29 s | 977 | 45 | 5 | 1 |
 | 3/11 18:00 | ¿QUIÉN PASA PRIMERO? P4 | Tranvía | pregunta directa | 30 s | 932 | 40 | 1 | 2 |
-| 31/10 18:00 | TRAMPAS DEL EXAMEN | Alcohol del novel | sorpresa + pregunta | 28 s | 879 | 18 | 0 | 3 |
+| 31/10 18:00 | TRAMPAS DEL EXAMEN | Alcohol del novel | sorpresa + pregunta | 28 s | 881 | 18 | 0 | 3 |
 | 29/10 21:00 | POV | Adelantar ciclista | POV + pregunta | 27 s | 860 | 32 | 2 | 0 |
-| 31/10 10:00 | ¿QUIÉN PASA PRIMERO? P2 | Glorieta | pregunta directa | 26 s | 851 | 21 | 0 | 2 |
-| 2/11 10:00 | EN 3 PASOS | Aquaplaning | urgencia + pregunta | 26 s | 836 | 26 | 0 | 0 |
-| 4/11 10:00 | TRAMPAS DEL EXAMEN | Distancia en túnel | reto + pregunta | 29 s | 816 | 29 | 3 | 1 |
-| 4/11 18:00 | ¿QUIÉN PASA PRIMERO? | Peatón al girar | pregunta directa | 30 s | 804 | 16 | 1 | 0 |
-| 2/11 18:00 | ¿APROBARÍAS? P2 | Niño de 1,40 m | reto + pregunta | 29 s | 772 | 15 | 1 | 0 |
-| 5/11 18:00 | ¿QUIÉN PASA PRIMERO? P5 | Ambulancia | pregunta directa | 30 s | 756 | 14 | 0 | 0 |
+| 31/10 10:00 | ¿QUIÉN PASA PRIMERO? P2 | Glorieta | pregunta directa | 26 s | 855 | 21 | 0 | 2 |
+| 2/11 10:00 | EN 3 PASOS | Aquaplaning | urgencia + pregunta | 26 s | 837 | 26 | 0 | 0 |
+| 4/11 18:00 | ¿QUIÉN PASA PRIMERO? | Peatón al girar | pregunta directa | 30 s | 828 | 16 | 1 | 0 |
+| 5/11 18:00 | ¿QUIÉN PASA PRIMERO? P5 | Ambulancia | pregunta directa | 30 s | 820 | 15 | 0 | 0 |
+| 4/11 10:00 | TRAMPAS DEL EXAMEN | Distancia en túnel | reto + pregunta | 29 s | 818 | 29 | 3 | 1 |
+| 6/11 18:00 | ¿QUIÉN PASA PRIMERO? P6 | Agente vs semáforo | pregunta directa | 30 s | 794 | 28 | 0 | 1 |
+| 2/11 18:00 | ¿APROBARÍAS? P2 | Niño de 1,40 m | reto + pregunta | 29 s | 773 | 15 | 1 | 0 |
+| 6/11 10:00 | ERROR DE NOVATO | Móvil en la mano | estadística + pregunta | 29 s | 756 | 8 | 0 | 2 |
 | 27/10 14:00 | ¿APROBARÍAS? | Baliza V-16 | reto | 26 s | 93 | 7 | 2 | 1 |
 | 28/10 21:00 | CIFRA CLAVE | Neumáticos 1,6 mm | urgencia | 24 s | 57 | 2 | 0 | 0 |
 | 30/10 18:00 | MITO O VERDAD | Conducta PAS | polémica suave | 25 s | 35 | 2 | 0 | 0 |
 | 27/10 21:00 | ESTO HA CAMBIADO | Pasillo de emergencia | sorpresa | 24 s | 32 | 4 | 0 | 0 |
 | 29/10 14:00 | ERROR DE NOVATO | Puntos del novel | sorpresa | 22 s | 31 | 2 | 0 | 2 |
-| 6/11 10:00 y 18:00 | ERROR DE NOVATO / ¿QUIÉN PASA PRIMERO? P6 | Móvil / agente | — | — | sin datos aún en Metricool (publicados hoy) | | | |
+| 7/11 10:00 y 18:00 | ¿APROBARÍAS? / ¿QUIÉN PASA PRIMERO? P7 | Antiniebla / cuesta | — | — | sin datos aún en Metricool (publicados hoy) | | | |
 
-Media: 714 vistas (20 vídeos). Solo el cruce supera el doble de la media (1.532 = 2,1×; sigue subiendo: 1.476 el 5/11). Su serie sigue: P6 (6/11), P7 (7/11), P8 (8/11).
+Media: 728 vistas (22 vídeos). Solo el cruce supera el doble de la media (1.588 = 2,2×; sigue subiendo: 1.532 el 6/11). Su serie sigue: P7 (7/11), P8 (8/11), P9 (9/11).
 
-## Pistas (20 vídeos con datos: siguen siendo pistas, no reglas)
-- **Séptima confirmación: pregunta concreta en la 1ª frase.** Los 15 vídeos que abren con una pregunta sobre una situación tienen entre 756 y 1.532 vistas (media 924); los 5 que abren afirmando o con una pregunta genérica, entre 31 y 93 (media 50).
-- **CIFRA CLAVE resucita con la fórmula:** con afirmación en la 1ª frase hizo 57 (neumáticos); con pregunta POV ("¿Puede ir tan lento?") y cuenta atrás, 1.009 (3º del ranking) en menos de 2 días. Mismo patrón que ERROR DE NOVATO (6/11, pendiente de datos): el formato importa menos que abrir con una pregunta sobre algo que se ve.
-- **Top 3 = 3 formatos distintos con lo mismo en común:** cruce cenital (¿QUIÉN PASA PRIMERO?), señal vacía (SEÑAL MISTERIOSA) y autovía en 1ª persona (CIFRA CLAVE): pregunta sobre algo que SE VE en la 1ª frase, 25-28 s, cuenta atrás y piden la respuesta en comentarios.
-- **Desgaste de la serie ¿QUIÉN PASA PRIMERO?:** P1 1.532 → P2 851 → P3 982 → P4 932 → (peatón 804) → P5 756 (el más bajo de la serie, aunque con menos de 2 días). Pista: la serie sigue en el suelo, pero cada parte rinde algo menos; por eso la P7 cambia de ángulo (lateral) y la P8 pasa a autovía con carril de aceleración. Si P6-P8 bajan de 750, cerrar la serie y llevar el vídeo A a SEÑAL MISTERIOSA o CIFRA CLAVE con pregunta.
-- **Comentarios:** máximos en sillita (5, pide la LETRA) y túnel (3, letra + número). Los 2 del 5/11 (pide un número / un orden) tienen 0 comentarios: pedir una LETRA o "1 o 2" sigue siendo lo que más da.
-- **Duración:** los 15 de más de 700 vistas duran 26-30 s (media 28,3 s). Mantener 27-31 s.
-- **Horas:** 10:00 (1.022, 1.009, 1.003, 970, 851, 836, 816; media 930) y 18:00 (982, 932, 879, 804, 772, 756; media 854). Diferencia pequeña a favor de las 10:00: mantener 10:00 y 18:00.
+## Pistas (22 vídeos con datos: siguen siendo pistas, no reglas)
+- **Octava confirmación: pregunta concreta en la 1ª frase.** ERROR DE NOVATO pasó de 31 vistas (puntos, abría afirmando) a 756 (móvil, abre con estadística + pregunta y cuenta atrás). Los 17 vídeos que abren con pregunta sobre una situación: 756-1.588 (media 917); los 5 que no: 31-93 (media 50).
+- **Top 3 sin cambios** (cruce 1.588, señal vacía 1.034, velocidad mínima 1.022): 3 formatos distintos con lo mismo en común: pregunta sobre algo que SE VE en la 1ª frase, 28 s de media, cuenta atrás y respuesta pedida en comentarios.
+- **Serie ¿QUIÉN PASA PRIMERO?: desgaste lento, pero aguanta.** P1 1.588 → P2 855 → P3 984 → P4 932 → peatón 828 → P5 820 → P6 794. Todas por encima de 750 (la regla que se puso el 6/11 para cerrarla). Se sigue, pero cambiando el escenario en cada parte (P7 montaña de lado, P8 autovía, P9 puente con río).
+- **POV rinde bien** (1.004 y 860; y el 3º del ranking abre en POV): por eso el 9/11 se prueba POV en un bloque nuevo (luces de noche).
+- **Comentarios siguen bajos:** los 2 del 6/11, 0 comentarios (piden letra y 1 o 2). Máximos: sillita 5 y túnel 3 (pedían la letra con un reto: "Si fallas esta..."). Likes del móvil (8) son los más bajos de los vídeos con más de 700 vistas: pista de que la estadística como gancho engancha menos que una situación visual.
+- **Duración:** los 17 de más de 700 vistas duran 26-30 s (media 28,5 s). Mantener 28-31 s.
+- **Horas:** 10:00 (8 vídeos, media 913) y 18:00 (7 vídeos, media 859). Diferencia pequeña a favor de las 10:00: mantener 10:00 y 18:00.
+
+## Cómo se aplica (9/11)
+- Vídeo A "inspirado en el top" (18:00): ¿QUIÉN PASA PRIMERO? parte 9 (puente estrecho con señal R-5: aunque el 1 ya esté dentro, retrocede; RGC art. 61.2), pregunta directa en la 1ª frase, vista cenital con 1 y 2, cuenta atrás de 3 s, pide 1 o 2, 7 escenas (una menos), 31,0 s, giro a mitad ("Pero ojo: había esta señal"). No va a las 10:00 porque el vídeo justo anterior (8/11 18:00) ya es ¿QUIÉN PASA PRIMERO?.
+- Vídeo B "explorar" (10:00): POV: ESTÁS CONDUCIENDO (1.004 y 860 las 2 veces) en un bloque nuevo (luces de noche, deslumbramiento, art. 102), gancho POV (distinto de la pregunta directa del vídeo anterior), empieza por la situación, pide la LETRA, 8 escenas, voz 1.10, 31,2 s, final "etiqueta a quien...".
+- Próxima revisión: ¿P7/P8/P9 siguen por encima de 750? ¿El POV de noche entra en el suelo de ~800? ¿La SEÑAL MISTERIOSA R-303 (8/11) vuelve a pasar de 1.000?
 
 ## Cómo se aplica (8/11)
 - Vídeo A "inspirado en el top" (18:00): ¿QUIÉN PASA PRIMERO? parte 8 (incorporación a la autovía por el carril de aceleración: cede el que se incorpora, RGC art. 72-73), pregunta directa en la 1ª frase, vista cenital con 1 y 2, cuenta atrás de 3 s, pide 1 o 2, 8 escenas, 30,4 s, final "te hago la parte 9". Bloque autopistas (el 3º del ranking es de autovía) para no repetir prioridad (7/11 18:00) ni señales (8/11 10:00). No va a las 10:00 porque el vídeo justo anterior (7/11 18:00) ya es ¿QUIÉN PASA PRIMERO?.
@@ -68,6 +75,7 @@ Media: 714 vistas (20 vídeos). Solo el cruce supera el doble de la media (1.532
 - Próxima revisión: ¿SEÑAL MISTERIOSA con pregunta supera la media? ¿La parte 3 (tierra) y la parte 4 (tranvía) siguen por encima de la media? ¿Cómo rinden POV parte 2 y aquaplaning?
 
 ## Alertas
+- 07/11: ningún vídeo de los últimos 3 días con más de 24 h y 0 visualizaciones (el más bajo de esos días, móvil 6/11, 756). Los 2 del 7/11 aún no aparecen en Metricool.
 - 06/11: ningún vídeo de los últimos 3 días con más de 24 h y 0 visualizaciones (el más bajo de esos días, ambulancia 5/11, 756). Los 2 del 6/11 aún no aparecen en Metricool.
 - 05/11: ningún vídeo de los últimos 3 días con más de 24 h y 0 visualizaciones (el más bajo de esos días, peatón 4/11, 767). Los 2 del 5/11 aún no aparecen en Metricool.
 - 04/11: ningún vídeo de los últimos 3 días con más de 24 h y 0 visualizaciones (el más bajo de esos días, cinturón 2/11, 762). Los 2 del 4/11 aún no aparecen en Metricool.

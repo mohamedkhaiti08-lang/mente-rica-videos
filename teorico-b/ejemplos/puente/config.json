@@ -1,0 +1,18 @@
+{"label": "¿QUIÉN PASA PRIMERO? · PARTE 9", "times": "tiempos.json", "voice": "voz.wav", "tail": 1.1,
+ "sfx": [{"t": 10.3, "type": "beep"}, {"t": 11.2, "type": "beep"}, {"t": 12.1, "type": "beep"}, {"t": 12.85, "type": "ding"}, {"t": 13.12, "type": "buzz"}, {"t": 22.15, "type": "buzz"}],
+ "scenes": [
+  {"cap": "Parte 9. El 1 ya está en el puente, y el 2 llega por el otro lado. ¿Quién pasa primero?", "hi": ["puente,", "2", "primero?"],
+   "vis": {"type": "puente", "mode": "hook", "lines": ["¿QUIÉN PASA PRIMERO?"], "cols": [[255, 196, 0]]}},
+  {"cap": "Pero ojo: en la entrada del 1, había esta señal.", "hi": ["ojo:", "señal."],
+   "vis": {"type": "puente", "mode": "sign"}},
+  {"cap": "¿1 o 2? Comenta. Tienes 3 segundos.", "hi": ["1", "2?", "3"],
+   "vis": {"type": "puente", "mode": "countdown", "countdown": [2.54, 3.44, 4.34], "tag": "¿1 O 2?"}},
+  {"cap": "¡Pasa el 2! El 1 tiene que dar marcha atrás, aunque entrara primero.", "hi": ["2!", "marcha", "atrás,"],
+   "vis": {"type": "puente", "mode": "answer"}},
+  {"cap": "Esta señal es prioridad en sentido contrario: no entras si obligas al otro a pararse.", "hi": ["prioridad", "contrario:", "pararse."],
+   "vis": {"type": "puente", "mode": "rule"}},
+  {"cap": "Y si ya estás dentro, te toca retroceder. Lo dice el artículo 61 del Reglamento.", "hi": ["dentro,", "retroceder.", "61"],
+   "vis": {"type": "puente", "mode": "back"}},
+  {"cap": "¿Acertaste? Comenta 1 o 2, y te hago la parte 10.", "hi": ["Comenta", "10."],
+   "vis": {"type": "cta", "big": "¿Acertaste?", "small": "Comenta 1 o 2 · ¿Parte 10?"}}
+ ]}

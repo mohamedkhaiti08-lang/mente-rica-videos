@@ -36,6 +36,9 @@
 #   izq (SEÑAL R-303: hook = cruce urbano cenital con la señal y una trayectoria en U con "?" | paths = recto/derecha ✓, izquierda/media vuelta ✗ |
 #     stat = 700.000 test, TOP 10 más falladas | pair = R-303 vs R-304); sign_generic y quiz admiten "noleft" (R-303) y "nouturn" (R-304).
 #   incorpora (autovía cenital con carril de aceleración, coches 1 y 2: hook | labels | countdown | answer | check | facilita | trap).
+#   noche (carretera de noche en 1ª persona, deslumbramiento art. 102: hook | slow = baja la velocidad hasta parar | grave = no devolver las largas |
+#     switch = largas → cortas al cruzarse y largas solo tras pasarlo | mirror = coche delante, su retrovisor).
+#   puente (puente estrecho cenital con señal R-5 en la entrada del 1: hook | sign | countdown | answer = el 1 retrocede y pasa el 2 | rule = qué significa la R-5 | back = art. 61).
 import math, json, sys, os, subprocess
 from functools import lru_cache
 from multiprocessing import Pool
@@ -3009,6 +3012,312 @@ def vis_incorpora(dst, t, v, i):
         if v.get("tag"): paste(dst, pill(v["tag"], 38, YEL, NAVY), W / 2, CY + 270, scale=eback(prog(t, 1.4, .35)), alpha=ease(prog(t, 1.4, .3)))
     elif v.get("tag"):
         paste(dst, pill(v["tag"], 40, YEL, NAVY), W / 2 - (100 if cd else 0), (bot - 60) if v.get("tag_bottom") else top + 60, scale=eback(prog(t, .4, .4)), alpha=ease(prog(t, .4, .3)))
+
+
+# --- NOCHE: carretera convencional de noche en 1ª persona (POV deslumbramiento, RGC art. 102) ---
+# vis: {"type": "noche", "mode": "hook" | "slow" | "grave" | "switch" | "mirror", "lines": [...], "cols": [...], "tag": "..."}
+#   hook   = el que viene de frente con las largas: destello que deslumbra, velocidad en el salpicadero
+#   slow   = la velocidad baja de "from" a 0 y la carretera se frena ("REDUCE" → "INCLUSO PARAR")
+#   grave  = testigo de largas tachado: no se devuelven las largas ("INFRACCIÓN GRAVE")
+#   switch = nuestras largas iluminan lejos → cortas al acercarse el otro; largas otra vez solo tras pasarlo
+#   mirror = coche delante en nuestro carril: su retrovisor se ilumina → cortas
+# Nuestro carril es el derecho: la línea central queda a la izquierda del centro de la pantalla.
+def night_road(dst, t, beam=0.0, pos=None):
+    """beam: 1 = largas (iluminan hasta el horizonte), 0 = cortas (solo cerca). pos: distancia recorrida (para frenar)."""
+    pos = t * .55 if pos is None else pos
+    lay = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(lay, "RGBA")
+    top, bot = VZ[0] + 10, VZ[1] + 20; hz = top + 330; vx = W / 2 + 60
+    for y in range(top, hz):
+        k = (y - top) / (hz - top); d.line([(40, y), (W - 40, y)], fill=mix((3, 6, 18), (16, 28, 60), k) + (255,))
+    for k in range(46):  # estrellas
+        x = 60 + (k * 577) % (W - 120); y = top + 16 + (k * 331) % (hz - top - 70); r = 1.5 + (k % 3) * .8
+        a = int(110 + 90 * math.sin(t * 3 + k * 1.7)); d.ellipse((x - r, y - r, x + r, y + r), fill=(230, 236, 255, a))
+    hills = [(40, hz)] + [(x, hz - 40 - 34 * math.sin(x / 140) - 22 * math.sin(x / 57 + 1)) for x in range(40, W - 39, 20)] + [(W - 40, hz)]
+    d.polygon(hills, fill=(8, 12, 22, 255))
+    d.rectangle((40, hz, W - 40, bot), fill=(8, 12, 10, 255))
+    def axis(u): return vx - 330 * u
+    def hw(u): return 14 + 600 * u
+    U = lambda u: hz + (bot - hz) * u
+    us = [k / 40 for k in range(41)]
+    d.polygon([(axis(u) - hw(u), U(u)) for u in us] + [(axis(u) + hw(u), U(u)) for u in reversed(us)], fill=(20, 22, 28, 255))
+    reach = lerp(.40, .015, beam)  # hasta dónde llega la luz (u pequeño = lejos)
+    # luz de nuestros faros sobre el asfalto
+    lt = Image.new("RGBA", (W, H), (0, 0, 0, 0)); ld = ImageDraw.Draw(lt, "RGBA"); n = 26
+    for j in range(n):
+        u0 = reach + (1 - reach) * j / n; u1 = reach + (1 - reach) * (j + 1) / n
+        a = int((70 + 60 * j / n) * (.55 + .45 * beam) * min(1, (j + 1) / 4))
+        sp = lambda u: (axis(u) - hw(u) * (.15 + .5 * beam), axis(u) + hw(u) * 1.1)
+        l0, r0 = sp(u0); l1, r1 = sp(u1)
+        ld.polygon([(l0, U(u0)), (r0, U(u0)), (r1, U(u1)), (l1, U(u1))], fill=(255, 238, 190, a))
+    lay.alpha_composite(lt.filter(ImageFilter.GaussianBlur(18)))
+    def lit(u): return 1.0 if u >= reach else .22 + .5 * clamp(1 - (reach - u) / .12)
+    for side in (-1, 1):  # bordes de la calzada
+        for k in range(40):
+            u, u2 = us[k], us[k + 1]
+            d.line([(axis(u) + side * hw(u) * .94, U(u)), (axis(u2) + side * hw(u2) * .94, U(u2))], fill=(235, 235, 235, int(255 * lit(u))), width=max(2, int(9 * u2)))
+    for k in range(9):  # línea central discontinua que avanza
+        z = ((k / 9) + pos) % 1.0; z2 = min(1, z + .045); u1, u2 = z ** 2, z2 ** 2
+        d.line([(axis(u1), U(u1)), (axis(u2), U(u2))], fill=(255, 255, 255, int(250 * lit(u1))), width=max(3, int(16 * u2)))
+    for k in range(8):  # hitos de arista: el reflectante brilla con nuestras luces
+        z = ((k / 8) + pos) % 1.0; u = z ** 2
+        for side in (-1, 1):
+            x = axis(u) + side * hw(u) * 1.12; y = U(u); hh = 8 + 120 * u; ww = 3 + 22 * u; L = lit(u)
+            d.rectangle((x - ww / 2, y - hh, x + ww / 2, y), fill=(int(200 * L), int(200 * L), int(200 * L), 255))
+            col = (255, 150, 0) if side > 0 else (240, 40, 40)
+            d.rectangle((x - ww / 2, y - hh * .82, x + ww / 2, y - hh * .68), fill=mix((40, 30, 20), col, L) + (255,))
+    m = Image.new("L", (W, H), 0); ImageDraw.Draw(m).rounded_rectangle((40, top, W - 40, bot), radius=36, fill=255)
+    lay.putalpha(Image.fromarray(np.minimum(np.array(lay.split()[3]), np.array(m)))); dst.alpha_composite(lay)
+    return top, bot, hz, U, axis, hw
+
+@lru_cache(maxsize=8)
+def head_glow(s=300, warm=False):
+    im = Image.new("RGBA", (s * 2, s * 2), (0, 0, 0, 0)); d = ImageDraw.Draw(im); col = (255, 246, 214) if warm else (236, 244, 255)
+    d.ellipse((s * .55, s * .55, s * 1.45, s * 1.45), fill=col + (150,))
+    g = im.filter(ImageFilter.GaussianBlur(s * .28)); core = Image.new("RGBA", im.size, (0, 0, 0, 0))
+    ImageDraw.Draw(core).ellipse((s * .86, s * .9, s * 1.14, s * 1.1), fill=(255, 255, 255, 255))
+    g.alpha_composite(core.filter(ImageFilter.GaussianBlur(5))); return g
+
+def oncoming(dst, t, U, axis, hw, u, high=True):
+    """coche que viene de frente por el carril izquierdo: carrocería oscura y dos faros."""
+    x = axis(u) - hw(u) * .48; y = U(u); sc = .08 + 1.0 * u; w = 430 * sc
+    d = ImageDraw.Draw(dst, "RGBA")
+    d.rounded_rectangle((x - w / 2, y - w * .42, x + w / 2, y), radius=max(2, int(w * .12)), fill=(26, 28, 34, 255))
+    d.rounded_rectangle((x - w * .36, y - w * .62, x + w * .36, y - w * .36), radius=max(2, int(w * .1)), fill=(16, 18, 24, 255))
+    for sx in (-.34, .34):
+        paste(dst, head_glow(220), x + sx * w, y - w * .2, scale=((.7 + 3.2 * u) if high else sc * 1.1) * (1 + .05 * math.sin(t * 13)))
+    if high:  # destellos horizontales (flare)
+        fl = Image.new("RGBA", (W, H), (0, 0, 0, 0)); fd = ImageDraw.Draw(fl)
+        L = 260 + 900 * u; fd.line([(x - L, y - w * .2), (x + L, y - w * .2)], fill=(220, 236, 255, 170), width=int(6 + 20 * u))
+        dst.alpha_composite(fl.filter(ImageFilter.GaussianBlur(7)))
+    return x, y
+
+def glare(dst, k, top, bot):
+    """velo blanco de deslumbramiento (k 0..1) dentro de la zona visual."""
+    if k <= .01: return
+    g = Image.new("RGBA", (W, H), (0, 0, 0, 0)); ImageDraw.Draw(g).rounded_rectangle((40, top, W - 40, bot), radius=36, fill=(235, 242, 255, int(150 * k)))
+    dst.alpha_composite(g)
+
+@lru_cache(maxsize=8)
+def beam_icon(kind="high", s=120, col=None):
+    """testigo del salpicadero: largas (azul, rayas horizontales) | cortas (verde, rayas inclinadas hacia abajo)"""
+    col = col or ((40, 120, 255) if kind == "high" else (40, 200, 90))
+    im = ss(s, s); d = ImageDraw.Draw(im); S = s * 2; wdt = int(S * .08)
+    d.chord((S * .42, S * .18, S * .96, S * .82), 270, 90, fill=col)
+    d.rectangle((S * .62, S * .18, S * .69, S * .82), fill=col)
+    for k in range(4):
+        y = S * (.27 + k * .155)
+        if kind == "high": d.line([(S * .5, y), (S * .08, y)], fill=col, width=wdt)
+        else: d.line([(S * .5, y), (S * .1, y + S * .14)], fill=col, width=wdt)
+    return down(im)
+
+def night_dash(dst, t, top, bot, icon=None, speed=None, xmark=False, scol=WHITE):
+    lay = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(lay, "RGBA"); dy = bot - 130
+    d.rectangle((40, dy + 40, W - 40, bot), fill=(12, 14, 18, 255))
+    d.ellipse((-160, dy, W + 160, dy + 300), fill=(12, 14, 18, 255))
+    d.arc((W / 2 - 300, dy + 40, W / 2 + 300, dy + 640), 200, 340, fill=(32, 34, 42, 255), width=46)
+    m = Image.new("L", (W, H), 0); ImageDraw.Draw(m).rounded_rectangle((40, top, W - 40, bot), radius=36, fill=255)
+    lay.putalpha(Image.fromarray(np.minimum(np.array(lay.split()[3]), np.array(m)))); dst.alpha_composite(lay)
+    if icon:
+        paste(dst, card(190, 150, fill=(6, 8, 12, 255), r=28), W / 2 + 250, dy + 40)
+        paste(dst, glow(beam_icon(icon, 104), 10, .8), W / 2 + 250, dy + 40)
+        if xmark: paste(dst, icon_x(96), W / 2 + 330, dy - 10, scale=eback(prog(t, .3, .35)))
+    if speed is not None:
+        paste(dst, card(250, 150, fill=(6, 8, 12, 255), r=28), W / 2 - 250, dy + 40)
+        paste(dst, text(str(int(round(speed))), 80, scol, BLACK, shadow=False), W / 2 - 280, dy + 34)
+        paste(dst, text("km/h", 30, (170, 180, 200), XB, shadow=False), W / 2 - 170, dy + 54)
+
+def vis_noche(dst, t, v, i):
+    if i == 0: t = t + 0.6  # primer fotograma: coche con las largas y texto ya en pantalla
+    mode = v.get("mode", "hook")
+    if mode == "hook":
+        top, bot, hz, U, axis, hw = night_road(dst, t, 0.0)
+        u = lerp(.10, .30, eout(prog(t, 0, 3.0))); x, y = oncoming(dst, t, U, axis, hw, u, high=True)
+        glare(dst, (.35 + .7 * u) * (.85 + .15 * math.sin(t * 9)), top, bot)
+        night_dash(dst, t, top, bot, icon="low", speed=90)
+        lines = v.get("lines", [])
+        if lines:
+            g = Image.new("RGBA", (W, H), (0, 0, 0, 0)); ImageDraw.Draw(g).rounded_rectangle((40, top, W - 40, top + 300), radius=36, fill=(6, 20, 43, 200)); dst.alpha_composite(g)
+            big_lines(dst, lines, t, top + 95, [tuple(c) for c in v.get("cols", [])] or None, size=110)
+    elif mode == "slow":
+        a0, du = .3, 2.4; k = ease(prog(t, a0, du)); spd = lerp(v.get("from", 90), 0, k)
+        pos = sum((1 - ease(prog(s / 40 * t, a0, du))) for s in range(40)) * t / 40 * .55  # recorrido (se frena)
+        top, bot, hz, U, axis, hw = night_road(dst, t, 0.0, pos)
+        u = .34 + .02 * math.sin(t * 2); oncoming(dst, t, U, axis, hw, u, high=True)
+        glare(dst, .45 * (.85 + .15 * math.sin(t * 9)), top, bot)
+        night_dash(dst, t, top, bot, icon="low", speed=spd, scol=GREEN if k < .99 else RED)
+        paste(dst, pill("REDUCE LA VELOCIDAD", 48, GREEN, WHITE), W / 2, top + 80, scale=eback(prog(t, .1, .35)), alpha=ease(prog(t, .1, .3)))
+        paste(dst, pill(v.get("tag", "INCLUSO HASTA PARAR"), 48, RED, WHITE), W / 2, top + 175, scale=eback(prog(t, a0 + du * .75, .35)), alpha=ease(prog(t, a0 + du * .75, .3)), rot=-3)
+    elif mode == "grave":
+        top, bot, hz, U, axis, hw = night_road(dst, t, 0.0)
+        u = .26 + .02 * math.sin(t * 2); oncoming(dst, t, U, axis, hw, u, high=True)
+        glare(dst, .35, top, bot)
+        night_dash(dst, t, top, bot, icon="high", speed=60, xmark=True)
+        dk = Image.new("RGBA", (W, H), (0, 0, 0, 0)); ImageDraw.Draw(dk).rounded_rectangle((40, top, W - 40, bot - 140), radius=36, fill=(6, 20, 43, 150)); dst.alpha_composite(dk)
+        p = eback(prog(t, .05, .45)); paste(dst, card(800, 400, fill=(255, 255, 255, 250), r=40), W / 2, CY - 70 + (1 - p) * 100, alpha=ease(prog(t, .05, .25)))
+        a = ease(prog(t, .15, .3))
+        paste(dst, beam_icon("high", 150), W / 2 - 250, CY - 150, alpha=a)
+        paste(dst, icon_x(110), W / 2 - 180, CY - 90, scale=eback(prog(t, .5, .35)), alpha=ease(prog(t, .5, .2)))
+        paste(dst, text("¿LE DEVUELVES", 54, DARK, BLACK, shadow=False), W / 2 + 90, CY - 175, alpha=a)
+        paste(dst, text("LAS LARGAS?", 54, DARK, BLACK, shadow=False), W / 2 + 90, CY - 115, alpha=a)
+        pg = prog(t, .9, .2)
+        if pg > 0: paste(dst, stamp_col("INFRACCIÓN GRAVE", RED), W / 2, CY + 60, scale=lerp(1.5, .78, eout(pg)), alpha=ease(pg * 1.5), rot=-5)
+    elif mode == "switch":
+        sw = v.get("sw", .7); back = v.get("back", 3.4)  # cortas en sw; largas otra vez en back (tras pasarlo)
+        beam = 1 - ease(prog(t, sw, .25)) + ease(prog(t, back, .3))
+        top, bot, hz, U, axis, hw = night_road(dst, t, beam)
+        u = lerp(.06, 1.25, ease(prog(t, .1, back - .1)) ** 1.6)
+        if u < 1.2: oncoming(dst, t, U, axis, hw, u, high=False)
+        glare(dst, .3 * clamp(1 - (t - sw) * 4) if t > sw else .3 * clamp(t / sw), top, bot)  # mientras llevamos largas, deslumbramos
+        night_dash(dst, t, top, bot, icon="high" if beam > .5 else "low", speed=80)
+        paste(dst, pill("CORTAS ANTES DE DESLUMBRAR", 42, GREEN, WHITE), W / 2, top + 75, scale=eback(prog(t, sw, .35)), alpha=ease(prog(t, sw, .3)) * (1 - ease(prog(t, back - .2, .3))))
+        paste(dst, pill("LARGAS, SOLO TRAS PASARLO", 42, (40, 120, 255), WHITE), W / 2, top + 75, scale=eback(prog(t, back, .35)), alpha=ease(prog(t, back, .3)))
+    elif mode == "mirror":
+        sw = v.get("sw", 1.2); beam = 1 - ease(prog(t, sw, .25))
+        top, bot, hz, U, axis, hw = night_road(dst, t, beam)
+        u = .36 + .015 * math.sin(t * 1.5); x = axis(u) + hw(u) * .5; y = U(u); sc = .12 + u
+        car = car_rear(560, (70, 76, 92)); paste(dst, car, x, y - car.height * sc / 2, scale=sc)
+        for sx in (-.36, .36): paste(dst, red_glow(80), x + sx * 560 * sc, y - car.height * sc * .5, scale=sc * 1.6, alpha=.9)
+        # su retrovisor interior: se ve un destello si llevamos largas
+        rx, ry = x, y - car.height * sc * .82; d = ImageDraw.Draw(dst, "RGBA")
+        paste(dst, head_glow(120), rx, ry, scale=.6 + 1.6 * beam, alpha=beam)
+        night_dash(dst, t, top, bot, icon="high" if beam > .5 else "low", speed=80)
+        # lupa: lo que ve el de delante por su espejo
+        mp = eback(prog(t, .2, .4)); ma = ease(prog(t, .2, .3)); mx, my = W / 2 - 230, top + 250
+        mir = ss(330, 130); md = ImageDraw.Draw(mir); md.rounded_rectangle((0, 0, 659, 259), radius=110, fill=(30, 32, 40), outline=(90, 96, 110), width=10)
+        md.rounded_rectangle((26, 26, 633, 233), radius=90, fill=mix((40, 60, 90), (245, 248, 255), beam))
+        paste(dst, down(mir), mx, my, scale=mp, alpha=ma)
+        if beam > .3:
+            for sx in (-60, 60): paste(dst, head_glow(80), mx + sx, my, scale=.9 * beam, alpha=beam * ma)
+        paste(dst, pill("SU RETROVISOR", 32, WHITE, NAVY), mx, my + 105, alpha=ma)
+        paste(dst, pill("TAMBIÉN AL DE DELANTE", 44, YEL, NAVY), W / 2, top + 75, scale=eback(prog(t, sw, .35)), alpha=ease(prog(t, sw, .3)))
+
+
+# --- PUENTE ESTRECHO con señal R-5 «prioridad en sentido contrario», vista cenital (¿QUIÉN PASA PRIMERO? parte 9) ---
+# vis: {"type": "puente", "mode": "hook" | "sign" | "countdown" | "answer" | "rule" | "back", "countdown": [t1, t2, t3], "tag": "...", "lines": [...]}
+#   El 1 sube (viene del sur) y ya está sobre el puente; en su entrada hay una R-5. El 2 baja (viene del norte).
+#   R-5 (RGC art. 61.2): el que llega por el extremo con esa señal cede y, si ya ha entrado, retrocede.
+RIV = (CY - 70, CY + 175)   # río (y)
+P1_IN, P2_IN = (W / 2, CY + 60), (W / 2 - 75, VZ[0] + 330)
+R5_POS = (W / 2 + 255, RIV[1] + 175)
+
+@lru_cache(maxsize=8)
+def sign_r5(s=200, flat=False):
+    """R-5: redonda, borde rojo, fondo blanco; flecha negra hacia abajo (izquierda) y flecha roja hacia arriba (derecha)."""
+    im = ss(s, s); d = ImageDraw.Draw(im); S = s * 2
+    d.ellipse((0, 0, S - 1, S - 1), fill=(220, 30, 40)); d.ellipse((S * .12, S * .12, S * .88, S * .88), fill=WHITE)
+    k = S * .075
+    def arr(x, up, col):
+        if up:
+            d.line([(x, S * .74), (x, S * .38)], fill=col, width=int(k)); d.polygon([(x, S * .22), (x - S * .1, S * .4), (x + S * .1, S * .4)], fill=col)
+        else:
+            d.line([(x, S * .26), (x, S * .62)], fill=col, width=int(k)); d.polygon([(x, S * .78), (x - S * .1, S * .6), (x + S * .1, S * .6)], fill=col)
+    arr(S * .37, False, (20, 20, 22)); arr(S * .63, True, (220, 30, 40))
+    return down(im) if flat else glow(down(im), 24, .45)
+
+def puente_scene(dst, t):
+    lay = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(lay, "RGBA")
+    top, bot = VZ[0] + 10, VZ[1] + 20; cx = W / 2; y0, y1 = RIV
+    d.rectangle((40, top, W - 40, bot), fill=(88, 128, 70, 255))
+    for k in range(30):
+        gx, gy = 60 + (k * 263) % (W - 120), top + (k * 157) % (bot - top)
+        d.ellipse((gx - 30, gy - 18, gx + 30, gy + 18), fill=(98, 140, 78, 255))
+    # río con orillas y ondas que fluyen
+    d.rectangle((40, y0 - 22, W - 40, y1 + 22), fill=(150, 128, 92, 255))
+    d.rectangle((40, y0, W - 40, y1), fill=(36, 104, 182, 255))
+    for k in range(14):
+        wy = y0 + 22 + (k * 53) % (y1 - y0 - 40); wx = ((t * 70 + k * 173) % (W + 300)) - 150
+        d.arc((wx - 60, wy - 12, wx + 60, wy + 12), 200, 340, fill=(160, 210, 255, 170), width=5)
+    # carretera de doble sentido (300) que se estrecha a un puente de un solo carril (190)
+    rw, bw = 150, 96
+    d.rectangle((cx - rw, top, cx + rw, y0 - 90), fill=(46, 49, 58, 255)); d.rectangle((cx - rw, y1 + 90, cx + rw, bot), fill=(46, 49, 58, 255))
+    d.polygon([(cx - rw, y0 - 90), (cx + rw, y0 - 90), (cx + bw, y0 - 22), (cx - bw, y0 - 22)], fill=(46, 49, 58, 255))
+    d.polygon([(cx - bw, y1 + 22), (cx + bw, y1 + 22), (cx + rw, y1 + 90), (cx - rw, y1 + 90)], fill=(46, 49, 58, 255))
+    d.rectangle((cx - bw - 26, y0 - 30, cx + bw + 26, y1 + 30), fill=(0, 0, 0, 70))  # sombra del puente
+    d.rectangle((cx - bw, y0 - 22, cx + bw, y1 + 22), fill=(64, 66, 74, 255))
+    for sx in (-1, 1):  # pretiles
+        d.rectangle((cx + sx * bw - 12, y0 - 26, cx + sx * bw + 12, y1 + 26), fill=(196, 198, 204, 255))
+        for yy in range(int(y0 - 20), int(y1 + 20), 34): d.rectangle((cx + sx * bw - 12, yy, cx + sx * bw + 12, yy + 6), fill=(150, 152, 160, 255))
+    for (ya, yb) in ((top, y0 - 90), (y1 + 90, bot)):  # línea central discontinua y bordes
+        y = ya + 10
+        while y < yb - 20: d.line([(cx, y), (cx, min(yb - 20, y + 44))], fill=(255, 255, 255, 220), width=8); y += 88
+        for sx in (-1, 1): d.line([(cx + sx * (rw - 12), ya), (cx + sx * (rw - 12), yb)], fill=(255, 255, 255, 200), width=6)
+    m = Image.new("L", (W, H), 0); ImageDraw.Draw(m).rounded_rectangle((40, top, W - 40, bot), radius=36, fill=255)
+    lay.putalpha(Image.fromarray(np.minimum(np.array(lay.split()[3]), np.array(m)))); dst.alpha_composite(lay)
+    return top, bot
+
+def pu_car(dst, n, x, y, t, rot=0, rev=False):
+    paste(dst, car_top(CRUCE_COLS[n], 112), x, y, rot=rot)
+    if rev and int(t * 4) % 2 == 0:  # luces de marcha atrás (blancas) parpadeando detrás
+        for sx in (-26, 26): paste(dst, head_glow(60), x + sx, y + 104, scale=.8)
+    paste(dst, num_badge(n, 70), x + (110 if n == 1 else -110), y)
+
+def r5_post(dst, t, hl=False, a=1.0):
+    x, y = R5_POS; d = ImageDraw.Draw(dst, "RGBA")
+    d.rectangle((x - 6, y, x + 6, y + 70), fill=(150, 154, 160, int(255 * a)))
+    if hl:
+        pk = .5 + .5 * math.sin(t * 7); r = 92 + 10 * pk
+        d.ellipse((x - r, y - 60 - r, x + r, y - 60 + r), outline=YEL + (int(255 * a),), width=10)
+    paste(dst, sign_r5(120), x, y - 60, alpha=a)
+
+def vis_puente(dst, t, v, i):
+    if i == 0: t = t + 0.6  # primer fotograma: puente, coches, números y pregunta ya en pantalla
+    mode = v.get("mode", "hook"); top, bot = puente_scene(dst, t)
+    (x1, y1), (x2, y2) = P1_IN, P2_IN; r2 = 180; rev = False
+    if mode == "hook":
+        y1 = lerp(RIV[1] + 210, P1_IN[1], eout(prog(t, 0, 1.4))); y2 = lerp(P2_IN[1] - 60, P2_IN[1], eout(prog(t, 0, 1.4)))
+    elif mode in ("sign", "countdown"):
+        y1 += 5 * math.sin(t * 2); y2 -= 4 * math.sin(t * 2)
+    elif mode in ("answer", "back"):
+        k1 = ease(prog(t, .2, 1.5)); rev = 0 < k1 < 1
+        y1 = lerp(P1_IN[1], RIV[1] + 215, k1); x1 = lerp(W / 2, W / 2 + 75, ease(prog(t, 1.1, .6)))
+        if mode == "answer":
+            k2 = ease(prog(t, 1.5, 1.6)); y2 = lerp(P2_IN[1], RIV[1] + 190, k2); x2 = W / 2 - 75 + 75 * math.sin(math.pi * clamp((y2 - (RIV[0] - 120)) / (RIV[1] - RIV[0] + 240)))
+    r5_post(dst, t, hl=mode in ("sign", "back"))
+    cl = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    pu_car(cl, 1, x1, y1, t, rev=rev); pu_car(cl, 2, x2, y2, t, rot=r2)
+    m = Image.new("L", (W, H), 0); ImageDraw.Draw(m).rounded_rectangle((40, top, W - 40, bot), radius=36, fill=255)
+    cl.putalpha(Image.fromarray(np.minimum(np.array(cl.split()[3]), np.array(m)))); dst.alpha_composite(cl)
+    if mode == "hook":
+        lines = v.get("lines", [])
+        if lines:
+            g = Image.new("RGBA", (W, H), (0, 0, 0, 0)); ImageDraw.Draw(g).rounded_rectangle((40, top, W - 40, top + 190), radius=36, fill=(6, 20, 43, 170)); dst.alpha_composite(g)
+            big_lines(dst, lines, t, top + 60, [tuple(c) for c in v.get("cols", [])] or None, size=84)
+        paste(dst, pill("YA ESTÁ DENTRO", 34, WHITE, NAVY), W / 2 - 250, P1_IN[1] - 20, scale=eback(prog(t, 1.2, .35)), alpha=ease(prog(t, 1.2, .3)))
+    if mode == "sign":  # la señal se acerca a cámara con un "?"
+        p = eback(prog(t, .2, .5)); a = ease(prog(t, .2, .3))
+        dk = Image.new("RGBA", (W, H), (0, 0, 0, 0)); ImageDraw.Draw(dk).rounded_rectangle((40, top, W - 40, bot), radius=36, fill=(6, 20, 43, int(120 * a))); dst.alpha_composite(dk)
+        sx, sy = lerp(R5_POS[0], W / 2 - 60, eout(prog(t, .2, .5))), lerp(R5_POS[1] - 60, CY - 40, eout(prog(t, .2, .5)))
+        paste(dst, sign_r5(420), sx, sy, scale=lerp(.3, 1, eout(prog(t, .2, .5))), alpha=a, rot=4 * math.sin(t * 2.4))
+        paste(dst, text("?", 220, YEL, BLACK), W / 2 + 260, CY - 60, scale=(.9 + .1 * math.sin(t * 6)) * eback(prog(t, .7, .4)), alpha=ease(prog(t, .7, .2)))
+        paste(dst, pill("EN LA ENTRADA DEL 1", 38, YEL, NAVY), W / 2, CY + 240, scale=eback(prog(t, .9, .35)), alpha=ease(prog(t, .9, .3)))
+    cd = v.get("countdown")
+    if cd:
+        n = sum(1 for s in cd if t >= s); ix, iy = 160, top + 250
+        paste(dst, semaphore(n).resize((115, 300), Image.LANCZOS), ix, iy, scale=eback(prog(t, 0, .4)))
+        if n:
+            pk = prog(t, cd[n - 1], .25)
+            paste(dst, text(str(4 - n), 170, [RED, (255, 176, 0), GREEN][n - 1], BLACK), ix, iy + 270, scale=lerp(1.6, 1, eout(pk)), alpha=ease(pk * 2))
+    if mode == "answer":
+        paste(dst, pill("MARCHA ATRÁS", 36, RED, WHITE), x1 - 250, y1 - 20, scale=eback(prog(t, .3, .35)), alpha=ease(prog(t, .3, .3)) * (1 - ease(prog(t, 2.2, .3))))
+        p = prog(t, 1.6, .35)
+        if p > 0: paste(dst, pill("1º", 52, YEL, NAVY, padx=26), x2 - 245, min(y2 + 10, bot - 90), scale=eback(p), alpha=ease(p * 2))
+    if mode == "rule":
+        dk = Image.new("RGBA", (W, H), (0, 0, 0, 0)); ImageDraw.Draw(dk).rounded_rectangle((40, top, W - 40, bot), radius=36, fill=(6, 20, 43, 170)); dst.alpha_composite(dk)
+        p = eback(prog(t, .05, .45)); paste(dst, card(860, 760, fill=(255, 255, 255, 250), r=40), W / 2, CY + (1 - p) * 120, alpha=ease(prog(t, .05, .25)))
+        a = ease(prog(t, .15, .3)); sy = CY - 60
+        paste(dst, text("PRIORIDAD EN", 56, DARK, BLACK, shadow=False), W / 2, CY - 320, alpha=a)
+        paste(dst, text("SENTIDO CONTRARIO", 56, RED, BLACK, shadow=False), W / 2, CY - 255, alpha=a)
+        paste(dst, sign_r5(300, flat=True), W / 2, sy + 30, alpha=a)
+        a1, a2 = ease(prog(t, .8, .3)), ease(prog(t, 1.5, .3))
+        paste(dst, pill("TÚ: CEDES", 38, RED, WHITE), W / 2 + 280, sy - 40, alpha=a1, scale=eback(prog(t, .8, .35)))
+        paste(dst, pill("EL DE FRENTE", 34, DARK, WHITE), W / 2 - 290, sy + 100, alpha=a2, scale=eback(prog(t, 1.5, .35)))
+        paste(dst, pill("NO ENTRES SI LE OBLIGAS A PARAR", 36, YEL, NAVY), W / 2, CY + 290, alpha=ease(prog(t, 2.4, .3)), scale=eback(prog(t, 2.4, .35)))
+    if mode == "back":
+        paste(dst, pill("AUNQUE ESTÉ DENTRO:", 40, WHITE, NAVY), W / 2, top + 70, scale=eback(prog(t, .2, .35)), alpha=ease(prog(t, .2, .3)))
+        paste(dst, pill("RETROCEDE", 52, RED, WHITE), W / 2, top + 155, scale=eback(prog(t, .7, .35)), alpha=ease(prog(t, .7, .3)))
+        paste(dst, pill(v.get("tag", "ART. 61 DEL REGLAMENTO DE CIRCULACIÓN"), 32, WHITE, BLUE), W / 2, top + 240, alpha=ease(prog(t, 1.6, .3)))
+    elif v.get("tag") and mode != "rule":
+        paste(dst, pill(v["tag"], 40, YEL, NAVY), W / 2 + (60 if cd else 0), bot - 60, scale=eback(prog(t, .4, .4)), alpha=ease(prog(t, .4, .3)))
 
 
 VIS = {k[4:]: v for k, v in globals().items() if k.startswith("vis_")}

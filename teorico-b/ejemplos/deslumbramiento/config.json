@@ -1,0 +1,20 @@
+{"label": "POV: ESTÁS CONDUCIENDO", "times": "tiempos.json", "voice": "voz.wav", "tail": 1.0,
+ "sfx": [{"t": 12.1, "type": "beep"}, {"t": 13.0, "type": "beep"}, {"t": 13.9, "type": "beep"}, {"t": 14.66, "type": "ding"}, {"t": 18.74, "type": "buzz"}],
+ "scenes": [
+  {"cap": "Vas de noche, y el que viene de frente te deslumbra con las largas.", "hi": ["noche,", "deslumbra", "largas."],
+   "vis": {"type": "noche", "mode": "hook", "lines": ["TE DESLUMBRA:", "¿QUÉ HACES?"], "cols": [[255, 255, 255], [255, 196, 0]]}},
+  {"cap": "¿Qué haces? A, le das tú las largas. B, reduces la velocidad. C, sigues igual, mirando sus faros.", "hi": ["A,", "B,", "C,"],
+   "vis": {"type": "quiz", "q": "De noche, el que viene de frente te deslumbra. ¿Qué haces?", "opts": ["Le das tú las largas", "Reduces la velocidad", "Sigues igual y miras sus faros"], "correct": 1, "opt_at": [0.2, 0.5, 0.76]}},
+  {"cap": "Escribe tu letra en comentarios. Tienes 3 segundos.", "hi": ["letra", "3"],
+   "vis": {"type": "countdown", "quiz_scene": 1, "at": [3.18, 4.08, 4.98]}},
+  {"cap": "¡Es la B! Reduces lo necesario, incluso hasta pararte.", "hi": ["B!", "pararte."],
+   "vis": {"type": "noche", "mode": "slow", "from": 90}},
+  {"cap": "Devolverle las largas es una infracción grave.", "hi": ["largas", "grave."],
+   "vis": {"type": "noche", "mode": "grave"}},
+  {"cap": "Tú, pon las cortas antes de deslumbrar, y no vuelvas a las largas hasta pasarlo.", "hi": ["cortas", "pasarlo."],
+   "vis": {"type": "noche", "mode": "switch", "sw": 0.7, "back": 3.4}},
+  {"cap": "Ojo: también al de delante, por su retrovisor.", "hi": ["delante,", "retrovisor."],
+   "vis": {"type": "noche", "mode": "mirror", "sw": 1.2}},
+  {"cap": "Etiqueta a quien conduce con las largas puestas.", "hi": ["Etiqueta", "largas"],
+   "vis": {"type": "cta", "big": "¡Etiquétalo!", "small": "Al que va siempre con las largas"}}
+ ]}
