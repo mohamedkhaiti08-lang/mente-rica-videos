@@ -1,0 +1,282 @@
+{
+ "tail": 1.4,
+ "cx": 445,
+ "cap_maxw": 800,
+ "title_maxw": 820,
+ "instant": true,
+ "step_gap": 290,
+ "label": "CURIOSIDAD",
+ "times": "2026-11-12-1200-bismillah.tiempos.json",
+ "scenes": [
+  {
+   "cap": "Tu amigo musulmán dice «Bismillah» antes de comer. ¿Sabes por qué?",
+   "tint": "gold",
+   "vis": {
+    "type": "emoji",
+    "e": "🍽️",
+    "orbit": [
+     "🤲",
+     "❓",
+     "😋"
+    ],
+    "y": 900
+   },
+   "hi": [
+    "bismillah",
+    "comer."
+   ],
+   "title": [
+    "¿Por qué dice",
+    "«Bismillah»?"
+   ]
+  },
+  {
+   "cap": "«Bismillah» significa: en el nombre de Allah.",
+   "tint": "green",
+   "vis": {
+    "type": "big",
+    "words": [
+     "EN EL NOMBRE",
+     "DE ALLAH"
+    ],
+    "size": 94,
+    "gap": 160,
+    "y": 860,
+    "e": "🤲"
+   },
+   "hi": [
+    "nombre",
+    "allah."
+   ],
+   "title": [
+    "Significa…"
+   ]
+  },
+  {
+   "cap": "Y todo empezó con un niño… y un plato.",
+   "tint": "night",
+   "vis": {
+    "type": "emoji",
+    "e": "👦",
+    "orbit": [
+     "🍽️",
+     "✨",
+     "🥘"
+    ],
+    "y": 900
+   },
+   "hi": [
+    "niño…",
+    "plato."
+   ],
+   "title": [
+    "Un niño…",
+    "y un plato"
+   ]
+  },
+  {
+   "cap": "Se llamaba Umar, y vivía en casa del Profeta, la paz sea con él.",
+   "tint": "blue",
+   "vis": {
+    "type": "emoji",
+    "e": "🏠",
+    "orbit": [
+     "🤍",
+     "🕌",
+     "✨"
+    ],
+    "y": 900
+   },
+   "hi": [
+    "umar,",
+    "profeta,"
+   ],
+   "title": [
+    "Umar vivía en casa",
+    "del Profeta"
+   ]
+  },
+  {
+   "cap": "Comía con prisa, y su mano iba por todo el plato.",
+   "tint": "red",
+   "vis": {
+    "type": "emoji",
+    "e": "🥘",
+    "orbit": [
+     "✋",
+     "💨",
+     "✋"
+    ],
+    "y": 900
+   },
+   "hi": [
+    "prisa,",
+    "todo"
+   ],
+   "title": [
+    "Comía",
+    "con prisa"
+   ]
+  },
+  {
+   "cap": "¿Le gritó? ¿Le castigó? No.",
+   "tint": "red",
+   "vis": {
+    "type": "choice",
+    "opts": [
+     [
+      "😠",
+      "GRITAR",
+      "red"
+     ],
+     [
+      "🤍",
+      "CARIÑO",
+      "gold"
+     ]
+    ],
+    "pick": 1,
+    "y": 900
+   },
+   "hi": [
+    "gritó?",
+    "no."
+   ],
+   "title": [
+    "¿Qué hizo",
+    "el Profeta?"
+   ]
+  },
+  {
+   "cap": "Le dijo, con cariño: «Niño, di el nombre de Allah».",
+   "tint": "gold",
+   "vis": {
+    "type": "quote",
+    "lines": [
+     "«¡Niño!",
+     "Di el nombre",
+     "de Allah…»"
+    ],
+    "src": "SAHIH AL-BUJARI 5376",
+    "size": 64,
+    "y": 860
+   },
+   "hi": [
+    "cariño:",
+    "allah»."
+   ]
+  },
+  {
+   "cap": "«Come con la derecha. Y come de lo que tienes delante».",
+   "tint": "green",
+   "vis": {
+    "type": "steps",
+    "items": [
+     [
+      "🤲",
+      "BISMILLAH"
+     ],
+     [
+      "✋",
+      "DERECHA"
+     ],
+     [
+      "🍽️",
+      "LO TUYO"
+     ]
+    ],
+    "y": 900
+   },
+   "hi": [
+    "derecha.",
+    "delante»."
+   ],
+   "title": [
+    "3 reglas",
+    "en 1 frase"
+   ]
+  },
+  {
+   "cap": "Y Umar contó: desde entonces, siempre he comido así.",
+   "tint": "night",
+   "vis": {
+    "type": "big",
+    "words": [
+     "DESDE",
+     "ENTONCES"
+    ],
+    "size": 130,
+    "gap": 170,
+    "y": 860,
+    "e": "✅"
+   },
+   "hi": [
+    "siempre",
+    "así."
+   ],
+   "title": [
+    "Umar nunca",
+    "lo olvidó"
+   ]
+  },
+  {
+   "cap": "¿Y si se te olvida? Tiene solución.",
+   "tint": "red",
+   "vis": {
+    "type": "big",
+    "words": [
+     "¿SE TE",
+     "OLVIDA?"
+    ],
+    "size": 150,
+    "gap": 180,
+    "y": 860,
+    "e": "😅"
+   },
+   "hi": [
+    "olvida?",
+    "solución."
+   ],
+   "title": [
+    "¿Y si…?"
+   ]
+  },
+  {
+   "cap": "Dices: «Bismillah, al principio y al final».",
+   "tint": "gold",
+   "vis": {
+    "type": "quote",
+    "lines": [
+     "«Bismillah,",
+     "al principio",
+     "y al final»"
+    ],
+    "src": "SUNAN ABI DAWUD 3767",
+    "size": 64,
+    "y": 860
+   },
+   "hi": [
+    "principio",
+    "final»."
+   ]
+  },
+  {
+   "cap": "¿Tú dices «Bismillah» antes de comer? Dime abajo: sí, o se me olvida.",
+   "tint": "night",
+   "vis": {
+    "type": "cta",
+    "word": "COMENTA",
+    "size": 130,
+    "e": "🍽️",
+    "y": 900
+   },
+   "hi": [
+    "bismillah",
+    "abajo:"
+   ],
+   "title": [
+    "¿Tú lo dices?"
+   ]
+  }
+ ]
+}

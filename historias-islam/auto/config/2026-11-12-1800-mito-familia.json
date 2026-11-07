@@ -1,0 +1,278 @@
+{
+ "tail": 1.4,
+ "cx": 445,
+ "cap_maxw": 800,
+ "title_maxw": 820,
+ "instant": true,
+ "step_gap": 290,
+ "label": "MITO VS REALIDAD",
+ "times": "2026-11-12-1800-mito-familia.tiempos.json",
+ "scenes": [
+  {
+   "cap": "¿Si te haces musulmán, tienes que alejarte de tu familia? Es un mito.",
+   "tint": "red",
+   "vis": {
+    "type": "choice",
+    "opts": [
+     [
+      "❌",
+      "MITO",
+      "red"
+     ],
+     [
+      "✅",
+      "REALIDAD",
+      "gold"
+     ]
+    ],
+    "pick": 0,
+    "y": 900
+   },
+   "hi": [
+    "familia?",
+    "mito."
+   ],
+   "title": [
+    "¿Musulmán =",
+    "adiós familia?"
+   ]
+  },
+  {
+   "cap": "Y la prueba es una hija… y su madre.",
+   "tint": "gold",
+   "vis": {
+    "type": "big",
+    "words": [
+     "UNA HIJA",
+     "Y SU MADRE"
+    ],
+    "size": 94,
+    "gap": 160,
+    "y": 860,
+    "e": "🤍"
+   },
+   "hi": [
+    "hija…",
+    "madre."
+   ],
+   "title": [
+    "La prueba:"
+   ]
+  },
+  {
+   "cap": "Asmá era hija de Abu Bakr, el mejor amigo del Profeta.",
+   "tint": "blue",
+   "vis": {
+    "type": "emoji",
+    "e": "🧕",
+    "orbit": [
+     "🕌",
+     "🤍",
+     "✨"
+    ],
+    "y": 900
+   },
+   "hi": [
+    "asmá",
+    "amigo"
+   ],
+   "title": [
+    "Asmá, hija",
+    "de Abu Bakr"
+   ]
+  },
+  {
+   "cap": "Su madre no era musulmana. Y un día, vino a visitarla.",
+   "tint": "night",
+   "vis": {
+    "type": "emoji",
+    "e": "🚪",
+    "orbit": [
+     "👣",
+     "💭",
+     "🤍"
+    ],
+    "y": 900
+   },
+   "hi": [
+    "musulmana.",
+    "visitarla."
+   ],
+   "title": [
+    "Su madre no",
+    "era musulmana"
+   ]
+  },
+  {
+   "cap": "Asmá dudó: ¿puedo recibirla? ¿Puedo tratarla bien?",
+   "tint": "red",
+   "vis": {
+    "type": "choice",
+    "opts": [
+     [
+      "🚪",
+      "¿CERRAR?",
+      "red"
+     ],
+     [
+      "🤗",
+      "¿RECIBIRLA?",
+      "gold"
+     ]
+    ],
+    "pick": -1,
+    "y": 900
+   },
+   "hi": [
+    "recibirla?",
+    "bien?"
+   ],
+   "title": [
+    "Asmá dudó…"
+   ]
+  },
+  {
+   "cap": "Y fue a preguntar al Profeta, la paz sea con él.",
+   "tint": "blue",
+   "vis": {
+    "type": "emoji",
+    "e": "🕌",
+    "orbit": [
+     "❓",
+     "🤲",
+     "✨"
+    ],
+    "y": 900
+   },
+   "hi": [
+    "preguntar",
+    "profeta,"
+   ],
+   "title": [
+    "Se lo pregunta",
+    "al Profeta"
+   ]
+  },
+  {
+   "cap": "Él contestó: «Sí. Mantén la relación con tu madre».",
+   "tint": "gold",
+   "vis": {
+    "type": "quote",
+    "lines": [
+     "«Sí.",
+     "Mantén la relación",
+     "con tu madre»"
+    ],
+    "src": "SAHIH AL-BUJARI 2620",
+    "size": 62,
+    "y": 860
+   },
+   "hi": [
+    "sí.",
+    "madre»."
+   ]
+  },
+  {
+   "cap": "Y Allah dice en el Corán:",
+   "tint": "night",
+   "vis": {
+    "type": "book",
+    "src": "CORÁN 60:8",
+    "y": 900
+   },
+   "hi": [
+    "corán:"
+   ],
+   "title": [
+    "Y Allah dice…"
+   ]
+  },
+  {
+   "cap": "«Allah no os prohíbe ser buenos y justos con quienes no os han combatido por la religión».",
+   "tint": "gold",
+   "vis": {
+    "type": "quote",
+    "lines": [
+     "«Allah no os prohíbe",
+     "ser buenos y justos",
+     "con quienes no",
+     "os han combatido",
+     "por la religión…»"
+    ],
+    "src": "CORÁN 60:8 · SURA AL-MUMTAHANA",
+    "size": 54,
+    "y": 840,
+    "reveal": 0.8
+   },
+   "hi": [
+    "buenos",
+    "justos"
+   ]
+  },
+  {
+   "cap": "«Allah ama a los justos».",
+   "tint": "green",
+   "vis": {
+    "type": "big",
+    "words": [
+     "ALLAH AMA",
+     "A LOS JUSTOS"
+    ],
+    "size": 94,
+    "gap": 160,
+    "y": 860,
+    "e": "⚖️"
+   },
+   "hi": [
+    "ama",
+    "justos»."
+   ]
+  },
+  {
+   "cap": "Mito: el islam te separa de tu familia. Realidad: te manda tratarla bien.",
+   "tint": "green",
+   "vis": {
+    "type": "choice",
+    "opts": [
+     [
+      "🚫",
+      "SEPARARTE",
+      "red"
+     ],
+     [
+      "🤍",
+      "TRATARLA BIEN",
+      "gold"
+     ]
+    ],
+    "pick": 1,
+    "y": 900
+   },
+   "hi": [
+    "mito:",
+    "realidad:"
+   ],
+   "title": [
+    "La realidad"
+   ]
+  },
+  {
+   "cap": "¿Qué otro mito sobre el islam has escuchado? Te leo abajo.",
+   "tint": "night",
+   "vis": {
+    "type": "cta",
+    "word": "COMENTA",
+    "size": 130,
+    "e": "💬",
+    "y": 900
+   },
+   "hi": [
+    "mito",
+    "abajo."
+   ],
+   "title": [
+    "¿Otro mito?"
+   ]
+  }
+ ]
+}
