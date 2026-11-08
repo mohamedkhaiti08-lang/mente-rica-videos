@@ -1,0 +1,17 @@
+{
+ "speed": 1.12,
+ "pause": 0.24,
+ "gaps": {
+  "1": 2.6
+ },
+ "lines": [
+  "Un café bien cargado, y se te baja el alcohol. ¿Mito, o verdad?",
+  "Casi todos lo creen. Escríbelo ya: tienes tres segundos.",
+  "¡Es mito! Y lo dice la propia DGT.",
+  "Ni café, ni té, ni ducha, ni dormir un rato: nada te baja el alcohol.",
+  "Puedes notarte más despierto, pero el alcohol en sangre es el mismo.",
+  "Solo lo baja el tiempo: tu hígado va a su ritmo, y no se puede acelerar.",
+  "¿Y comer? Solo hace que suba más despacio. Pero acaba llegando a la sangre.",
+  "Comenta cuál te creías, y mándaselo a tu amigo del cafecito."
+ ]
+}

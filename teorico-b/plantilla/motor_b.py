@@ -38,6 +38,9 @@
 #   incorpora (autovía cenital con carril de aceleración, coches 1 y 2: hook | labels | countdown | answer | check | facilita | trap).
 #   noche (carretera de noche en 1ª persona, deslumbramiento art. 102: hook | slow = baja la velocidad hasta parar | grave = no devolver las largas |
 #     switch = largas → cortas al cruzarse y largas solo tras pasarlo | mirror = coche delante, su retrovisor).
+#   cafe (MITO O VERDAD del alcohol: hook = barra de bar con café humeante, caña y llaves | vote = botones MITO/VERDAD + semáforo | verdict = sello MITO |
+#     list = café, té, ducha, dormir tachados | feel = cómo te notas ≠ alcohol en sangre | time = reloj de arena + reloj | food = plato + curvas ayunas/con comida).
+#   bus (¿QUIÉN PASA PRIMERO? parada en isleta: hook | nozebra | countdown | answer | zone = entre el bus y la acera) y buslaw (tarjeta art. 65.1.d).
 #   puente (puente estrecho cenital con señal R-5 en la entrada del 1: hook | sign | countdown | answer = el 1 retrocede y pasa el 2 | rule = qué significa la R-5 | back = art. 61).
 import math, json, sys, os, subprocess
 from functools import lru_cache
@@ -3318,6 +3321,340 @@ def vis_puente(dst, t, v, i):
         paste(dst, pill(v.get("tag", "ART. 61 DEL REGLAMENTO DE CIRCULACIÓN"), 32, WHITE, BLUE), W / 2, top + 240, alpha=ease(prog(t, 1.6, .3)))
     elif v.get("tag") and mode != "rule":
         paste(dst, pill(v["tag"], 40, YEL, NAVY), W / 2 + (60 if cd else 0), bot - 60, scale=eback(prog(t, .4, .4)), alpha=ease(prog(t, .4, .3)))
+
+# --- MITO O VERDAD del alcohol: barra de bar con café humeante, caña vacía y llaves del coche; votar MITO/VERDAD;
+#     4 "trucos" tachados (café, té, ducha, dormir); cómo te notas vs alcohol en sangre; reloj de arena; comer solo retrasa ---
+# vis: {"type": "cafe", "mode": "hook" | "vote" | "verdict" | "list" | "feel" | "time" | "food", "lines": [...], "countdown": [t1,t2,t3], "at": [..]}
+WOOD = (120, 74, 40); WOOD_D = (92, 54, 28)
+def cafe_scene(dst, t, dark=0.0):
+    top, bot = VZ[0] + 10, VZ[1] + 20; lay = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(lay, "RGBA")
+    # pared de azulejos del bar
+    d.rectangle((40, top, W - 40, bot), fill=(28, 70, 78, 255))
+    for yy in range(int(top), int(bot), 70):
+        for xx in range(40 + (35 if (yy // 70) % 2 else 0) - 70, W - 40, 140):
+            d.rounded_rectangle((xx + 4, yy + 4, xx + 136, yy + 66), radius=8, fill=(36, 88, 96, 255))
+    # estante con botellas al fondo
+    sy = top + 250; d.rectangle((40, sy, W - 40, sy + 18), fill=WOOD_D + (255,))
+    for k, (bx, bc) in enumerate(((150, (60, 120, 60)), (230, (140, 90, 40)), (300, (90, 40, 50)), (700, (60, 110, 140)), (780, (150, 120, 50)), (860, (70, 60, 50)))):
+        hgt = 120 + (k * 37) % 50
+        d.rounded_rectangle((bx - 26, sy - hgt + 40, bx + 26, sy), radius=14, fill=bc + (255,)); d.rectangle((bx - 9, sy - hgt, bx + 9, sy - hgt + 50), fill=bc + (255,))
+        d.rectangle((bx - 22, sy - 70, bx + 22, sy - 36), fill=(235, 225, 200, 220))
+    # barra de madera
+    by = CY + 170; d.rectangle((40, by, W - 40, bot), fill=WOOD + (255,)); d.rectangle((40, by - 26, W - 40, by + 8), fill=(150, 96, 54, 255))
+    for k in range(7): d.line([(40, by + 40 + k * 34), (W - 40, by + 52 + k * 34)], fill=WOOD_D + (140,), width=4)
+    clip_vz(dst, lay, top, bot)
+    if dark > 0:
+        ov = Image.new("RGBA", (W, H), (0, 0, 0, 0)); ImageDraw.Draw(ov).rounded_rectangle((40, top, W - 40, bot), radius=36, fill=(6, 20, 43, int(200 * dark))); dst.alpha_composite(ov)
+    return top, bot, by
+
+@lru_cache(maxsize=4)
+def coffee_cup(s=300):
+    im = ss(s, s); d = ImageDraw.Draw(im); S = s * 2
+    d.ellipse((S * .05, S * .74, S * .95, S * .96), fill=(235, 235, 240), outline=(170, 176, 190), width=5); d.ellipse((S * .1, S * .76, S * .9, S * .9), fill=(250, 250, 252))  # plato
+    d.ellipse((S * .62, S * .36, S * .92, S * .66), outline=(250, 250, 252), width=int(S * .06))  # asa
+    d.polygon([(S * .14, S * .3), (S * .76, S * .3), (S * .68, S * .8), (S * .22, S * .8)], fill=(250, 250, 252), outline=(170, 176, 190), width=5)
+    d.ellipse((S * .22, S * .74, S * .68, S * .86), fill=(250, 250, 252))
+    d.ellipse((S * .14, S * .24, S * .76, S * .36), fill=(240, 240, 244)); d.ellipse((S * .18, S * .26, S * .72, S * .34), fill=(70, 40, 20))  # café
+    d.ellipse((S * .3, S * .27, S * .5, S * .31), fill=(150, 100, 60))  # crema
+    return down(im)
+
+def steam(dst0, cx, cy, t, a=1.0, n=3, h=220):
+    dst = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(dst, "RGBA")
+    for k in range(n):
+        x0 = cx + (k - (n - 1) / 2) * 46; pts = []
+        for j in range(16):
+            q = j / 15; y = cy - q * h; x = x0 + math.sin(q * 6 + t * 4 + k) * 18 * q
+            pts.append((x, y))
+        for j in range(15):
+            al = int(200 * a * (1 - j / 15) * (.6 + .4 * math.sin(t * 3 + k)))
+            d.line([pts[j], pts[j + 1]], fill=(255, 255, 255, max(0, al)), width=12)
+    dst0.alpha_composite(dst.filter(ImageFilter.GaussianBlur(3)))
+
+@lru_cache(maxsize=2)
+def beer_glass(s=230):
+    im = ss(s, int(s * 1.4)); d = ImageDraw.Draw(im); X, Y = s * 2, int(s * 1.4) * 2
+    d.polygon([(X * .18, Y * .05), (X * .82, Y * .05), (X * .72, Y * .96), (X * .28, Y * .96)], fill=(220, 235, 245, 90), outline=(240, 250, 255, 220))
+    d.polygon([(X * .25, Y * .8), (X * .75, Y * .8), (X * .72, Y * .96), (X * .28, Y * .96)], fill=(240, 180, 40, 200))  # culín de cerveza
+    for k in range(6): d.ellipse((X * (.24 + k * .09), Y * (.18 + (k % 3) * .1), X * (.32 + k * .09), Y * (.24 + (k % 3) * .1)), fill=(255, 255, 255, 170))  # espuma pegada
+    d.line([(X * .3, Y * .1), (X * .36, Y * .85)], fill=(255, 255, 255, 140), width=10)
+    return down(im)
+
+@lru_cache(maxsize=2)
+def car_keys(s=230):
+    im = ss(s, s); d = ImageDraw.Draw(im); S = s * 2
+    d.ellipse((S * .06, S * .06, S * .36, S * .36), outline=(200, 205, 215), width=int(S * .035))  # anilla
+    d.rounded_rectangle((S * .28, S * .26, S * .62, S * .7), radius=int(S * .12), fill=(25, 27, 32), outline=(70, 74, 84), width=6)  # mando
+    d.ellipse((S * .37, S * .36, S * .53, S * .48), fill=(70, 74, 84)); d.ellipse((S * .37, S * .52, S * .53, S * .64), fill=(70, 74, 84))
+    d.polygon([(S * .5, S * .62), (S * .58, S * .58), (S * .94, S * .9), (S * .88, S * .96)], fill=(205, 210, 220))  # llave
+    for k in range(3): d.rectangle((S * (.68 + k * .07), S * (.76 + k * .05), S * (.71 + k * .07), S * (.82 + k * .05)), fill=(150, 155, 165))
+    return down(im)
+
+@lru_cache(maxsize=16)
+def trick_icon(kind, s=170):
+    im = ss(s, s); d = ImageDraw.Draw(im); S = s * 2; c = (40, 60, 90)
+    if kind == "cafe": return coffee_cup(s)
+    if kind == "te":
+        d.polygon([(S * .14, S * .3), (S * .76, S * .3), (S * .68, S * .82), (S * .22, S * .82)], fill=(250, 250, 252), outline=(150, 156, 170), width=8)
+        d.ellipse((S * .62, S * .38, S * .9, S * .64), outline=(150, 156, 170), width=int(S * .06))
+        d.ellipse((S * .18, S * .27, S * .72, S * .35), fill=(170, 110, 40))
+        d.line([(S * .45, S * .3), (S * .82, S * .08)], fill=(220, 220, 220), width=6); d.rectangle((S * .76, S * .02, S * .92, S * .14), fill=(255, 196, 0))  # bolsita
+    elif kind == "ducha":
+        d.line([(S * .2, S * .06), (S * .2, S * .2), (S * .5, S * .2)], fill=(200, 205, 215), width=int(S * .05))
+        d.pieslice((S * .3, S * .1, S * .7, S * .5), 0, 180, fill=(200, 205, 215))
+        for k in range(5):
+            x = S * (.36 + k * .07); d.line([(x, S * .4), (x - S * .05 + k * S * .025, S * .9)], fill=(90, 170, 255), width=10)
+    elif kind == "dormir":
+        d.rounded_rectangle((S * .06, S * .55, S * .94, S * .75), radius=20, fill=(60, 140, 255)); d.rectangle((S * .06, S * .4, S * .14, S * .9), fill=(150, 96, 54)); d.rectangle((S * .86, S * .55, S * .94, S * .9), fill=(150, 96, 54))
+        d.ellipse((S * .14, S * .4, S * .34, S * .58), fill=(250, 250, 252))
+        f = F(BLACK, int(S * .2)); d.text((S * .48, S * .06), "z", font=f, fill=c); d.text((S * .64, S * .0), "Z", font=F(BLACK, int(S * .26)), fill=c)
+    return down(im)
+
+@lru_cache(maxsize=4)
+def hourglass(fill, s=360):
+    """fill: 0 = toda la arena arriba, 1 = toda abajo"""
+    w, h = int(s * .7), s; im = ss(w, h); d = ImageDraw.Draw(im); X, Y = w * 2, h * 2
+    d.rounded_rectangle((0, 0, X - 1, Y * .07), radius=14, fill=(150, 96, 54)); d.rounded_rectangle((0, Y * .93, X - 1, Y - 1), radius=14, fill=(150, 96, 54))
+    gl = [(X * .1, Y * .07), (X * .9, Y * .07), (X * .54, Y * .5), (X * .9, Y * .93), (X * .1, Y * .93), (X * .46, Y * .5)]
+    d.polygon(gl, fill=(220, 240, 255, 70))
+    sand = YEL; up = 1 - fill
+    if up > 0.02:  # arena de arriba (triángulo que se vacía)
+        yt = Y * .5 - (Y * .43) * up * .85; xw = (X * .4) * (Y * .5 - yt) / (Y * .43)
+        d.polygon([(X / 2 - xw, yt), (X / 2 + xw, yt), (X * .5, Y * .5)], fill=sand)
+    if fill > 0.02:
+        yb = Y * .93 - (Y * .43) * fill * .7; xw = X * .4
+        d.polygon([(X * .1, Y * .93), (X * .9, Y * .93), (X / 2 + xw * (1 - fill * .5), yb), (X / 2 - xw * (1 - fill * .5), yb)], fill=sand)
+    if 0.02 < fill < .98: d.line([(X / 2, Y * .5), (X / 2, Y * .9)], fill=sand, width=6)
+    d.polygon(gl, outline=(240, 250, 255), width=6)
+    return glow(down(im), 22, .4)
+
+def vote_btn(txt, col, s=1.0):
+    return pill(txt, 64, col, WHITE, BLACK, padx=46, pady=26)
+
+def vis_cafe(dst, t, v, i):
+    if i == 0: t = t + 0.6  # primer fotograma: bar, café humeando y pregunta ya en pantalla
+    mode = v.get("mode", "hook")
+    dark = {"hook": 0, "vote": .25, "verdict": .35}.get(mode, .82)
+    top, bot, by = cafe_scene(dst, t, dark)
+    cx, cy = W / 2 - 20, by - 70
+    if mode in ("hook", "vote", "verdict"):
+        if mode == "hook": paste(dst, beer_glass(200), cx - 290, by - 120, alpha=.95)
+        paste(dst, car_keys(190), cx + 300, by + 30, rot=-8)
+        bob = 1 + .02 * math.sin(t * 3); paste(dst, coffee_cup(330), cx, cy, scale=bob * (eback(prog(t, 0, .5)) if i else 1))
+        steam(dst, cx - 25, cy - 110, t, a=1.0)
+        if mode == "hook":
+            g = Image.new("RGBA", (W, H), (0, 0, 0, 0)); ImageDraw.Draw(g).rounded_rectangle((40, top, W - 40, top + 200), radius=36, fill=(6, 20, 43, 175)); dst.alpha_composite(g)
+            big_lines(dst, v.get("lines", ["¿MITO O VERDAD?"]), t, top + 64, [tuple(c) for c in v.get("cols", [])] or [YEL], size=96)
+            paste(dst, pill("«UN CAFÉ Y COMO NUEVO»", 40, WHITE, NAVY), W / 2, top + 290, scale=eback(prog(t, .9, .35)), alpha=ease(prog(t, .9, .3)))
+        if mode == "vote":
+            for k, (txt, col, x) in enumerate((("MITO", RED, W / 2 - 200), ("VERDAD", GREEN, W / 2 + 190))):
+                p = prog(t, .15 + k * .2, .35); paste(dst, vote_btn(txt, col), x, top + 120, scale=eback(p) * (1 + .04 * math.sin(t * 6 + k * 3)), alpha=ease(p * 2))
+            cd = v.get("countdown")
+            if cd:
+                n = sum(1 for s in cd if t >= s); ix, iy = 150, CY - 20
+                paste(dst, semaphore(n).resize((115, 300), Image.LANCZOS), ix, iy, scale=eback(prog(t, 0, .4)))
+                if n:
+                    pk = prog(t, cd[n - 1], .25)
+                    paste(dst, text(str(4 - n), 170, [RED, (255, 176, 0), GREEN][n - 1], BLACK), ix, iy + 260, scale=lerp(1.6, 1, eout(pk)), alpha=ease(pk * 2))
+        if mode == "verdict":
+            sp = prog(t, .25, .2)
+            if sp > 0: paste(dst, stamp_col("MITO", RED), W / 2, CY - 60, scale=lerp(2.4, 1.25, eout(sp)), alpha=ease(sp * 1.6), rot=-12)
+            paste(dst, pill("LO DICE LA DGT", 44, WHITE, NAVY), W / 2, top + 90, scale=eback(prog(t, .9, .35)), alpha=ease(prog(t, .9, .3)))
+    elif mode == "list":
+        at = v.get("at", [.1, .9, 1.7, 2.5]); labs = [("cafe", "CAFÉ"), ("te", "TÉ"), ("ducha", "DUCHA"), ("dormir", "DORMIR UN RATO")]
+        for k, ((kind, lab), a0) in enumerate(zip(labs, at)):
+            x = W / 2 + (-195 if k % 2 == 0 else 195); y = CY - 190 + (k // 2) * 400
+            p = prog(t, a0, .35)
+            if p <= 0: continue
+            paste(dst, card(350, 360, fill=(255, 255, 255, 250), r=36), x, y, scale=eback(p), alpha=ease(p * 2))
+            paste(dst, trick_icon(kind, 190), x, y - 40, scale=eback(p), alpha=ease(p * 2))
+            paste(dst, text(lab, 40 if len(lab) < 8 else 32, DARK, BLACK, shadow=False), x, y + 120, alpha=ease(p * 2))
+            xp = prog(t, a0 + .35, .2)
+            if xp > 0: paste(dst, icon_x(130), x + 110, y - 120, scale=lerp(1.8, 1, eout(xp)), alpha=ease(xp * 2))
+    elif mode == "feel":
+        for k, (lab1, lab2, col, x) in enumerate((("CÓMO", "TE NOTAS", GREEN, W / 2 - 200), ("ALCOHOL", "EN SANGRE", RED, W / 2 + 200))):
+            p = eback(prog(t, k * .3, .4)); a = ease(prog(t, k * .3, .25))
+            paste(dst, card(340, 760, fill=(255, 255, 255, 250), r=36), x, CY + 10, alpha=a, scale=.9 + .1 * p)
+            paste(dst, text(lab1, 40, DARK, BLACK, shadow=False), x, CY - 300, alpha=a); paste(dst, text(lab2, 40, DARK, BLACK, shadow=False), x, CY - 250, alpha=a)
+            d = ImageDraw.Draw(dst, "RGBA"); bx0, bx1, yb, ytop = x - 70, x + 70, CY + 330, CY - 190
+            d.rounded_rectangle((bx0, ytop, bx1, yb), radius=26, fill=(230, 234, 242, int(255 * a)))
+            if k == 0: lvl = lerp(.3, .85, ease(prog(t, .8, 1.2)))
+            else: lvl = .62 + .01 * math.sin(t * 5)
+            yl = yb - (yb - ytop) * lvl; d.rounded_rectangle((bx0, yl, bx1, yb), radius=26, fill=col + (int(255 * a),))
+            if k == 0 and t > .8:
+                ay = yl - 50 - 8 * math.sin(t * 6); d.polygon([(x, ay - 40), (x - 40, ay + 10), (x + 40, ay + 10)], fill=GREEN + (int(255 * ease(prog(t, .8, .3))),))
+            if k == 1: paste(dst, pill("IGUAL", 40, RED, WHITE), x, yl - 60, alpha=ease(prog(t, 1.4, .3)), scale=eback(prog(t, 1.4, .35)))
+        paste(dst, text("≠", 150, YEL, BLACK), W / 2, CY + 20, alpha=ease(prog(t, 1.1, .3)), scale=eback(prog(t, 1.1, .35)))
+    elif mode == "time":
+        fill = clamp(t / 4.0)
+        paste(dst, hourglass(round(fill * 20) / 20, 430), W / 2 - 170, CY - 20, scale=eback(prog(t, 0, .45)), rot=0)
+        # reloj con agujas que giran
+        rx, ry, r = W / 2 + 210, CY - 120, 135; d = ImageDraw.Draw(dst, "RGBA"); a = ease(prog(t, .2, .3)); A = int(255 * a)
+        d.ellipse((rx - r, ry - r, rx + r, ry + r), fill=(255, 255, 255, A), outline=NAVY + (A,), width=12)
+        for k in range(12):
+            ang = k * math.pi / 6; d.line([(rx + math.cos(ang) * (r - 30), ry + math.sin(ang) * (r - 30)), (rx + math.cos(ang) * (r - 14), ry + math.sin(ang) * (r - 14))], fill=NAVY + (A,), width=6)
+        hm = -math.pi / 2 + t * 2.4; hh = -math.pi / 2 + t * .2
+        d.line([(rx, ry), (rx + math.cos(hm) * (r - 35), ry + math.sin(hm) * (r - 35))], fill=NAVY + (A,), width=10)
+        d.line([(rx, ry), (rx + math.cos(hh) * (r - 65), ry + math.sin(hh) * (r - 65))], fill=RED + (A,), width=14)
+        d.ellipse((rx - 14, ry - 14, rx + 14, ry + 14), fill=NAVY + (A,))
+        paste(dst, pill("SOLO EL TIEMPO", 52, YEL, NAVY), W / 2, CY + 300, scale=eback(prog(t, .5, .35)), alpha=ease(prog(t, .5, .3)))
+        paste(dst, chip_ok("NO SE PUEDE ACELERAR", False), W / 2 + 10, CY + 405, scale=eback(prog(t, 1.9, .35)), alpha=ease(prog(t, 1.9, .3)))
+    elif mode == "food":
+        # plato con cubiertos + gráfica de alcohol en sangre: vacío (sube rápido) vs lleno (más despacio, pero llega)
+        px, py = W / 2, CY - 345; d = ImageDraw.Draw(dst, "RGBA"); a = ease(prog(t, 0, .3)); A = int(255 * a)
+        d.ellipse((px - 150, py - 70, px + 150, py + 70), fill=(250, 250, 252, A)); d.ellipse((px - 105, py - 46, px + 105, py + 46), fill=(235, 238, 244, A))
+        d.ellipse((px - 60, py - 30, px + 20, py + 20), fill=(230, 160, 60, A)); d.ellipse((px - 10, py - 26, px + 70, py + 22), fill=(80, 160, 70, A))
+        d.rounded_rectangle((px - 215, py - 70, px - 195, py + 70), radius=8, fill=(200, 205, 215, A)); d.rounded_rectangle((px + 195, py - 70, px + 215, py + 70), radius=8, fill=(200, 205, 215, A))
+        gx0, gy0, gw, gh = W / 2 - 360, CY + 330, 700, 400  # ejes
+        paste(dst, card(800, 520, fill=(255, 255, 255, 250), r=36), W / 2, CY + 130, alpha=a)
+        d = ImageDraw.Draw(dst, "RGBA")
+        d.line([(gx0, gy0 - gh), (gx0, gy0), (gx0 + gw, gy0)], fill=DARK + (A,), width=6)
+        paste(dst, text("ALCOHOL EN SANGRE", 26, DARK, XB, shadow=False), gx0 + 150, gy0 - gh - 10, alpha=a)
+        paste(dst, text("TIEMPO →", 26, DARK, XB, shadow=False), gx0 + gw - 70, gy0 + 30, alpha=a)
+        def curve(peak_x, k_up, col, prog_k, label, ly):
+            pts = []
+            for j in range(61):
+                q = j / 60
+                if q > prog_k: break
+                x = gx0 + q * gw
+                y = gy0 - gh * .82 * (q / peak_x) ** k_up if q < peak_x else gy0 - gh * .82 * (1 - (q - peak_x) / (1 - peak_x) * .55)
+                pts.append((x, y))
+            if len(pts) > 1: d.line(pts, fill=col + (A,), width=12, joint="curve")
+            if prog_k > .05: paste(dst, pill(label, 28, col, WHITE), gx0 + gw - 110, ly, alpha=ease(prog(prog_k, .05, .3)))
+        curve(.22, 1.0, RED, ease(prog(t, .3, 1.2)), "EN AYUNAS", gy0 - gh + 20)
+        curve(.5, 1.3, BLUE, ease(prog(t, 1.4, 1.5)), "CON COMIDA", gy0 - gh + 75)
+        paste(dst, pill("LLEGA IGUAL A LA SANGRE", 38, YEL, NAVY), W / 2, CY - 210, scale=eback(prog(t, 2.6, .35)), alpha=ease(prog(t, 2.6, .3)))
+
+# --- ¿QUIÉN PASA PRIMERO? PARTE 10: parada de autobús en una isleta (refugio) en mitad de la avenida; el peatón 2 cruza
+#     el carril del coche 1 para subir al bus, sin paso de cebra (RGC art. 65.1.d) ---
+# vis: {"type": "bus", "mode": "hook" | "nozebra" | "countdown" | "answer" | "zone", "lines": [...], "countdown": [..], "tag": "..."}
+BUS_X, ISL, LANE1, ACERA = 225, (330, 450), (450, 700), 700   # x: carril bus, isleta (refugio), carril del 1, acera
+PED_Y = CY - 30; PED_X0, PED_X1 = 800, 392; CAR_STOP = CY + 205
+
+@lru_cache(maxsize=2)
+def bus_top(w=168, L=500):
+    im = ss(w, L); d = ImageDraw.Draw(im); X, Y = w * 2, L * 2
+    d.rounded_rectangle((0, 0, X - 1, Y - 1), radius=int(X * .16), fill=(236, 238, 240))
+    d.rounded_rectangle((X * .08, Y * .015, X * .92, Y * .07), radius=20, fill=(40, 60, 90))  # parabrisas (delante = arriba)
+    d.rectangle((0, Y * .1, X * .06, Y * .92), fill=(30, 110, 200)); d.rectangle((X * .94, Y * .1, X - 1, Y * .92), fill=(30, 110, 200))  # franja azul
+    for k in range(3): d.rounded_rectangle((X * .22, Y * (.18 + k * .22), X * .78, Y * (.3 + k * .22)), radius=16, fill=(205, 210, 218))  # equipos del techo
+    for yy in (.12, .52):  # puertas a la derecha (abiertas, luz ámbar)
+        d.rectangle((X * .9, Y * yy, X - 1, Y * (yy + .1)), fill=(255, 196, 0))
+    for y0 in (.0, .97):
+        for x0 in (.06, .74): d.rounded_rectangle((X * x0, Y * y0, X * (x0 + .2), Y * (y0 + .03)), radius=6, fill=(255, 240, 200) if y0 < .5 else (200, 30, 30))
+    im = down(im); sh = Image.new("RGBA", (w + 40, L + 40), (0, 0, 0, 0))
+    ImageDraw.Draw(sh).rounded_rectangle((20, 28, w + 20, L + 28), radius=int(w * .16), fill=(0, 0, 0, 140))
+    sh = sh.filter(ImageFilter.GaussianBlur(10)); sh.alpha_composite(im, (20, 20)); return sh
+
+@lru_cache(maxsize=4)
+def sign_bus(s=120, flat=True):
+    """S-19 parada de autobuses: cuadrada azul con autobús blanco."""
+    im = ss(s, s); d = ImageDraw.Draw(im); S = s * 2
+    d.rounded_rectangle((0, 0, S - 1, S - 1), radius=int(S * .1), fill=(18, 86, 190), outline=WHITE, width=int(S * .04))
+    d.rounded_rectangle((S * .2, S * .22, S * .8, S * .7), radius=int(S * .08), fill=WHITE)
+    d.rectangle((S * .26, S * .3, S * .74, S * .46), fill=(18, 86, 190))
+    for x in (.32, .68): d.ellipse((S * (x - .07), S * .64, S * (x + .07), S * .78), fill=WHITE)
+    return down(im) if flat else glow(down(im), 20, .4)
+
+def bus_scene(dst, t, zone=0.0, nozebra=0.0):
+    top, bot = VZ[0] + 10, VZ[1] + 20; lay = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(lay, "RGBA")
+    d.rectangle((40, top, W - 40, bot), fill=(46, 49, 58, 255))
+    d.rectangle((40, top, 110, bot), fill=(64, 92, 60, 255)); d.line([(116, top), (116, bot)], fill=(255, 255, 255, 200), width=6)  # mediana
+    # carril bus con BUS pintado
+    for yy in (top + 70, bot - 120):
+        paste(lay, text("BUS", 54, (255, 255, 255), BLACK, shadow=False), BUS_X, yy, alpha=.55)
+    # isleta / refugio con bordillo y marquesina
+    d.rectangle((ISL[0], top, ISL[1], bot), fill=(150, 154, 162, 255)); d.rectangle((ISL[0], top, ISL[0] + 12, bot), fill=(210, 212, 218, 255)); d.rectangle((ISL[1] - 12, top, ISL[1], bot), fill=(210, 212, 218, 255))
+    for yy in range(int(top), int(bot), 46): d.line([(ISL[0] + 12, yy), (ISL[1] - 12, yy)], fill=(138, 142, 150, 255), width=3)
+    d.rectangle((ISL[0] + 22, CY - 270, ISL[1] - 22, CY - 90), fill=(170, 210, 240, 200), outline=(60, 70, 90, 255), width=6)  # marquesina (techo de cristal)
+    d.line([(ISL[0] + 22, CY - 270), (ISL[1] - 22, CY - 90)], fill=(255, 255, 255, 90), width=4)
+    # carril del 1: bordes
+    d.line([(LANE1[0] + 8, top), (LANE1[0] + 8, bot)], fill=(255, 255, 255, 0), width=1)
+    # acera con baldosas
+    d.rectangle((ACERA, top, W - 40, bot), fill=(176, 170, 160, 255)); d.rectangle((ACERA, top, ACERA + 16, bot), fill=(214, 210, 202, 255))
+    for yy in range(int(top), int(bot), 60):
+        for xx in range(ACERA + 16, W - 40, 60): d.rectangle((xx + 2, yy + 2, xx + 58, yy + 58), outline=(160, 154, 144, 255), width=3)
+    clip_vz(dst, lay, top, bot); lay = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(lay, "RGBA")
+    if zone > 0:  # zona de prioridad entre el bus y la acera
+        za = int(120 * zone * (.75 + .25 * math.sin(t * 5))); d.rectangle((ISL[1], PED_Y - 85, ACERA, PED_Y + 85), fill=(34, 197, 94, za))
+        for x in range(int(ISL[1]) + 20, ACERA - 20, 60): d.polygon([(x + 34, PED_Y), (x, PED_Y - 22), (x, PED_Y + 22)], fill=(255, 255, 255, int(160 * zone)))
+    if nozebra > 0:  # dónde NO hay paso de cebra
+        a = int(255 * nozebra * (.6 + .4 * math.sin(t * 7)))
+        for x in range(int(LANE1[0]) + 4, ACERA - 10, 40):
+            d.line([(x, PED_Y - 80), (x + 22, PED_Y - 80)], fill=ORANGE + (a,), width=8); d.line([(x, PED_Y + 80), (x + 22, PED_Y + 80)], fill=ORANGE + (a,), width=8)
+    clip_vz(dst, lay, top, bot); return top, bot
+
+def bus_actors(dst, t, car_y, ped_x, walking, top, bot, brake=False, ped2=None):
+    lay = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    paste(lay, bus_top(168, 500), BUS_X, CY - 150)
+    # señal de parada en la isleta
+    sx, sy = ISL[0] + 60, CY + 10; d = ImageDraw.Draw(lay, "RGBA"); d.rectangle((sx - 5, sy, sx + 5, sy + 60), fill=(150, 154, 160, 255))
+    paste(lay, sign_bus(96), sx, sy - 40)
+    paste(lay, car_top(CRUCE_COLS[1], 120), (LANE1[0] + LANE1[1]) / 2, car_y)
+    if brake:
+        for dx in (-34, 34): paste(lay, red_glow(110), (LANE1[0] + LANE1[1]) / 2 + dx, car_y + 112, alpha=.9)
+    paste(lay, num_badge(1), (LANE1[0] + LANE1[1]) / 2 + 105, car_y + 30)
+    paste(lay, ped_top_img(int(t * 6) % 2 if walking else 0), ped_x, PED_Y, rot=90)
+    paste(lay, num_badge(2, 74, mix((34, 160, 90), WHITE, .2), NAVY), ped_x, PED_Y - 95)
+    clip_vz(dst, lay, top, bot)
+
+def vis_bus(dst, t, v, i):
+    if i == 0: t = t + 0.6  # primer fotograma: avenida, bus, coche, peatón y pregunta ya en pantalla
+    mode = v.get("mode", "hook")
+    top, bot = bus_scene(dst, t, zone=ease(prog(t, .3, .4)) if mode == "zone" else 0, nozebra=ease(prog(t, .2, .4)) if mode == "nozebra" else 0)
+    car_y, ped_x, walking, brake = CAR_STOP + 40, PED_X0, False, False
+    if mode == "hook":
+        car_y = lerp(bot + 160, CAR_STOP + 120, eout(prog(t, 0, 1.6))); ped_x = PED_X0 + 30 - 30 * ease(prog(t, .2, .8)); walking = t < 1.0
+    elif mode in ("nozebra", "countdown"):
+        car_y = CAR_STOP + 120 - 6 * math.sin(t * 2); ped_x = PED_X0 + 4 * math.sin(t * 3)
+    elif mode == "answer":
+        car_y = lerp(CAR_STOP + 120, CAR_STOP, eout(prog(t, 0, .6))); brake = True
+        k = ease(prog(t, .5, 2.2)); ped_x = lerp(PED_X0, PED_X1, k); walking = 0 < k < 1
+    elif mode == "zone":
+        car_y = CAR_STOP; brake = True; k = (t * .22) % 1; ped_x = lerp(PED_X0, PED_X1 + 40, ease(k)); walking = True
+    bus_actors(dst, t, car_y, ped_x, walking, top, bot, brake)
+    if mode == "hook":
+        lines = v.get("lines", [])
+        if lines:
+            g = Image.new("RGBA", (W, H), (0, 0, 0, 0)); ImageDraw.Draw(g).rounded_rectangle((40, top, W - 40, top + 190), radius=36, fill=(6, 20, 43, 170)); dst.alpha_composite(g)
+            big_lines(dst, lines, t, top + 60, [tuple(c) for c in v.get("cols", [])] or None, size=84)
+        paste(dst, pill("VA A COGER EL BUS", 32, WHITE, NAVY), ACERA + 25, PED_Y + 110, scale=eback(prog(t, 1.1, .35)), alpha=ease(prog(t, 1.1, .3)))
+    if mode == "nozebra":
+        paste(dst, pill("SIN PASO DE CEBRA", 38, ORANGE, WHITE), W / 2 + 40, PED_Y - 150, scale=eback(prog(t, .3, .35)), alpha=ease(prog(t, .3, .3)))
+        paste(dst, icon_x(80), (LANE1[0] + LANE1[1]) / 2, PED_Y - 150 - 80, scale=eback(prog(t, .6, .3)), alpha=ease(prog(t, .6, .2)))
+        paste(dst, pill("NI SEMÁFORO", 38, WHITE, NAVY), W / 2 + 40, PED_Y + 150, scale=eback(prog(t, 1.0, .35)), alpha=ease(prog(t, 1.0, .3)))
+        paste(dst, pill("PARADA", 30, BLUE, WHITE), ISL[0] + 60, CY + 120, scale=eback(prog(t, 1.4, .35)), alpha=ease(prog(t, 1.4, .3)))
+    cd = v.get("countdown")
+    if cd:
+        n = sum(1 for s in cd if t >= s); ix, iy = 840, top + 150
+        paste(dst, semaphore(n).resize((105, 275), Image.LANCZOS), ix, iy, scale=eback(prog(t, 0, .4)))
+        if n:
+            pk = prog(t, cd[n - 1], .25)
+            paste(dst, text(str(4 - n), 160, [RED, (255, 176, 0), GREEN][n - 1], BLACK), ix - 2, PED_Y + 200, scale=lerp(1.6, 1, eout(pk)), alpha=ease(pk * 2))
+        if v.get("tag"): paste(dst, pill(v["tag"], 44, YEL, NAVY), (LANE1[0] + LANE1[1]) / 2, PED_Y + 120, scale=eback(prog(t, .3, .35)), alpha=ease(prog(t, .3, .3)))
+    if mode == "answer":
+        p = prog(t, .6, .35)
+        if p > 0: paste(dst, rank_chip_ped(1), W / 2 + 160, top + 70, scale=eback(p), alpha=ease(p * 2))
+        p2 = prog(t, 1.0, .35)
+        if p2 > 0: paste(dst, rank_chip(2, 1), W / 2 + 160, top + 160, scale=eback(p2), alpha=ease(p2 * 2))
+        paste(dst, pill("SE PARA", 34, RED, WHITE), (LANE1[0] + LANE1[1]) / 2, CAR_STOP + 175, scale=eback(prog(t, .4, .35)), alpha=ease(prog(t, .4, .3)))
+    if mode == "zone":
+        paste(dst, pill("ENTRE EL BUS Y LA ACERA", 36, GREEN, WHITE), W / 2 + 40, PED_Y - 215, scale=eback(prog(t, .5, .35)), alpha=ease(prog(t, .5, .3)))
+        paste(dst, pill("O EL REFUGIO MÁS CERCANO", 32, WHITE, NAVY), W / 2 + 40, PED_Y - 145, scale=eback(prog(t, 1.4, .35)), alpha=ease(prog(t, 1.4, .3)))
+
+def vis_buslaw(dst, t, v, i):
+    """tarjeta de la regla: peatón que sube/baja del bus en parada señalizada = prioridad (art. 65.1.d RGC)."""
+    p = eback(prog(t, 0, .45)); a = ease(prog(t, 0, .25))
+    paste(dst, card(880, 820, fill=(255, 255, 255, 250), r=40), W / 2, CY + (1 - p) * 120, alpha=a)
+    paste(dst, text("EL PEATÓN TIENE", 54, DARK, BLACK, shadow=False), W / 2, CY - 330, alpha=a)
+    paste(dst, text("PRIORIDAD", 74, GREEN, BLACK, shadow=False), W / 2, CY - 255, alpha=a)
+    paste(dst, sign_bus(190, flat=True), W / 2 - 150, CY - 80, alpha=a)
+    rows = [("VA A SUBIR", "▲", .7), ("O ACABA DE BAJAR", "▼", 1.4), ("PARADA SEÑALIZADA", "", 2.2)]
+    for k, (txt, ar, at) in enumerate(rows):
+        pk = prog(t, at, .35)
+        if pk <= 0: continue
+        paste(dst, pill(("✓ " if False else "") + txt, 42, GREEN if k < 2 else BLUE, WHITE), W / 2, CY + 110 + k * 100, scale=eback(pk), alpha=ease(pk * 2))
+    sp = prog(t, 3.0, .2)
+    if sp > 0: paste(dst, stamp2("ART. 65.1.d"), W / 2 + 150, CY - 80, scale=lerp(2, 1, eout(sp)) * .8, alpha=ease(sp * 1.6), rot=-10)
 
 
 VIS = {k[4:]: v for k, v in globals().items() if k.startswith("vis_")}

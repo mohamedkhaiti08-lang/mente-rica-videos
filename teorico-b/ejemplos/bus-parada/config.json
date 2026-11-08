@@ -1,0 +1,20 @@
+{"label": "¿QUIÉN PASA PRIMERO? · PARTE 10", "times": "tiempos.json", "voice": "voz.wav", "tail": 1.1,
+ "sfx": [{"t": 9.48, "type": "beep"}, {"t": 10.38, "type": "beep"}, {"t": 11.28, "type": "beep"}, {"t": 12.15, "type": "ding"}, {"t": 18.26, "type": "buzz"}, {"t": 25.24, "type": "buzz"}],
+ "scenes": [
+  {"cap": "Parte 10. El 2 va a coger el autobús, y el 1 se acerca. ¿Quién pasa primero?", "hi": ["autobús,", "primero?"],
+   "vis": {"type": "bus", "mode": "hook", "lines": ["¿QUIÉN PASA PRIMERO?"], "cols": [[255, 196, 0]]}},
+  {"cap": "Ojo: no hay paso de cebra, ni semáforo.", "hi": ["cebra,", "semáforo."],
+   "vis": {"type": "bus", "mode": "nozebra"}},
+  {"cap": "¿1 o 2? Escríbelo. Tienes 3 segundos.", "hi": ["1", "2?", "3"],
+   "vis": {"type": "bus", "mode": "countdown", "countdown": [2.69, 3.59, 4.49], "tag": "¿1 O 2?"}},
+  {"cap": "¡Pasa el 2! El 1 tiene que pararse, y dejarle cruzar.", "hi": ["2!", "pararse,"],
+   "vis": {"type": "bus", "mode": "answer"}},
+  {"cap": "Si un peatón va a subir al autobús, o acaba de bajar, en una parada señalizada, tiene prioridad.", "hi": ["subir", "bajar,", "prioridad."],
+   "vis": {"type": "buslaw"}},
+  {"cap": "Mientras esté entre el autobús y la acera, o el refugio más cercano.", "hi": ["acera,", "refugio"],
+   "vis": {"type": "bus", "mode": "zone"}},
+  {"cap": "Y no cederle el paso es infracción grave.", "hi": ["infracción", "grave."],
+   "vis": {"type": "law", "stamp": "GRAVE", "badge": "ART. 65 DEL REGLAMENTO DE CIRCULACIÓN"}},
+  {"cap": "¿Lo has acertado? Comenta 1 o 2, y pide la parte 11.", "hi": ["Comenta", "11."],
+   "vis": {"type": "cta", "big": "¿Acertaste?", "small": "Comenta 1 o 2 · ¿Parte 11?"}}
+ ]}
