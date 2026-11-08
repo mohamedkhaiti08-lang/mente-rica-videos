@@ -1,0 +1,272 @@
+{
+ "tail": 1.4,
+ "cx": 490,
+ "cap_maxw": 800,
+ "title_maxw": 820,
+ "instant": true,
+ "step_gap": 290,
+ "label": "MITO VS REALIDAD",
+ "times": "2026-11-13-1800-mito-casar.tiempos.json",
+ "scenes": [
+  {
+   "tint": "red",
+   "hi": [
+    "sin",
+    "preguntarle?",
+    "mito."
+   ],
+   "vis": {
+    "type": "choice",
+    "opts": [
+     [
+      "❌",
+      "MITO",
+      "red"
+     ],
+     [
+      "✅",
+      "REALIDAD",
+      "gold"
+     ]
+    ],
+    "pick": 0,
+    "y": 900
+   },
+   "cap": "¿Tú también crees que en el islam casan a la mujer sin preguntarle? Es un mito.",
+   "title": [
+    "¿Sin",
+    "preguntarle?"
+   ]
+  },
+  {
+   "tint": "gold",
+   "hi": [
+    "historia",
+    "real"
+   ],
+   "vis": {
+    "type": "big",
+    "words": [
+     "LA",
+     "PRUEBA"
+    ],
+    "size": 140,
+    "gap": 170,
+    "y": 860,
+    "e": "⏳"
+   },
+   "cap": "Y hay una historia real que lo demuestra.",
+   "title": [
+    "Una historia",
+    "real"
+   ]
+  },
+  {
+   "tint": "night",
+   "hi": [
+    "Jansá,",
+    "Medina,"
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "🧕",
+    "orbit": [
+     "🕌",
+     "🌴",
+     "✨"
+    ],
+    "y": 900
+   },
+   "cap": "Jansá, una mujer de Medina, ya había estado casada.",
+   "title": [
+    "Jansá"
+   ]
+  },
+  {
+   "tint": "red",
+   "hi": [
+    "padre",
+    "no quería."
+   ],
+   "vis": {
+    "type": "steps",
+    "items": [
+     [
+      "👨",
+      "SU PADRE"
+     ],
+     [
+      "💍",
+      "LA CASA"
+     ],
+     [
+      "🧕",
+      "«NO QUIERO»"
+     ]
+    ],
+    "y": 920
+   },
+   "cap": "Su padre la volvió a casar… con un hombre que ella no quería.",
+   "title": [
+    "Sin",
+    "quererlo"
+   ]
+  },
+  {
+   "tint": "night",
+   "hi": [
+    "directa",
+    "Profeta,"
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "🕌",
+    "orbit": [
+     "🧕",
+     "❓",
+     "⚖️"
+    ],
+    "y": 900
+   },
+   "cap": "¿Y qué hizo? Fue directa al Profeta, la paz sea con él.",
+   "title": [
+    "¿Y qué",
+    "hizo?"
+   ]
+  },
+  {
+   "tint": "gold",
+   "hi": [
+    "Anuló"
+   ],
+   "vis": {
+    "type": "big",
+    "words": [
+     "BODA",
+     "ANULADA"
+    ],
+    "size": 140,
+    "gap": 170,
+    "y": 860,
+    "e": "⚖️"
+   },
+   "cap": "¿Y él? Anuló ese matrimonio.",
+   "title": [
+    "¿Y él?"
+   ]
+  },
+  {
+   "tint": "gold",
+   "hi": [
+    "consultarla…",
+    "permiso.»"
+   ],
+   "vis": {
+    "type": "quote",
+    "lines": [
+     "«No se casa a la que",
+     "ya estuvo casada",
+     "sin consultarla,",
+     "ni a la virgen",
+     "sin su permiso»"
+    ],
+    "src": "SAHIH AL-BUJARI 5136",
+    "size": 54,
+    "y": 880
+   },
+   "cap": "Porque él enseñó: «…sin consultarla… ni sin su permiso.»"
+  },
+  {
+   "tint": "green",
+   "hi": [
+    "al-Bujari,",
+    "5136."
+   ],
+   "vis": {
+    "type": "big",
+    "words": [
+     "BUJARI",
+     "5136"
+    ],
+    "size": 150,
+    "gap": 170,
+    "y": 860,
+    "e": "📖"
+   },
+   "cap": "Sahih al-Bujari, hadiz 5136.",
+   "title": [
+    "Hadiz",
+    "auténtico"
+   ]
+  },
+  {
+   "tint": "red",
+   "hi": [
+    "padre",
+    "decidir"
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "👨",
+    "orbit": [
+     "🚫",
+     "✋",
+     "⚖️"
+    ],
+    "y": 900
+   },
+   "cap": "Ni siquiera su propio padre podía decidir por ella.",
+   "title": [
+    "Ni siquiera",
+    "su padre"
+   ]
+  },
+  {
+   "tint": "green",
+   "hi": [
+    "pregunta.",
+    "sí,"
+   ],
+   "vis": {
+    "type": "choice",
+    "opts": [
+     [
+      "🤐",
+      "SIN PREGUNTAR",
+      "red"
+     ],
+     [
+      "💍",
+      "SU «SÍ»",
+      "gold"
+     ]
+    ],
+    "pick": 1,
+    "y": 900
+   },
+   "cap": "Mito: a la mujer no se le pregunta. Realidad: sin su sí, no hay boda.",
+   "title": [
+    "La",
+    "realidad"
+   ]
+  },
+  {
+   "tint": "night",
+   "hi": [
+    "mito",
+    "abajo."
+   ],
+   "vis": {
+    "type": "cta",
+    "word": "COMENTA",
+    "size": 130,
+    "e": "💬",
+    "y": 900
+   },
+   "cap": "¿Qué otro mito sobre el islam has escuchado? Te leo abajo.",
+   "title": [
+    "¿Otro mito?"
+   ]
+  }
+ ]
+}

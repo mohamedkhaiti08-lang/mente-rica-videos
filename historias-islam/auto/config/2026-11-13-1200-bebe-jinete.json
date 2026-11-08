@@ -1,0 +1,296 @@
+{
+ "tail": 1.4,
+ "cx": 490,
+ "cap_maxw": 800,
+ "title_maxw": 820,
+ "instant": true,
+ "step_gap": 290,
+ "label": "HISTORIA REAL",
+ "times": "2026-11-13-1200-bebe-jinete.tiempos.json",
+ "scenes": [
+  {
+   "tint": "red",
+   "hi": [
+    "bebé",
+    "habló."
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "👶",
+    "orbit": [
+     "💬",
+     "❗",
+     "✨"
+    ],
+    "y": 900
+   },
+   "cap": "Un bebé que aún mamaba… dejó el pecho, se giró… y habló.",
+   "title": [
+    "Un bebé",
+    "habló"
+   ]
+  },
+  {
+   "tint": "night",
+   "hi": [
+    "real,",
+    "Profeta,"
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "📜",
+    "orbit": [
+     "🌙",
+     "⏳"
+    ],
+    "y": 900
+   },
+   "cap": "Historia real, contada por el Profeta, la paz sea con él.",
+   "title": [
+    "Historia",
+    "real"
+   ]
+  },
+  {
+   "tint": "gold",
+   "hi": [
+    "madre",
+    "jinete",
+    "elegante."
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "🏇",
+    "orbit": [
+     "👑",
+     "💎",
+     "✨"
+    ],
+    "y": 900
+   },
+   "cap": "Una madre daba el pecho a su hijo… y pasó un jinete rico y elegante.",
+   "title": [
+    "Un jinete",
+    "elegante"
+   ]
+  },
+  {
+   "tint": "gold",
+   "hi": [
+    "Haz",
+    "como él."
+   ],
+   "vis": {
+    "type": "quote",
+    "lines": [
+     "«¡Oh, Allah!",
+     "Haz que mi hijo",
+     "sea como él»"
+    ],
+    "src": "LA MADRE",
+    "size": 58,
+    "y": 880
+   },
+   "cap": "Ella dijo: «¡Oh, Allah! Haz que mi hijo sea como él».",
+   "title": [
+    "El deseo",
+    "de la madre"
+   ]
+  },
+  {
+   "tint": "red",
+   "hi": [
+    "miró…",
+    "No"
+   ],
+   "vis": {
+    "type": "steps",
+    "items": [
+     [
+      "🤱",
+      "MAMÁ PIDE"
+     ],
+     [
+      "👶",
+      "LE MIRA"
+     ],
+     [
+      "🚫",
+      "«NO»"
+     ]
+    ],
+    "y": 920
+   },
+   "cap": "El bebé le miró… y dijo: «¡Oh, Allah! No me hagas como él».",
+   "title": [
+    "El bebé",
+    "responde"
+   ]
+  },
+  {
+   "tint": "red",
+   "hi": [
+    "esclava.",
+    "¡Ladrona!»"
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "🧕",
+    "orbit": [
+     "😡",
+     "🫵",
+     "😡"
+    ],
+    "y": 900
+   },
+   "cap": "Luego pasó una joven esclava. La gente le gritaba: «¡Ladrona!»",
+   "title": [
+    "«¡Ladrona!»"
+   ]
+  },
+  {
+   "tint": "red",
+   "hi": [
+    "nunca",
+    "ella."
+   ],
+   "vis": {
+    "type": "quote",
+    "lines": [
+     "«Que mi hijo",
+     "nunca sea",
+     "como ella»"
+    ],
+    "src": "LA MADRE",
+    "size": 58,
+    "y": 880
+   },
+   "cap": "La madre dijo: «Que mi hijo nunca sea como ella».",
+   "title": [
+    "La madre,",
+    "otra vez"
+   ]
+  },
+  {
+   "tint": "gold",
+   "hi": [
+    "Hazme",
+    "ella.»"
+   ],
+   "vis": {
+    "type": "choice",
+    "opts": [
+     [
+      "🏇",
+      "EL JINETE",
+      "red"
+     ],
+     [
+      "🧕",
+      "LA JOVEN",
+      "gold"
+     ]
+    ],
+    "pick": 1,
+    "y": 900
+   },
+   "cap": "Y el bebé contestó: «¡Oh, Allah! Hazme como ella.»",
+   "title": [
+    "Y el bebé…"
+   ]
+  },
+  {
+   "tint": "night",
+   "hi": [
+    "tirano.",
+    "inocente."
+   ],
+   "vis": {
+    "type": "choice",
+    "opts": [
+     [
+      "😈",
+      "TIRANO",
+      "red"
+     ],
+     [
+      "🤍",
+      "INOCENTE",
+      "gold"
+     ]
+    ],
+    "pick": 1,
+    "y": 900
+   },
+   "cap": "¿Por qué? El jinete era un tirano. Y ella era inocente.",
+   "title": [
+    "¿Por qué?"
+   ]
+  },
+  {
+   "tint": "green",
+   "hi": [
+    "brilla",
+    "dentro."
+   ],
+   "vis": {
+    "type": "big",
+    "words": [
+     "POR FUERA",
+     "≠",
+     "POR DENTRO"
+    ],
+    "size": 110,
+    "gap": 170,
+    "y": 860,
+    "e": "💎"
+   },
+   "cap": "Lo que brilla por fuera… no siempre vale por dentro.",
+   "title": [
+    "La",
+    "lección"
+   ]
+  },
+  {
+   "tint": "green",
+   "hi": [
+    "al-Bujari,",
+    "3436."
+   ],
+   "vis": {
+    "type": "big",
+    "words": [
+     "BUJARI",
+     "3436"
+    ],
+    "size": 150,
+    "gap": 170,
+    "y": 860,
+    "e": "📖"
+   },
+   "cap": "Sahih al-Bujari, hadiz 3436.",
+   "title": [
+    "Hadiz",
+    "auténtico"
+   ]
+  },
+  {
+   "tint": "night",
+   "hi": [
+    "hijos?",
+    "abajo."
+   ],
+   "vis": {
+    "type": "cta",
+    "word": "COMENTA",
+    "size": 130,
+    "e": "💬",
+    "y": 900
+   },
+   "cap": "¿Y tú? ¿Qué le pides a Allah para tus hijos? Te leo abajo.",
+   "title": [
+    "¿Y tú?"
+   ]
+  }
+ ]
+}
