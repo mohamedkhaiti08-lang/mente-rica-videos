@@ -1,0 +1,20 @@
+{"label": "¿QUIÉN PASA PRIMERO? · PARTE 11", "times": "tiempos.json", "voice": "voz.wav", "tail": 1.1,
+ "sfx": [{"t": 9.68, "type": "beep"}, {"t": 10.58, "type": "beep"}, {"t": 11.48, "type": "beep"}, {"t": 12.41, "type": "ding"}, {"t": 18.64, "type": "buzz"}],
+ "scenes": [
+  {"cap": "Parte 11. El 2 sale de un garaje, a la derecha del 1. ¿Quién pasa primero?", "hi": ["garaje,", "primero?"],
+   "vis": {"type": "garaje", "mode": "hook", "lines": ["¿QUIÉN PASA PRIMERO?"], "cols": [[255, 196, 0]]}},
+  {"cap": "No hay señales. Y el 2 viene por la derecha.", "hi": ["señales.", "derecha."],
+   "vis": {"type": "garaje", "mode": "right"}},
+  {"cap": "¿1 o 2? Escríbelo. Tienes 3 segundos.", "hi": ["1", "2?", "3"],
+   "vis": {"type": "garaje", "mode": "countdown", "countdown": [2.64, 3.54, 4.44], "tag": "¿1 O 2?"}},
+  {"cap": "¡Pasa el 1! El 2 espera, aunque venga por la derecha.", "hi": ["1!", "espera,"],
+   "vis": {"type": "garaje", "mode": "answer"}},
+  {"cap": "Quien sale de un garaje, de una finca, o de un aparcamiento, cede el paso a los que circulan.", "hi": ["garaje,", "finca,", "cede"],
+   "vis": {"type": "garlaw", "at": [0.8, 1.5, 2.3], "stamp_at": 3.2, "tag": "ART. 72 DEL REGLAMENTO DE CIRCULACIÓN"}},
+  {"cap": "Vengan por la izquierda, o por la derecha.", "hi": ["izquierda,", "derecha."],
+   "vis": {"type": "garaje", "mode": "both"}},
+  {"cap": "La regla de la derecha es para los cruces. Y un garaje no es un cruce.", "hi": ["cruces.", "garaje"],
+   "vis": {"type": "regla"}},
+  {"cap": "¿La has acertado? Comenta 1 o 2, y pide la parte 12.", "hi": ["Comenta", "12."],
+   "vis": {"type": "cta", "big": "¿Acertaste?", "small": "Comenta 1 o 2 · ¿Parte 12?"}}
+ ]}

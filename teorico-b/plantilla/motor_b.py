@@ -42,6 +42,8 @@
 #     list = café, té, ducha, dormir tachados | feel = cómo te notas ≠ alcohol en sangre | time = reloj de arena + reloj | food = plato + curvas ayunas/con comida).
 #   bus (¿QUIÉN PASA PRIMERO? parada en isleta: hook | nozebra | countdown | answer | zone = entre el bus y la acera) y buslaw (tarjeta art. 65.1.d).
 #   puente (puente estrecho cenital con señal R-5 en la entrada del 1: hook | sign | countdown | answer = el 1 retrocede y pasa el 2 | rule = qué significa la R-5 | back = art. 61).
+#   marcha (marcha atrás, art. 80 RGC: hook = cámara de marcha atrás | tape = cinta métrica que crece | max = tope 15 m | cross = no invadir el cruce | autovia = PROHIBIDO); sfx "pips".
+#   garaje (¿QUIÉN PASA PRIMERO? salida de garaje, art. 72 RGC: hook | right | countdown | answer | both), garlaw (garaje/finca/aparcamiento → cedes el paso) y regla (CRUCE vs GARAJE).
 import math, json, sys, os, subprocess
 from functools import lru_cache
 from multiprocessing import Pool
@@ -3656,6 +3658,329 @@ def vis_buslaw(dst, t, v, i):
     sp = prog(t, 3.0, .2)
     if sp > 0: paste(dst, stamp2("ART. 65.1.d"), W / 2 + 150, CY - 80, scale=lerp(2, 1, eout(sp)) * .8, alpha=ease(sp * 1.6), rot=-10)
 
+# --- MARCHA ATRÁS (¿APROBARÍAS?: 15 m como máximo, nunca invadiendo un cruce, prohibida en autopista/autovía; RGC art. 80) ---
+# vis: {"type": "marcha", "mode": "hook" | "tape" | "max" | "cross" | "autovia", "lines": [...], "cols": [...], "tag": "..."}
+#   hook    = pantalla de la cámara de marcha atrás: guías verde/ámbar/roja, bolardos que se acercan, barras del sensor y "R"
+#   tape    = calle cenital: el coche va marcha atrás (luces blancas) y una cinta métrica crece detrás con "? m"
+#   max     = la cinta se para en 15 m con tope rojo "MÁX. 15 m" y "LO MÍNIMO INDISPENSABLE"
+#   cross   = cruce cenital: el coche retrocede hacia el cruce, se pone rojo al invadirlo, X y "NUNCA INVADAS EL CRUCE"
+#   autovia = autovía cenital: coche marcha atrás con coches que llegan rápido por detrás, sello PROHIBIDO y "NI UN METRO"
+#   sfx admite "pips" (sensor de aparcamiento).
+def white_glow(s=110):
+    im = Image.new("RGBA", (s * 2, s * 2), (0, 0, 0, 0)); d = ImageDraw.Draw(im)
+    d.ellipse((s * .7, s * .85, s * 1.3, s * 1.15), fill=(255, 255, 240, 255))
+    g = im.filter(ImageFilter.GaussianBlur(s * .2)); g.alpha_composite(im.filter(ImageFilter.GaussianBlur(4))); return g
+
+def rev_car(dst, x, y, rot, t, col=(226, 69, 60), w=100, lights=True):
+    """coche cenital (morro según rot: 0 = arriba, -90 = derecha) con luces de marcha atrás blancas detrás."""
+    if lights and int(t * 5) % 3 != 2:
+        r = math.radians(rot); bx, by = math.sin(r), math.cos(r)  # vector hacia la parte trasera
+        px, py = math.cos(r), -math.sin(r)
+        for s in (-1, 1): paste(dst, white_glow(90), x + bx * w * .95 + px * s * w * .28, y + by * w * .95 + py * s * w * .28, alpha=.95)
+    paste(dst, car_top(col, w), x, y, rot=rot)
+
+def tape_measure(d, x0, x1, y, m_per_px, a=255, maxm=None):
+    """cinta métrica amarilla horizontal de x0 a x1 (x1 < x0) con marcas cada metro."""
+    if x0 - x1 < 4: return
+    d.rectangle((x1, y - 22, x0, y + 22), fill=(255, 210, 40, a), outline=(140, 100, 0, a), width=3)
+    m = 0
+    while True:
+        xx = x0 - m / m_per_px
+        if xx < x1: break
+        h = 20 if m % 5 == 0 else 10
+        d.line([(xx, y - 22), (xx, y - 22 + h)], fill=(40, 30, 0, a), width=4 if m % 5 == 0 else 2)
+        m += 1
+
+def street_top(dst, t):
+    top, bot = VZ[0] + 10, VZ[1] + 20; lay = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(lay, "RGBA")
+    d.rectangle((40, top, W - 40, bot), fill=(176, 170, 160, 255))  # aceras
+    for yy in list(range(int(top), CY - 250, 60)) + list(range(CY + 250, int(bot), 60)):
+        for xx in range(40, W - 40, 60): d.rectangle((xx + 2, yy + 2, xx + 58, yy + 58), outline=(160, 154, 144, 255), width=3)
+    d.rectangle((40, CY - 250, W - 40, CY + 250), fill=(46, 49, 58, 255))
+    for yy in (CY - 250, CY + 238): d.rectangle((40, yy, W - 40, yy + 12), fill=(214, 210, 202, 255))
+    for x in range(40, W - 40, 110): d.line([(x, CY), (x + 60, CY)], fill=(255, 255, 255, 200), width=8)
+    # coches aparcados en la banda de abajo (hueco en el centro)
+    for x, c in ((230, (130, 140, 155)), (820, (245, 245, 245))):
+        paste(lay, car_top(c, 92), x, CY - 165, rot=90)
+    for x in range(260, 830, 190): d.line([(x, CY + 105), (x, CY + 238)], fill=(255, 255, 255, 120), width=5)
+    clip_vz(dst, lay, top, bot); return top, bot
+
+def cam_screen(dst, t, v):
+    top, bot = VZ[0] + 10, VZ[1] + 20; lay = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(lay, "RGBA")
+    d.rounded_rectangle((40, top, W - 40, bot), radius=36, fill=(16, 18, 24, 255))
+    sx0, sy0, sx1, sy1 = 70, top + 30, W - 70, bot - 30
+    hz = sy0 + 250
+    d.rectangle((sx0, sy0, sx1, hz), fill=(150, 160, 172, 255))  # pared del garaje
+    for k in range(6): d.line([(sx0, sy0 + 40 * k + 20), (sx1, sy0 + 40 * k + 20)], fill=(138, 148, 160, 255), width=3)
+    d.rectangle((sx0, hz, sx1, sy1), fill=(78, 82, 92, 255))  # suelo
+    vx = W / 2
+    for k in range(-3, 4):  # líneas de plazas en perspectiva
+        d.line([(vx + k * 190, hz), (vx + k * 900, sy1)], fill=(235, 235, 235, 120), width=6)
+    # bolardos que se acercan (marcha atrás)
+    z = 0.25 + 0.55 * ((t * .22) % 1)
+    for s in (-1, 1):
+        bx = vx + s * (120 + 520 * z); by = hz + (sy1 - hz) * z; bh = 60 + 360 * z; bw = 14 + 60 * z
+        d.rounded_rectangle((bx - bw / 2, by - bh, bx + bw / 2, by), radius=int(bw / 2), fill=(250, 196, 0, 255))
+        for j in range(3): d.rectangle((bx - bw / 2, by - bh * (.25 + j * .25), bx + bw / 2, by - bh * (.25 + j * .25) + bh * .08), fill=(30, 30, 30, 255))
+    # guías de aparcamiento (curvas, verde > ámbar > rojo)
+    for s in (-1, 1):
+        pts = [(vx + s * (150 + 260 * (1 - q) ** 1.3) + s * 40 * math.sin(q * 2), hz + 90 + (sy1 - hz - 120) * q) for q in [j / 30 for j in range(31)]]
+        for j in range(30):
+            q = j / 30; col = GREEN if q < .45 else ((255, 176, 0) if q < .75 else RED)
+            d.line([pts[j], pts[j + 1]], fill=col + (255,), width=12)
+        for q, col in ((.45, GREEN), (.75, (255, 176, 0)), (.98, RED)):
+            j = int(q * 30); d.line([(pts[j][0], pts[j][1]), (vx + s * 30, pts[j][1])], fill=col + (255,), width=8)
+    # barras del sensor (arriba a la izquierda) y "R"
+    lev = 1 + int((t * 2.5) % 4)
+    for k in range(4):
+        on = k < lev; c = [GREEN, (255, 176, 0), (255, 120, 0), RED][k]
+        d.rounded_rectangle((sx0 + 30 + k * 46, sy1 - 70 - k * 22, sx0 + 64 + k * 46, sy1 - 30), radius=8, fill=(c if on else (60, 64, 72)) + (255,))
+    paste(lay, pill("R", 56, (255, 255, 255), RED, padx=30, pady=10), sx1 - 210, sy1 - 60)
+    vg = Image.new("RGBA", (W, H), (0, 0, 0, 0))  # viñeta de lente
+    ImageDraw.Draw(vg).rounded_rectangle((sx0, sy0, sx1, sy1), radius=30, outline=(0, 0, 0, 160), width=40)
+    lay.alpha_composite(vg.filter(ImageFilter.GaussianBlur(26)))
+    clip_vz(dst, lay, top, bot)
+    if int(t * 2) % 2 == 0: ImageDraw.Draw(dst, "RGBA").ellipse((sx0 + 30, sy0 + 24, sx0 + 58, sy0 + 52), fill=RED + (255,))
+    paste(dst, text("REC", 30, WHITE, XB, shadow=False), sx0 + 105, sy0 + 38)
+    return top, bot
+
+PXM = 40  # px por metro en la calle cenital
+def vis_marcha(dst, t, v, i):
+    if i == 0: t = t + 0.6  # primer fotograma: cámara, guías y gancho ya en pantalla
+    mode = v.get("mode", "hook")
+    if mode == "hook":
+        top, bot = cam_screen(dst, t, v)
+        lines = v.get("lines", [])
+        if lines:
+            g = Image.new("RGBA", (W, H), (0, 0, 0, 0)); ImageDraw.Draw(g).rounded_rectangle((70, top + 80, W - 70, top + 340), radius=36, fill=(6, 20, 43, 190)); dst.alpha_composite(g)
+            big_lines(dst, lines, t, top + 150, [tuple(c) for c in v.get("cols", [])] or None, size=96)
+        return
+    if mode in ("tape", "max"):
+        top, bot = street_top(dst, t); y = CY + 125; x0 = 880
+        if mode == "tape": k = ease(prog(t, .2, 2.6)); x = lerp(x0, x0 - 11 * PXM, k)
+        else: k = ease(prog(t, 0, 1.0)); x = lerp(x0 - 11 * PXM, x0 - 15 * PXM, k)
+        d = ImageDraw.Draw(dst, "RGBA")
+        rear0, rear = x0 - 90, x - 90
+        tape_measure(d, rear0, rear, y - 95, 1 / PXM)
+        rev_car(dst, x, y, -90, t)
+        m = (x0 - x) / PXM
+        lab = (f"{m:.0f} m" + (" ?" if mode == "tape" else ""))
+        paste(dst, pill(lab, 46, YEL, NAVY), max(rear, 170), y - 165, scale=eback(prog(t, .3, .35)))
+        if mode == "max":
+            sp = prog(t, .9, .3); xs = x0 - 90 - 15 * PXM
+            if sp > 0:
+                d.rectangle((xs - 8, CY + 20, xs + 8, CY + 230), fill=RED + (int(255 * ease(sp)),))
+                paste(dst, pill("MÁX. 15 m", 44, RED, WHITE), xs + 180, CY - 330, scale=eback(sp), alpha=ease(sp * 2))
+            paste(dst, pill("LO MÍNIMO INDISPENSABLE", 40, WHITE, NAVY), W / 2 - 20, CY + 330, scale=eback(prog(t, 1.3, .35)), alpha=ease(prog(t, 1.3, .3)))
+        elif v.get("tag"):
+            paste(dst, pill(v["tag"], 40, WHITE, NAVY), W / 2 - 20, CY - 330, scale=eback(prog(t, .4, .35)), alpha=ease(prog(t, .4, .3)))
+        return
+    if mode == "cross":
+        top, bot = VZ[0] + 10, VZ[1] + 20; lay = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(lay, "RGBA")
+        cx, cy = W / 2 - 40, CY + 170
+        d.rectangle((40, top, W - 40, bot), fill=(176, 170, 160, 255))
+        d.rectangle((cx - 150, top, cx + 150, bot), fill=(46, 49, 58, 255)); d.rectangle((40, cy - 150, W - 40, cy + 150), fill=(46, 49, 58, 255))
+        for yy in range(int(top), int(cy - 170), 100): d.line([(cx, yy), (cx, yy + 55)], fill=(255, 255, 255, 200), width=8)
+        for x in list(range(40, int(cx - 170), 100)) + list(range(int(cx + 170), W - 40, 100)): d.line([(x, cy), (x + 55, cy)], fill=(255, 255, 255, 200), width=8)
+        inv = ease(prog(t, .9, .4))
+        d.rectangle((cx - 150, cy - 150, cx + 150, cy + 150), fill=(239, 68, 68, int(110 * inv * (.7 + .3 * math.sin(t * 9)))))
+        d.rectangle((cx - 150, cy - 160, cx + 150, cy - 150), fill=(255, 255, 255, 230))
+        clip_vz(dst, lay, top, bot)
+        k = ease(prog(t, .05, 1.1)); y = lerp(top + 180, cy - 60, k)
+        lay = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+        xb = lerp(W + 100, -150, ((t * .32) + .15) % 1)
+        paste(lay, car_top((60, 140, 255), 92), xb, cy + 75, rot=90)
+        rev_car(lay, cx + 75, y, 0, t)
+        clip_vz(dst, lay, top, bot)
+        xp = prog(t, 1.0, .25)
+        if xp > 0: paste(dst, icon_x(170), cx + 260, cy - 140, scale=lerp(2, 1, eout(xp)), alpha=ease(xp * 2))
+        paste(dst, pill("NUNCA INVADAS EL CRUCE", 42, RED, WHITE), W / 2 - 20, top + 70, scale=eback(prog(t, 1.15, .35)), alpha=ease(prog(t, 1.15, .3)))
+        return
+    if mode == "autovia":
+        top, bot = VZ[0] + 10, VZ[1] + 20; lay = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(lay, "RGBA")
+        x0, x1 = W / 2 - 300, W / 2 + 220
+        d.rectangle((40, top, W - 40, bot), fill=(70, 96, 60, 255)); d.rectangle((40, top, x0 - 60, bot), fill=(64, 92, 60, 255))
+        d.rectangle((x0, top, x1 + 110, bot), fill=(46, 49, 58, 255))
+        d.line([(x0 + 10, top), (x0 + 10, bot)], fill=(255, 255, 255, 230), width=8); d.line([(x1, top), (x1, bot)], fill=(255, 255, 255, 230), width=8)
+        off = (t * 420) % 130
+        for yy in range(int(top) - 130, int(bot), 130): d.line([((x0 + x1) / 2, yy + off), ((x0 + x1) / 2, yy + off + 70)], fill=(255, 255, 255, 200), width=8)
+        d.rectangle((x0 - 60, top, x0 - 20, bot), fill=(160, 166, 176, 255))  # bionda
+        clip_vz(dst, lay, top, bot)
+        lay = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+        ry = lerp(CY - 120, CY + 60, ease(prog(t, 0, 2.5))); rx = (x0 + x1) / 2 + 130
+        rev_car(lay, rx, ry, 0, t)
+        for k, (lx, ph) in enumerate((((x0 + x1) / 2 - 130, 0.0), ((x0 + x1) / 2 + 130, .45))):
+            yy = lerp(bot + 200, top - 200, ((t * .45) + ph) % 1)
+            if k == 1 and abs(yy - ry) < 260: yy = ry + 260  # el de atrás frena justo detrás
+            paste(lay, car_top([(245, 245, 245), (255, 196, 0)][k], 92), lx, yy)
+        clip_vz(dst, lay, top, bot)
+        sp = prog(t, v.get("stamp_at", .9), .2)
+        if sp > 0: paste(dst, stamp_img("PROHIBIDO"), W / 2 - 20, CY - 200, scale=lerp(2.2, 1, eout(sp)) * .9, alpha=ease(sp * 1.6), rot=-10)
+        sa = v.get("stamp_at", .9) + .6; paste(dst, pill("NI UN METRO", 50, RED, WHITE), W / 2 - 20, CY + 330, scale=eback(prog(t, sa, .35)), alpha=ease(prog(t, sa, .3)))
+        paste(dst, pill("AUTOPISTA · AUTOVÍA", 36, BLUE, WHITE), W / 2 - 20, top + 60, scale=eback(prog(t, .1, .35)), alpha=ease(prog(t, .1, .3)))
+        return
+
+
+# --- SALIDA DE UN GARAJE (¿QUIÉN PASA PRIMERO? parte 11: el que sale de un garaje/finca/aparcamiento cede el paso; RGC art. 72) ---
+# vis: {"type": "garaje", "mode": "hook" | "right" | "countdown" | "answer" | "both", "lines", "cols", "countdown": [t1, t2, t3], "tag"}
+#   calle cenital con 2 carriles, acera y edificio con puerta de garaje abierta; el 1 (rojo) va hacia el este por el carril de abajo,
+#   el 2 (azul) asoma desde el garaje, a la derecha del 1.  garlaw = tarjeta GARAJE / FINCA / APARCAMIENTO → CEDE EL PASO;
+#   regla = comparación CRUCE (regla de la derecha ✓) vs GARAJE (cede siempre).
+GAR_X, GAR_L1, GAR_L3, GAR_STOP = 640, CY + 25, CY - 165, CY + 255  # x del garaje, y carril del 1 (este), y carril contrario, y del 2 esperando
+def garaje_scene(dst, t, hl_right=0.0):
+    top, bot = VZ[0] + 10, VZ[1] + 20; lay = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(lay, "RGBA")
+    d.rectangle((40, top, W - 40, bot), fill=(176, 170, 160, 255))
+    # edificios de arriba
+    for k, (bx, bc) in enumerate(((40, (196, 120, 90)), (380, (220, 196, 150)), (720, (160, 170, 186)))):
+        d.rectangle((bx, top, bx + 340, top + 90), fill=bc + (255,)); d.rectangle((bx, top + 84, bx + 340, top + 96), fill=mix(bc, (0, 0, 0), .3) + (255,))
+    for yy in range(int(top) + 96, CY - 260, 60):
+        for xx in range(40, W - 40, 60): d.rectangle((xx + 2, yy + 2, xx + 58, yy + 58), outline=(160, 154, 144, 255), width=3)
+    # calzada de 2 carriles
+    d.rectangle((40, CY - 260, W - 40, CY + 120), fill=(46, 49, 58, 255))
+    for yy in (CY - 260, CY + 108): d.rectangle((40, yy, W - 40, yy + 12), fill=(214, 210, 202, 255))
+    for x in range(40, W - 40, 110): d.line([(x, CY - 70), (x + 60, CY - 70)], fill=(255, 255, 255, 200), width=8)
+    # acera de abajo con vado
+    for yy in range(CY + 120, CY + 220, 50):
+        for xx in range(40, W - 40, 60): d.rectangle((xx + 2, yy + 2, xx + 58, yy + 48), outline=(160, 154, 144, 255), width=3)
+    d.rectangle((GAR_X - 120, CY + 108, GAR_X + 120, CY + 120), fill=(150, 150, 150, 255))  # bordillo rebajado
+    # edificio con puerta de garaje
+    fy = CY + 220
+    d.rectangle((40, fy, W - 40, bot), fill=(212, 196, 170, 255)); d.rectangle((40, fy, W - 40, fy + 16), fill=(150, 130, 100, 255))
+    for wx in (140, 300, 900):
+        d.rectangle((wx - 50, fy + 70, wx + 50, fy + 170), fill=(90, 130, 170, 255), outline=(240, 240, 240, 255), width=6)
+    d.rectangle((GAR_X - 120, fy, GAR_X + 120, bot), fill=(24, 26, 32, 255))  # hueco del garaje (oscuro)
+    for k in range(5): d.line([(GAR_X - 110, fy + 60 + k * 40), (GAR_X + 110, fy + 60 + k * 40)], fill=(44, 46, 54, 255), width=4)  # rampa
+    d.rectangle((GAR_X - 130, fy, GAR_X - 120, bot), fill=(250, 196, 0, 255)); d.rectangle((GAR_X + 120, fy, GAR_X + 130, bot), fill=(250, 196, 0, 255))
+    clip_vz(dst, lay, top, bot)
+    paste(dst, pill("GARAJE", 30, BLUE, WHITE), GAR_X - 280, fy + 230)
+    if hl_right > 0:  # flecha "a la derecha del 1"
+        g = Image.new("RGBA", (W, H), (0, 0, 0, 0)); gd = ImageDraw.Draw(g, "RGBA"); a = int(255 * hl_right * (.65 + .35 * math.sin(t * 7)))
+        gd.rectangle((GAR_X - 120, CY + 120, GAR_X + 120, CY + 220), fill=(255, 196, 0, int(a * .45)))
+    else: g = None
+    if g: dst.alpha_composite(g)
+    return top, bot
+
+def garaje_actors(dst, t, x1, x2, y2, rot2, top, bot, x3=None, brake2=False, brake1=False):
+    lay = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    if x3 is not None: paste(lay, car_top(CRUCE_COLS[3], 100), x3, GAR_L3, rot=90)
+    if brake2:
+        for dx in (-30, 30): paste(lay, red_glow(100), x2 + dx, y2 + 100, alpha=.9)
+    paste(lay, car_top(CRUCE_COLS[2], 100), x2, y2, rot=rot2)
+    paste(lay, car_top(CRUCE_COLS[1], 100), x1, GAR_L1, rot=-90)
+    if brake1:
+        for dy in (-30, 30): paste(lay, red_glow(100), x1 - 100, GAR_L1 + dy, alpha=.9)
+    clip_vz(dst, lay, top, bot)
+    paste(dst, num_badge(1, 74), x1, GAR_L1 - 95)
+    if rot2 == 0: paste(dst, num_badge(2, 74), x2 + 110, y2 - 30)
+    if x3 is not None: paste(dst, num_badge(3, 70), x3, GAR_L3 - 92)
+
+def vis_garaje(dst, t, v, i):
+    if i == 0: t = t + 0.6  # primer fotograma: calle, garaje, 1 y 2 y pregunta ya en pantalla
+    mode = v.get("mode", "hook")
+    top, bot = garaje_scene(dst, t, hl_right=ease(prog(t, .2, .4)) if mode == "right" else 0)
+    x1, x2, y2, rot2, x3, brake2, brake1 = 300, GAR_X, GAR_STOP, 0, None, False, False
+    if mode == "hook":
+        x1 = lerp(-120, 300, eout(prog(t, 0, 1.8))); y2 = lerp(bot + 40, GAR_STOP, eout(prog(t, .2, 1.4)))
+    elif mode in ("right", "countdown"):
+        x1 = 300 + 4 * math.sin(t * 2); y2 = GAR_STOP + 3 * math.sin(t * 3)
+    elif mode == "answer":
+        x1 = lerp(300, W + 180, ease(prog(t, .2, 1.8))); brake2 = True
+        k = ease(prog(t, 2.0, 1.2)); y2 = lerp(GAR_STOP, GAR_L1, k); rot2 = -90 * k; x2 = GAR_X + 60 * k
+        if k > 0: brake2 = False
+    elif mode == "both":
+        x1 = lerp(-150, W + 150, ((t * .3) + .1) % 1); x3 = lerp(W + 150, -150, ((t * .3) + .2) % 1); brake2 = True
+    garaje_actors(dst, t, x1, x2, y2, rot2, top, bot, x3, brake2)
+    if mode == "hook":
+        lines = v.get("lines", [])
+        if lines:
+            g = Image.new("RGBA", (W, H), (0, 0, 0, 0)); ImageDraw.Draw(g).rounded_rectangle((40, top, W - 40, top + 190), radius=36, fill=(6, 20, 43, 170)); dst.alpha_composite(g)
+            big_lines(dst, lines, t, top + 60, [tuple(c) for c in v.get("cols", [])] or None, size=84)
+        paste(dst, pill("SALE DEL GARAJE", 32, WHITE, NAVY), GAR_X - 290, GAR_STOP + 10, scale=eback(prog(t, 1.4, .35)), alpha=ease(prog(t, 1.4, .3)))
+    if mode == "right":
+        paste(dst, sign_ceda(110), W / 2 - 330, top + 90, alpha=ease(prog(t, .2, .3))); paste(dst, stop_mini(110), W / 2 - 190, top + 90, alpha=ease(prog(t, .3, .3)))
+        xp = prog(t, .5, .25)
+        if xp > 0:
+            for xx in (W / 2 - 330, W / 2 - 190): paste(dst, icon_x(70), xx + 40, top + 130, scale=eback(xp))
+        paste(dst, pill("SIN SEÑALES", 40, WHITE, NAVY), W / 2 + 90, top + 90, scale=eback(prog(t, .4, .35)), alpha=ease(prog(t, .4, .3)))
+        paste(dst, pill("POR LA DERECHA DEL 1", 38, YEL, NAVY), W / 2 - 20, CY - 150, scale=eback(prog(t, 1.0, .35)), alpha=ease(prog(t, 1.0, .3)))
+        d = ImageDraw.Draw(dst, "RGBA"); a = int(255 * ease(prog(t, 1.0, .3)))
+        if a: arrow_v(d, 420, CY + 160, 1, a)
+    cd = v.get("countdown")
+    if cd:
+        n = sum(1 for s in cd if t >= s); ix, iy = 820, top + 180
+        paste(dst, semaphore(n).resize((105, 275), Image.LANCZOS), ix, iy, scale=eback(prog(t, 0, .4)))
+        if n:
+            pk = prog(t, cd[n - 1], .25)
+            paste(dst, text(str(4 - n), 170, [RED, (255, 176, 0), GREEN][n - 1], BLACK), W / 2 - 60, top + 160, scale=lerp(1.6, 1, eout(pk)), alpha=ease(pk * 2))
+        if v.get("tag"): paste(dst, pill(v["tag"], 46, YEL, NAVY), W / 2 - 300, top + 160, scale=eback(prog(t, .3, .35)), alpha=ease(prog(t, .3, .3)))
+    if mode == "answer":
+        for k, (pos, car, at) in enumerate(((1, 1, .4), (2, 2, .8))):
+            p = prog(t, at, .35)
+            if p > 0: paste(dst, rank_chip(pos, car), W / 2 - 20, top + 70 + k * 92, scale=eback(p), alpha=ease(p * 2))
+        if t < 2.0: paste(dst, pill("ESPERA", 36, RED, WHITE), GAR_X - 250, GAR_STOP, scale=eback(prog(t, .5, .35)), alpha=ease(prog(t, .5, .3)))
+    if mode == "both":
+        paste(dst, pill("CEDE A LOS DOS LADOS", 40, RED, WHITE), W / 2 - 20, top + 70, scale=eback(prog(t, .2, .35)), alpha=ease(prog(t, .2, .3)))
+        d = ImageDraw.Draw(dst, "RGBA"); a = int(255 * ease(prog(t, .5, .3)))
+        if a: arrow(d, GAR_X - 200, GAR_STOP - 90, -1, a); arrow(d, GAR_X + 200 - 60, GAR_STOP - 90, 1, a)
+
+@lru_cache(maxsize=8)
+def place_icon(kind, s=170):
+    im = ss(s, s); d = ImageDraw.Draw(im); S = s * 2
+    d.rounded_rectangle((0, 0, S - 1, S - 1), radius=int(S * .2), fill=(232, 238, 248))
+    if kind == "garaje":
+        d.polygon([(S * .12, S * .45), (S * .5, S * .16), (S * .88, S * .45)], fill=(196, 120, 90))
+        d.rectangle((S * .18, S * .45, S * .82, S * .86), fill=(212, 196, 170)); d.rectangle((S * .3, S * .56, S * .7, S * .86), fill=(60, 64, 76))
+        for k in range(4): d.line([(S * .3, S * (.62 + k * .06)), (S * .7, S * (.62 + k * .06))], fill=(110, 116, 130), width=6)
+    elif kind == "finca":
+        d.rectangle((S * .08, S * .7, S * .92, S * .88), fill=(110, 170, 80))
+        for x in (.18, .38, .62, .82): d.rectangle((S * (x - .03), S * .42, S * (x + .03), S * .74), fill=(150, 100, 60))
+        d.line([(S * .12, S * .5), (S * .88, S * .5)], fill=(150, 100, 60), width=10); d.line([(S * .12, S * .62), (S * .88, S * .62)], fill=(150, 100, 60), width=10)
+        d.ellipse((S * .58, S * .1, S * .88, S * .4), fill=(255, 196, 0))
+    else:  # aparcamiento: P azul
+        d.rounded_rectangle((S * .18, S * .14, S * .82, S * .86), radius=int(S * .08), fill=(18, 86, 190))
+        f = F(BLACK, int(S * .55)); bb = f.getbbox("P"); d.text((S / 2 - (bb[0] + bb[2]) / 2, S / 2 - (bb[1] + bb[3]) / 2), "P", font=f, fill=WHITE)
+    return down(im)
+
+def vis_garlaw(dst, t, v, i):
+    p = eback(prog(t, 0, .45)); a = ease(prog(t, 0, .25))
+    paste(dst, card(880, 800, fill=(255, 255, 255, 250), r=40), W / 2, CY + (1 - p) * 120, alpha=a)
+    paste(dst, text("SI SALES DE UN...", 50, DARK, BLACK, shadow=False), W / 2, CY - 300, alpha=a)
+    ats = v.get("at", [.3, 1.0, 1.7])
+    for k, (kind, lab, at) in enumerate(zip(("garaje", "finca", "parking"), ("GARAJE", "FINCA", "APARCAMIENTO"), ats)):
+        pk = prog(t, at, .35)
+        if pk <= 0: continue
+        x = W / 2 - 280 + k * 280
+        paste(dst, place_icon(kind, 190), x, CY - 110, scale=eback(pk), alpha=ease(pk * 2))
+        paste(dst, text(lab, 34 if k < 2 else 30, DARK, XB, shadow=False), x, CY + 20, alpha=ease(pk * 2))
+    sp = prog(t, v.get("stamp_at", 3.0), .3)
+    if sp > 0:
+        paste(dst, sign_ceda(150), W / 2 - 250, CY + 210, scale=eback(sp), alpha=ease(sp * 2))
+        paste(dst, text("CEDES EL PASO", 70, RED, BLACK, shadow=False), W / 2 + 80, CY + 210, scale=eback(sp), alpha=ease(sp * 2))
+    if v.get("tag"): paste(dst, pill(v["tag"], 34, YEL, NAVY), W / 2, CY + 340, alpha=ease(prog(t, v.get("stamp_at", 3.0) + .4, .3)))
+
+def vis_regla(dst, t, v, i):
+    """CRUCE (regla de la derecha ✓) vs GARAJE (no vale: cedes siempre)."""
+    for k, px in enumerate((W / 2 - 225, W / 2 + 195)):
+        p = eback(prog(t, k * .9, .45)); a = ease(prog(t, k * .9, .3)); y = CY - 20 + (1 - p) * 160
+        paste(dst, card(400, 640, fill=(255, 255, 255, 250), r=40, border=GREEN if k == 0 else RED, bw=6), px, y, alpha=a)
+        paste(dst, pill(["CRUCE", "GARAJE"][k], 38, GREEN if k == 0 else RED, WHITE), px, y - 250, alpha=a)
+        m = Image.new("RGBA", (360, 360), (0, 0, 0, 0)); d = ImageDraw.Draw(m)
+        if k == 0:
+            d.rectangle((0, 0, 359, 359), fill=(110, 150, 90)); d.rectangle((130, 0, 230, 359), fill=(56, 60, 70)); d.rectangle((0, 130, 359, 230), fill=(56, 60, 70))
+            paste(m, car_top(CRUCE_COLS[1], 50), 205, 300); paste(m, car_top(CRUCE_COLS[2], 50), 300, 155, rot=90)
+            d.polygon([(250, 150), (215, 125), (215, 175)], fill=YEL)
+        else:
+            d.rectangle((0, 0, 359, 359), fill=(176, 170, 160)); d.rectangle((0, 60, 359, 220), fill=(56, 60, 70)); d.rectangle((0, 280, 359, 359), fill=(212, 196, 170))
+            d.rectangle((130, 280, 230, 359), fill=(24, 26, 32))
+            paste(m, car_top(CRUCE_COLS[1], 50), 90, 180, rot=-90); paste(m, car_top(CRUCE_COLS[2], 50), 180, 300)
+        m2 = Image.new("RGBA", (360, 360), (0, 0, 0, 0)); ImageDraw.Draw(m2).rounded_rectangle((0, 0, 359, 359), radius=30, fill=255)
+        mm = Image.new("L", (360, 360), 0); ImageDraw.Draw(mm).rounded_rectangle((0, 0, 359, 359), radius=30, fill=255); m.putalpha(mm)
+        paste(dst, m, px, y - 20, alpha=a)
+        lab = ["MANDA LA DERECHA", "CEDES SIEMPRE"][k]
+        paste(dst, text(lab, 34, DARK, XB, shadow=False), px, y + 220, alpha=a)
+        ip = prog(t, k * .9 + .5, .3)
+        if ip > 0: paste(dst, (icon_check if k == 0 else icon_x)(84), px + 135, y - 180, scale=eback(ip))
+
 
 VIS = {k[4:]: v for k, v in globals().items() if k.startswith("vis_")}
 
@@ -3698,6 +4023,11 @@ def sfx_wave(kind, sr=24000):
     if kind == "notif":  # aviso de mensaje del móvil (dos notas cortas) + vibración
         t = np.arange(int(sr * .3)) / sr; vib = (np.sign(np.sin(2 * np.pi * 90 * t)) * .05 * np.exp(-t * 6)).astype(np.float32)
         return np.concatenate([tone(1318, .09, sr, .2, 10), tone(1760, .2, sr, .2, 9), vib])
+    if kind == "pips":  # sensor de aparcamiento: pitidos cada vez más seguidos
+        seg = []
+        for gap in (.32, .26, .2, .15, .11, .08, .06):
+            seg += [tone(2093, .07, sr, .12, 20), np.zeros(int(sr * gap), np.float32)]
+        return np.concatenate(seg)
     if kind == "whoosh":
         n = int(sr * .3); x = np.random.default_rng(1).standard_normal(n).astype(np.float32)
         x = np.convolve(x, np.ones(30) / 30, mode="same"); env = np.sin(np.linspace(0, np.pi, n)) ** 2; return (x * env * .12).astype(np.float32)

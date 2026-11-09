@@ -1,0 +1,22 @@
+{"label": "¿APROBARÍAS?", "times": "tiempos.json", "voice": "voz.wav", "tail": 1.0,
+ "sfx": [{"t": 0.05, "type": "pips"}, {"t": 2.5, "type": "pips"}, {"t": 12.6, "type": "beep"}, {"t": 13.5, "type": "beep"}, {"t": 14.4, "type": "beep"}, {"t": 15.33, "type": "ding"}, {"t": 21.2, "type": "buzz"}, {"t": 23.55, "type": "buzz"}],
+ "scenes": [
+  {"cap": "Si fallas esta, repites examen.", "hi": ["fallas", "repites"],
+   "vis": {"type": "marcha", "mode": "hook", "lines": ["SI FALLAS ESTA,", "REPITES EXAMEN"], "cols": [[255, 255, 255], [255, 196, 0]]}},
+  {"cap": "Vas a aparcar, y tienes que ir marcha atrás.", "hi": ["marcha", "atrás."],
+   "vis": {"type": "marcha", "mode": "tape", "tag": "¿CUÁNTO PUEDES RECORRER?"}},
+  {"cap": "¿Cuántos metros puedes recorrer, como máximo?", "hi": ["metros", "máximo?"],
+   "vis": {"type": "quiz", "q": "Vas marcha atrás para aparcar. ¿Cuántos metros puedes recorrer como máximo?", "opts": ["10 metros", "15 metros", "Los que necesites"], "correct": 1, "opt_at": [0.47, 0.62, 0.77]}},
+  {"cap": "Pon tu letra en comentarios. Tienes 3 segundos.", "hi": ["letra", "3"],
+   "vis": {"type": "countdown", "quiz_scene": 2, "at": [2.86, 3.76, 4.66]}},
+  {"cap": "¡Es la B! 15 metros, como máximo.", "hi": ["B!", "15"],
+   "vis": {"type": "reveal", "quiz_scene": 2}},
+  {"cap": "Y siempre, lo mínimo indispensable.", "hi": ["mínimo", "indispensable."],
+   "vis": {"type": "marcha", "mode": "max"}},
+  {"cap": "Eso sí: nunca puedes invadir un cruce.", "hi": ["nunca", "cruce."],
+   "vis": {"type": "marcha", "mode": "cross"}},
+  {"cap": "¿Y en autopista o autovía? Prohibido. Ni un metro.", "hi": ["Prohibido.", "metro."],
+   "vis": {"type": "marcha", "mode": "autovia", "stamp_at": 1.45}},
+  {"cap": "Guárdalo para el examen, y comenta qué letra pusiste.", "hi": ["Guárdalo", "letra"],
+   "vis": {"type": "save", "big": "GUÁRDALO", "small": "marcha atrás = máx. 15 m"}}
+ ]}
