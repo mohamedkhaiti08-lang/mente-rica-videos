@@ -1,0 +1,207 @@
+{
+ "tail": 1.3,
+ "cx": 490,
+ "cap_maxw": 800,
+ "title_maxw": 820,
+ "instant": true,
+ "step_gap": 290,
+ "label": "CURIOSIDAD",
+ "times": "2026-11-14-1200-estornudo.tiempos.json",
+ "scenes": [
+  {
+   "tint": "gold",
+   "hi": [
+    "estornuda…",
+    "«Jesús»."
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "🤧",
+    "orbit": [
+     "❓",
+     "🤔",
+     "✨"
+    ],
+    "y": 900
+   },
+   "cap": "Tu amigo musulmán estornuda… y no dice «Jesús». ¿Sabes qué dice?",
+   "title": [
+    "No dice",
+    "«Jesús»…"
+   ]
+  },
+  {
+   "tint": "green",
+   "hi": [
+    "«Al-hamdulillah»."
+   ],
+   "vis": {
+    "type": "big",
+    "words": [
+     "AL-HAMDU",
+     "LILLAH"
+    ],
+    "size": 130,
+    "gap": 160,
+    "y": 860,
+    "e": "🤲"
+   },
+   "cap": "Dice: «Al-hamdulillah». Gracias a Dios.",
+   "title": [
+    "Paso 1"
+   ]
+  },
+  {
+   "tint": "blue",
+   "hi": [
+    "responde:",
+    "misericordia"
+   ],
+   "vis": {
+    "type": "quote",
+    "lines": [
+     "«Yarhamuk Allah»"
+    ],
+    "src": "QUE ALLAH TENGA MISERICORDIA DE TI",
+    "size": 70,
+    "y": 880
+   },
+   "cap": "Y el que lo oye le responde: «Yarhamuk Allah». Que Allah tenga misericordia de ti.",
+   "title": [
+    "Paso 2"
+   ]
+  },
+  {
+   "tint": "red",
+   "hi": [
+    "curioso.",
+    "ahí."
+   ],
+   "vis": {
+    "type": "big",
+    "words": [
+     "NO SE",
+     "ACABA",
+     "AHÍ"
+    ],
+    "size": 130,
+    "gap": 150,
+    "y": 840,
+    "e": "😳"
+   },
+   "cap": "Pero aquí viene lo curioso. No se acaba ahí.",
+   "title": [
+    "Espera…"
+   ]
+  },
+  {
+   "tint": "gold",
+   "hi": [
+    "contesta",
+    "balakum.»"
+   ],
+   "vis": {
+    "type": "quote",
+    "lines": [
+     "«Yahdikumullah",
+     "wa yuslih balakum»"
+    ],
+    "src": "RESPONDE EL QUE ESTORNUDÓ",
+    "size": 62,
+    "y": 880
+   },
+   "cap": "El que estornudó contesta otra vez: «Yahdikumullah wa yuslih balakum».",
+   "title": [
+    "Paso 3"
+   ]
+  },
+  {
+   "tint": "night",
+   "hi": [
+    "guíe…",
+    "asuntos."
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "🤝",
+    "orbit": [
+     "🧭",
+     "✨",
+     "💚"
+    ],
+    "y": 900
+   },
+   "cap": "Que Allah te guíe… y arregle tus asuntos.",
+   "title": [
+    "Te devuelve",
+    "el bien"
+   ]
+  },
+  {
+   "tint": "blue",
+   "hi": [
+    "tres",
+    "segundos."
+   ],
+   "vis": {
+    "type": "steps",
+    "items": [
+     [
+      "🤧",
+      "ESTORNUDO"
+     ],
+     [
+      "🤲",
+      "3 DUAS"
+     ],
+     [
+      "⏱️",
+      "2 SEG"
+     ]
+    ],
+    "y": 920
+   },
+   "cap": "Un estornudo… y tres oraciones en dos segundos.",
+   "title": [
+    "3 duas en",
+    "2 segundos"
+   ]
+  },
+  {
+   "tint": "green",
+   "hi": [
+    "Profeta,",
+    "6224."
+   ],
+   "vis": {
+    "type": "book",
+    "src": "SAHIH AL-BUJARI 6224",
+    "y": 900
+   },
+   "cap": "Lo enseñó el Profeta, la paz sea con él. Sahih al-Bujari, 6224.",
+   "title": [
+    "Hadiz",
+    "auténtico"
+   ]
+  },
+  {
+   "tint": "night",
+   "hi": [
+    "«Jesús»,",
+    "«Al-hamdulillah»?"
+   ],
+   "vis": {
+    "type": "cta",
+    "word": "¿Y TÚ?",
+    "size": 130,
+    "e": "💬",
+    "y": 900
+   },
+   "cap": "¿Y tú qué dices? ¿«Jesús», «salud» o «Al-hamdulillah»? Escríbelo abajo.",
+   "title": [
+    "¿Qué dices",
+    "tú?"
+   ]
+  }
+ ]
+}

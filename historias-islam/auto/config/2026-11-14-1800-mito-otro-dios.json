@@ -1,0 +1,253 @@
+{
+ "tail": 1.3,
+ "cx": 490,
+ "cap_maxw": 800,
+ "title_maxw": 820,
+ "instant": true,
+ "step_gap": 290,
+ "label": "MITO VS REALIDAD",
+ "times": "2026-11-14-1800-mito-otro-dios.tiempos.json",
+ "scenes": [
+  {
+   "tint": "red",
+   "hi": [
+    "otro",
+    "Dios?",
+    "mito."
+   ],
+   "vis": {
+    "type": "choice",
+    "opts": [
+     [
+      "❌",
+      "MITO",
+      "red"
+     ],
+     [
+      "✅",
+      "REALIDAD",
+      "gold"
+     ]
+    ],
+    "pick": 0,
+    "y": 900
+   },
+   "cap": "¿Tú también crees que los musulmanes adoran a otro Dios? Es un mito.",
+   "title": [
+    "¿Adoran a",
+    "otro Dios?"
+   ]
+  },
+  {
+   "tint": "gold",
+   "hi": [
+    "palabra:",
+    "Allah."
+   ],
+   "vis": {
+    "type": "big",
+    "words": [
+     "ALLAH"
+    ],
+    "size": 220,
+    "y": 860,
+    "e": "🔑"
+   },
+   "cap": "La clave está en una sola palabra: Allah.",
+   "title": [
+    "Una sola",
+    "palabra"
+   ]
+  },
+  {
+   "tint": "night",
+   "hi": [
+    "Dios",
+    "árabe."
+   ],
+   "vis": {
+    "type": "choice",
+    "opts": [
+     [
+      "🕌",
+      "ALLAH",
+      "gold"
+     ],
+     [
+      "🇪🇸",
+      "DIOS",
+      "gold"
+     ]
+    ],
+    "pick": 1,
+    "y": 900
+   },
+   "cap": "No es otro dios. «Allah» es como se dice «Dios» en árabe.",
+   "title": [
+    "Allah =",
+    "Dios"
+   ]
+  },
+  {
+   "tint": "blue",
+   "hi": [
+    "cristianos",
+    "Biblia."
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "📖",
+    "orbit": [
+     "✝️",
+     "🌍",
+     "✨"
+    ],
+    "y": 900
+   },
+   "cap": "Por eso los cristianos árabes también dicen «Allah». Hasta en su Biblia.",
+   "title": [
+    "Hasta en",
+    "su Biblia"
+   ]
+  },
+  {
+   "tint": "night",
+   "hi": [
+    "Corán?"
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "🤔",
+    "orbit": [
+     "📖",
+     "❓",
+     "✨"
+    ],
+    "y": 900
+   },
+   "cap": "¿Y qué dice el Corán?",
+   "title": [
+    "¿Y el",
+    "Corán?"
+   ]
+  },
+  {
+   "tint": "gold",
+   "hi": [
+    "uno.»"
+   ],
+   "vis": {
+    "type": "quote",
+    "lines": [
+     "«Nuestro Dios",
+     "y vuestro Dios",
+     "es uno»"
+    ],
+    "src": "CORÁN 29:46",
+    "size": 64,
+    "y": 880
+   },
+   "cap": "Manda decir a judíos y cristianos: «Nuestro Dios y vuestro Dios es uno.»"
+  },
+  {
+   "tint": "green",
+   "hi": [
+    "29,",
+    "46."
+   ],
+   "vis": {
+    "type": "big",
+    "words": [
+     "CORÁN",
+     "29:46"
+    ],
+    "size": 150,
+    "gap": 170,
+    "y": 860,
+    "e": "📖"
+   },
+   "cap": "Corán, sura 29, aleya 46.",
+   "title": [
+    "Sura",
+    "Al-Ankabut"
+   ]
+  },
+  {
+   "tint": "blue",
+   "hi": [
+    "único",
+    "Jesús."
+   ],
+   "vis": {
+    "type": "steps",
+    "items": [
+     [
+      "🔥",
+      "ABRAHAM"
+     ],
+     [
+      "🌊",
+      "MOISÉS"
+     ],
+     [
+      "🕊️",
+      "JESÚS"
+     ]
+    ],
+    "y": 920
+   },
+   "cap": "El mismo Dios único de Abraham, de Moisés y de Jesús.",
+   "title": [
+    "El mismo",
+    "Dios único"
+   ]
+  },
+  {
+   "tint": "green",
+   "hi": [
+    "Realidad:",
+    "Dios."
+   ],
+   "vis": {
+    "type": "choice",
+    "opts": [
+     [
+      "❌",
+      "OTRO DIOS",
+      "red"
+     ],
+     [
+      "✅",
+      "ALLAH = DIOS",
+      "gold"
+     ]
+    ],
+    "pick": 1,
+    "y": 900
+   },
+   "cap": "Mito: adoran a otro Dios. Realidad: «Allah» significa «Dios».",
+   "title": [
+    "La",
+    "realidad"
+   ]
+  },
+  {
+   "tint": "night",
+   "hi": [
+    "mito",
+    "abajo."
+   ],
+   "vis": {
+    "type": "cta",
+    "word": "COMENTA",
+    "size": 130,
+    "e": "💬",
+    "y": 900
+   },
+   "cap": "¿Qué otro mito sobre el islam has escuchado? Te leo abajo.",
+   "title": [
+    "¿Otro mito?"
+   ]
+  }
+ ]
+}
