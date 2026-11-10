@@ -44,6 +44,10 @@
 #   puente (puente estrecho cenital con señal R-5 en la entrada del 1: hook | sign | countdown | answer = el 1 retrocede y pasa el 2 | rule = qué significa la R-5 | back = art. 61).
 #   marcha (marcha atrás, art. 80 RGC: hook = cámara de marcha atrás | tape = cinta métrica que crece | max = tope 15 m | cross = no invadir el cruce | autovia = PROHIBIDO); sfx "pips".
 #   garaje (¿QUIÉN PASA PRIMERO? salida de garaje, art. 72 RGC: hook | right | countdown | answer | both), garlaw (garaje/finca/aparcamiento → cedes el paso) y regla (CRUCE vs GARAJE).
+#   merc (SEÑAL R-106 mercancías: hook = calle de casco antiguo en vista lateral con la señal y furgoneta de reparto | list = camión/tractocamión/furgoneta tachados |
+#     pair = R-106 sin cifra vs R-107 con 5,5 t); sign_generic y quiz admiten "truck" (R-106) y "truck55" (R-107).
+#   plataforma (¿QUIÉN PASA PRIMERO? calle de plataforma única adoquinada: hook | nozebra | countdown | answer | signs = casi sin señales),
+#     platlaw (tarjeta: el peatón tiene prioridad en cualquier punto de la calzada, RD 518/2026) y perfil (sección CALLE NORMAL con bordillo vs PLATAFORMA ÚNICA).
 import math, json, sys, os, subprocess
 from functools import lru_cache
 from multiprocessing import Pool
@@ -3980,6 +3984,322 @@ def vis_regla(dst, t, v, i):
         paste(dst, text(lab, 34, DARK, XB, shadow=False), px, y + 220, alpha=a)
         ip = prog(t, k * .9 + .5, .3)
         if ip > 0: paste(dst, (icon_check if k == 0 else icon_x)(84), px + 135, y - 180, scale=eback(ip))
+
+# --- SEÑAL R-106 (entrada prohibida a vehículos de mercancías: camiones, tractocamiones y furgonetas, pesen lo que pesen) y R-107 (con cifra) ---
+# vis: {"type": "merc", "mode": "hook" | "list" | "pair", "lines": [...], "cols": [...], "tag": "...", "at": [...]}
+#   hook = calle de casco antiguo en vista lateral: entrada de una calle estrecha con la señal R-106 y una furgoneta de reparto
+#          que llega y frena con "?" (apertura nunca vista: vista lateral de fachadas)
+#   list = 3 tarjetas CAMIÓN / TRACTOCAMIÓN / FURGONETA tachadas + "PESEN LO QUE PESEN"
+#   pair = R-106 (sin cifra: todas) vs R-107 (con cifra 5,5 t: solo las que pesan más)
+#   sign_generic y quiz admiten "truck" (R-106) y "truck55" (R-107).
+def _truck_sil(d, x0, y0, w, h, col, trailer=False):
+    """silueta lateral de camión mirando a la izquierda (cabina a la izquierda)."""
+    cab = w * .3
+    d.rectangle((x0 + cab + w * .02, y0, x0 + w, y0 + h * .74), fill=col)                                   # caja
+    d.polygon([(x0, y0 + h * .3), (x0 + cab * .35, y0 + h * .2), (x0 + cab, y0 + h * .2), (x0 + cab, y0 + h * .74), (x0, y0 + h * .74)], fill=col)  # cabina
+    d.rectangle((x0, y0 + h * .7, x0 + w, y0 + h * .8), fill=col)                                            # chasis
+    r = h * .14
+    for xx in ((.16, .62, .86) if trailer else (.16, .8)):
+        d.ellipse((x0 + w * xx - r, y0 + h * .8 - r, x0 + w * xx + r, y0 + h * .8 + r), fill=col)
+
+@lru_cache(maxsize=16)
+def sign_truck(s, flat=False, mass=None):
+    im = ss(s, s); d = ImageDraw.Draw(im); S = s * 2
+    d.ellipse((0, 0, S - 1, S - 1), fill=(220, 30, 40)); d.ellipse((S * .12, S * .12, S * .88, S * .88), fill=WHITE)
+    if mass:
+        _truck_sil(d, S * .25, S * .3, S * .5, S * .27, (20, 20, 22))
+        f = F(BLACK, int(S * .13)); bb = f.getbbox(mass); d.text((S / 2 - (bb[0] + bb[2]) / 2, S * .73 - (bb[1] + bb[3]) / 2), mass, font=f, fill=(20, 20, 22))
+    else:
+        _truck_sil(d, S * .22, S * .36, S * .56, S * .3, (20, 20, 22))
+    return down(im) if flat else glow(down(im), 30, .5)
+
+_old_sign_generic2 = sign_generic
+@lru_cache(maxsize=32)
+def sign_generic(kind, n, s, flat=False):
+    if kind == "truck": return sign_truck(s, flat)
+    if kind == "truck55": return sign_truck(s, flat, "5,5 t")
+    return _old_sign_generic2(kind, n, s, flat)
+
+@lru_cache(maxsize=8)
+def van_side(w=380, col=(246, 246, 248), stripe=(18, 86, 190)):
+    """furgoneta de reparto en vista lateral mirando a la derecha."""
+    h = int(w * .62); im = ss(w, h); d = ImageDraw.Draw(im); X, Y = w * 2, h * 2
+    d.rounded_rectangle((X * .02, Y * .06, X * .74, Y * .8), radius=int(Y * .06), fill=col)                    # caja
+    d.polygon([(X * .72, Y * .06), (X * .84, Y * .1), (X * .97, Y * .42), (X * .98, Y * .8), (X * .72, Y * .8)], fill=col)  # morro
+    d.polygon([(X * .76, Y * .14), (X * .84, Y * .16), (X * .93, Y * .42), (X * .76, Y * .42)], fill=(120, 170, 220))  # ventanilla
+    d.rectangle((X * .02, Y * .5, X * .98, Y * .58), fill=stripe)
+    f = F(BLACK, int(Y * .16)); bb = f.getbbox("REPARTO"); d.text((X * .38 - (bb[0] + bb[2]) / 2, Y * .3 - (bb[1] + bb[3]) / 2), "REPARTO", font=f, fill=stripe)
+    d.rounded_rectangle((X * .93, Y * .48, X * .99, Y * .56), radius=6, fill=(255, 236, 170))                 # faro
+    d.rectangle((X * .02, Y * .62, X * .04, Y * .72), fill=(200, 30, 30))
+    for x0 in (.2, .8):
+        d.ellipse((X * x0 - Y * .15, Y * .66, X * x0 + Y * .15, Y * .96), fill=(20, 20, 24)); d.ellipse((X * x0 - Y * .07, Y * .74, X * x0 + Y * .07, Y * .88), fill=(160, 166, 178))
+    im = down(im); sh = Image.new("RGBA", (w + 30, h + 30), (0, 0, 0, 0))
+    ImageDraw.Draw(sh).ellipse((20, h - 6, w + 10, h + 22), fill=(0, 0, 0, 110)); sh = sh.filter(ImageFilter.GaussianBlur(8))
+    sh.alpha_composite(im, (15, 5)); return sh
+
+@lru_cache(maxsize=8)
+def veh_icon(kind, s=230):
+    """icono lateral de vehículo de mercancías (mirando a la izquierda) sobre tarjeta clara."""
+    im = ss(s, s); d = ImageDraw.Draw(im); S = s * 2
+    d.rounded_rectangle((0, 0, S - 1, S - 1), radius=int(S * .18), fill=(232, 238, 248))
+    if kind == "camion":
+        d.rectangle((S * .36, S * .3, S * .9, S * .66), fill=(255, 196, 0)); d.polygon([(S * .1, S * .46), (S * .17, S * .36), (S * .34, S * .36), (S * .34, S * .66), (S * .1, S * .66)], fill=(226, 69, 60))
+        d.polygon([(S * .14, S * .46), (S * .19, S * .4), (S * .3, S * .4), (S * .3, S * .48)], fill=(140, 190, 235))
+        for x in (.24, .76): d.ellipse((S * (x - .07), S * .62, S * (x + .07), S * .76), fill=(24, 24, 28))
+    elif kind == "tracto":
+        d.rectangle((S * .3, S * .28, S * .96, S * .6), fill=(160, 170, 186)); d.rectangle((S * .3, S * .6, S * .96, S * .64), fill=(90, 96, 110))
+        d.polygon([(S * .04, S * .46), (S * .1, S * .34), (S * .27, S * .34), (S * .27, S * .66), (S * .04, S * .66)], fill=(18, 86, 190))
+        d.polygon([(S * .08, S * .46), (S * .12, S * .38), (S * .23, S * .38), (S * .23, S * .48)], fill=(140, 190, 235))
+        for x in (.14, .58, .72, .86): d.ellipse((S * (x - .06), S * .62, S * (x + .06), S * .74), fill=(24, 24, 28))
+    else:  # furgoneta
+        d.rounded_rectangle((S * .3, S * .32, S * .9, S * .66), radius=10, fill=WHITE, outline=(190, 196, 206), width=4)
+        d.polygon([(S * .1, S * .5), (S * .2, S * .34), (S * .32, S * .32), (S * .32, S * .66), (S * .1, S * .66)], fill=WHITE, outline=(190, 196, 206))
+        d.polygon([(S * .15, S * .48), (S * .22, S * .37), (S * .3, S * .37), (S * .3, S * .48)], fill=(140, 190, 235))
+        d.rectangle((S * .1, S * .54, S * .9, S * .58), fill=(18, 86, 190))
+        for x in (.24, .76): d.ellipse((S * (x - .07), S * .6, S * (x + .07), S * .74), fill=(24, 24, 28))
+    return down(im)
+
+MERC_SIGN = (790, 790)   # centro de la señal en la escena lateral
+MERC_GROUND = 1150       # y de las ruedas
+def merc_scene(dst, t):
+    top, bot = VZ[0] + 10, VZ[1] + 20; lay = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(lay, "RGBA")
+    for k in range(0, 520, 8):  # cielo
+        d.rectangle((40, top + k, W - 40, top + k + 8), fill=mix((96, 156, 226), (196, 222, 244), k / 520) + (255,))
+    # fachadas del casco antiguo con hueco de la calle estrecha (entrada) detrás de la señal
+    facs = [(40, 330, (214, 160, 110)), (330, 610, (236, 206, 150)), (880, 1040, (190, 120, 100))]
+    for k, (x0, x1, c) in enumerate(facs):
+        y0 = top + 120 + (k % 2) * 60
+        d.rectangle((x0, y0, x1, MERC_GROUND - 70), fill=c + (255,)); d.rectangle((x0, y0, x1, y0 + 18), fill=mix(c, (0, 0, 0), .25) + (255,))
+        for wy in range(int(y0) + 60, MERC_GROUND - 200, 150):
+            for wx in range(x0 + 40, x1 - 60, 110):
+                d.rectangle((wx, wy, wx + 56, wy + 86), fill=(70, 96, 130, 255)); d.rectangle((wx - 8, wy + 86, wx + 64, wy + 96), fill=(60, 60, 66, 255))
+                d.line([(wx - 8, wy + 70), (wx + 64, wy + 70)], fill=(40, 40, 44, 255), width=4)
+        d.rectangle((x0 + 30, MERC_GROUND - 190, x0 + 110, MERC_GROUND - 70), fill=mix(c, (0, 0, 0), .45) + (255,))  # portal
+    # calle estrecha que se mete hacia dentro (perspectiva) entre 610 y 880
+    d.rectangle((610, top + 260, 880, MERC_GROUND - 70), fill=(150, 130, 112, 255))
+    d.polygon([(610, top + 260), (690, top + 380), (690, MERC_GROUND - 150), (610, MERC_GROUND - 70)], fill=(176, 120, 92, 255))
+    d.polygon([(880, top + 260), (800, top + 380), (800, MERC_GROUND - 150), (880, MERC_GROUND - 70)], fill=(160, 110, 96, 255))
+    d.polygon([(690, MERC_GROUND - 150), (800, MERC_GROUND - 150), (880, MERC_GROUND - 70), (610, MERC_GROUND - 70)], fill=(120, 116, 112, 255))
+    d.rectangle((690, top + 380, 800, MERC_GROUND - 150), fill=(226, 214, 190, 255))
+    # acera y calzada
+    d.rectangle((40, MERC_GROUND - 70, W - 40, MERC_GROUND - 40), fill=(196, 190, 180, 255)); d.rectangle((40, MERC_GROUND - 40, W - 40, MERC_GROUND - 30), fill=(150, 146, 140, 255))
+    d.rectangle((40, MERC_GROUND - 30, W - 40, bot), fill=(56, 60, 70, 255))
+    off = (t * 0) % 120
+    for x in range(40, W - 40, 120): d.line([(x, MERC_GROUND + 60), (x + 60, MERC_GROUND + 60)], fill=(255, 255, 255, 200), width=8)
+    # poste de la señal
+    sx, sy = MERC_SIGN; d.rectangle((sx - 9, sy, sx + 9, MERC_GROUND - 60), fill=(150, 156, 166, 255))
+    clip_vz(dst, lay, top, bot)
+    return top, bot
+
+def vis_merc(dst, t, v, i):
+    if i == 0: t = t + 0.6  # primer fotograma: calle, señal, furgoneta y gancho ya en pantalla
+    mode = v.get("mode", "hook")
+    if mode == "hook":
+        top, bot = merc_scene(dst, t)
+        sx, sy = MERC_SIGN; sw = math.sin(t * 2.2) * 3
+        paste(dst, sign_truck(220), sx, sy, rot=sw)
+        # furgoneta que llega y frena antes de la señal
+        k = eout(prog(t, 0, 1.6)); vx = lerp(-200, 380, k); bob = math.sin(t * 14) * 2 * (1 - k)
+        lay = Image.new("RGBA", (W, H), (0, 0, 0, 0)); vim = van_side(400)
+        paste(lay, vim, vx, MERC_GROUND - vim.height / 2 + 26 + bob)
+        if k > .9:
+            for dy in (0,): paste(lay, red_glow(80), vx - 186, MERC_GROUND - 52, alpha=.8)
+        clip_vz(dst, lay, top, bot)
+        qa = prog(t, 1.5, .35)
+        if qa > 0:
+            paste(dst, bubble(150, 130), vx + 120, MERC_GROUND - 330, scale=eback(qa), alpha=ease(qa * 2))
+            paste(dst, text("?", 110, BLUE, BLACK, shadow=False), vx + 120, MERC_GROUND - 345 + math.sin(t * 6) * 4, scale=eback(qa), alpha=ease(qa * 2))
+        lines = v.get("lines", [])
+        if lines:
+            g = Image.new("RGBA", (W, H), (0, 0, 0, 0)); ImageDraw.Draw(g).rounded_rectangle((40, top, W - 40, top + 250), radius=36, fill=(6, 20, 43, 175)); dst.alpha_composite(g)
+            big_lines(dst, lines, t, top + 70, [tuple(c) for c in v.get("cols", [])] or None, size=96, stagger=.18)
+        if v.get("tag"): paste(dst, pill(v["tag"], 38, YEL, NAVY), sx - 20, sy - 160, scale=eback(prog(t, .8, .35)), alpha=ease(prog(t, .8, .3)))
+    elif mode == "list":
+        ats = v.get("at", [.2, .7, 1.2])
+        paste(dst, sign_truck(240), W / 2, CY - 300, scale=eback(prog(t, 0, .4)), alpha=ease(prog(t, 0, .25)), rot=math.sin(t * 2) * 3)
+        for k, (kind, lab) in enumerate((("camion", "CAMIÓN"), ("tracto", "TRACTOCAMIÓN"), ("furgo", "FURGONETA"))):
+            pk = prog(t, ats[k], .35)
+            if pk <= 0: continue
+            x = W / 2 - 300 + k * 300; y = CY + 20
+            paste(dst, veh_icon(kind, 250), x, y + (1 - eback(pk)) * 80, alpha=ease(pk * 2))
+            paste(dst, text(lab, 36 if k != 1 else 30, WHITE, XB), x, y + 165, alpha=ease(pk * 2))
+            xp = prog(t, ats[k] + .35, .25)
+            if xp > 0: paste(dst, icon_x(90), x + 95, y - 95, scale=eback(xp))
+            if k == 2 and xp > 0:
+                hl = .5 + .5 * math.sin(t * 7); d = ImageDraw.Draw(dst, "RGBA")
+                d.rounded_rectangle((x - 140, y - 140, x + 140, y + 205), radius=34, outline=YEL + (int(160 + 95 * hl),), width=8)
+        pp = prog(t, v.get("tag_at", 1.9), .35)
+        if pp > 0: paste(dst, pill(v.get("tag", "PESEN LO QUE PESEN"), 52, YEL, NAVY), W / 2, CY + 330, scale=eback(pp), alpha=ease(pp * 2))
+    elif mode == "pair":
+        for k, (px, kind, lab1, lab2, col) in enumerate(((W / 2 - 225, "truck", "SIN CIFRA", "TODAS", RED), (W / 2 + 225, "truck55", "CON CIFRA", "SOLO SI PESAN MÁS", BLUE))):
+            p = eback(prog(t, k * .8, .45)); a = ease(prog(t, k * .8, .3)); y = CY + (1 - p) * 160
+            paste(dst, card(410, 660, fill=(255, 255, 255, 250), r=40, border=col, bw=6), px, y, alpha=a)
+            paste(dst, pill(lab1, 36, col, WHITE), px, y - 260, alpha=a)
+            paste(dst, sign_generic(kind, 0, 270, True), px, y - 60, alpha=a)
+            paste(dst, text(["R-106", "R-107"][k], 40, GREY, XB, shadow=False), px, y + 115, alpha=a)
+            for j, l in enumerate(wrap(lab2, 40, XB, 340)): paste(dst, text(l, 40, DARK, XB, shadow=False), px, y + 185 + j * 50, alpha=a)
+        sp = prog(t, v.get("hl_at", 1.8), .3)
+        if sp > 0:
+            hl = .5 + .5 * math.sin(t * 7); d = ImageDraw.Draw(dst, "RGBA"); px = W / 2 + 225
+            d.ellipse((px - 60, CY - 2 - 30, px + 60, CY - 2 + 30), outline=YEL + (int(255 * ease(sp * 2) * (.6 + .4 * hl)),), width=8)
+
+
+# --- ¿QUIÉN PASA PRIMERO? parte 12: calle de PLATAFORMA ÚNICA (el peatón tiene prioridad en cualquier punto de la calzada; RD 518/2026) ---
+# vis: {"type": "plataforma", "mode": "hook" | "nozebra" | "countdown" | "answer" | "signs", "countdown": [...], "tag": "...", "lines": [...]}
+#   calle cenital adoquinada de fachada a fachada, sin bordillos (rigola de adoquín), maceteros con árboles, bolardos y terraza de bar;
+#   el coche 1 sube despacio y el peatón 2 cruza por el medio sin paso de cebra.
+#   platlaw = tarjeta de la norma; perfil = sección CALLE NORMAL (bordillo) vs PLATAFORMA ÚNICA (todo al mismo nivel).
+PL_BAND = (W / 2 - 170, W / 2 + 170)   # banda por donde van los coches (mismo nivel)
+PL_CARX, PL_PEDY, PL_STOP = W / 2 + 80, CY - 60, CY + 220
+PL_PED0, PL_PED1 = W / 2 - 60, W - 150
+def plat_scene(dst, t, nozebra=0.0, signs=0.0):
+    top, bot = VZ[0] + 10, VZ[1] + 20; lay = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(lay, "RGBA")
+    d.rectangle((40, top, W - 40, bot), fill=(206, 196, 180, 255))
+    # adoquines (filas desplazadas) en toda la calle
+    for r, yy in enumerate(range(int(top), int(bot), 34)):
+        off = 0 if r % 2 else 30
+        for xx in range(40 - 60 + off, W - 40, 60):
+            inb = PL_BAND[0] <= xx + 30 <= PL_BAND[1]
+            c = (168, 160, 152) if inb else (214, 204, 188)
+            d.rounded_rectangle((xx + 3, yy + 3, xx + 57, yy + 31), radius=6, fill=c + (255,))
+    # rigolas (canal de adoquín pequeño, sin bordillo) en los bordes de la banda
+    for x in PL_BAND:
+        for yy in range(int(top), int(bot), 22): d.rectangle((x - 9, yy + 2, x + 9, yy + 20), fill=(130, 126, 122, 255))
+    # fachadas a los lados (fuera de la zona útil)
+    d.rectangle((40, top, 92, bot), fill=(214, 160, 110, 255)); d.rectangle((W - 92, top, W - 40, bot), fill=(190, 120, 100, 255))
+    for yy in range(int(top) + 60, int(bot), 230):
+        d.rectangle((84, yy, 92, yy + 120), fill=(90, 60, 40, 255)); d.rectangle((W - 92, yy + 90, W - 84, yy + 210), fill=(90, 60, 40, 255))
+    # maceteros con árboles y bolardos (mismo nivel: no hay bordillo)
+    for (mx, my) in ((PL_BAND[0] - 80, top + 120), (PL_BAND[0] - 80, bot - 110), (PL_BAND[1] + 80, bot - 120)):
+        d.rounded_rectangle((mx - 46, my - 46, mx + 46, my + 46), radius=12, fill=(120, 110, 100, 255))
+        d.ellipse((mx - 70, my - 70, mx + 70, my + 70), fill=(60, 130, 70, 235)); d.ellipse((mx - 40, my - 50, mx + 20, my + 10), fill=(90, 160, 90, 200))
+    for yy in range(int(top) + 260, int(bot) - 200, 120):
+        for x in (PL_BAND[0] - 34, PL_BAND[1] + 34):
+            if abs(yy - PL_PEDY) < 90: continue
+            d.ellipse((x - 14, yy - 14, x + 14, yy + 14), fill=(50, 54, 62, 255)); d.ellipse((x - 6, yy - 6, x + 6, yy + 6), fill=(140, 146, 156, 255))
+    # terraza de bar (mesas y sombrilla) a la derecha
+    tx, ty = PL_BAND[1] + 120, top + 170
+    d.ellipse((tx - 80, ty - 80, tx + 80, ty + 80), fill=(226, 69, 60, 230))
+    for a in range(0, 360, 45): d.line([(tx, ty), (tx + 80 * math.cos(math.radians(a)), ty + 80 * math.sin(math.radians(a)))], fill=(255, 255, 255, 140), width=4)
+    clip_vz(dst, lay, top, bot); lay = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(lay, "RGBA")
+    if nozebra > 0:
+        a = int(255 * nozebra * (.6 + .4 * math.sin(t * 7)))
+        for x in range(int(PL_BAND[0]) + 4, int(PL_BAND[1]) - 10, 40):
+            d.line([(x, PL_PEDY - 80), (x + 22, PL_PEDY - 80)], fill=ORANGE + (a,), width=8); d.line([(x, PL_PEDY + 80), (x + 22, PL_PEDY + 80)], fill=ORANGE + (a,), width=8)
+    clip_vz(dst, lay, top, bot); return top, bot
+
+def plat_actors(dst, t, car_y, ped_x, walking, top, bot, brake=False):
+    lay = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    paste(lay, car_top(CRUCE_COLS[1], 120), PL_CARX, car_y)
+    if brake:
+        for dx in (-34, 34): paste(lay, red_glow(110), PL_CARX + dx, car_y + 112, alpha=.9)
+    paste(lay, ped_top_img(int(t * 6) % 2 if walking else 0), ped_x, PL_PEDY, rot=-90)
+    clip_vz(dst, lay, top, bot)
+    paste(dst, num_badge(1), PL_CARX + 108, car_y + 30)
+    paste(dst, num_badge(2, 74, mix((34, 160, 90), WHITE, .2), NAVY), ped_x, PL_PEDY - 95)
+
+def vis_plataforma(dst, t, v, i):
+    if i == 0: t = t + 0.6  # primer fotograma: calle, coche, peatón y pregunta ya en pantalla
+    mode = v.get("mode", "hook")
+    top, bot = plat_scene(dst, t, nozebra=ease(prog(t, .2, .4)) if mode == "nozebra" else 0)
+    car_y, ped_x, walking, brake = PL_STOP + 120, PL_PED0, False, False
+    if mode == "hook":
+        car_y = lerp(bot + 160, PL_STOP + 120, eout(prog(t, 0, 1.6))); ped_x = lerp(PL_BAND[0] - 120, PL_PED0, eout(prog(t, 0, 1.4))); walking = t < 1.4
+    elif mode in ("nozebra", "countdown"):
+        car_y = PL_STOP + 120 - 6 * math.sin(t * 2); ped_x = PL_PED0 + 4 * math.sin(t * 3)
+    elif mode == "answer":
+        car_y = lerp(PL_STOP + 120, PL_STOP, eout(prog(t, 0, .6))); brake = True
+        k = ease(prog(t, .5, 2.2)); ped_x = lerp(PL_PED0, PL_PED1, k); walking = 0 < k < 1
+    elif mode == "signs":
+        car_y = PL_STOP + 60 - 50 * ((t * .25) % 1); brake = False; ped_x = lerp(PL_BAND[0] - 100, PL_BAND[1] + 100, (t * .2) % 1); walking = True
+    plat_actors(dst, t, car_y, ped_x, walking, top, bot, brake)
+    if mode == "hook":
+        lines = v.get("lines", [])
+        if lines:
+            g = Image.new("RGBA", (W, H), (0, 0, 0, 0)); ImageDraw.Draw(g).rounded_rectangle((40, top, W - 40, top + 190), radius=36, fill=(6, 20, 43, 170)); dst.alpha_composite(g)
+            big_lines(dst, lines, t, top + 60, [tuple(c) for c in v.get("cols", [])] or None, size=84)
+        paste(dst, pill("SIN ACERAS · TODO AL MISMO NIVEL", 32, WHITE, NAVY), W / 2 - 30, bot - 60, scale=eback(prog(t, 1.2, .35)), alpha=ease(prog(t, 1.2, .3)))
+    if mode == "nozebra":
+        paste(dst, pill("SIN PASO DE CEBRA", 40, ORANGE, WHITE), W / 2 - 20, PL_PEDY - 160, scale=eback(prog(t, .3, .35)), alpha=ease(prog(t, .3, .3)))
+        paste(dst, pill("CRUZA POR EL MEDIO", 38, WHITE, NAVY), W / 2 - 20, PL_PEDY + 150, scale=eback(prog(t, 1.2, .35)), alpha=ease(prog(t, 1.2, .3)))
+    if mode == "signs":
+        ats = v.get("at", [.2, .5, .8])
+        for k, (im, x) in enumerate(((sign_ceda(120), W / 2 - 260), (stop_mini(120), W / 2 - 60), (None, W / 2 + 140))):
+            pk = prog(t, ats[k], .3)
+            if pk <= 0: continue
+            if im is None:
+                im = Image.new("RGBA", (130, 120), (0, 0, 0, 0)); dd = ImageDraw.Draw(im)
+                dd.rectangle((0, 0, 129, 119), fill=(56, 60, 70))
+                for xx in range(8, 130, 30): dd.rectangle((xx, 10, xx + 16, 110), fill=WHITE)
+            paste(dst, im, x, top + 110, scale=eback(pk), alpha=ease(pk * 2) * .9)
+            xp = prog(t, ats[k] + .25, .25)
+            if xp > 0: paste(dst, icon_x(70), x + 45, top + 150, scale=eback(xp))
+        paste(dst, pill(v.get("tag", "CASI SIN SEÑALES"), 44, YEL, NAVY), W / 2 - 20, top + 250, scale=eback(prog(t, 1.2, .35)), alpha=ease(prog(t, 1.2, .3)))
+    cd = v.get("countdown")
+    if cd:
+        n = sum(1 for s in cd if t >= s); ix, iy = PL_BAND[1] + 120, top + 190
+        paste(dst, semaphore(n).resize((105, 275), Image.LANCZOS), ix, iy, scale=eback(prog(t, 0, .4)))
+        if n:
+            pk = prog(t, cd[n - 1], .25)
+            paste(dst, text(str(4 - n), 170, [RED, (255, 176, 0), GREEN][n - 1], BLACK), W / 2 - 250, top + 170, scale=lerp(1.6, 1, eout(pk)), alpha=ease(pk * 2))
+        if v.get("tag"): paste(dst, pill(v["tag"], 46, YEL, NAVY), W / 2 - 20, PL_PEDY + 150, scale=eback(prog(t, .3, .35)), alpha=ease(prog(t, .3, .3)))
+    if mode == "answer":
+        p = prog(t, .6, .35)
+        if p > 0: paste(dst, rank_chip_ped(1), W / 2 - 250, top + 70, scale=eback(p), alpha=ease(p * 2))
+        p2 = prog(t, 1.0, .35)
+        if p2 > 0: paste(dst, rank_chip(2, 1), W / 2 - 250, top + 160, scale=eback(p2), alpha=ease(p2 * 2))
+        paste(dst, pill("SE PARA", 36, RED, WHITE), PL_CARX - 210, PL_STOP + 60, scale=eback(prog(t, .4, .35)), alpha=ease(prog(t, .4, .3)))
+
+@lru_cache(maxsize=4)
+def profile_img(flat, w=340, h=170):
+    """sección lateral de la calle: acera con bordillo (flat=False) o plataforma única (flat=True)."""
+    im = ss(w, h); d = ImageDraw.Draw(im); X, Y = w * 2, h * 2
+    d.rectangle((0, 0, X - 1, Y - 1), fill=(225, 236, 248))
+    g = Y * .78; st = Y * .12
+    if flat:
+        d.rectangle((0, g, X, Y), fill=(168, 160, 152))
+    else:
+        d.rectangle((0, g - st, X * .3, Y), fill=(214, 204, 188)); d.rectangle((X * .7, g - st, X, Y), fill=(214, 204, 188))
+        d.rectangle((X * .3, g, X * .7, Y), fill=(56, 60, 70))
+        for x in (X * .3, X * .7): d.rectangle((x - 6, g - st, x + 6, g), fill=(130, 126, 122))
+    # peatón (palito) y coche de lado
+    px, base = X * .15, (g if flat else g - st)
+    d.ellipse((px - 14, base - 120, px + 14, base - 92), fill=(34, 160, 90)); d.rounded_rectangle((px - 12, base - 92, px + 12, base - 40), radius=8, fill=(34, 160, 90))
+    d.line([(px - 6, base - 40), (px - 12, base)], fill=(30, 30, 36), width=10); d.line([(px + 6, base - 40), (px + 12, base)], fill=(30, 30, 36), width=10)
+    cx = X * .52
+    d.rounded_rectangle((cx - 90, g - 66, cx + 90, g - 20), radius=16, fill=(226, 69, 60)); d.polygon([(cx - 50, g - 66), (cx - 30, g - 100), (cx + 40, g - 100), (cx + 60, g - 66)], fill=(190, 50, 46))
+    for x in (cx - 55, cx + 55): d.ellipse((x - 20, g - 40, x + 20, g), fill=(24, 24, 28))
+    return down(im)
+
+def vis_perfil(dst, t, v, i):
+    """CALLE NORMAL (bordillo) vs PLATAFORMA ÚNICA (todo al mismo nivel)."""
+    for k, (lab, flat, col) in enumerate((("CALLE NORMAL", False, GREY), ("PLATAFORMA ÚNICA", True, GREEN))):
+        p = eback(prog(t, k * .9, .45)); a = ease(prog(t, k * .9, .3)); y = CY - 210 + k * 430 + (1 - p) * 120
+        paste(dst, card(860, 380, fill=(255, 255, 255, 250), r=36, border=col if k else None, bw=6 if k else 0), W / 2, y, alpha=a)
+        paste(dst, pill(lab, 36, col, WHITE), W / 2 - 200, y - 140, alpha=a)
+        paste(dst, profile_img(flat, 460, 230), W / 2 - 110, y + 30, alpha=a)
+        sub = ["CON BORDILLO", "SIN BORDILLO"][k]
+        paste(dst, text(sub, 36, DARK, XB, shadow=False), W / 2 + 255, y - 10, alpha=a)
+        paste(dst, text(["ACERA ≠ CALZADA", "MISMO NIVEL"][k], 32, col if k else (100, 106, 120), XB, shadow=False), W / 2 + 255, y + 45, alpha=a)
+        ip = prog(t, k * .9 + .5, .3)
+        if ip > 0 and k == 1:
+            hl = .5 + .5 * math.sin(t * 7); d = ImageDraw.Draw(dst, "RGBA"); gy = y + 30 + 230 * .78 / 2 - 230 / 2 + 2
+            d.line([(W / 2 - 340, y + 30 + 230 * .28), (W / 2 + 120, y + 30 + 230 * .28)], fill=YEL + (int(255 * ease(ip) * (.6 + .4 * hl)),), width=8)
+
+def vis_platlaw(dst, t, v, i):
+    """tarjeta de la norma: plataforma única → el peatón tiene prioridad en cualquier punto de la calzada."""
+    p = eback(prog(t, 0, .45)); a = ease(prog(t, 0, .25))
+    paste(dst, card(880, 820, fill=(255, 255, 255, 250), r=40), W / 2, CY + (1 - p) * 120, alpha=a)
+    paste(dst, pill("DESDE EL 1 DE OCTUBRE DE 2026", 32, BLUE, WHITE), W / 2, CY - 345, alpha=a)
+    paste(dst, text("PLATAFORMA ÚNICA", 64, DARK, BLACK, shadow=False), W / 2, CY - 255, alpha=a)
+    paste(dst, profile_img(True, 420, 210), W / 2, CY - 100, alpha=a)
+    rows = v.get("at", [1.2, 2.4])
+    pk = prog(t, rows[0], .35)
+    if pk > 0: paste(dst, text("EL PEATÓN TIENE PRIORIDAD", 52, GREEN, BLACK, shadow=False), W / 2, CY + 60, scale=eback(pk), alpha=ease(pk * 2))
+    pk = prog(t, rows[1], .35)
+    if pk > 0: paste(dst, pill("EN CUALQUIER PUNTO DE LA CALZADA", 40, YEL, NAVY), W / 2, CY + 155, scale=eback(pk), alpha=ease(pk * 2))
+    sp = prog(t, v.get("stamp_at", 3.4), .2)
+    if sp > 0: paste(dst, stamp2("RD 518/2026"), W / 2, CY + 300, scale=lerp(2, 1, eout(sp)) * .8, alpha=ease(sp * 1.6), rot=-6)
 
 
 VIS = {k[4:]: v for k, v in globals().items() if k.startswith("vis_")}

@@ -1,0 +1,20 @@
+{"label": "¿QUIÉN PASA PRIMERO? · PARTE 12", "times": "tiempos.json", "voice": "voz.wav", "tail": 1.1,
+ "sfx": [{"t": 9.7, "type": "beep"}, {"t": 10.6, "type": "beep"}, {"t": 11.5, "type": "beep"}, {"t": 12.25, "type": "ding"}, {"t": 20.02, "type": "buzz"}],
+ "scenes": [
+  {"cap": "Parte 12. Una calle sin aceras, todo al mismo nivel. ¿Quién pasa primero?", "hi": ["aceras,", "nivel.", "primero?"],
+   "vis": {"type": "plataforma", "mode": "hook", "lines": ["¿QUIÉN PASA PRIMERO?"], "cols": [[255, 196, 0]]}},
+  {"cap": "No hay paso de cebra. Y el 2 cruza por el medio.", "hi": ["cebra.", "medio."],
+   "vis": {"type": "plataforma", "mode": "nozebra"}},
+  {"cap": "¿1 o 2? Escríbelo. Tienes 3 segundos.", "hi": ["1", "2?", "3"],
+   "vis": {"type": "plataforma", "mode": "countdown", "countdown": [2.69, 3.59, 4.49], "tag": "¿1 O 2?"}},
+  {"cap": "¡Pasa el 2! El coche se para, y le deja cruzar.", "hi": ["2!", "para,"],
+   "vis": {"type": "plataforma", "mode": "answer"}},
+  {"cap": "Desde el 1 de octubre, en las calles de plataforma única, el peatón tiene prioridad en toda la calzada.", "hi": ["octubre,", "plataforma", "única,", "prioridad"],
+   "vis": {"type": "platlaw", "at": [2.9, 4.2], "stamp_at": 4.9}},
+  {"cap": "¿Cómo la reconoces? Calzada y acera al mismo nivel, sin bordillo.", "hi": ["mismo", "nivel,", "bordillo."],
+   "vis": {"type": "perfil"}},
+  {"cap": "Y casi sin señales. Por eso hay que saberse la norma.", "hi": ["señales.", "norma."],
+   "vis": {"type": "plataforma", "mode": "signs", "at": [0.2, 0.5, 0.8], "tag": "CASI SIN SEÑALES"}},
+  {"cap": "¿La sabías? Pide la parte 13 en comentarios.", "hi": ["sabías?", "13"],
+   "vis": {"type": "cta", "big": "¿PARTE 13?", "small": "¿La sabías? Pídela en comentarios"}}
+ ]}

@@ -1,0 +1,18 @@
+{"label": "SEÑAL MISTERIOSA", "times": "tiempos.json", "voice": "voz.wav", "tail": 1.1,
+ "sfx": [{"t": 13.25, "type": "beep"}, {"t": 14.15, "type": "beep"}, {"t": 15.05, "type": "beep"}, {"t": 15.85, "type": "ding"}, {"t": 21.05, "type": "buzz"}],
+ "scenes": [
+  {"cap": "En 700.000 test, fue la señal más fallada. ¿Sabes qué prohíbe?", "hi": ["700.000", "fallada.", "prohíbe?"],
+   "vis": {"type": "merc", "mode": "hook", "lines": ["LA SEÑAL", "MÁS FALLADA"], "cols": [[255, 255, 255], [255, 196, 0]], "tag": "700.000 TEST"}},
+  {"cap": "Vas en una furgoneta de reparto. ¿A, entras, es solo para camiones? ¿B, no puedes entrar? ¿O C, entras si pesa poco?", "hi": ["furgoneta", "A,", "B,", "C,"],
+   "vis": {"type": "quiz", "sign": "truck", "q": "Vas en una furgoneta de reparto. ¿Puedes entrar?", "opts": ["Sí: es solo para camiones", "No, no puedes entrar", "Sí, si pesa < 3.500 kg"], "correct": 1, "opt_at": [0.27, 0.56, 0.74]}},
+  {"cap": "Tu letra, en comentarios. Tienes 3 segundos.", "hi": ["letra,", "comentarios.", "3"],
+   "vis": {"type": "countdown", "quiz_scene": 1, "at": [2.8, 3.7, 4.6]}},
+  {"cap": "¡Es la B! Prohíbe la entrada a camiones, y también a furgonetas.", "hi": ["B!", "camiones,", "furgonetas."],
+   "vis": {"type": "reveal", "quiz_scene": 1}},
+  {"cap": "Pesen lo que pesen: vale para todo vehículo de mercancías.", "hi": ["Pesen", "pesen:", "mercancías."],
+   "vis": {"type": "merc", "mode": "list", "at": [0.3, 0.9, 1.5], "tag_at": 2.2, "tag": "PESEN LO QUE PESEN"}},
+  {"cap": "El peso solo cuenta si la señal lleva una cifra. Y esa es otra señal.", "hi": ["peso", "cifra.", "otra"],
+   "vis": {"type": "merc", "mode": "pair", "hl_at": 1.6}},
+  {"cap": "Etiqueta a alguien que se examine pronto, a ver si la acierta.", "hi": ["Etiqueta", "pronto,", "acierta."],
+   "vis": {"type": "cta", "big": "¿LA ACIERTA?", "small": "Etiqueta a quien se examine pronto"}}
+ ]}
