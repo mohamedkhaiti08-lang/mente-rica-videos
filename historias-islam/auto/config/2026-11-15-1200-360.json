@@ -1,0 +1,242 @@
+{
+ "tail": 1.3,
+ "cx": 490,
+ "cap_maxw": 800,
+ "title_maxw": 820,
+ "instant": true,
+ "step_gap": 290,
+ "label": "CURIOSIDADES DEL ISLAM",
+ "times": "2026-11-15-1200-360.tiempos.json",
+ "scenes": [
+  {
+   "tint": "gold",
+   "hi": [
+    "360",
+    "cuáles?"
+   ],
+   "title": [
+    "Tu cuerpo te pide",
+    "360 cosas"
+   ],
+   "vis": {
+    "type": "big",
+    "words": [
+     "360"
+    ],
+    "size": 300,
+    "y": 880,
+    "e": "🦴"
+   },
+   "cap": "Ahora mismo, tu cuerpo te está pidiendo 360 cosas. ¿Sabes cuáles?"
+  },
+  {
+   "tint": "night",
+   "hi": [
+    "360",
+    "articulaciones."
+   ],
+   "title": [
+    "360",
+    "articulaciones"
+   ],
+   "vis": {
+    "type": "counter",
+    "seq": [
+     "1",
+     "50",
+     "120",
+     "200",
+     "290",
+     "360"
+    ],
+    "sub": "ARTICULACIONES",
+    "e": "🦴",
+    "y": 880
+   },
+   "cap": "El Profeta, la paz sea con él, dijo que cada persona fue creada con 360 articulaciones."
+  },
+  {
+   "tint": "green",
+   "hi": [
+    "día,",
+    "obra."
+   ],
+   "title": [
+    "Cada día",
+    "una buena obra"
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "🌅",
+    "orbit": [
+     "✨",
+     "🤲",
+     "💚"
+    ],
+    "y": 900
+   },
+   "cap": "Y por cada una, cada día, toca una buena obra."
+  },
+  {
+   "tint": "red",
+   "hi": [
+    "imposible."
+   ],
+   "title": [
+    "¿360",
+    "al día?"
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "😰",
+    "orbit": [
+     "❓",
+     "❗",
+     "⏳"
+    ],
+    "y": 900
+   },
+   "cap": "¿360 al día? Parece imposible."
+  },
+  {
+   "tint": "gold",
+   "hi": [
+    "Subhanallah.",
+    "Alhamdulillah.",
+    "Akbar."
+   ],
+   "vis": {
+    "type": "quote",
+    "lines": [
+     "Subhanallah",
+     "Alhamdulillah",
+     "Allahu Akbar"
+    ],
+    "src": "CADA UNA CUENTA",
+    "size": 66,
+    "y": 880
+   },
+   "cap": "Pero mira lo fácil que es: Subhanallah. Alhamdulillah. Allahu Akbar.",
+   "title": [
+    "Mira qué",
+    "fácil"
+   ]
+  },
+  {
+   "tint": "green",
+   "hi": [
+    "piedra",
+    "espina"
+   ],
+   "title": [
+    "Quitar algo",
+    "del camino"
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "🪨",
+    "orbit": [
+     "🌵",
+     "🛤️",
+     "👣"
+    ],
+    "y": 900
+   },
+   "cap": "Apartar una piedra o una espina del camino."
+  },
+  {
+   "tint": "blue",
+   "hi": [
+    "bien",
+    "mal."
+   ],
+   "title": [
+    "Animar al bien"
+   ],
+   "vis": {
+    "type": "choice",
+    "opts": [
+     [
+      "✅",
+      "EL BIEN",
+      "gold"
+     ],
+     [
+      "🛑",
+      "EL MAL",
+      "red"
+     ]
+    ],
+    "pick": 0,
+    "y": 900
+   },
+   "cap": "Animar al bien y frenar el mal."
+  },
+  {
+   "tint": "night",
+   "hi": [
+    "360,",
+    "Fuego."
+   ],
+   "title": [
+    "Lejos",
+    "del Fuego"
+   ],
+   "vis": {
+    "type": "counter",
+    "seq": [
+     "100",
+     "200",
+     "300",
+     "360"
+    ],
+    "sub": "BUENAS OBRAS",
+    "e": "🔥",
+    "y": 880
+   },
+   "cap": "Y quien llega a 360, ese día camina lejos del Fuego."
+  },
+  {
+   "tint": "green",
+   "hi": [
+    "Muslim,",
+    "1007."
+   ],
+   "title": [
+    "Hadiz",
+    "auténtico"
+   ],
+   "vis": {
+    "type": "big",
+    "words": [
+     "MUSLIM",
+     "1007"
+    ],
+    "size": 150,
+    "gap": 170,
+    "y": 860,
+    "e": "📖"
+   },
+   "cap": "Sahih Muslim, 1007."
+  },
+  {
+   "tint": "night",
+   "hi": [
+    "hoy?",
+    "Subhanallah."
+   ],
+   "title": [
+    "¿Cuántas",
+    "llevas hoy?"
+   ],
+   "vis": {
+    "type": "cta",
+    "word": "COMENTA",
+    "size": 130,
+    "e": "💬",
+    "y": 900
+   },
+   "cap": "¿Cuántas llevas tú hoy? Escribe abajo: Subhanallah. Y ya llevas una."
+  }
+ ]
+}

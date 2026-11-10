@@ -1,0 +1,220 @@
+{
+ "tail": 1.3,
+ "cx": 490,
+ "cap_maxw": 800,
+ "title_maxw": 820,
+ "instant": true,
+ "step_gap": 290,
+ "label": "MITO VS REALIDAD",
+ "times": "2026-11-15-1800-mito-ramadan.tiempos.json",
+ "scenes": [
+  {
+   "tint": "red",
+   "hi": [
+    "enfermos?",
+    "mito."
+   ],
+   "title": [
+    "¿Ayunar",
+    "estando enfermo?"
+   ],
+   "vis": {
+    "type": "choice",
+    "opts": [
+     [
+      "❌",
+      "MITO",
+      "red"
+     ],
+     [
+      "✅",
+      "REALIDAD",
+      "gold"
+     ]
+    ],
+    "pick": 0,
+    "y": 900
+   },
+   "cap": "¿Tú también crees que en Ramadán tienen que ayunar hasta los enfermos? Es un mito."
+  },
+  {
+   "tint": "night",
+   "hi": [
+    "fiebre…",
+    "Ramadán."
+   ],
+   "title": [
+    "40 de fiebre",
+    "en Ramadán"
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "🤒",
+    "orbit": [
+     "🌡️",
+     "🌙",
+     "💧"
+    ],
+    "y": 900
+   },
+   "cap": "Imagina: tienes 40 de fiebre… y es Ramadán."
+  },
+  {
+   "tint": "red",
+   "hi": [
+    "No."
+   ],
+   "title": [
+    "¿Te obligan?"
+   ],
+   "vis": {
+    "type": "big",
+    "words": [
+     "NO"
+    ],
+    "size": 300,
+    "y": 860,
+    "e": "🙅‍♂️"
+   },
+   "cap": "¿Te obligan a ayunar igual? No."
+  },
+  {
+   "tint": "gold",
+   "hi": [
+    "enfermo",
+    "después."
+   ],
+   "vis": {
+    "type": "quote",
+    "lines": [
+     "«Quien esté enfermo",
+     "o de viaje, que recupere",
+     "esos días después»"
+    ],
+    "src": "CORÁN 2:185",
+    "size": 58,
+    "y": 880
+   },
+   "cap": "El Corán lo dice claro: quien esté enfermo o de viaje, que recupere esos días después."
+  },
+  {
+   "tint": "green",
+   "hi": [
+    "2,",
+    "185."
+   ],
+   "title": [
+    "Sura",
+    "Al-Báqara"
+   ],
+   "vis": {
+    "type": "big",
+    "words": [
+     "CORÁN",
+     "2:185"
+    ],
+    "size": 150,
+    "gap": 170,
+    "y": 860,
+    "e": "📖"
+   },
+   "cap": "Corán, sura 2, aleya 185."
+  },
+  {
+   "tint": "gold",
+   "hi": [
+    "facilidad.",
+    "dificultad."
+   ],
+   "vis": {
+    "type": "quote",
+    "lines": [
+     "«Allah quiere para",
+     "vosotros la facilidad,",
+     "no la dificultad»"
+    ],
+    "src": "CORÁN 2:185",
+    "size": 58,
+    "y": 880
+   },
+   "cap": "Y añade: «Allah quiere para vosotros la facilidad. No la dificultad.»"
+  },
+  {
+   "tint": "blue",
+   "hi": [
+    "Dios…",
+    "daño."
+   ],
+   "title": [
+    "Ayunar no es",
+    "hacerte daño"
+   ],
+   "vis": {
+    "type": "steps",
+    "items": [
+     [
+      "🌙",
+      "AYUNO"
+     ],
+     [
+      "🤲",
+      "DIOS"
+     ],
+     [
+      "💚",
+      "SALUD"
+     ]
+    ],
+    "y": 920
+   },
+   "cap": "El ayuno es para acercarte a Dios… no para hacerte daño."
+  },
+  {
+   "tint": "green",
+   "hi": [
+    "Realidad:",
+    "después."
+   ],
+   "title": [
+    "La",
+    "realidad"
+   ],
+   "vis": {
+    "type": "choice",
+    "opts": [
+     [
+      "❌",
+      "AYUNAR ENFERMO",
+      "red"
+     ],
+     [
+      "✅",
+      "RECUPERAR DESPUÉS",
+      "gold"
+     ]
+    ],
+    "pick": 1,
+    "y": 900
+   },
+   "cap": "Mito: ayunan aunque estén enfermos. Realidad: lo recuperan después."
+  },
+  {
+   "tint": "night",
+   "hi": [
+    "mito",
+    "abajo."
+   ],
+   "title": [
+    "¿Otro mito?"
+   ],
+   "vis": {
+    "type": "cta",
+    "word": "COMENTA",
+    "size": 130,
+    "e": "💬",
+    "y": 900
+   },
+   "cap": "¿Qué otro mito sobre el islam has escuchado? Te leo abajo."
+  }
+ ]
+}
