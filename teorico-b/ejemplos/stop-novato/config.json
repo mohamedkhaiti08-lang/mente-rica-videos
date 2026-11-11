@@ -1,0 +1,128 @@
+{
+ "label": "ERROR DE NOVATO",
+ "times": "tiempos.json",
+ "voice": "voz.wav",
+ "tail": 0.9,
+ "sfx": [
+  {
+   "t": 5.61,
+   "type": "beep"
+  },
+  {
+   "t": 6.51,
+   "type": "beep"
+  },
+  {
+   "t": 7.41,
+   "type": "beep"
+  },
+  {
+   "t": 8.18,
+   "type": "ding"
+  },
+  {
+   "t": 12.26,
+   "type": "buzz"
+  }
+ ],
+ "scenes": [
+  {
+   "cap": "Llegas a un STOP, y no viene nadie. ¿Hace falta parar?",
+   "hi": [
+    "STOP,",
+    "parar?"
+   ],
+   "vis": {
+    "type": "stopnov",
+    "mode": "hook",
+    "lines": [
+     "¿HAY QUE PARAR?"
+    ]
+   }
+  },
+  {
+   "cap": "¿Sí o no? Escríbelo. Tienes 3 segundos.",
+   "hi": [
+    "Sí",
+    "no?",
+    "3"
+   ],
+   "vis": {
+    "type": "stopnov",
+    "mode": "vote",
+    "countdown": [
+     2.5,
+     3.4,
+     4.3
+    ]
+   }
+  },
+  {
+   "cap": "Sí. Siempre, aunque no venga nadie.",
+   "hi": [
+    "Siempre,"
+   ],
+   "vis": {
+    "type": "stopnov",
+    "mode": "answer"
+   }
+  },
+  {
+   "cap": "El error de novato: frenar casi del todo y pasar rodando.",
+   "hi": [
+    "error",
+    "rodando."
+   ],
+   "vis": {
+    "type": "stopnov",
+    "mode": "roll"
+   }
+  },
+  {
+   "cap": "Las ruedas tienen que quedar paradas, ante la línea de detención.",
+   "hi": [
+    "paradas,",
+    "línea"
+   ],
+   "vis": {
+    "type": "stopnov",
+    "mode": "stopped"
+   }
+  },
+  {
+   "cap": "Y si desde ahí no ves nada, vuelves a parar donde veas.",
+   "hi": [
+    "vuelves",
+    "parar"
+   ],
+   "vis": {
+    "type": "stopnov",
+    "mode": "second",
+    "move_at": 1.5
+   }
+  },
+  {
+   "cap": "La DGT lo cuenta entre los fallos más típicos al volante.",
+   "hi": [
+    "DGT",
+    "típicos"
+   ],
+   "vis": {
+    "type": "stopnov",
+    "mode": "dgt"
+   }
+  },
+  {
+   "cap": "¿Quieres la parte 2 de errores de novato? Pídela en comentarios.",
+   "hi": [
+    "parte",
+    "2"
+   ],
+   "vis": {
+    "type": "cta",
+    "big": "¿PARTE 2?",
+    "small": "Pídela en comentarios"
+   }
+  }
+ ]
+}

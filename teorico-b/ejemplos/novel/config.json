@@ -1,0 +1,164 @@
+{
+ "label": "¿APROBARÍAS?",
+ "times": "tiempos.json",
+ "voice": "voz.wav",
+ "tail": 0.9,
+ "sfx": [
+  {
+   "t": 12.74,
+   "type": "beep"
+  },
+  {
+   "t": 13.64,
+   "type": "beep"
+  },
+  {
+   "t": 14.54,
+   "type": "beep"
+  },
+  {
+   "t": 15.31,
+   "type": "ding"
+  },
+  {
+   "t": 19.57,
+   "type": "buzz"
+  }
+ ],
+ "scenes": [
+  {
+   "cap": "Si fallas esta, no te mereces la L.",
+   "hi": [
+    "fallas",
+    "L."
+   ],
+   "vis": {
+    "type": "novel",
+    "mode": "hook",
+    "lines": [
+     "SI FALLAS ESTA,",
+     "NO TE MERECES LA L"
+    ],
+    "cols": [
+     [
+      255,
+      255,
+      255
+     ],
+     [
+      255,
+      196,
+      0
+     ]
+    ]
+   }
+  },
+  {
+   "cap": "Acabas de aprobar, y vas por la autovía con tu L.",
+   "hi": [
+    "aprobar,",
+    "autovía"
+   ],
+   "vis": {
+    "type": "novel",
+    "mode": "drive",
+    "tag": "RECIÉN APROBADO"
+   }
+  },
+  {
+   "cap": "¿A cuánto puedes ir? A: 80. B: 100, con la L. C: 120, como todos.",
+   "hi": [
+    "cuánto"
+   ],
+   "vis": {
+    "type": "quiz",
+    "q": "Recién aprobado, por autovía y con la L. ¿A cuánto puedes ir como máximo?",
+    "opts": [
+     "80 km/h",
+     "100 km/h, con la L",
+     "120 km/h, como todos"
+    ],
+    "correct": 2,
+    "sign": "lplate",
+    "opt_at": [
+     0.2,
+     0.43,
+     0.7
+    ]
+   }
+  },
+  {
+   "cap": "Pon tu letra en comentarios. Tienes 3 segundos.",
+   "hi": [
+    "letra",
+    "3"
+   ],
+   "vis": {
+    "type": "countdown",
+    "quiz_scene": 2,
+    "at": [
+     2.8,
+     3.7,
+     4.6
+    ]
+   }
+  },
+  {
+   "cap": "¡Es la C! 120, como cualquier conductor.",
+   "hi": [
+    "C!",
+    "120,"
+   ],
+   "vis": {
+    "type": "reveal",
+    "quiz_scene": 2
+   }
+  },
+  {
+   "cap": "El límite de 80 para noveles se quitó en 2011.",
+   "hi": [
+    "80",
+    "2011."
+   ],
+   "vis": {
+    "type": "novel",
+    "mode": "y2011",
+    "stamp_at": 1.5
+   }
+  },
+  {
+   "cap": "Lo que sí es obligatorio: llevar la L, durante un año.",
+   "hi": [
+    "obligatorio:",
+    "año."
+   ],
+   "vis": {
+    "type": "novel",
+    "mode": "year"
+   }
+  },
+  {
+   "cap": "Ojo: la tasa de alcohol de novel dura 2 años, no uno.",
+   "hi": [
+    "alcohol",
+    "2"
+   ],
+   "vis": {
+    "type": "novel",
+    "mode": "two"
+   }
+  },
+  {
+   "cap": "Etiqueta a ese amigo que todavía lleva la L.",
+   "hi": [
+    "Etiqueta",
+    "L."
+   ],
+   "vis": {
+    "type": "cta",
+    "big": "@ETIQUÉTALO",
+    "small": "al amigo que aún lleva la L"
+   }
+  }
+ ]
+}

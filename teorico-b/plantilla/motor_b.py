@@ -48,6 +48,10 @@
 #     pair = R-106 sin cifra vs R-107 con 5,5 t); sign_generic y quiz admiten "truck" (R-106) y "truck55" (R-107).
 #   plataforma (¿QUIÉN PASA PRIMERO? calle de plataforma única adoquinada: hook | nozebra | countdown | answer | signs = casi sin señales),
 #     platlaw (tarjeta: el peatón tiene prioridad en cualquier punto de la calzada, RD 518/2026) y perfil (sección CALLE NORMAL con bordillo vs PLATAFORMA ÚNICA).
+#   novel (permiso novel: hook = autovía con coche con la L | drive = carteles 80/100/120 con "?" | y2011 = 80 tachado, SUPRIMIDO 2011 |
+#     year = L con anillo de 12 meses | two = L 1 AÑO ≠ alcoholímetro 2 AÑOS); sign_generic y quiz admiten "lplate" y "stop".
+#   stopnov (ERROR DE NOVATO del STOP: hook = calle en 1ª persona con proyección 3D, STOP pintado, línea y señal | vote = SÍ/NO + semáforo |
+#     answer = SIEMPRE | roll = rueda que pasa rodando ✗ | stopped = ruedas paradas ✓ | second = vista cenital, 2ª parada donde se ve | dgt = ficha revista DGT).
 import math, json, sys, os, subprocess
 from functools import lru_cache
 from multiprocessing import Pool
@@ -4300,6 +4304,326 @@ def vis_platlaw(dst, t, v, i):
     if pk > 0: paste(dst, pill("EN CUALQUIER PUNTO DE LA CALZADA", 40, YEL, NAVY), W / 2, CY + 155, scale=eback(pk), alpha=ease(pk * 2))
     sp = prog(t, v.get("stamp_at", 3.4), .2)
     if sp > 0: paste(dst, stamp2("RD 518/2026"), W / 2, CY + 300, scale=lerp(2, 1, eout(sp)) * .8, alpha=ease(sp * 1.6), rot=-6)
+
+
+# --- PERMISO NOVEL: la L (V-13) y la velocidad del novel (sin límite propio desde la Orden PRE/629/2011) ---
+# vis: {"type": "novel", "mode": "hook" | "drive" | "y2011" | "year" | "two", "lines": [...], "cols": [...], "tag": "..."}
+#   hook  = autovía en 1ª persona con un coche delante que lleva la L verde en la luna trasera + texto del gancho
+#   drive = mismo coche, carteles de 80 / 100 / 120 que caen con "?"
+#   y2011 = señal de 80 que se tacha + sello "SUPRIMIDO · 2011"
+#   year  = L grande con un anillo de 12 meses que se llena ("1 AÑO")
+#   two   = L → 1 AÑO  ≠  alcoholímetro 0,15 → 2 AÑOS
+#   sign_generic y quiz admiten "lplate" (la L en la esquina de la tarjeta).
+L_GREEN = (110, 186, 46)
+
+@lru_cache(maxsize=16)
+def l_plate(s=200):
+    w, h = int(s * .78), s; im = ss(w, h); d = ImageDraw.Draw(im); X, Y = w * 2, h * 2
+    d.rounded_rectangle((0, 0, X - 1, Y - 1), radius=int(X * .1), fill=WHITE)
+    d.rounded_rectangle((X * .06, X * .06, X - X * .06, Y - X * .06), radius=int(X * .07), fill=L_GREEN)
+    f = F(BLACK, int(Y * .78)); bb = f.getbbox("L")
+    d.text((X / 2 - (bb[0] + bb[2]) / 2, Y / 2 - (bb[1] + bb[3]) / 2), "L", font=f, fill=WHITE)
+    return down(im)
+
+@lru_cache(maxsize=4)
+def car_rear_l(w=560, col=(52, 120, 220)):
+    c = car_rear(w, col).copy(); h = c.height
+    lp = l_plate(int(w * .2)); c.alpha_composite(lp, (int(w * .24), int(h * .1)))
+    return c
+
+def autovia_bg(dst, t, flow=1.0):
+    lay = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(lay, "RGBA")
+    top, bot = VZ[0] + 10, VZ[1] + 20; hz = top + 250; vx = W / 2
+    for y in range(top, hz):
+        k = (y - top) / (hz - top); d.line([(40, y), (W - 40, y)], fill=mix((90, 150, 220), (200, 225, 245), k) + (255,))
+    d.polygon([(40, hz), (W - 40, hz), (W - 40, hz + 30), (40, hz + 30)], fill=(90, 140, 80, 255))
+    for k, (x0, hh) in enumerate(((60, 50), (240, 80), (520, 40), (760, 70), (930, 55))):
+        d.ellipse((x0 - 120, hz - hh, x0 + 160, hz + hh), fill=(110, 160, 100, 255))
+    d.polygon([(40, hz + 10), (W - 40, hz + 10), (W - 40, bot), (40, bot)], fill=(96, 150, 84, 255))
+    d.polygon([(vx - 50, hz + 10), (vx + 70, hz + 10), (vx + 760, bot), (vx - 700, bot)], fill=(52, 56, 66, 255))
+    d.line([(vx - 50, hz + 10), (vx - 700, bot)], fill=(240, 240, 240, 255), width=10)
+    d.line([(vx + 70, hz + 10), (vx + 760, bot)], fill=(240, 240, 240, 255), width=10)
+    for k in range(10):  # discontinua entre los 2 carriles
+        z = ((k / 10) + t * .8 * flow) % 1.0; z2 = min(1, z + .05)
+        x1, y1 = vx + 10 + 20 * z ** 1.7, hz + 10 + (bot - hz) * z ** 1.7; x2, y2 = vx + 10 + 20 * z2 ** 1.7, hz + 10 + (bot - hz) * z2 ** 1.7
+        d.line([(x1, y1), (x2, y2)], fill=(255, 255, 255, int(255 * min(1, z * 3))), width=max(2, int(14 * z)))
+    for k in range(5):  # hitos de arista que pasan
+        z = ((k / 5) + t * .5 * flow) % 1.0; zz = z ** 2; y = hz + 10 + (bot - hz) * zz
+        for sx, base in ((-1, 50), (1, 70)):
+            x = vx + sx * (base + 760 * zz) * 1.05; hgt = 10 + 110 * zz
+            d.rectangle((x - 2 - 6 * zz, y - hgt, x + 2 + 6 * zz, y), fill=(245, 245, 245, 255))
+            d.rectangle((x - 2 - 6 * zz, y - hgt * .8, x + 2 + 6 * zz, y - hgt * .6), fill=(40, 40, 40, 255))
+    m = Image.new("L", (W, H), 0); ImageDraw.Draw(m).rounded_rectangle((40, top, W - 40, bot), radius=36, fill=255)
+    lay.putalpha(Image.fromarray(np.minimum(np.array(lay.split()[3]), np.array(m)))); dst.alpha_composite(lay)
+    return top, bot, hz
+
+def month_ring(dst, cx, cy, r, k, a=1.0):
+    d = ImageDraw.Draw(dst, "RGBA")
+    for m in range(12):
+        a0 = -90 + m * 30 + 2; a1 = a0 + 26
+        on = k * 12 > m; col = (L_GREEN if on else (255, 255, 255)) + (int((255 if on else 60) * a),)
+        d.arc((cx - r, cy - r, cx + r, cy + r), a0, a1, fill=col, width=38)
+
+def vis_novel(dst, t, v, i):
+    if i == 0: t = t + 0.6
+    mode = v.get("mode", "hook")
+    if mode in ("hook", "drive"):
+        top, bot, hz = autovia_bg(dst, t)
+        p = eback(prog(t, 0, .5)) if i else 1
+        y = 1035 + math.sin(t * 2.2) * 6; x = W / 2 + 150 + math.sin(t * .9) * 10
+        paste(dst, car_rear_l(470), x, y, scale=.85 + .15 * p)
+        if mode == "hook":
+            g = Image.new("RGBA", (W, H), (0, 0, 0, 0)); ImageDraw.Draw(g).rounded_rectangle((40, top, W - 40, top + 300), radius=36, fill=(6, 20, 43, 190)); dst.alpha_composite(g)
+            big_lines(dst, v.get("lines", []), t, top + 80, [tuple(c) for c in v.get("cols", [])] or None, size=118)
+            pk = .5 + .5 * math.sin(t * 7); lp = l_plate(110)
+            paste(dst, lp, x - 128, y - 320, scale=(1 + .12 * pk) * eback(prog(t, .5, .4)), alpha=ease(prog(t, .5, .2)))
+            paste(dst, text("↓", 90, YEL, BLACK), x - 128, y - 220, alpha=ease(prog(t, .5, .2)) * (.6 + .4 * pk))
+        else:
+            paste(dst, pill(v.get("tag", "RECIÉN APROBADO"), 42, L_GREEN, WHITE), W / 2, top + 60, scale=eback(prog(t, .1, .35)), alpha=ease(prog(t, .1, .3)))
+            for k, n in enumerate((80, 100, 120)):
+                pk = prog(t, .45 + k * .35, .45); x0 = W / 2 + (k - 1) * 250
+                paste(dst, sign_generic("speed", n, 190), x0, lerp(top + 120, top + 250, eout(pk)), scale=eback(pk), alpha=ease(pk * 2), rot=6 * math.sin(t * 2 + k))
+            qp = prog(t, 1.6, .35)
+            if qp > 0: paste(dst, text("?", 170, YEL, BLACK), W / 2 - 330, top + 420, scale=eback(qp) * (1 + .06 * math.sin(t * 8)), alpha=ease(qp * 2))
+    elif mode == "y2011":
+        p = eback(prog(t, 0, .5)); cx, cy = W / 2, CY - 110
+        paste(dst, sign_generic("speed", 80, 470), cx, cy, scale=.6 + .4 * p, alpha=ease(prog(t, 0, .2)))
+        paste(dst, pill("LÍMITE PARA NOVELES", 44, WHITE, NAVY), cx, VZ[0] + 40, alpha=ease(prog(t, .2, .3)))
+        xp = ease(prog(t, .7, .35)); d = ImageDraw.Draw(dst, "RGBA")
+        if xp > 0:
+            x0, y0, x1, y1 = cx - 170, cy - 170, cx + 170, cy + 170
+            d.line([(x0, y0), (lerp(x0, x1, xp), lerp(y0, y1, xp))], fill=RED + (255,), width=44)
+        sp = prog(t, v.get("stamp_at", 1.5), .2)
+        if sp > 0: paste(dst, stamp_col("SUPRIMIDO · 2011", RED), cx, cy + 380, scale=lerp(2.2, .82, eout(sp)), alpha=ease(sp * 1.6), rot=-6)
+    elif mode == "year":
+        cx, cy = W / 2, CY - 40; p = eback(prog(t, 0, .5)); k = ease(prog(t, .5, 2.0))
+        month_ring(dst, cx, cy, 330, k, ease(prog(t, .2, .3)))
+        paste(dst, l_plate(330), cx, cy, scale=.6 + .4 * p, alpha=ease(prog(t, 0, .2)), rot=3 * math.sin(t * 2))
+        m = min(12, int(k * 12 + .001)); paste(dst, pill(f"{m} / 12 MESES" if m < 12 else "1 AÑO", 52, L_GREEN if m == 12 else WHITE, WHITE if m == 12 else NAVY), cx, cy + 430, scale=1 + (.08 * eback(prog(t, 2.5, .3)) if m == 12 else 0))
+        paste(dst, pill(v.get("tag", "LUNA TRASERA, A LA IZQUIERDA"), 34, NAVY, WHITE), cx, VZ[0] + 20, alpha=ease(prog(t, .9, .3)))
+    elif mode == "two":
+        for k, px in enumerate((W / 2 - 215, W / 2 + 215)):
+            pk = eback(prog(t, k * .5, .45)); a = ease(prog(t, k * .5, .25)); y = CY + (1 - pk) * 160
+            paste(dst, card(390, 640, fill=(255, 255, 255, 250), r=40, border=L_GREEN if k == 0 else RED, bw=6), px, y, alpha=a)
+            paste(dst, pill("LA L" if k == 0 else "TASA DE ALCOHOL", 32, L_GREEN if k == 0 else RED, WHITE), px, y - 255, alpha=a)
+            if k == 0: paste(dst, l_plate(250), px, y - 40, alpha=a)
+            else: paste(dst, breathalyzer("0,15", GREEN, 200, 300), px, y - 40, alpha=a, scale=.92)
+            paste(dst, text("1 AÑO" if k == 0 else "2 AÑOS", 84, L_GREEN if k == 0 else RED, BLACK, shadow=False), px, y + 220, alpha=a, scale=1 + (.1 * math.sin(clamp((t - 1.3) * 3) * math.pi) if k == 1 else 0))
+        np_ = prog(t, 1.0, .3)
+        if np_ > 0: paste(dst, text("≠", 150, YEL, BLACK), W / 2, CY + 10, scale=eback(np_), alpha=ease(np_ * 2))
+
+# --- ERROR DE NOVATO: STOP sin nadie (R-2, RD 465/2025): detenerse siempre ante la línea; si no hay visibilidad, volver a detenerse ---
+# vis: {"type": "stopnov", "mode": "hook" | "vote" | "answer" | "roll" | "stopped" | "second" | "dgt", ...}
+#   hook   = calle en 1ª persona (proyección 3D) acercándose a un cruce vacío con STOP pintado, línea de detención y señal
+#   vote   = SÍ / NO + semáforo de cuenta atrás
+#   answer = parado en la línea, 0 km/h, sello SIEMPRE
+#   roll   = rueda de lado que gira y pisa la línea (3 km/h, ✗)   stopped = rueda parada antes de la línea (0 km/h, ✓)
+#   second = vista cenital: 1ª parada en la línea sin visibilidad (edificio), 2ª parada donde se ve
+#   dgt    = ficha de la revista de la DGT con el error resaltado
+def stop_sign(s=200):
+    im = stop_mini(s).copy(); d = ImageDraw.Draw(im); r = s / 2
+    pts = [(r + r * .96 * math.cos(math.radians(22.5 + 45 * k)), r + r * .96 * math.sin(math.radians(22.5 + 45 * k))) for k in range(8)]
+    d.line(pts + [pts[0]], fill=WHITE, width=max(2, int(s * .035)))
+    return im
+
+def stop_world(dst, t, Zs, dark=0.0, speed=None):
+    """Calle vista desde el asiento. Zs = metros hasta la línea de detención."""
+    lay = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(lay, "RGBA")
+    top, bot = VZ[0] + 10, VZ[1] + 20; hz = top + 300; Fz, hc, camx = 640.0, 1.25, 2.0
+    def P(X, Z, Y=0.0):
+        Z = max(Z, .35); return (W / 2 + Fz * (X - camx) / Z, hz + Fz * (hc - Y) / Z)
+    def quad(X0, X1, Z0, Z1, col, Y=0.0):
+        d.polygon([P(X0, Z0, Y), P(X1, Z0, Y), P(X1, Z1, Y), P(X0, Z1, Y)], fill=col + (255,))
+    for y in range(top, hz):
+        k = (y - top) / (hz - top); d.line([(40, y), (W - 40, y)], fill=mix((90, 150, 225), (205, 225, 245), k) + (255,))
+    Zc0 = Zs + 1.6; Zc1 = Zc0 + 8.0
+    # fachada del fondo (al otro lado de la calle transversal)
+    d.rectangle((40, hz - 230, W - 40, P(0, Zc1 + 2.5)[1]), fill=(170, 150, 130, 255))
+    for k, (x0, x1, col) in enumerate(((-60, -18, (176, 140, 120)), (-18, -4, (150, 160, 175)), (-4, 9, (196, 170, 120)), (9, 60, (140, 150, 170)))):
+        a_, b_ = P(x0, Zc1 + 2.5, 0), P(x1, Zc1 + 2.5, 9)
+        d.rectangle((a_[0], b_[1], P(x1, Zc1 + 2.5)[0], a_[1]), fill=col + (255,))
+        for wy in range(int(b_[1]) + 14, int(a_[1]) - 30, 34):
+            for wx in range(int(a_[0]) + 12, int(P(x1, Zc1 + 2.5)[0]) - 20, 30): d.rectangle((wx, wy, wx + 14, wy + 18), fill=(235, 240, 248, 200))
+    quad(-60, 60, Zc1, Zc1 + 2.5, (165, 168, 176))                     # acera del fondo
+    quad(-60, 60, Zc0, Zc1, (58, 62, 72))                              # calle transversal
+    for k in range(-12, 12):                                           # su línea discontinua
+        quad(k * 4, k * 4 + 2, Zc0 + 3.95, Zc0 + 4.05, (235, 235, 235))
+    quad(-4, 4, .5, Zc0, (52, 56, 66))                                 # nuestra calle
+    quad(-6.5, -4, .5, Zc0, (160, 163, 172)); quad(4, 6.5, .5, Zc0, (160, 163, 172))  # aceras
+    for k in range(int(Zs // 3) + 1):                                  # línea continua del eje junto al STOP / discontinua antes
+        z0 = Zs - 3 * k - 1.5; quad(-.08, .08, max(.5, z0), Zs, (235, 235, 235)) if k == 0 else quad(-.08, .08, max(.5, z0), z0 + 1.5, (235, 235, 235))
+    quad(0, 4, Zs - .4, Zs, (250, 250, 250))                           # línea de detención
+    # "STOP" pintado en el carril (texto deformado en perspectiva)
+    tw = Image.new("RGBA", (600, 260), (0, 0, 0, 0)); fb = F(BLACK, 230); bb = fb.getbbox("STOP")
+    ImageDraw.Draw(tw).text((300 - (bb[0] + bb[2]) / 2, 130 - (bb[1] + bb[3]) / 2), "STOP", font=fb, fill=(250, 250, 250, 235))
+    z0, z1 = Zs - 4.5, Zs - 1.6
+    if z0 > .6:
+        q = [P(.4, z1), P(.4, z0), P(3.6, z0), P(3.6, z1)]
+        bx0, by0 = int(min(p[0] for p in q)), int(min(p[1] for p in q)); bx1, by1 = int(max(p[0] for p in q)) + 1, int(max(p[1] for p in q)) + 1
+        if bx1 - bx0 > 4 and by1 - by0 > 2:
+            qq = [(x - bx0, y - by0) for x, y in q]
+            # coeficientes de la homografía destino->origen
+            src = [(0, 0), (0, 260), (600, 260), (600, 0)]
+            A = []; Bv = []
+            for (x, y), (u, w_) in zip(qq, src):
+                A += [[x, y, 1, 0, 0, 0, -u * x, -u * y], [0, 0, 0, x, y, 1, -w_ * x, -w_ * y]]; Bv += [u, w_]
+            co = np.linalg.solve(np.array(A, float), np.array(Bv, float))
+            warped = tw.transform((bx1 - bx0, by1 - by0), Image.PERSPECTIVE, tuple(co), Image.BICUBIC)
+            lay.alpha_composite(warped, (bx0, by0))
+    # edificios de las esquinas (paredes laterales + fachada hacia la calle transversal)
+    for sgn, col in ((-1, (196, 120, 96)), (1, (120, 140, 176))):
+        Xw = 6.5 * sgn
+        d.polygon([P(Xw, .5, 0), P(Xw, Zc0, 0), P(Xw, Zc0, 12), P(Xw, .5, 12)], fill=col + (255,))
+        for zz in np.arange(Zc0 - 1.5, .6, -3.0):
+            for yy in (3.2, 6.4, 9.6):
+                d.polygon([P(Xw, zz, yy), P(Xw, zz - 1.1, yy), P(Xw, zz - 1.1, yy + 1.6), P(Xw, zz, yy + 1.6)], fill=(225, 235, 248, 230))
+    # señal STOP en la acera derecha
+    sx, sy = P(4.5, Zs - .2, 0); st, sb = P(4.5, Zs - .2, 3.0), P(4.5, Zs - .2, 1.6)
+    ps = max(6, int(Fz * 1.4 / max(Zs - .2, .35)))
+    if sx + ps / 2 < W - 50:
+        d.line([(sx, sy), (sx, st[1])], fill=(120, 124, 134, 255), width=max(2, int(ps * .07)))
+        lay.alpha_composite(stop_sign(ps), (int(sx - ps / 2), int((st[1] + sb[1]) / 2 - ps / 2)))
+    if dark: lay.alpha_composite(Image.new("RGBA", (W, H), (6, 12, 24, int(150 * dark))))
+    m = Image.new("L", (W, H), 0); ImageDraw.Draw(m).rounded_rectangle((40, top, W - 40, bot), radius=36, fill=255)
+    lay.putalpha(Image.fromarray(np.minimum(np.array(lay.split()[3]), np.array(m)))); dst.alpha_composite(lay)
+    if speed is not None: pov_dash(dst, t, {"speed": speed}, top, bot)
+    return top, bot, hz
+
+@lru_cache(maxsize=64)
+def tyre_side(s, ang):
+    im = ss(s, s); d = ImageDraw.Draw(im); S = s * 2; c = S / 2
+    d.ellipse((0, 0, S - 1, S - 1), fill=(24, 24, 28))
+    for k in range(36):  # tacos del dibujo
+        a = math.radians(ang + k * 10); r1, r2 = c * .9, c * .99
+        d.line([(c + math.cos(a) * r1, c + math.sin(a) * r1), (c + math.cos(a) * r2, c + math.sin(a) * r2)], fill=(52, 52, 58), width=int(S * .02))
+    d.ellipse((S * .2, S * .2, S * .8, S * .8), fill=(186, 192, 204)); d.ellipse((S * .26, S * .26, S * .74, S * .74), fill=(150, 156, 170))
+    for k in range(5):
+        a = math.radians(ang + k * 72)
+        d.line([(c, c), (c + math.cos(a) * S * .27, c + math.sin(a) * S * .27)], fill=(214, 220, 230), width=int(S * .07))
+    d.ellipse((S * .42, S * .42, S * .58, S * .58), fill=(90, 96, 110))
+    d.ellipse((S * .26, S * .26, S * .74, S * .74), outline=(110, 116, 130), width=6)
+    return down(im)
+
+def vis_stopnov(dst, t, v, i):
+    if i == 0: t = t + 0.6
+    mode = v.get("mode", "hook")
+    if mode == "hook":
+        Zs = lerp(15, 7.5, ease(prog(t, 0, 3.2))); sp = int(lerp(30, 12, ease(prog(t, 0, 3.2))))
+        top, bot, hz = stop_world(dst, t, Zs, speed=sp)
+        g = Image.new("RGBA", (W, H), (0, 0, 0, 0)); ImageDraw.Draw(g).rounded_rectangle((40, top, W - 40, top + 190), radius=36, fill=(6, 20, 43, 190)); dst.alpha_composite(g)
+        big_lines(dst, v.get("lines", ["¿HAY QUE PARAR?"]), t, top + 95, [tuple(c) for c in v.get("cols", [])] or [YEL], size=112)
+        pp = prog(t, .7, .35); paste(dst, pill("NO VIENE NADIE", 40, WHITE, NAVY), W / 2 - 120, top + 600, scale=eback(pp), alpha=ease(pp * 2))
+        for k, sx in enumerate((-1, 1)):  # flechas de "mira": izquierda y derecha vacías
+            a = ease(prog(t, 1.2 + k * .3, .3)) * (.6 + .4 * math.sin(t * 6 + k))
+            paste(dst, text("←" if sx < 0 else "→", 90, (255, 255, 255), BLACK), W / 2 + sx * 300, hz + 20, alpha=a)
+    elif mode == "vote":
+        top, bot, hz = stop_world(dst, t, 6.0, dark=.35, speed=8)
+        for k, (txt, col, x) in enumerate((("SÍ", GREEN, W / 2 - 160), ("NO", RED, W / 2 + 160))):
+            p = prog(t, .1 + k * .2, .35); paste(dst, vote_btn(txt, col), x, top + 110, scale=1.15 * eback(p) * (1 + .04 * math.sin(t * 6 + k * 3)), alpha=ease(p * 2))
+        cd = v.get("countdown")
+        if cd:
+            n = sum(1 for s in cd if t >= s); ix, iy = W / 2, CY + 60
+            paste(dst, semaphore(n).resize((130, 340), Image.LANCZOS), ix, iy, scale=eback(prog(t, 0, .4)))
+            if n:
+                pk = prog(t, cd[n - 1], .25)
+                paste(dst, text(str(4 - n), 170, [RED, (255, 176, 0), GREEN][n - 1], BLACK), ix + 210, iy, scale=lerp(1.6, 1, eout(pk)), alpha=ease(pk * 2))
+    elif mode == "answer":
+        top, bot, hz = stop_world(dst, t, 2.9, speed=0)
+        sp = prog(t, .2, .2)
+        paste(dst, stop_sign(200), W / 2 - 300, top + 230, scale=eback(prog(t, 0, .4)), rot=8 * math.sin(t * 2))
+        if sp > 0: paste(dst, stamp_col("SIEMPRE", GREEN), W / 2 + 60, CY - 90, scale=lerp(2.4, 1.2, eout(sp)), alpha=ease(sp * 1.6), rot=-8)
+        paste(dst, pill("AUNQUE NO VENGA NADIE", 42, YEL, NAVY), W / 2, top + 70, scale=eback(prog(t, .8, .35)), alpha=ease(prog(t, .8, .3)))
+    elif mode in ("roll", "stopped"):
+        d = ImageDraw.Draw(dst, "RGBA"); gy = CY + 230; lx = W / 2 + 120
+        paste(dst, card(900, 820, fill=(214, 226, 240, 255), r=40), W / 2, CY + 10, alpha=ease(prog(t, 0, .2)))
+        d.rectangle((95, gy, 985, gy + 150), fill=(56, 60, 70, 255)); d.rectangle((lx - 22, gy, lx + 22, gy + 150), fill=(250, 250, 250, 255))
+        paste(dst, pill("LÍNEA DE DETENCIÓN", 30, WHITE, NAVY), lx, gy + 110)
+        R = 190
+        if mode == "roll":
+            k = prog(t, .1, 2.6); x = lerp(W / 2 - 240, lx + 80, k); ang = (x - (W / 2 - 240)) / R * 57.3
+            spd, ok = "3 km/h", False
+        else:
+            k = eout(prog(t, .0, 1.2)); x = lerp(W / 2 - 300, lx - R - 40, k); ang = (x - (W / 2 - 300)) / R * 57.3
+            spd, ok = ("0 km/h" if k > .98 else f"{int(lerp(10, 0, k))} km/h"), k > .98
+        # carrocería (aleta) sobre la rueda
+        d.chord((x - R - 70, gy - 2 * R - 90, x + R + 70, gy - 2 * R + 250), 180, 360, fill=(52, 120, 220, 255))
+        d.rectangle((x - R - 160, gy - 2 * R + 80, x + R + 160, gy - 2 * R + 140), fill=(52, 120, 220, 255))
+        paste(dst, tyre_side(2 * R, int(ang) % 360), x, gy - R + 6)
+        paste(dst, pill(spd, 58, GREEN if ok else (RED if mode == "roll" else WHITE), WHITE if (ok or mode == "roll") else NAVY), W / 2 - 60, VZ[0] + 70)
+        if mode == "roll":
+            for j in range(3):  # marcas de movimiento
+                d.line([(x - R - 40 - j * 50, gy - R + (j - 1) * 50), (x - R - 110 - j * 50, gy - R + (j - 1) * 50)], fill=(255, 255, 255, 150), width=10)
+            xp = prog(t, 1.8, .25)
+            if xp > 0: paste(dst, icon_x(120), W / 2 + 230, VZ[0] + 70, scale=eback(xp))
+            if xp > 0: paste(dst, pill("RODANDO = NO ES PARAR", 40, RED, WHITE), W / 2, VZ[0] + 165, scale=eback(prog(t, 2.0, .3)), alpha=ease(prog(t, 2.0, .2)))
+        else:
+            cp = prog(t, 1.3, .25)
+            if cp > 0: paste(dst, icon_check(120), W / 2 + 230, VZ[0] + 70, scale=eback(cp))
+            if cp > 0: paste(dst, pill("RUEDAS PARADAS", 44, GREEN, WHITE), W / 2, VZ[0] + 165, scale=eback(prog(t, 1.5, .3)), alpha=ease(prog(t, 1.5, .2)))
+    elif mode == "second":
+        d = ImageDraw.Draw(dst, "RGBA"); top, bot = VZ[0] + 10, VZ[1] + 20
+        cy0 = CY - 170; rw = 300                                     # calle transversal (horizontal)
+        d.rounded_rectangle((40, top, W - 40, bot), radius=36, fill=(150, 154, 164, 255))
+        d.rectangle((40, cy0 - rw / 2, W - 40, cy0 + rw / 2), fill=(56, 60, 70, 255))
+        for k in range(8): d.rectangle((60 + k * 135, cy0 - 5, 120 + k * 135, cy0 + 5), fill=(235, 235, 235, 255))
+        sx0, sx1 = W / 2 - 150, W / 2 + 150                           # nuestra calle (vertical, hacia abajo)
+        d.rectangle((sx0, cy0 + rw / 2, sx1, bot), fill=(56, 60, 70, 255)); d.rectangle((W / 2 - 4, cy0 + rw / 2 + 120, W / 2 + 4, bot), fill=(235, 235, 235, 255))
+        ly = cy0 + rw / 2 + 110; d.rectangle((W / 2, ly - 12, sx1, ly + 12), fill=(250, 250, 250, 255))
+        paste(dst, stop_mini(90), sx1 + 70, ly - 10)
+        # edificio de la esquina izquierda que tapa la vista (llega hasta casi la calzada)
+        d.rectangle((40, cy0 + rw / 2 + 18, sx0 - 18, bot), fill=(196, 120, 96, 255))
+        for yy in range(int(cy0 + rw / 2 + 50), int(bot) - 40, 70):
+            for xx in range(80, int(sx0) - 60, 80): d.rectangle((xx, yy, xx + 40, yy + 34), fill=(225, 235, 248, 220))
+        d.rectangle((sx1 + 18, cy0 + rw / 2 + 18, W - 40, bot), fill=(120, 140, 176, 255))
+        # coche que viene por la izquierda en la transversal
+        ox = lerp(150, 330, ease(prog(t, 2.5, 1.4))); paste(dst, car_top((255, 196, 0), 120), ox, cy0 + 75, rot=-90, alpha=ease(prog(t, 2.5, .3)))
+        stage = 1 if t < v.get("move_at", 1.9) else 2
+        y1 = ly + 120; y2 = cy0 + rw / 2 - 10 + 110
+        k = ease(prog(t, v.get("move_at", 1.9), .8)); y = lerp(lerp(bot + 100, y1, eout(prog(t, 0, .8))), y2, k)
+        cx = W / 2 + 75
+        # cono de visión
+        g = Image.new("RGBA", (W, H), (0, 0, 0, 0)); gd = ImageDraw.Draw(g)
+        ey = y - 120
+        if stage == 1 and k < .05:
+            gd.polygon([(cx, ey), (sx0 - 18, cy0 + rw / 2 + 18), (sx0 - 18, ey - 40)], fill=(255, 196, 0, 90))
+            gd.polygon([(cx, ey), (sx1 + 18, cy0 + rw / 2 + 18), (sx1 + 18, ey - 40)], fill=(255, 196, 0, 90))
+        else:
+            gd.polygon([(cx, ey), (60, cy0 - rw / 2 + 20), (60, cy0 + rw / 2)], fill=(255, 196, 0, 90))
+            gd.polygon([(cx, ey), (W - 60, cy0 - rw / 2 + 20), (W - 60, cy0 + rw / 2)], fill=(255, 196, 0, 90))
+        dst.alpha_composite(g)
+        paste(dst, car_top((226, 69, 60), 130), cx, y)
+        if t > .9: paste(dst, num_badge(1, 70), cx - 140, y1 - 30, alpha=ease(prog(t, .9, .2)))
+        if t > .9 and stage == 1 or (k < .2 and t > .9):
+            paste(dst, pill("NO VES NADA", 36, RED, WHITE), W / 2 - 230, ly + 260, scale=eback(prog(t, 1.0, .3)), alpha=ease(prog(t, 1.0, .2)) * (1 - k))
+        if k > .95:
+            paste(dst, num_badge(2, 70), cx + 140, y2 - 30, scale=eback(prog(t, v.get("move_at", 1.9) + .8, .3)))
+            paste(dst, pill("2ª PARADA: AQUÍ SÍ VES", 38, GREEN, WHITE), W / 2, top + 50, scale=eback(prog(t, v.get("move_at", 1.9) + .9, .3)))
+    elif mode == "dgt":
+        p = eback(prog(t, 0, .5)); cw, ch = 860, 760; c = card(cw, ch, fill=(252, 252, 250, 255), r=36).copy(); cd = ImageDraw.Draw(c); ox, oy = 40, 40
+        cd.rounded_rectangle((ox, oy, ox + cw, oy + 150), radius=36, fill=BLUE); cd.rectangle((ox, oy + 110, ox + cw, oy + 150), fill=(252, 252, 250))
+        cd.text((ox + 44, oy + 30), "REVISTA DGT", font=F(BLACK, 54), fill=WHITE); cd.text((ox + 500, oy + 46), "junio 2025", font=F(SB, 34), fill=(210, 225, 255))
+        cd.text((ox + 44, oy + 170), "«10 errores de novel»", font=F(XB, 44), fill=DARK)
+        for k in range(3):
+            y = oy + 270 + k * 140
+            cd.ellipse((ox + 44, y, ox + 124, y + 80), fill=(214, 220, 230) if k < 2 else RED)
+            f = F(BLACK, 50); s_ = str(k + 1); bb = f.getbbox(s_); cd.text((ox + 84 - (bb[0] + bb[2]) / 2, y + 40 - (bb[1] + bb[3]) / 2), s_, font=f, fill=WHITE)
+            if k < 2:
+                cd.rounded_rectangle((ox + 160, y + 18, ox + cw - 80 - k * 120, y + 40), radius=11, fill=(214, 220, 230))
+                cd.rounded_rectangle((ox + 160, y + 52, ox + cw - 260 + k * 60, y + 70), radius=9, fill=(226, 230, 238))
+            else:
+                cd.text((ox + 160, y - 4), "No detenerse del todo", font=F(XB, 46), fill=DARK); cd.text((ox + 160, y + 48), "ante un stop", font=F(XB, 46), fill=DARK)
+        paste(dst, c, W / 2, CY + 10, scale=.85 + .15 * p, alpha=ease(prog(t, 0, .2)))
+        hp = prog(t, .9, .3)
+        if hp > 0:
+            g = Image.new("RGBA", (W, H), (0, 0, 0, 0)); ImageDraw.Draw(g).rounded_rectangle((W / 2 - 420, CY + 10 - ch / 2 + 290 + 270 - 30, W / 2 + 420, CY + 10 - ch / 2 + 290 + 270 + 120), radius=26, outline=YEL + (int(255 * ease(hp)),), width=10)
+            dst.alpha_composite(g)
+        paste(dst, stop_sign(130), W / 2 + 300, CY + 10 - ch / 2 + 290 + 270 + 45, scale=eback(prog(t, .5, .4)), rot=10 * math.sin(t * 2.4))
+
+_old_sign_generic3 = sign_generic
+def sign_generic(kind, n, s, flat=False):
+    if kind == "lplate": return l_plate(s)
+    if kind == "stop": return stop_sign(s)
+    return _old_sign_generic3(kind, n, s, flat)
 
 
 VIS = {k[4:]: v for k, v in globals().items() if k.startswith("vis_")}
