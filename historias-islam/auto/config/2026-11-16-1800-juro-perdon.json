@@ -1,0 +1,248 @@
+{
+ "tail": 1.4,
+ "cx": 470,
+ "cap_maxw": 800,
+ "title_maxw": 820,
+ "instant": true,
+ "step_gap": 290,
+ "label": "HISTORIA REAL",
+ "times": "2026-11-16-1800-juro-perdon.tiempos.json",
+ "scenes": [
+  {
+   "tint": "red",
+   "hi": [
+    "frase",
+    "todo."
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "💔",
+    "orbit": [
+     "🤲",
+     "🗣️",
+     "⚠️"
+    ],
+    "y": 900
+   },
+   "cap": "Adoraba a Allah todo el día… y una sola frase le hizo perderlo todo.",
+   "title": [
+    "Una frase…",
+    "y lo perdió todo"
+   ]
+  },
+  {
+   "tint": "night",
+   "hi": [
+    "real,",
+    "Profeta,"
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "📜",
+    "orbit": [
+     "✨",
+     "🕯️"
+    ],
+    "y": 900
+   },
+   "cap": "Historia real, contada por el Profeta, la paz sea con él.",
+   "title": [
+    "Historia",
+    "real"
+   ]
+  },
+  {
+   "tint": "gold",
+   "hi": [
+    "dos",
+    "rezando."
+   ],
+   "vis": {
+    "type": "steps",
+    "items": [
+     [
+      "🕌",
+      "REZA"
+     ],
+     [
+      "📿",
+      "ADORA"
+     ],
+     [
+      "🤲",
+      "TODO EL DÍA"
+     ]
+    ],
+    "y": 920
+   },
+   "cap": "Había dos hombres. Uno se pasaba el día rezando.",
+   "title": [
+    "El devoto"
+   ]
+  },
+  {
+   "tint": "red",
+   "hi": [
+    "otro,",
+    "pecando."
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "😞",
+    "orbit": [
+     "⚠️",
+     "🌙",
+     "🔁"
+    ],
+    "y": 900
+   },
+   "cap": "El otro, cada vez que le veía, estaba pecando.",
+   "title": [
+    "El otro…",
+    "pecando"
+   ]
+  },
+  {
+   "tint": "night",
+   "hi": [
+    "otra",
+    "ya!»"
+   ],
+   "vis": {
+    "type": "counter",
+    "seq": [
+     "1",
+     "2",
+     "3"
+    ],
+    "sub": "VECES",
+    "e": "☝️",
+    "y": 900
+   },
+   "cap": "Una y otra vez le decía: «¡Déjalo ya!»",
+   "title": [
+    "«¡Déjalo",
+    "ya!»"
+   ]
+  },
+  {
+   "tint": "red",
+   "hi": [
+    "soltó:",
+    "nunca",
+    "perdonar!»"
+   ],
+   "vis": {
+    "type": "quote",
+    "lines": [
+     "«¡Allah nunca",
+     "te va a perdonar!»"
+    ],
+    "src": "EL DEVOTO, A SU COMPAÑERO",
+    "size": 60,
+    "y": 880
+   },
+   "cap": "Hasta que un día le soltó: «¡Por Allah, Allah nunca te va a perdonar!»",
+   "title": [
+    "La frase"
+   ]
+  },
+  {
+   "tint": "gold",
+   "hi": [
+    "jura",
+    "Mí"
+   ],
+   "vis": {
+    "type": "quote",
+    "lines": [
+     "«¿Quién es ese",
+     "que jura por Mí",
+     "que no perdonaré",
+     "a fulano?»"
+    ],
+    "src": "SAHIH MUSLIM 2621 · HADIZ",
+    "size": 56,
+    "y": 860
+   },
+   "cap": "Y Allah dijo: «¿Quién es ese que jura por Mí que no perdonaré a fulano?»"
+  },
+  {
+   "tint": "red",
+   "hi": [
+    "perdonado.",
+    "anulado"
+   ],
+   "vis": {
+    "type": "choice",
+    "opts": [
+     [
+      "✅",
+      "PERDONADO",
+      "gold"
+     ],
+     [
+      "❌",
+      "OBRAS ANULADAS",
+      "red"
+     ]
+    ],
+    "y": 920
+   },
+   "cap": "«Yo ya le he perdonado. Y a ti, te he anulado tus obras.»",
+   "title": [
+    "El giro"
+   ]
+  },
+  {
+   "tint": "night",
+   "hi": [
+    "Muslim",
+    "Dawud."
+   ],
+   "vis": {
+    "type": "book",
+    "src": "SAHIH MUSLIM 2621 · ABU DAWUD 4901",
+    "y": 880
+   },
+   "cap": "Lo recogen Muslim y Abu Dawud.",
+   "title": [
+    "Hadiz",
+    "auténtico"
+   ]
+  },
+  {
+   "tint": "green",
+   "hi": [
+    "aconsejar.",
+    "Allah."
+   ],
+   "vis": {
+    "type": "big",
+    "words": [
+     "SOLO LO",
+     "DECIDE",
+     "ALLAH"
+    ],
+    "size": 160,
+    "gap": 180,
+    "y": 820
+   },
+   "cap": "Puedes aconsejar. Pero quién se salva, solo lo decide Allah."
+  },
+  {
+   "tint": "night",
+   "hi": [
+    "juzgado",
+    "final?"
+   ],
+   "vis": {
+    "type": "cta",
+    "word": "¿Y TÚ?",
+    "e": "🤔",
+    "y": 900
+   },
+   "cap": "¿Y tú? ¿Alguna vez has juzgado a alguien… sin saber su final? Te leo abajo."
+  }
+ ]
+}
