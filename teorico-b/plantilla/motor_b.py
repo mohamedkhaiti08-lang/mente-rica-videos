@@ -52,6 +52,10 @@
 #     year = L con anillo de 12 meses | two = L 1 AÑO ≠ alcoholímetro 2 AÑOS); sign_generic y quiz admiten "lplate" y "stop".
 #   stopnov (ERROR DE NOVATO del STOP: hook = calle en 1ª persona con proyección 3D, STOP pintado, línea y señal | vote = SÍ/NO + semáforo |
 #     answer = SIEMPRE | roll = rueda que pasa rodando ✗ | stopped = ruedas paradas ✓ | second = vista cenital, 2ª parada donde se ve | dgt = ficha revista DGT).
+#   adel (¿APROBARÍAS? adelantar sin pasar del límite: hook = carretera convencional cenital, camión a 80, tú detrás y señal 90 | scene = etiquetas y trayectoria con "?" |
+#     pass = adelantas a 90 ✓ | noroom = viene otro de frente, te quedas detrás) y antes (ANTES 90 + 20 = 110 vs AHORA 90, con cuentakilómetros de aguja); quiz admite "speed90".
+#   nieve (ESTO HA CAMBIADO, nieve en autovía, art. 32.2 RGC: hook = 1ª persona con copos | vote = 2 carriles cenital + semáforo | answer = carril derecho ✓ y PROHIBIDO ADELANTAR |
+#     plow = quitanieves con rotativos por el carril izquierdo + ambulancia | three = 3 carriles, los 2 de la derecha ✓) y nievelaw (tarjeta de la norma).
 import math, json, sys, os, subprocess
 from functools import lru_cache
 from multiprocessing import Pool
@@ -4624,6 +4628,350 @@ def sign_generic(kind, n, s, flat=False):
     if kind == "lplate": return l_plate(s)
     if kind == "stop": return stop_sign(s)
     return _old_sign_generic3(kind, n, s, flat)
+
+
+# --- ¿APROBARÍAS? adelantar sin pasarse del límite (Ley 18/2021 suprime el art. 21.4 LSV: ya no hay +20 km/h para adelantar) ---
+# vis: {"type": "adel", "mode": "hook" | "scene" | "pass" | "noroom", ...}  y  {"type": "antes", ...} (ANTES +20 = 110 vs AHORA 90 con relojes)
+#   hook   = carretera convencional cenital: camión a 80 en tu carril, tú detrás, señal 90; texto grande arriba
+#   scene  = etiquetas 80 km/h (camión), TÚ, señal 90 y trayectoria de adelantamiento con "?"
+#   pass   = adelantas sin pasar de 90: velocímetro fijo en 90 ✓
+#   noroom = viene otro de frente: trayectoria tachada, te quedas detrás ("¿NO TE DA? NO ADELANTES")
+@lru_cache(maxsize=None)
+def truck_top(w=176, L=560, col=(226, 69, 60)):
+    im = ss(w, L); d = ImageDraw.Draw(im); X, Y = w * 2, L * 2
+    cab = Y * .2
+    d.rounded_rectangle((X * .04, 0, X * .96, cab), radius=int(X * .16), fill=col)                    # cabina (delante = arriba)
+    d.rounded_rectangle((X * .14, Y * .03, X * .86, Y * .085), radius=int(X * .06), fill=(40, 60, 90))  # parabrisas
+    d.rounded_rectangle((X * .12, Y * .1, X * .88, Y * .18), radius=int(X * .06), fill=mix(col, (0, 0, 0), .25))
+    d.rectangle((X * .42, cab - 4, X * .58, cab + Y * .025), fill=(50, 52, 60))                        # enganche
+    d.rounded_rectangle((0, cab + Y * .02, X - 1, Y - 1), radius=int(X * .05), fill=(236, 238, 242))   # remolque
+    for k in range(1, 9):
+        y = cab + Y * .02 + (Y - cab) * k / 9.4; d.line([(X * .06, y), (X * .94, y)], fill=(205, 210, 220), width=6)
+    for y0 in (.985,):
+        for x0 in (.06, .78):
+            d.rounded_rectangle((X * x0, Y * (y0 - .012), X * (x0 + .16), Y * y0), radius=6, fill=(200, 30, 30))
+    im = down(im)
+    sh = Image.new("RGBA", (w + 40, L + 40), (0, 0, 0, 0))
+    ImageDraw.Draw(sh).rounded_rectangle((20, 28, w + 20, L + 28), radius=int(w * .12), fill=(0, 0, 0, 140))
+    sh = sh.filter(ImageFilter.GaussianBlur(10)); sh.alpha_composite(im, (20, 20)); return sh
+
+ADX = (W / 2 - 300, W / 2 + 300)  # bordes de la calzada
+ADL = (W / 2 - 150, W / 2 + 150)  # centro carril contrario (izq) y propio (der)
+def conv_road(dst, t, scroll=1.0):
+    lay = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(lay, "RGBA"); top, bot = VZ[0] + 10, VZ[1] + 20
+    d.rectangle((40, top, W - 40, bot), fill=(88, 140, 78, 255))
+    for k in range(16):  # matas en la cuneta que pasan
+        y = top + ((k * 97 + t * 260 * scroll) % (bot - top + 80)) - 40; x = (70 + (k * 53) % 110) if k % 2 else (W - 70 - (k * 41) % 110)
+        d.ellipse((x - 26, y - 20, x + 26, y + 20), fill=(70, 120, 62, 255))
+    d.rectangle((ADX[0] - 26, top, ADX[1] + 26, bot), fill=(150, 140, 120, 255))  # arcén de tierra
+    d.rectangle((ADX[0], top, ADX[1], bot), fill=(52, 56, 66, 255))
+    for x in (ADX[0] + 14, ADX[1] - 14): d.line([(x, top), (x, bot)], fill=(240, 240, 240, 255), width=8)
+    off = (t * 520 * scroll) % 130
+    for k in range(-1, 9):
+        y = top + k * 130 + off; d.line([(W / 2, y), (W / 2, y + 70)], fill=(255, 255, 255, 235), width=10)
+    m = Image.new("L", (W, H), 0); ImageDraw.Draw(m).rounded_rectangle((40, top, W - 40, bot), radius=36, fill=255)
+    lay.putalpha(Image.fromarray(np.minimum(np.array(lay.split()[3]), np.array(m)))); dst.alpha_composite(lay)
+    return top, bot
+
+def sign_post(dst, x, y, n, s=120, a=1.0, t=0):
+    d = ImageDraw.Draw(dst, "RGBA"); d.rectangle((x - 6, y, x + 6, y + s * 1.1), fill=(160, 165, 175, int(255 * a)))
+    paste(dst, sign_generic("speed", n, s), x, y, alpha=a, rot=3 * math.sin(t * 2))
+
+def dash_path(d, pts, col, a=255, w=14):
+    for j in range(len(pts) - 1):
+        if j % 2 == 0: d.line([pts[j], pts[j + 1]], fill=col + (a,), width=w)
+
+def over_pts(x0, y0, y1):
+    """trayectoria de adelantamiento: sale del carril derecho, sube por el izquierdo y vuelve."""
+    pts = []
+    for k in range(41):
+        q = k / 40; y = lerp(y0, y1, q)
+        lane = ease(clamp(q / .22)) - ease(clamp((q - .78) / .22))
+        pts.append((lerp(x0, ADL[0], lane), y))
+    return pts
+
+def speed_hud(dst, sp, ok=True, a=1.0, y=None):
+    y = y or VZ[0] + 70; col = GREEN if ok else RED
+    p = pill(f"{sp} km/h", 54, NAVY, WHITE, padx=40 + 46); paste(dst, p, W / 2 - 60, y, alpha=a)
+    paste(dst, (icon_check if ok else icon_x)(64), W / 2 - 60 - p.width / 2 + 52, y, alpha=a)
+
+def vis_adel(dst, t, v, i):
+    if i == 0: t = t + 0.6
+    mode = v.get("mode", "hook")
+    top, bot = conv_road(dst, t, 1.0 if mode != "noroom" else .8)
+    lay = Image.new("RGBA", (W, H), (0, 0, 0, 0)); _adel(lay, t, v, mode, top, bot); clip_vz(dst, lay, top, bot)
+
+def _adel(dst, t, v, mode, top, bot):
+    tr_y = CY - 170 + math.sin(t * 1.3) * 6; car_y = CY + 330; ytop = top + 40
+    d = ImageDraw.Draw(dst, "RGBA")
+    if mode == "pass":
+        k = ease(prog(t, .3, 2.6)); pts = over_pts(ADL[1], car_y, ytop)
+        idx = min(40, int(k * 40)); cx, cy = pts[idx]
+        tr_y2 = tr_y + 120 * k  # el camión se queda atrás poco a poco
+        paste(dst, truck_top(), ADL[1], tr_y2)
+        dash_path(d, pts, YEL, int(150 * (1 - k)), 10)
+        rot = 0
+        if 0 < k < .22: rot = 18 * math.sin(k / .22 * math.pi)
+        elif .78 < k < 1: rot = -18 * math.sin((k - .78) / .22 * math.pi)
+        paste(dst, car_top((52, 120, 220), 140), cx, cy, rot=rot)
+        speed_hud(dst, 90, True, ease(prog(t, .2, .3)))
+        sign_post(dst, ADX[1] + 70, top + 380, 90, 100, t=t)
+        return
+    paste(dst, truck_top(), ADL[1], tr_y)
+    if mode == "noroom":
+        oy = lerp(top - 200, bot + 250, ease(prog(t, .2, 2.4)))
+        paste(dst, car_top((255, 196, 0), 140), ADL[0], oy, rot=180)
+        pts = over_pts(ADL[1], car_y - 140, ytop)
+        a = int(230 * ease(prog(t, .1, .3))); dash_path(d, pts, RED, a, 12)
+        xp = prog(t, .7, .3)
+        if xp > 0: paste(dst, icon_x(170), ADL[0] + 20, CY + 80, scale=lerp(1.8, 1, eout(xp)), alpha=ease(xp * 2))
+        paste(dst, car_top((52, 120, 220), 140), ADL[1], car_y + math.sin(t * 2) * 4)
+        paste(dst, pill(v.get("tag", "¿NO TE DA? NO ADELANTES"), 44, RED, WHITE), W / 2, VZ[0] + 70, scale=eback(prog(t, 1.0, .35)), alpha=ease(prog(t, 1.0, .3)))
+        return
+    paste(dst, car_top((52, 120, 220), 140), ADL[1], car_y + math.sin(t * 2) * 4)
+    sign_post(dst, ADX[1] + 70, top + 360 if mode == "hook" else top + 120, 90, 100, t=t)
+    if mode == "hook":
+        g = Image.new("RGBA", (W, H), (0, 0, 0, 0)); ImageDraw.Draw(g).rounded_rectangle((40, top, W - 40, top + 300), radius=36, fill=(6, 20, 43, 200)); dst.alpha_composite(g)
+        big_lines(dst, v.get("lines", []), t, top + 80, [tuple(c) for c in v.get("cols", [])] or None, size=112)
+        pk = .5 + .5 * math.sin(t * 7)
+        paste(dst, pill("80", 52, YEL, NAVY), ADL[1], tr_y + 90, scale=(1 + .06 * pk))
+    else:
+        tg = [("80 km/h", ADL[1], tr_y + 40, .2, YEL, NAVY), ("TÚ", ADL[1] - 175, car_y + 70, .6, WHITE, NAVY)]
+        for txt, x, y, at, bg, fg in tg:
+            paste(dst, pill(txt, 50, bg, fg), x, y, scale=eback(prog(t, at, .35)), alpha=ease(prog(t, at, .25)))
+        pts = over_pts(ADL[1], car_y - 140, ytop); k = ease(prog(t, 1.1, 1.0))
+        dash_path(d, pts[:max(2, int(k * 40))], YEL, 230, 12)
+        qp = prog(t, 2.0, .35)
+        if qp > 0: paste(dst, text("?", 170, YEL, BLACK), ADL[0] + 10, tr_y + 60, scale=eback(qp) * (1 + .06 * math.sin(t * 8)), alpha=ease(qp * 2))
+
+@lru_cache(maxsize=16)
+def dial(val, w=330, red_from=None):
+    """cuentakilómetros de aguja (0-160 km/h) visto de frente."""
+    im = ss(w, w); d = ImageDraw.Draw(im); S = w * 2; c = S / 2; r = S * .46
+    d.ellipse((c - r, c - r, c + r, c + r), fill=(20, 24, 34), outline=(90, 100, 120), width=10)
+    a0, a1 = 140, 400  # grados (PIL: 0 = derecha, horario)
+    if red_from:
+        ra = a0 + (a1 - a0) * red_from / 160
+        d.arc((c - r * .86, c - r * .86, c + r * .86, c + r * .86), ra, a1, fill=(239, 68, 68), width=int(S * .05))
+    for k in range(0, 161, 10):
+        ang = math.radians(a0 + (a1 - a0) * k / 160); big = k % 20 == 0
+        r1, r2 = r * (.78 if big else .84), r * .92
+        d.line([(c + r1 * math.cos(ang), c + r1 * math.sin(ang)), (c + r2 * math.cos(ang), c + r2 * math.sin(ang))], fill=WHITE, width=8 if big else 4)
+        if big and k % 40 == 0:
+            f = F(XB, int(S * .085)); s = str(k); bb = f.getbbox(s); rr = r * .62
+            d.text((c + rr * math.cos(ang) - (bb[0] + bb[2]) / 2, c + rr * math.sin(ang) - (bb[1] + bb[3]) / 2), s, font=f, fill=(200, 206, 220))
+    ang = math.radians(a0 + (a1 - a0) * val / 160)
+    d.line([(c, c), (c + r * .8 * math.cos(ang), c + r * .8 * math.sin(ang))], fill=(255, 120, 0), width=int(S * .025))
+    d.ellipse((c - S * .05, c - S * .05, c + S * .05, c + S * .05), fill=(60, 64, 76))
+    return down(im)
+
+def vis_antes(dst, t, v, i):
+    """ANTES (hasta marzo de 2022): 90 + 20 = 110 para adelantar | AHORA: 90, también adelantando."""
+    for k, px in enumerate((W / 2 - 215, W / 2 + 185)):
+        at = k * v.get("at2", .9); pk = eback(prog(t, at, .45)); a = ease(prog(t, at, .25)); y = CY + 10 + (1 - pk) * 160
+        paste(dst, card(380, 700, fill=(255, 255, 255, 250) if k else (226, 230, 238, 245), r=40, border=GREEN if k else None, bw=6 if k else 0), px, y, alpha=a)
+        paste(dst, pill(v.get("tags", ["HASTA 2022", "AHORA"])[k], 34, GREEN if k else GREY, WHITE), px, y - 285, alpha=a)
+        sweep = ease(prog(t, at + .3, 1.0)); val = 90 + (20 * sweep if k == 0 else 0)
+        paste(dst, dial(int(round(val)), 300, None if k == 0 else 90), px, y - 70, alpha=a)
+        big = "90 + 20" if k == 0 else "90"; sub = "= 110 para adelantar" if k == 0 else "también al adelantar"
+        paste(dst, text(big, 78, (110, 116, 130) if k == 0 else GREEN, BLACK, shadow=False), px, y + 165, alpha=a)
+        paste(dst, text(sub, 34, (100, 106, 120) if k == 0 else DARK, XB, shadow=False), px, y + 245, alpha=a)
+        if k == 0:
+            xp = prog(t, v.get("x_at", 1.8), .3)
+            if xp > 0:
+                d = ImageDraw.Draw(dst, "RGBA"); x0, x1 = px - 150, px + 150; yy = y + 165
+                d.line([(x0, yy), (lerp(x0, x1, ease(xp)), yy)], fill=RED + (255,), width=16)
+                paste(dst, icon_x(86, (200, 80, 80)), px + 135, y - 230, scale=eback(xp))
+        elif t > at + 1.4: paste(dst, icon_check(86), px + 125, y - 230, scale=eback(prog(t, at + 1.4, .3)))
+    sp = prog(t, v.get("stamp_at", 2.3), .2)
+    if sp > 0: paste(dst, stamp_col(v.get("stamp", "SUPRIMIDO · 2022"), RED), W / 2 - 40, VZ[1] - 5, scale=lerp(2.2, .8, eout(sp)), alpha=ease(sp * 1.6), rot=-6)
+
+# --- ESTO HA CAMBIADO: nieve en autopista/autovía (art. 32.2 RGC, RD 518/2026, desde el 1/10/2026) ---
+# vis: {"type": "nieve", "mode": "hook" | "vote" | "answer" | "plow" | "three", ...}  y  {"type": "nievelaw"}
+#   hook   = autovía nevada en 1ª persona con copos que vienen hacia ti y coche delante; texto grande arriba
+#   vote   = autovía nevada cenital de 2 carriles: IZQUIERDO / DERECHO, tu coche con "?" y semáforo de cuenta atrás ("at")
+#   answer = te pasas al derecho (verde ✓) y sello PROHIBIDO ADELANTAR sobre el izquierdo
+#   plow   = quitanieves con rotativos naranjas sube por el carril izquierdo libre, con una ambulancia detrás
+#   three  = 3 carriles: los 2 de la derecha ✓ (con coches) y el izquierdo libre
+SNOW = (236, 241, 248)
+def flakes_fall(dst, t, box, n=110, a=230, sz=(4, 9)):
+    d = ImageDraw.Draw(dst, "RGBA"); x0, y0, x1, y1 = box
+    for k in range(n):
+        fx = (k * 0.618034) % 1; sp = .5 + (k * 37 % 10) / 10; r = sz[0] + (k * 13 % (sz[1] - sz[0] + 1))
+        y = y0 + ((k * 0.3819 + t * .22 * sp) % 1) * (y1 - y0); x = x0 + fx * (x1 - x0) + math.sin(t * 1.5 + k) * 14
+        d.ellipse((x - r / 2, y - r / 2, x + r / 2, y + r / 2), fill=(255, 255, 255, a))
+
+def snow_pov(dst, t):
+    lay = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(lay, "RGBA")
+    top, bot = VZ[0] + 10, VZ[1] + 20; hz = top + 300; vx = W / 2
+    for y in range(top, hz):
+        k = (y - top) / (hz - top); d.line([(40, y), (W - 40, y)], fill=mix((150, 162, 182), (214, 220, 230), k) + (255,))
+    for x0, hh in ((40, 70), (300, 110), (640, 60), (900, 95)):
+        d.polygon([(x0 - 200, hz + 6), (x0, hz - hh), (x0 + 220, hz + 6)], fill=(232, 236, 244, 255))
+    d.rectangle((40, hz, W - 40, bot), fill=SNOW + (255,))
+    d.polygon([(vx - 45, hz), (vx + 55, hz), (vx + 700, bot), (vx - 650, bot)], fill=(128, 134, 146, 255))
+    for side in (-1, 1):  # nieve acumulada en los bordes
+        d.polygon([(vx + side * 50, hz), (vx + side * 30, hz), (vx + side * 480, bot), (vx + side * 680, bot)], fill=(214, 222, 232, 255))
+    for lane in (-1, 1):  # rodadas oscuras en cada carril
+        for wv in (-.09, .09):
+            c = .24 * lane + wv
+            d.line([(vx + 5 + c * 100, hz), (vx + 5 + c * 1300, bot)], fill=(108, 112, 122, 255), width=18)
+    for k in range(10):  # línea discontinua medio tapada
+        z = ((k / 10) + t * .55) % 1.0; z2 = min(1, z + .045)
+        x1, y1 = vx + 5, hz + (bot - hz) * z ** 1.7; x2, y2 = vx + 5, hz + (bot - hz) * z2 ** 1.7
+        d.line([(x1, y1), (x2, y2)], fill=mix((128, 134, 146), (255, 255, 255), min(1, z * 3)) + (255,), width=max(2, int(12 * z)))
+    m = Image.new("L", (W, H), 0); ImageDraw.Draw(m).rounded_rectangle((40, top, W - 40, bot), radius=36, fill=255)
+    lay.putalpha(Image.fromarray(np.minimum(np.array(lay.split()[3]), np.array(m)))); dst.alpha_composite(lay)
+    return top, bot, hz
+
+def flakes_pov(dst, t, top, bot, hz, n=120):
+    d = ImageDraw.Draw(dst, "RGBA"); vx, vy = W / 2, hz
+    rng = np.random.default_rng(7); A = rng.uniform(0, 2 * math.pi, n); Z = rng.uniform(0, 1, n); SP = rng.uniform(.35, .6, n)
+    for k in range(n):
+        ang = A[k]; z = (Z[k] + t * SP[k]) % 1.0; r = 40 + 900 * z ** 2.2
+        x, y = vx + math.cos(ang) * r, vy + math.sin(ang) * r * .75
+        if top < y < bot and 50 < x < W - 50:
+            s = 2 + 14 * z ** 2; d.ellipse((x - s, y - s, x + s, y + s), fill=(255, 255, 255, int(240 * min(1, z * 2.5))))
+
+@lru_cache(maxsize=None)
+def plow_top(w=190, L=430, on=0):
+    im = ss(w, L); d = ImageDraw.Draw(im); X, Y = w * 2, L * 2; OR = (255, 140, 0)
+    d.polygon([(0, Y * .1), (X * .5, 0), (X, Y * .1), (X, Y * .16), (0, Y * .16)], fill=(70, 74, 84))       # pala
+    d.line([(0, Y * .1), (X * .5, 0), (X, Y * .1)], fill=(255, 196, 0), width=12)
+    d.rounded_rectangle((X * .08, Y * .17, X * .92, Y * .42), radius=int(X * .12), fill=OR)                # cabina
+    d.rounded_rectangle((X * .16, Y * .19, X * .84, Y * .25), radius=int(X * .05), fill=(40, 60, 90))
+    for k, x0 in enumerate((.18, .62)):
+        lit = (k == on)
+        d.ellipse((X * x0, Y * .29, X * (x0 + .2), Y * .29 + X * .2), fill=(255, 200, 40) if lit else (150, 100, 20))
+    d.rounded_rectangle((X * .04, Y * .44, X * .96, Y - 1), radius=int(X * .06), fill=(250, 250, 250))       # caja de sal
+    for k in range(5): d.rectangle((X * .04, Y * (.5 + k * .1), X * .96, Y * (.53 + k * .1)), fill=OR)
+    im = down(im)
+    g = Image.new("RGBA", (w + 240, L + 240), (0, 0, 0, 0)); gd = ImageDraw.Draw(g)
+    cx = 120 + w * (.28 if on == 0 else .72); cy = 120 + L * .33
+    gd.ellipse((cx - 90, cy - 90, cx + 90, cy + 90), fill=(255, 170, 0, 170))
+    g = g.filter(ImageFilter.GaussianBlur(30)); g.alpha_composite(im, (120, 120)); return g
+
+def snow_top(dst, t, lanes=2, x0=290, x1=870, scroll=1.0, tint=None):
+    """autovía nevada cenital. tint: dict carril -> (color, alpha 0..1). Devuelve top, bot y centros de carril."""
+    lay = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(lay, "RGBA"); top, bot = VZ[0] + 10, VZ[1] + 20
+    d.rectangle((40, top, W - 40, bot), fill=SNOW + (255,))
+    for k in range(12):  # árboles nevados en el margen izquierdo
+        y = top + ((k * 151 + t * 300 * scroll) % (bot - top + 160)) - 80; x = 120 + (k * 37) % 70
+        if x < x0 - 60:
+            d.ellipse((x - 50, y - 50, x + 50, y + 50), fill=(60, 100, 72, 255)); d.ellipse((x - 34, y - 40, x + 22, y + 10), fill=(250, 252, 255, 255))
+    d.rectangle((x0 - 30, top, x1 + 30, bot), fill=(214, 222, 232, 255))
+    d.rectangle((x0, top, x1, bot), fill=(126, 132, 144, 255))
+    lw = (x1 - x0) / lanes; cs = [x0 + lw * (k + .5) for k in range(lanes)]
+    if tint:
+        ov = Image.new("RGBA", (W, H), (0, 0, 0, 0)); od = ImageDraw.Draw(ov)
+        for k in tint:
+            col, al = tint[k]; od.rectangle((x0 + lw * k + 6, top, x0 + lw * (k + 1) - 6, bot), fill=col + (int(120 * al),))
+        lay.alpha_composite(ov); d = ImageDraw.Draw(lay, "RGBA")
+    for k, c in enumerate(cs):
+        for wv in (-lw * .2, lw * .2): d.line([(c + wv, top), (c + wv, bot)], fill=(100, 104, 114, 255), width=24)
+    for x in (x0 + 10, x1 - 10): d.line([(x, top), (x, bot)], fill=(250, 250, 250, 255), width=8)
+    off = (t * 480 * scroll) % 130
+    for k in range(1, lanes):
+        xl = x0 + lw * k
+        for j in range(-1, 9):
+            y = top + j * 130 + off; d.line([(xl, y), (xl, y + 70)], fill=(255, 255, 255, 200), width=9)
+    ov = Image.new("RGBA", (W, H), (0, 0, 0, 0)); od = ImageDraw.Draw(ov)
+    for k in range(40):  # manchas de nieve sobre el asfalto
+        y = top + ((k * 89 + t * 480 * scroll) % (bot - top + 60)) - 30; x = x0 + (k * 0.618 % 1) * (x1 - x0)
+        od.ellipse((x - 18, y - 9, x + 18, y + 9), fill=(232, 236, 244, 150))
+    lay.alpha_composite(ov)
+    m = Image.new("L", (W, H), 0); ImageDraw.Draw(m).rounded_rectangle((40, top, W - 40, bot), radius=36, fill=255)
+    lay.putalpha(Image.fromarray(np.minimum(np.array(lay.split()[3]), np.array(m)))); dst.alpha_composite(lay)
+    return top, bot, cs
+
+def vis_nieve(dst, t, v, i):
+    if i == 0: t = t + 0.6
+    mode = v.get("mode", "hook")
+    if mode == "hook":
+        top, bot, hz = snow_pov(dst, t)
+        y = 1060 + math.sin(t * 2) * 5
+        car = car_rear(380, (60, 60, 70)); paste(dst, car, W / 2 + 175, y)
+        for dx in (-125, 125):
+            paste(dst, red_glow(150), W / 2 + 175 + dx, y - car.height / 2 + car.height * .51, alpha=.8)
+        flakes_pov(dst, t, top, bot, hz)
+        g = Image.new("RGBA", (W, H), (0, 0, 0, 0)); ImageDraw.Draw(g).rounded_rectangle((40, top, W - 40, top + 300), radius=36, fill=(6, 20, 43, 200)); dst.alpha_composite(g)
+        big_lines(dst, v.get("lines", []), t, top + 80, [tuple(c) for c in v.get("cols", [])] or None, size=112)
+        return
+    tint = None; lanes = 3 if mode == "three" else 2
+    if mode == "answer":
+        k = ease(prog(t, .2, .5)); tint = {1: (GREEN, k), 0: (RED, ease(prog(t, 1.0, .4)))}
+    elif mode == "plow": tint = {0: (ORANGE, ease(prog(t, 0, .4)))}
+    elif mode == "three":
+        tint = {1: (GREEN, ease(prog(t, .3, .4))), 2: (GREEN, ease(prog(t, .3, .4))), 0: (ORANGE, ease(prog(t, .9, .4)))}
+    x0, x1 = (290, 870) if lanes == 2 else (250, 880)
+    out = dst; top, bot, cs = snow_top(out, t, lanes, x0, x1, .8, tint)
+    dst = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(dst, "RGBA")
+    if mode == "vote":
+        for k, lab in enumerate(("IZQUIERDO", "DERECHO")):
+            paste(dst, pill(lab, 38, WHITE, NAVY), cs[k], top + 70, scale=eback(prog(t, .1 + k * .25, .35)), alpha=ease(prog(t, .1 + k * .25, .25)))
+        cy = CY + 160 + math.sin(t * 2) * 5; cx = (cs[0] + cs[1]) / 2
+        paste(dst, car_top((52, 120, 220), 140), cx, cy)
+        for k, dirn in enumerate((-1, 1)):
+            arrow(d, cx + dirn * 110, cy - 60, dirn, int(255 * ease(prog(t, .5, .3)) * (.6 + .4 * math.sin(t * 6 + k * 3))))
+        paste(dst, text("?", 150, YEL, BLACK), cx, cy - 230, scale=eback(prog(t, .3, .35)) * (1 + .06 * math.sin(t * 8)))
+        starts = v.get("at", [1.2, 2.1, 3.0]); n = sum(1 for s in starts if t >= s)
+        paste(dst, semaphore(n), 150, CY + 20, scale=.5)
+        if n:
+            pk = prog(t, starts[n - 1], .25)
+            paste(dst, text(str(4 - n), 150, [RED, (255, 176, 0), GREEN][n - 1], BLACK), 150, CY + 250, scale=lerp(1.6, 1, eout(pk)), alpha=ease(pk * 2))
+    elif mode == "answer":
+        k = ease(prog(t, .2, .7)); cy = CY + 160
+        paste(dst, car_top((52, 120, 220), 140), lerp((cs[0] + cs[1]) / 2, cs[1], k), cy, rot=-14 * math.sin(k * math.pi))
+        paste(dst, car_top((226, 69, 60), 132), cs[1], cy - 380 + math.sin(t * 2) * 4)
+        paste(dst, icon_check(110), cs[1], top + 90, scale=eback(prog(t, .6, .35)))
+        sp = prog(t, v.get("stamp_at", 1.1), .2)
+        if sp > 0: paste(dst, stamp_col("PROHIBIDO ADELANTAR", RED), W / 2 - 20, CY - 40, scale=lerp(1.8, .62, eout(sp)), alpha=ease(sp * 1.6), rot=-8)
+    elif mode == "plow":
+        for k, y in enumerate((CY - 300, CY + 40, CY + 360)):
+            paste(dst, car_top(CAR_COLS[(k + 1) % len(CAR_COLS)], 128), cs[1], y + math.sin(t * 2 + k) * 4)
+        py = lerp(bot + 200, CY - 60, ease(prog(t, .1, 2.2))); on = int(t * 5) % 2
+        paste(dst, plow_top(190, 430, on), cs[0], py)
+        for k in range(14):  # nieve que escupe la pala hacia la izquierda
+            q = ((t * 1.8 + k / 14) % 1); x = cs[0] - 90 - q * 160; y = py - 200 + q * 120 + math.sin(k) * 30
+            d.ellipse((x - 14 * (1 - q), y - 14 * (1 - q), x + 14 * (1 - q), y + 14 * (1 - q)), fill=(255, 255, 255, int(230 * (1 - q))))
+        ay = py + 470; paste(dst, ambulance_top(140, int(t * 6) % 2), cs[0], ay)
+        paste(dst, pill(v.get("tag", "LIBRE PARA QUITANIEVES"), 40, ORANGE, WHITE), W / 2 - 40, top + 70, scale=eback(prog(t, .4, .35)), alpha=ease(prog(t, .4, .3)))
+        paste(dst, pill("Y EMERGENCIAS", 40, BLUE, WHITE), W / 2 - 40, top + 150, scale=eback(prog(t, .9, .35)), alpha=ease(prog(t, .9, .3)))
+    elif mode == "three":
+        for k, (lane, y) in enumerate(((2, CY - 250), (1, CY + 10), (2, CY + 330), (1, CY - 470))):
+            paste(dst, car_top(CAR_COLS[k % len(CAR_COLS)], 120), cs[lane], y + math.sin(t * 2 + k) * 4)
+        for k, lab in enumerate(("1", "2", "3")):
+            paste(dst, num_badge(int(lab), 80), cs[k], bot - 70, alpha=ease(prog(t, .1, .3)))
+        for lane in (1, 2): paste(dst, icon_check(96), cs[lane], top + 80, scale=eback(prog(t, .4 + .2 * lane, .35)))
+        pp = prog(t, 1.0, .35)
+        if pp > 0: paste(dst, plow_top(150, 340, int(t * 5) % 2), cs[0], CY + 60, alpha=ease(pp * 2), scale=eback(pp))
+    flakes_fall(dst, t, (40, top, W - 40, bot), 90, 220)
+    clip_vz(out, dst, top, bot)
+
+def vis_nievelaw(dst, t, v, i):
+    p = eback(prog(t, 0, .45)); ch = 820; cy = CY
+    paste(dst, card(900, ch, fill=(255, 255, 255, 250), r=44), W / 2, cy + (1 - p) * 200, alpha=ease(prog(t, 0, .25)))
+    tp = cy - ch / 2
+    paste(dst, pill(v.get("tag", "DESDE EL 1 DE OCTUBRE DE 2026"), 34, BLUE, WHITE), W / 2, tp + 60, alpha=ease(prog(t, .1, .3)))
+    rows = v.get("rows", [["snow", "NIEVE EN AUTOPISTA O AUTOVÍA"], ["right", "CARRIL DE LA DERECHA"], ["x", "PROHIBIDO ADELANTAR"], ["plow", "IZQUIERDA: QUITANIEVES"]])
+    at = v.get("at", [.3, .8, 1.3, 1.8])
+    for k, (ic, txt) in enumerate(rows):
+        rp = prog(t, at[k], .35); y = tp + 170 + k * 140; a = ease(rp * 2)
+        if a <= 0: continue
+        x = W / 2 - 330 + (1 - eout(rp)) * 80
+        if ic == "snow": im = weather_icon("snow", 0, 104)
+        elif ic == "right": im = Image.new("RGBA", (110, 110), (0, 0, 0, 0)); arrow(ImageDraw.Draw(im, "RGBA"), 80, 55, 1, 255)
+        elif ic == "x": im = icon_x(96)
+        else: im = plow_top(70, 160, int(t * 5) % 2)
+        paste(dst, im, x, y, alpha=a)
+        s = fit([txt], 46, XB, 600); paste(dst, text(txt, s, DARK, XB, shadow=False), x + 80 + F(XB, s).getlength(txt) / 2, y, alpha=a)
+    sp = prog(t, v.get("stamp_at", 2.3), .2)
+    if sp > 0: paste(dst, stamp2(v.get("stamp", "ART. 32 RGC")), W / 2 + 150, tp + ch - 95, scale=lerp(2.2, .9, eout(sp)), alpha=ease(sp * 1.6), rot=-8)
+
+_old_sign_generic4 = sign_generic
+def sign_generic(kind, n, s, flat=False):
+    if kind == "speed90": return _old_sign_generic4("speed", 90, s, flat)
+    return _old_sign_generic4(kind, n, s, flat)
 
 
 VIS = {k[4:]: v for k, v in globals().items() if k.startswith("vis_")}

@@ -1,0 +1,18 @@
+{
+ "speed": 1.07,
+ "pause": 0.24,
+ "gaps": {
+  "3": 2.6
+ },
+ "lines": [
+  "Si fallas esta, te multan en el primer adelantamiento.",
+  "Carretera de noventa. Delante, un camión a ochenta.",
+  "¿A cuánto puedes ir para adelantarlo? A, a ciento diez. B, a cien. C, a noventa.",
+  "Pon tu letra en comentarios. Tienes tres segundos.",
+  "¡Es la C! Noventa, ni un kilómetro más.",
+  "Antes podías pasarte veinte para adelantar. Desde dos mil veintidós, ya no.",
+  "Adelantas, sin pasar de noventa.",
+  "Y si con noventa no te da, no adelantas.",
+  "Guárdalo, y comenta qué letra habías puesto."
+ ]
+}

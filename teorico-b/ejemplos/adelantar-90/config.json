@@ -1,0 +1,31 @@
+{
+ "label": "¿APROBARÍAS?",
+ "times": "tiempos.json",
+ "voice": "voz.wav",
+ "tail": 0.7,
+ "sfx": [
+  {"t": 13.45, "type": "beep"}, {"t": 14.35, "type": "beep"}, {"t": 15.25, "type": "beep"},
+  {"t": 16.09, "type": "ding"}, {"t": 21.5, "type": "buzz"}, {"t": 25.8, "type": "buzz"}
+ ],
+ "scenes": [
+  {"cap": "Si fallas esta, te multan en el primer adelantamiento.", "hi": ["fallas", "adelantamiento."],
+   "vis": {"type": "adel", "mode": "hook", "lines": ["SI FALLAS ESTA,", "TE MULTAN AL ADELANTAR"], "cols": [[255,255,255],[255,196,0]]}},
+  {"cap": "Carretera de 90. Delante, un camión a 80.", "hi": ["90.", "80."],
+   "vis": {"type": "adel", "mode": "scene"}},
+  {"cap": "¿A cuánto puedes ir para adelantarlo? A: 110. B: 100. C: 90.", "hi": ["cuánto", "adelantarlo?"],
+   "vis": {"type": "quiz", "q": "Carretera limitada a 90. Para adelantar a un camión que va a 80, ¿a cuánto puedes ir como máximo?",
+           "opts": ["110 km/h (90 + 20)", "100 km/h", "90 km/h"], "correct": 2, "sign": "speed90", "opt_at": [0.4, 0.64, 0.83]}},
+  {"cap": "Pon tu letra en comentarios. Tienes 3 segundos.", "hi": ["letra", "3"],
+   "vis": {"type": "countdown", "quiz_scene": 2, "at": [2.95, 3.85, 4.75]}},
+  {"cap": "¡Es la C! 90, ni un kilómetro más.", "hi": ["C!", "90,"],
+   "vis": {"type": "reveal", "quiz_scene": 2}},
+  {"cap": "Antes podías pasarte 20 para adelantar. Desde 2022, ya no.", "hi": ["20", "2022,"],
+   "vis": {"type": "antes", "at2": 2.4, "x_at": 2.6, "stamp_at": 3.1, "tags": ["HASTA 2022", "AHORA"]}},
+  {"cap": "Adelantas, sin pasar de 90.", "hi": ["sin", "90."],
+   "vis": {"type": "adel", "mode": "pass"}},
+  {"cap": "Y si con 90 no te da, no adelantas.", "hi": ["no", "adelantas."],
+   "vis": {"type": "adel", "mode": "noroom", "tag": "¿NO TE DA? NO ADELANTES"}},
+  {"cap": "Guárdalo, y comenta qué letra habías puesto.", "hi": ["Guárdalo,", "letra"],
+   "vis": {"type": "save", "big": "GUÁRDALO", "small": "y comenta tu letra"}}
+ ]
+}

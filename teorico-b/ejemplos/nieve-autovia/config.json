@@ -1,0 +1,26 @@
+{
+ "label": "ESTO HA CAMBIADO",
+ "times": "tiempos.json",
+ "voice": "voz.wav",
+ "tail": 0.8,
+ "sfx": [
+  {"t": 6.85, "type": "beep"}, {"t": 7.75, "type": "beep"}, {"t": 8.65, "type": "beep"},
+  {"t": 9.53, "type": "ding"}, {"t": 10.6, "type": "buzz"}, {"t": 21.4, "type": "buzz"}
+ ],
+ "scenes": [
+  {"cap": "Nieva en la autovía. ¿Sabes por qué carril tienes que ir ahora?", "hi": ["Nieva", "carril"],
+   "vis": {"type": "nieve", "mode": "hook", "lines": ["NIEVA EN LA AUTOVÍA:", "¿POR QUÉ CARRIL VAS?"], "cols": [[255,255,255],[255,196,0]]}},
+  {"cap": "¿Izquierdo o derecho? Escríbelo. Tienes 3 segundos.", "hi": ["Escríbelo.", "3"],
+   "vis": {"type": "nieve", "mode": "vote", "at": [3.32, 4.22, 5.12]}},
+  {"cap": "Por el derecho. Y está prohibido adelantar.", "hi": ["derecho.", "prohibido"],
+   "vis": {"type": "nieve", "mode": "answer", "stamp_at": 1.2}},
+  {"cap": "El izquierdo se queda libre, para quitanieves y emergencias.", "hi": ["libre,", "quitanieves"],
+   "vis": {"type": "nieve", "mode": "plow"}},
+  {"cap": "Con 3 carriles o más, puedes usar también el de al lado.", "hi": ["3", "al lado."],
+   "vis": {"type": "nieve", "mode": "three"}},
+  {"cap": "Es obligatorio desde el 1 de octubre, si la nieve dificulta la circulación.", "hi": ["obligatorio", "octubre,"],
+   "vis": {"type": "nievelaw", "at": [0.3, 0.8, 1.3, 1.8], "stamp_at": 2.3}},
+  {"cap": "Etiqueta a quien sube a la nieve este invierno.", "hi": ["Etiqueta", "invierno."],
+   "vis": {"type": "cta", "big": "@ETIQUÉTALO", "small": "a quien sube a la nieve"}}
+ ]
+}
