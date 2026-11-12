@@ -1,0 +1,62 @@
+{
+ "seed": 21,
+ "hora": "dia",
+ "tipos": [
+  "peaton",
+  "ambulancia",
+  "ceda_otro"
+ ],
+ "intro": "¿Circularías bien? Tres cruces, tres segundos.",
+ "final": "¿Cuántas has acertado? Dímelo en comentarios.",
+ "dur": 34.08,
+ "cruces": [
+  {
+   "tipo": "peaton",
+   "lado": "izq",
+   "resp": "NO",
+   "pregunta": "¿Puedes pasar?",
+   "rotulo": "PASO DE PEATONES: PASA EL PEATÓN",
+   "q": "Cruce uno. ¿Sigues o paras?",
+   "r": "No. Está en el paso de peatones: pasa él primero.",
+   "T0": 2.6,
+   "tq": 2.8000000000000003,
+   "C": 4.469,
+   "R": 7.469,
+   "tr": 7.569,
+   "E": 10.514458333333334,
+   "L": 10.069
+  },
+  {
+   "tipo": "ambulancia",
+   "lado": "der",
+   "resp": "NO",
+   "pregunta": "¿Tienes prioridad?",
+   "rotulo": "AMBULANCIA DE URGENCIA: PASA ELLA",
+   "q": "Cruce dos. ¿Y ahora qué?",
+   "r": "No. Una ambulancia en servicio de urgencia siempre tiene prioridad.",
+   "T0": 12.269,
+   "tq": 12.469,
+   "C": 13.991166666666667,
+   "R": 16.991166666666665,
+   "tr": 17.091166666666666,
+   "E": 21.14945833333333,
+   "L": 19.591166666666666
+  },
+  {
+   "tipo": "ceda_otro",
+   "lado": "izq",
+   "resp": "SÍ",
+   "pregunta": "¿Tienes prioridad?",
+   "rotulo": "ÉL TIENE CEDA EL PASO: PASAS TÚ",
+   "q": "Cruce tres. Mira bien las señales. ¿Tienes prioridad?",
+   "r": "Sí. Él tiene un ceda el paso: pasas tú.",
+   "T0": 21.79116666666667,
+   "tq": 21.99116666666667,
+   "C": 24.934708333333333,
+   "R": 27.934708333333333,
+   "tr": 28.034708333333334,
+   "E": 30.56504166666667,
+   "L": 28.83470833333333
+  }
+ ]
+}
