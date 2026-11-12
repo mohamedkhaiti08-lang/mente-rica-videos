@@ -1,6 +1,8 @@
 # Qué funciona – Teórico B en 30s (TikTok @teoricoben30segundos)
 Horarios: 10:00 y 18:00 (Europe/Madrid) — valor por defecto (picos de audiencia de TikTok en España según Metricool) hasta que el informe semanal decida otros. Las publicaciones antiguas a 14:00 y 21:00 se quedan como están.
 
+**FORMATO ÚNICO desde el 12/11/2026 (decisión de Mohamed): vídeos 3D "¿Tienes prioridad? Cruce 1, 2 y 3" hechos con teorico-b/3d/ (ver README y FUENTES). Los formatos antiguos de la tabla ya no se producen; sus datos sirven solo de referencia de horarios, ganchos y temas.**
+
 ## Datos (actualizado 12/11/2026, Metricool, TikTok últimos 14 días: 29/10-11/11; 28 vídeos con datos)
 | Publicado | Formato | Tema | Gancho | Dur. | Vistas | Likes | Coment. | Compart. |
 |---|---|---|---|---|---|---|---|---|
