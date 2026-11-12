@@ -1,0 +1,51 @@
+{
+ "lines": [
+  "Dos personas. El mismo dinero.",
+  "Uno lo guarda todo, por si acaso.",
+  "El otro da un poco, cada vez que puede.",
+  "Día diez.",
+  "¿Quién crees que tiene más?",
+  "Día treinta.",
+  "El Profeta, la paz sea con él, dijo: la caridad no disminuye la riqueza.",
+  "Da. No pierdes nada.",
+  "¿Tú, cuál de los dos eres?"
+ ],
+ "starts": [
+  0.3,
+  2.9,
+  5.8,
+  9.2,
+  10.8,
+  14.6,
+  16.6,
+  22.4,
+  25.4
+ ],
+ "duration": 28.6,
+ "sfx": [
+  {
+   "t": 7.0,
+   "f": 1320,
+   "dur": 0.8,
+   "v": 0.07
+  },
+  {
+   "t": 8.1,
+   "f": 1320,
+   "dur": 0.8,
+   "v": 0.07
+  },
+  {
+   "t": 14.6,
+   "f": 660,
+   "dur": 2.0,
+   "v": 0.08
+  },
+  {
+   "t": 14.75,
+   "f": 990,
+   "dur": 2.0,
+   "v": 0.06
+  }
+ ]
+}
