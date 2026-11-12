@@ -1,0 +1,213 @@
+{
+ "tail": 1.3,
+ "cx": 490,
+ "cap_maxw": 800,
+ "title_maxw": 820,
+ "instant": true,
+ "step_gap": 290,
+ "label": "MITO VS REALIDAD",
+ "times": "2026-11-17-1800-mito-trabajar.tiempos.json",
+ "scenes": [
+  {
+   "tint": "red",
+   "hi": [
+    "trabajar?",
+    "mito."
+   ],
+   "title": [
+    "¿La mujer no",
+    "puede trabajar?"
+   ],
+   "vis": {
+    "type": "choice",
+    "opts": [
+     [
+      "❌",
+      "MITO",
+      "red"
+     ],
+     [
+      "✅",
+      "REALIDAD",
+      "gold"
+     ]
+    ],
+    "pick": 0,
+    "y": 900
+   },
+   "cap": "¿Tú también crees que en el islam la mujer no puede trabajar? Es un mito."
+  },
+  {
+   "tint": "green",
+   "hi": [
+    "dátiles",
+    "palmeras."
+   ],
+   "title": [
+    "Medina,",
+    "hace 1.400 años"
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "🌴",
+    "orbit": [
+     "🧺",
+     "👩",
+     "☀️"
+    ],
+    "y": 900
+   },
+   "cap": "En Medina, una mujer recién divorciada quería salir a recoger los dátiles de sus palmeras."
+  },
+  {
+   "tint": "red",
+   "hi": [
+    "riñó"
+   ],
+   "title": [
+    "«¡No puedes",
+    "salir!»"
+   ],
+   "vis": {
+    "type": "big",
+    "words": [
+     "¡NO!"
+    ],
+    "size": 260,
+    "y": 860,
+    "e": "😠"
+   },
+   "cap": "Pero un hombre le riñó por salir de casa."
+  },
+  {
+   "tint": "night",
+   "hi": [
+    "Profeta",
+    "dijo?"
+   ],
+   "title": [
+    "¿Qué le dijo",
+    "el Profeta?"
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "🤔",
+    "orbit": [
+     "❓",
+     "❓",
+     "❓"
+    ],
+    "y": 900
+   },
+   "cap": "Ella fue directa al Profeta. ¿Y sabes qué le dijo?"
+  },
+  {
+   "tint": "gold",
+   "hi": [
+    "Sí,",
+    "bien."
+   ],
+   "vis": {
+    "type": "quote",
+    "lines": [
+     "«Sí, ve a recoger",
+     "tus dátiles. Quizá",
+     "des caridad o hagas",
+     "un bien»"
+    ],
+    "src": "SAHIH MUSLIM 1483",
+    "size": 58,
+    "y": 880
+   },
+   "cap": "«Sí, ve a recoger tus dátiles. Quizá des caridad, o hagas un bien.»"
+  },
+  {
+   "tint": "green",
+   "hi": [
+    "Muslim,"
+   ],
+   "title": [
+    "Hadiz",
+    "auténtico"
+   ],
+   "vis": {
+    "type": "big",
+    "words": [
+     "MUSLIM",
+     "1483"
+    ],
+    "size": 150,
+    "gap": 170,
+    "y": 860,
+    "e": "📖"
+   },
+   "cap": "Sahih Muslim 1483."
+  },
+  {
+   "tint": "gold",
+   "hi": [
+    "mujeres,",
+    "ganan."
+   ],
+   "vis": {
+    "type": "quote",
+    "lines": [
+     "«Para las mujeres,",
+     "una parte de",
+     "lo que ganan»"
+    ],
+    "src": "CORÁN 4:32",
+    "size": 58,
+    "y": 880
+   },
+   "cap": "Y el Corán lo deja claro: para las mujeres, una parte de lo que ganan."
+  },
+  {
+   "tint": "green",
+   "hi": [
+    "Realidad:",
+    "fuera."
+   ],
+   "title": [
+    "La",
+    "realidad"
+   ],
+   "vis": {
+    "type": "choice",
+    "opts": [
+     [
+      "❌",
+      "NO PUEDE TRABAJAR",
+      "red"
+     ],
+     [
+      "✅",
+      "SÍ PUEDE TRABAJAR",
+      "gold"
+     ]
+    ],
+    "pick": 1,
+    "y": 900
+   },
+   "cap": "Mito: no puede trabajar. Realidad: el Profeta le dijo que fuera."
+  },
+  {
+   "tint": "night",
+   "hi": [
+    "mito",
+    "abajo."
+   ],
+   "title": [
+    "¿Otro mito?"
+   ],
+   "vis": {
+    "type": "cta",
+    "word": "COMENTA",
+    "size": 130,
+    "e": "💬",
+    "y": 900
+   },
+   "cap": "¿Qué otro mito sobre el islam has escuchado? Te leo abajo."
+  }
+ ]
+}

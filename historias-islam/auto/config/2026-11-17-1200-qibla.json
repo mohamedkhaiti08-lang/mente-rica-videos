@@ -1,0 +1,214 @@
+{
+ "tail": 1.3,
+ "cx": 490,
+ "cap_maxw": 800,
+ "title_maxw": 820,
+ "instant": true,
+ "step_gap": 290,
+ "label": "CURIOSIDADES DEL ISLAM",
+ "times": "2026-11-17-1200-qibla.tiempos.json",
+ "scenes": [
+  {
+   "tint": "gold",
+   "hi": [
+    "no",
+    "Meca?"
+   ],
+   "title": [
+    "No siempre",
+    "miraron a La Meca"
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "🕋",
+    "orbit": [
+     "❓",
+     "🧭",
+     "🤯"
+    ],
+    "y": 900
+   },
+   "cap": "¿Sabías que los musulmanes no siempre rezaron mirando a La Meca?"
+  },
+  {
+   "tint": "night",
+   "hi": [
+    "Jerusalén."
+   ],
+   "title": [
+    "Rezaban mirando",
+    "a Jerusalén"
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "🕌",
+    "orbit": [
+     "🧭",
+     "🤲",
+     "🌙"
+    ],
+    "y": 900
+   },
+   "cap": "Al llegar a Medina, el Profeta rezaba mirando a Jerusalén."
+  },
+  {
+   "tint": "blue",
+   "hi": [
+    "16",
+    "17"
+   ],
+   "title": [
+    "Durante"
+   ],
+   "vis": {
+    "type": "counter",
+    "seq": [
+     "1",
+     "5",
+     "10",
+     "16",
+     "17"
+    ],
+    "sub": "MESES",
+    "e": "⏳",
+    "y": 880
+   },
+   "cap": "Así, durante 16 o 17 meses."
+  },
+  {
+   "tint": "night",
+   "hi": [
+    "Kaaba…",
+    "cielo,"
+   ],
+   "title": [
+    "Miraba",
+    "al cielo"
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "🌌",
+    "orbit": [
+     "⭐",
+     "🤲",
+     "✨"
+    ],
+    "y": 900
+   },
+   "cap": "Pero él deseaba rezar hacia la Kaaba… y miraba al cielo, esperando."
+  },
+  {
+   "tint": "gold",
+   "hi": [
+    "rostro",
+    "Sagrada."
+   ],
+   "vis": {
+    "type": "quote",
+    "lines": [
+     "«Vuelve tu rostro",
+     "hacia la Mezquita",
+     "Sagrada»"
+    ],
+    "src": "CORÁN 2:144",
+    "size": 60,
+    "y": 880
+   },
+   "cap": "Y Allah reveló: «Vuelve tu rostro hacia la Mezquita Sagrada.»"
+  },
+  {
+   "tint": "red",
+   "hi": [
+    "todavía",
+    "Jerusalén."
+   ],
+   "title": [
+    "¡Aún rezaban",
+    "hacia Jerusalén!"
+   ],
+   "vis": {
+    "type": "emoji",
+    "e": "🏃",
+    "orbit": [
+     "🕌",
+     "⏱️",
+     "❗"
+    ],
+    "y": 900
+   },
+   "cap": "Un compañero fue a otra mezquita… y estaban rezando, todavía hacia Jerusalén."
+  },
+  {
+   "tint": "green",
+   "hi": [
+    "giraron",
+    "Meca."
+   ],
+   "title": [
+    "¡Se giraron",
+    "en plena oración!"
+   ],
+   "vis": {
+    "type": "steps",
+    "items": [
+     [
+      "🕌",
+      "JERUSALÉN"
+     ],
+     [
+      "🔄",
+      "GIRO"
+     ],
+     [
+      "🕋",
+      "LA MECA"
+     ]
+    ],
+    "y": 920
+   },
+   "cap": "Les avisó. Y en mitad de la oración, todos se giraron hacia La Meca."
+  },
+  {
+   "tint": "green",
+   "hi": [
+    "Bujari,",
+    "2:144."
+   ],
+   "title": [
+    "Fuente",
+    "auténtica"
+   ],
+   "vis": {
+    "type": "big",
+    "words": [
+     "BUJARI 40",
+     "CORÁN 2:144"
+    ],
+    "size": 100,
+    "gap": 150,
+    "y": 860,
+    "e": "📖"
+   },
+   "cap": "Sahih al-Bujari 40. Y Corán 2:144."
+  },
+  {
+   "tint": "night",
+   "hi": [
+    "sabías?",
+    "Guárdalo,"
+   ],
+   "title": [
+    "¿Tú lo",
+    "sabías?"
+   ],
+   "vis": {
+    "type": "cta",
+    "word": "GUÁRDALO",
+    "size": 120,
+    "e": "🔖",
+    "y": 900
+   },
+   "cap": "¿Tú lo sabías? Guárdalo, y mándaselo a alguien que no lo sepa."
+  }
+ ]
+}
