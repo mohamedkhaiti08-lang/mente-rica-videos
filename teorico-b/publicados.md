@@ -45,3 +45,4 @@ Campos: fecha y hora | formato | tema | bloque | tipo de gancho | visuales princ
 - 13/11/2026 10:00 · 3D cruces · stop_otro (der, SÍ) · sem_verde (der, SÍ) · ambulancia (izq, NO) · día · semilla 202611131 · 32,6 s · estadísticas: pendiente
 - 13/11/2026 18:00 · 3D cruces · peaton (izq, NO) · ceda_mio (izq, NO) · ceda_otro (der, SÍ) · día · semilla 202611132 · 34,4 s · estadísticas: pendiente
 - 14/11/2026 10:00 · 3D cruces · der_sin (der, NO) · sem_rojo (izq, NO) · izq_sin (izq, SÍ) · día · semilla 202611141 · 33,0 s · estadísticas: pendiente
+- 14/11/2026 18:00 · 3D cruces · stop_mio (izq, NO) · sem_verde (der, SÍ) · ambulancia (izq, NO) · día · semilla 202611142 · 34,6 s · estadísticas: pendiente

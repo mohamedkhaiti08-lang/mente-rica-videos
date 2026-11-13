@@ -7,7 +7,7 @@ Horarios: 10:00 y 18:00 (Europe/Madrid) — valor por defecto (picos de audienci
 - Metricool aún no tiene datos de los dos primeros 3D (13/11 10:00 y 18:00): ni vistas ni likes. Se mira en la próxima ejecución (si siguen a 0 pasadas 24 h, revisar si TikTok los publicó).
 - Referencia para comparar: últimos 14 días (30/10-12/11, 28 vídeos de formatos antiguos) media 835 vistas; nº 1 antiniebla 1.142 (59 likes, 4 com.); 12/11: R-106 803 (31 likes, 3 compartidos), P12 726 (3 likes). El 3D tiene que superar ~840 para ser mejor que lo anterior.
 - Qué se va a comparar cuando haya datos: tipos incluidos, hora del día (día/atardecer), respuesta del 1er cruce (SÍ/NO) y duración (32-35 s).
-- 14/11 (programados): 10:00 der_sin · sem_rojo · izq_sin (1º NO, día); 18:00 ver publicados.md.
+- 14/11 (programados): 10:00 der_sin · sem_rojo · izq_sin (1º NO, día, 33,0 s); 18:00 stop_mio · sem_verde · ambulancia (1º NO, día, 34,6 s).
 
 ## Datos (actualizado 12/11/2026, Metricool, TikTok últimos 14 días: 29/10-11/11; 28 vídeos con datos)
 | Publicado | Formato | Tema | Gancho | Dur. | Vistas | Likes | Coment. | Compart. |
