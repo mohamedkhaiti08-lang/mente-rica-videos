@@ -1,0 +1,56 @@
+{
+ "lines": [
+  "Dos personas. La misma rama en el camino.",
+  "Uno pasa por encima, y sigue.",
+  "El otro se agacha, y la quita.",
+  "Día diez.",
+  "¿Quién crees que ha ganado más?",
+  "Día treinta.",
+  "El Profeta, la paz sea con él, contó que un hombre quitó una rama con espinas del camino, y Allah se lo agradeció, y le perdonó.",
+  "Lo pequeño. Allah lo ve.",
+  "¿Qué cosa pequeña has hecho hoy?"
+ ],
+ "starts": [
+  0.3,
+  3.38,
+  6.07,
+  9.16,
+  10.57,
+  14.49,
+  16.18,
+  24.11,
+  26.5
+ ],
+ "ends": [
+  2.68,
+  5.17,
+  7.76,
+  9.87,
+  12.29,
+  15.38,
+  23.11,
+  25.5,
+  28.39
+ ],
+ "duration": 30.59,
+ "sfx": [
+  {
+   "t": 8.07,
+   "f": 1320,
+   "dur": 0.8,
+   "v": 0.06
+  },
+  {
+   "t": 14.49,
+   "f": 660,
+   "dur": 2.0,
+   "v": 0.08
+  },
+  {
+   "t": 14.64,
+   "f": 990,
+   "dur": 2.0,
+   "v": 0.06
+  }
+ ]
+}

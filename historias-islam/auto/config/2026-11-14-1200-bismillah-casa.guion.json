@@ -1,0 +1,56 @@
+{
+ "lines": [
+  "Dos casas. La misma cena.",
+  "Uno entra y come, sin decir nada.",
+  "El otro dice: bismillah.",
+  "Día diez.",
+  "¿Quién crees que cena solo?",
+  "Día treinta.",
+  "El Profeta, la paz sea con él, dijo: si entras y comes sin nombrar a Allah, el shaitán dice: aquí tenemos casa y cena.",
+  "Di bismillah. Cierra la puerta.",
+  "¿Y tú, te acuerdas siempre?"
+ ],
+ "starts": [
+  0.3,
+  2.67,
+  5.46,
+  8.17,
+  9.58,
+  13.4,
+  15.09,
+  22.87,
+  25.68
+ ],
+ "ends": [
+  1.97,
+  4.66,
+  6.97,
+  8.88,
+  11.2,
+  14.29,
+  21.87,
+  24.68,
+  27.2
+ ],
+ "duration": 29.4,
+ "sfx": [
+  {
+   "t": 6.36,
+   "f": 1320,
+   "dur": 0.8,
+   "v": 0.06
+  },
+  {
+   "t": 13.4,
+   "f": 660,
+   "dur": 2.0,
+   "v": 0.08
+  },
+  {
+   "t": 13.55,
+   "f": 990,
+   "dur": 2.0,
+   "v": 0.06
+  }
+ ]
+}
