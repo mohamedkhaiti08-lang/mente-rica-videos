@@ -26,3 +26,11 @@ Tiempo: ~1 min de preparación + ~2 s por fotograma con 2 procesos → unos 20 m
 1. Comprobar la norma en fuente oficial y apuntarla en FUENTES.md.
 2. Añadir el tipo en tipos.py (respuesta, lados, frases, rótulo) y su escenografía en generar.py (actores/señales) y, si hace falta, el modelo en motor3d.py.
 3. Probar con --prueba y revisar los fotogramas antes de publicar nada.
+
+## Si el render se corta (límite de tiempo de un comando o reinicio)
+generar.py reanuda: solo renderiza los fotogramas que faltan. Alternativa por tandas de menos de 10 minutos:
+```
+KOKORO_DIR=~/kok python3 teorico-b/3d/generar.py --seed N --out /tmp/vN --prueba 0.5   # crea spec.json y guion.json
+python3 teorico-b/3d/tanda.py /tmp/vN 230      # repetir hasta que diga "quedan 0" (unos 9 min por tanda)
+KOKORO_DIR=~/kok python3 teorico-b/3d/generar.py --seed N --out /tmp/vN               # monta el vídeo final (~5-8 min)
+```
