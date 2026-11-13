@@ -1,0 +1,62 @@
+{
+ "seed": 202611131,
+ "hora": "dia",
+ "tipos": [
+  "stop_otro",
+  "sem_verde",
+  "ambulancia"
+ ],
+ "intro": "¿Circularías bien? Tres cruces, tres segundos.",
+ "final": "¿Tres de tres? Escríbelo en comentarios.",
+ "dur": 32.64,
+ "cruces": [
+  {
+   "tipo": "stop_otro",
+   "lado": "der",
+   "resp": "SÍ",
+   "pregunta": "¿Tienes prioridad?",
+   "rotulo": "ÉL TIENE STOP: TE CEDE EL PASO",
+   "q": "Cruce uno. Mira las señales. ¿Pasas tú?",
+   "r": "Sí. Él tiene un stop: debe parar y dejarte pasar.",
+   "T0": 2.6,
+   "tq": 2.8000000000000003,
+   "C": 5.084416666666668,
+   "R": 8.084416666666668,
+   "tr": 8.184416666666667,
+   "E": 11.323500000000001,
+   "L": 8.984416666666668
+  },
+  {
+   "tipo": "sem_verde",
+   "lado": "der",
+   "resp": "SÍ",
+   "pregunta": "¿Tienes prioridad?",
+   "rotulo": "EL SEMÁFORO MANDA: PASAS TÚ",
+   "q": "Cruce dos. Viene uno por la derecha. ¿Tienes prioridad?",
+   "r": "Sí. Tienes verde: pasas tú, aunque venga por la derecha.",
+   "T0": 11.4235,
+   "tq": 11.6235,
+   "C": 14.693666666666667,
+   "R": 17.693666666666665,
+   "tr": 17.793666666666667,
+   "E": 21.157958333333333,
+   "L": 18.593666666666664
+  },
+  {
+   "tipo": "ambulancia",
+   "lado": "izq",
+   "resp": "NO",
+   "pregunta": "¿Tienes prioridad?",
+   "rotulo": "AMBULANCIA DE URGENCIA: PASA ELLA",
+   "q": "Cruce tres. ¿Tienes prioridad?",
+   "r": "No. Con luces de emergencia, pasa la ambulancia.",
+   "T0": 21.257958333333335,
+   "tq": 21.457958333333334,
+   "C": 23.23945833333333,
+   "R": 26.23945833333333,
+   "tr": 26.339458333333333,
+   "E": 29.428958333333334,
+   "L": 28.839458333333333
+  }
+ ]
+}

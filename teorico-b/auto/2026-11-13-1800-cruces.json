@@ -1,0 +1,62 @@
+{
+ "seed": 202611132,
+ "hora": "dia",
+ "tipos": [
+  "peaton",
+  "ceda_mio",
+  "ceda_otro"
+ ],
+ "intro": "¿Aprobarías el práctico? Tres cruces, tres segundos.",
+ "final": "¿Tres de tres? Escríbelo en comentarios.",
+ "dur": 34.36,
+ "cruces": [
+  {
+   "tipo": "peaton",
+   "lado": "izq",
+   "resp": "NO",
+   "pregunta": "¿Puedes pasar?",
+   "rotulo": "PASO DE PEATONES: PASA EL PEATÓN",
+   "q": "Cruce uno. ¿Sigues o paras?",
+   "r": "No. Está en el paso de peatones: pasa él primero.",
+   "T0": 2.6,
+   "tq": 2.8000000000000003,
+   "C": 4.469,
+   "R": 7.469,
+   "tr": 7.569,
+   "E": 10.514458333333334,
+   "L": 10.069
+  },
+  {
+   "tipo": "ceda_mio",
+   "lado": "izq",
+   "resp": "NO",
+   "pregunta": "¿Tienes prioridad?",
+   "rotulo": "TIENES CEDA EL PASO: ESPERA",
+   "q": "Cruce dos. ¿Tienes prioridad?",
+   "r": "No. El ceda el paso es tuyo: espera.",
+   "T0": 12.269,
+   "tq": 12.469,
+   "C": 14.265666666666666,
+   "R": 17.265666666666668,
+   "tr": 17.36566666666667,
+   "E": 19.745125,
+   "L": 19.86566666666667
+  },
+  {
+   "tipo": "ceda_otro",
+   "lado": "der",
+   "resp": "SÍ",
+   "pregunta": "¿Tienes prioridad?",
+   "rotulo": "ÉL TIENE CEDA EL PASO: PASAS TÚ",
+   "q": "Cruce tres. Mira bien las señales. ¿Tienes prioridad?",
+   "r": "Sí. El ceda el paso es suyo: te deja pasar.",
+   "T0": 22.065666666666672,
+   "tq": 22.26566666666667,
+   "C": 25.209208333333336,
+   "R": 28.209208333333336,
+   "tr": 28.309208333333338,
+   "E": 31.147625000000005,
+   "L": 29.109208333333335
+  }
+ ]
+}
