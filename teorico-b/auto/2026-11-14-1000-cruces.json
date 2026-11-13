@@ -1,0 +1,62 @@
+{
+ "seed": 202611141,
+ "hora": "dia",
+ "tipos": [
+  "der_sin",
+  "sem_rojo",
+  "izq_sin"
+ ],
+ "intro": "¿Aprobarías el práctico? Tres cruces, tres segundos.",
+ "final": "¿Tres de tres? Escríbelo en comentarios.",
+ "dur": 32.97,
+ "cruces": [
+  {
+   "tipo": "der_sin",
+   "lado": "der",
+   "resp": "NO",
+   "pregunta": "¿Tienes prioridad?",
+   "rotulo": "SIN SEÑALES: PASA EL DE LA DERECHA",
+   "q": "Cruce uno. ¿Pasas tú o pasa él?",
+   "r": "No. No hay señales, y viene por tu derecha: pasa él.",
+   "T0": 2.6,
+   "tq": 2.8000000000000003,
+   "C": 4.650375,
+   "R": 7.650375,
+   "tr": 7.750375,
+   "E": 10.839333333333332,
+   "L": 10.250375
+  },
+  {
+   "tipo": "sem_rojo",
+   "lado": "izq",
+   "resp": "NO",
+   "pregunta": "¿Puedes pasar?",
+   "rotulo": "SEMÁFORO EN ROJO: ESPERA",
+   "q": "Cruce dos. ¿Puedes pasar?",
+   "r": "No. Rojo es rojo: te quedas parado.",
+   "T0": 12.450375,
+   "tq": 12.650374999999999,
+   "C": 14.256124999999999,
+   "R": 17.256124999999997,
+   "tr": 17.356125,
+   "E": 19.731541666666665,
+   "L": 19.856125
+  },
+  {
+   "tipo": "izq_sin",
+   "lado": "izq",
+   "resp": "SÍ",
+   "pregunta": "¿Tienes prioridad?",
+   "rotulo": "VIENE POR TU IZQUIERDA: PASAS TÚ",
+   "q": "Cruce tres. ¿Tienes prioridad?",
+   "r": "Sí. Tú vienes por su derecha: pasas tú.",
+   "T0": 22.056125,
+   "tq": 22.256125,
+   "C": 24.037625,
+   "R": 27.037625,
+   "tr": 27.137625,
+   "E": 29.766291666666667,
+   "L": 27.937624999999997
+  }
+ ]
+}
