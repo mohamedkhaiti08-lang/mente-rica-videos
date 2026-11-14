@@ -3,7 +3,15 @@ Horarios: 10:00 y 18:00 (Europe/Madrid) — valor por defecto (picos de audienci
 
 **FORMATO ÚNICO desde el 12/11/2026 (decisión de Mohamed): vídeos 3D "¿Tienes prioridad? Cruce 1, 2 y 3" hechos con teorico-b/3d/ (ver README y FUENTES). Los formatos antiguos de la tabla ya no se producen; sus datos sirven solo de referencia de horarios, ganchos y temas.**
 
-## 3D cruces: pistas (13/11/2026, 21:45)
+## 3D cruces: pistas (14/11/2026, 22:45)
+- PRIMEROS DATOS (Metricool, 14/11 noche): 13/11 18:00 peaton·ceda_mio·ceda_otro (1º NO, día, 34 s) = **4.266 vistas, 133 likes, 0 com., 2 compartidos** — el mejor vídeo de la cuenta con diferencia (5x la media antigua de ~835). 13/11 10:00 stop_otro·sem_verde·ambulancia (1º SÍ, día, 32 s) = 1.187 vistas, 69 likes, 1 com. — también por encima de cualquier vídeo antiguo.
+- Pista 1: el formato 3D funciona (media 3D 2.727 vs ~835 de los formatos antiguos). Seguir solo con 3D.
+- Pista 2 (solo 2 vídeos, no es conclusión): el de 4.266 abría con un NO (peatón en el paso) y tenía los dos «ceda el paso»; el de 1.187 abría con SÍ. Probar más vídeos que abran con NO y con peatón/ceda.
+- Pista 3: hora 18:00 > 10:00 en el único par comparable. Hora del día en la escena: los dos eran «día»; el 15/11 10:00 sale «tarde» (atardecer) para poder comparar.
+- Comentarios casi a 0 en los dos: probar a pedir el número de aciertos de forma más directa en el texto.
+- 14/11 10:00 der_sin·sem_rojo·izq_sin y 14/11 18:00 stop_mio·sem_verde·ambulancia: aún sin datos en Metricool (publicados hoy).
+
+### (anterior) pistas 13/11/2026, 21:45
 - Metricool aún no tiene datos de los dos primeros 3D (13/11 10:00 y 18:00): ni vistas ni likes. Se mira en la próxima ejecución (si siguen a 0 pasadas 24 h, revisar si TikTok los publicó).
 - Referencia para comparar: últimos 14 días (30/10-12/11, 28 vídeos de formatos antiguos) media 835 vistas; nº 1 antiniebla 1.142 (59 likes, 4 com.); 12/11: R-106 803 (31 likes, 3 compartidos), P12 726 (3 likes). El 3D tiene que superar ~840 para ser mejor que lo anterior.
 - Qué se va a comparar cuando haya datos: tipos incluidos, hora del día (día/atardecer), respuesta del 1er cruce (SÍ/NO) y duración (32-35 s).
