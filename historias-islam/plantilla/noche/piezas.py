@@ -282,3 +282,81 @@ def camino_luz(d, g, x0, x1, k, col=(130, 240, 232)):
     xe = lerp(x0, x1, k)
     d.line([(x0 * S, GY * S), (xe * S, GY * S)], fill=col + (255,), width=6 * S)
     g.rectangle([x0, GY - 14, xe, GY + 14], fill=col + (170,))
+
+# ---------------- piezas del 15 nov 2026 (ballena, mar, nube, dua que sube, montaña de bloques, postración) ----------------
+
+def spline(pts, n=10):
+    out = []
+    for i in range(len(pts) - 1):
+        p0, p1, p2, p3 = pts[max(0, i - 1)], pts[i], pts[i + 1], pts[min(len(pts) - 1, i + 2)]
+        for k in range(n):
+            u = k / n; u2, u3 = u * u, u * u * u
+            out.append(tuple(0.5 * (2 * p1[j] + (-p0[j] + p2[j]) * u + (2 * p0[j] - 5 * p1[j] + 4 * p2[j] - p3[j]) * u2 + (-p0[j] + 3 * p1[j] - 3 * p2[j] + p3[j]) * u3) for j in (0, 1)))
+    out.append(pts[-1]); return out
+
+def ballena(d, cx, cy, k, boca, alpha, t):
+    """Ballena de líneas (mira a la izquierda). boca 0..1 abre la mandíbula."""
+    if alpha <= 0: return
+    c = CREAM + (int(alpha),); sw = 5 * S
+    wob = 6 * math.sin(t * 1.6)
+    top = [(-215, -5), (-170, -70), (-60, -105), (80, -92), (190, -48), (250, -16 + wob * 0.3)]
+    tail = [(250, -16 + wob * 0.3), (300, -78 + wob), (292, -14), (318, 40 + wob), (250, 14)]
+    bot = [(250, 14), (170, 52), (40, 82), (-110, 70), (-185, 38), (-215, 18 + 36 * boca)]
+    q = lambda pts: [((cx + x * k) * S, (cy + y * k) * S) for x, y in pts]
+    body = spline(top) + spline(bot)
+    d.polygon(q(body), fill=(14, 30, 40, int(alpha * 0.92)))
+    d.line(q(spline(top)), fill=c, width=sw, joint="curve"); d.line(q(spline(bot)), fill=c, width=sw, joint="curve")
+    d.line(q(tail), fill=c, width=sw, joint="curve")
+    d.line(q([(-215, -5), (-150, 8 + 10 * boca)]), fill=c, width=int(3 * S))          # línea de la boca
+    ex, ey = cx - 150 * k, cy - 40 * k
+    d.ellipse([(ex - 7) * S, (ey - 7) * S, (ex + 7) * S, (ey + 7) * S], fill=c)
+    for i in range(3):                                                              # surcos de la tripa
+        x0 = -120 + i * 30
+        d.line(q([(x0, 52 - i * 2), (x0 + 60, 66 - i * 3)]), fill=CREAM + (int(alpha * 0.5),), width=int(2 * S))
+
+def mar(d, t, k, x0=0):
+    """Olas debajo del suelo (k 0..1 las va dibujando)."""
+    if k <= 0: return
+    for i in range(8):
+        y = GY + 45 + i * 58; a = int(110 * k * (1 - i * 0.07))
+        pts = [((x0 + x) * S, (y + 7 * math.sin(x / 70 + t * 1.3 + i)) * S) for x in range(0, int((W - x0) * min(1, k * 1.4 - i * 0.05)) + 1, 12)]
+        if len(pts) > 1: d.line(pts, fill=(90, 210, 210, a), width=2 * S)
+
+def nube(d, cx, cy, alpha, t, lluvia=1.0, col=(78, 82, 98)):
+    """Nube oscura con lluvia (dibujar en una capa sin halo)."""
+    if alpha <= 0: return
+    for bx, by, r in [(-70, 10, 48), (-20, -22, 62), (45, -8, 54), (85, 16, 40), (0, 20, 50)]:
+        d.ellipse([(cx + bx - r) * S, (cy + by - r) * S, (cx + bx + r) * S, (cy + by + r) * S], fill=col + (int(alpha),))
+    for i in range(10):
+        ph = (t * 1.4 + i * 0.37) % 1; x = cx - 90 + i * 20; y = cy + 50 + ph * 190
+        d.line([(x * S, y * S), ((x - 5) * S, (y + 22) * S)], fill=(150, 160, 180, int(alpha * lluvia * (1 - ph))), width=2 * S)
+
+def orbe(d, g, t, t0, dur, x0, y0, x1, y1):
+    """Luz de la dua que sube de (x0, y0) a (x1, y1) dejando una estela."""
+    if t < t0: return None
+    k = seg(t, t0, t0 + dur)
+    def pos(u): return lerp(x0, x1, u) + 60 * math.sin(u * 7), lerp(y0, y1, u)
+    if k < 1:
+        for j in range(24):
+            u = max(0.0, k - j * 0.012)
+            px, py = pos(u); r = 12 * (1 - j / 24) + 2
+            d.ellipse([(px - r) * S, (py - r) * S, (px + r) * S, (py + r) * S], fill=(170, 250, 245, int(240 * (1 - j / 24))))
+        px, py = pos(k); g.ellipse([px - 60, py - 60, px + 60, py + 60], fill=(120, 245, 238, 200))
+    return k
+
+def bloque(d, g, x, y, k, col, alpha, glow_col=None, crack=0.0, BW=50, BH=36):
+    """Bloque de una montaña de buenas obras (k escala de aparición, crack 0..1 grieta)."""
+    if k <= 0 or alpha <= 0: return
+    w, h = BW * k / 2, BH * k / 2
+    d.rounded_rectangle([(x - w) * S, (y - h) * S, (x + w) * S, (y + h) * S], radius=5 * S, fill=col + (int(alpha),))
+    if crack > 0:
+        d.line([((x - 8) * S, (y - h) * S), ((x + 2) * S, (y - 2) * S), ((x - 4) * S, (y + h * crack) * S)], fill=(40, 40, 46, int(alpha)), width=2 * S)
+    if glow_col: g.ellipse([x - 30, y - 26, x + 30, y + 26], fill=glow_col + (int(90 * alpha / 255),))
+
+# Postración (mira a la derecha; para mirar a la izquierda, cambia el signo de x).
+SUJUD = dict(head=(136, -34), neck=(100, -62), hip=(-10, -120), le=(110, -30), lh=(90, -6), re=(116, -32), rh=(96, -6),
+             lk=(0, -8), lf=(-80, -6), rk=(8, -8), rf=(-72, -6))
+def a_sujud(k, izquierda=True):
+    sg = -1 if izquierda else 1
+    return {j: (lerp(P["stand"][j][0], sg * SUJUD[j][0], k), lerp(P["stand"][j][1], SUJUD[j][1], k)) for j in SUJUD}
+PHONE = dict(P["stand"]); PHONE.update(re=(34, -200), rh=(30, -262), head=(-4, -298))   # mira el móvil (pantalla en (x+34, GY-272))

@@ -1,0 +1,59 @@
+{
+ "lines": [
+  "Delante de todos, los dos son buenos.",
+  "Pero cuando se quedan solos...",
+  "Uno hace lo que delante nunca haría.",
+  "El otro sigue igual, aunque nadie le vea.",
+  "Día diez.",
+  "¿Qué montaña crees que aguanta?",
+  "Día treinta.",
+  "El Profeta, la paz sea con él, dijo que algunos vendrán con obras como montañas, y Allah las hará polvo. Porque a solas, hacían lo que Allah prohibió.",
+  "Nadie te ve. Allah, sí.",
+  "¿Eres el mismo cuando nadie te ve?"
+ ],
+ "starts": [
+  0.3,
+  2.91,
+  5.17,
+  8.12,
+  11.16,
+  12.37,
+  16.43,
+  17.92,
+  27.01,
+  29.33
+ ],
+ "ends": [
+  2.41,
+  4.57,
+  7.42,
+  10.45,
+  11.87,
+  14.23,
+  17.32,
+  26.21,
+  28.42,
+  31.31
+ ],
+ "duration": 33.51,
+ "sfx": [
+  {
+   "t": 8.62,
+   "f": 1320,
+   "dur": 0.8,
+   "v": 0.06
+  },
+  {
+   "t": 16.43,
+   "f": 660,
+   "dur": 2.0,
+   "v": 0.08
+  },
+  {
+   "t": 16.58,
+   "f": 990,
+   "dur": 2.0,
+   "v": 0.06
+  }
+ ]
+}

@@ -1,0 +1,68 @@
+{
+ "lines": [
+  "¿Crees que estás en lo más oscuro?",
+  "Mira debajo. El profeta Yunus.",
+  "Primera oscuridad: la noche.",
+  "Segunda: el fondo del mar.",
+  "Tercera: dentro de una ballena.",
+  "¿Quién le iba a oír ahí?",
+  "Y desde dentro, dijo:",
+  "No hay más dios que Tú. Glorificado seas.",
+  "Yo he sido de los injustos.",
+  "Y Allah le respondió, y le salvó de la angustia.",
+  "Así salva Allah a los creyentes.",
+  "Tú llama. Él te oye.",
+  "¿Qué oscuridad estás pasando tú?"
+ ],
+ "starts": [
+  0.3,
+  2.69,
+  5.08,
+  7.22,
+  9.21,
+  11.67,
+  15.09,
+  16.85,
+  19.66,
+  21.8,
+  24.84,
+  27.57,
+  29.72
+ ],
+ "ends": [
+  2.29,
+  4.58,
+  6.87,
+  8.86,
+  11.07,
+  13.09,
+  16.66,
+  19.36,
+  21.2,
+  24.34,
+  26.87,
+  28.91,
+  31.66
+ ],
+ "duration": 33.85,
+ "sfx": [
+  {
+   "t": 16.85,
+   "f": 1320,
+   "dur": 0.8,
+   "v": 0.05
+  },
+  {
+   "t": 21.8,
+   "f": 660,
+   "dur": 2.0,
+   "v": 0.08
+  },
+  {
+   "t": 21.95,
+   "f": 990,
+   "dur": 2.0,
+   "v": 0.06
+  }
+ ]
+}
