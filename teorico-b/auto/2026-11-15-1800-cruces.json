@@ -1,0 +1,62 @@
+{
+ "seed": 202611152,
+ "hora": "dia",
+ "tipos": [
+  "sem_rojo",
+  "ceda_otro",
+  "der_sin"
+ ],
+ "intro": "¿Sabes quién pasa primero? Tres cruces.",
+ "final": "¿Tres de tres? Escríbelo en comentarios.",
+ "dur": 32.97,
+ "cruces": [
+  {
+   "tipo": "sem_rojo",
+   "lado": "der",
+   "resp": "NO",
+   "pregunta": "¿Puedes pasar?",
+   "rotulo": "SEMÁFORO EN ROJO: ESPERA",
+   "q": "Cruce uno. ¿Puedes pasar?",
+   "r": "No. Rojo es rojo: te quedas parado.",
+   "T0": 2.6,
+   "tq": 2.8000000000000003,
+   "C": 4.355708333333334,
+   "R": 7.355708333333334,
+   "tr": 7.455708333333334,
+   "E": 9.831125,
+   "L": 9.955708333333334
+  },
+  {
+   "tipo": "ceda_otro",
+   "lado": "izq",
+   "resp": "SÍ",
+   "pregunta": "¿Tienes prioridad?",
+   "rotulo": "ÉL TIENE CEDA EL PASO: PASAS TÚ",
+   "q": "Cruce dos. Mira bien las señales. ¿Tienes prioridad?",
+   "r": "Sí. El ceda el paso es suyo: te deja pasar.",
+   "T0": 12.155708333333333,
+   "tq": 12.355708333333332,
+   "C": 15.224416666666666,
+   "R": 18.224416666666666,
+   "tr": 18.324416666666668,
+   "E": 21.162833333333335,
+   "L": 19.124416666666665
+  },
+  {
+   "tipo": "der_sin",
+   "lado": "der",
+   "resp": "NO",
+   "pregunta": "¿Tienes prioridad?",
+   "rotulo": "SIN SEÑALES: PASA EL DE LA DERECHA",
+   "q": "Cruce tres. ¿Quién pasa primero?",
+   "r": "No. Sin señales, manda la derecha: pasa él primero.",
+   "T0": 21.324416666666668,
+   "tq": 21.524416666666667,
+   "C": 23.44425,
+   "R": 26.44425,
+   "tr": 26.54425,
+   "E": 29.758041666666667,
+   "L": 29.04425
+  }
+ ]
+}

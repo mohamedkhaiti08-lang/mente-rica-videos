@@ -9,6 +9,7 @@ Horarios: 10:00 y 18:00 (Europe/Madrid) — valor por defecto (picos de audienci
 - Pista 2 (solo 2 vídeos, no es conclusión): el de 4.266 abría con un NO (peatón en el paso) y tenía los dos «ceda el paso»; el de 1.187 abría con SÍ. Probar más vídeos que abran con NO y con peatón/ceda.
 - Pista 3: hora 18:00 > 10:00 en el único par comparable. Hora del día en la escena: los dos eran «día»; el 15/11 10:00 sale «tarde» (atardecer) para poder comparar.
 - Comentarios casi a 0 en los dos: probar a pedir el número de aciertos de forma más directa en el texto.
+- 15/11 (programados): 10:00 peaton·stop_otro·ceda_mio (1º NO, ATARDECER, 31,8 s); 18:00 sem_rojo·ceda_otro·der_sin (1º NO, día, 33,0 s).
 - 14/11 10:00 der_sin·sem_rojo·izq_sin y 14/11 18:00 stop_mio·sem_verde·ambulancia: aún sin datos en Metricool (publicados hoy).
 
 ### (anterior) pistas 13/11/2026, 21:45
