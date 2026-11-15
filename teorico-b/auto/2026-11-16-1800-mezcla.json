@@ -1,0 +1,66 @@
+{
+ "seed": 202611162,
+ "hora": "dia",
+ "tema": "mezcla",
+ "tipos": [
+  "peaton",
+  "r303_der",
+  "vado"
+ ],
+ "intro": "Examen relámpago: un cruce, un giro y un sitio para aparcar.",
+ "final": "¿Cuántas has acertado? Dímelo en comentarios.",
+ "dur": 34.87,
+ "cruces": [
+  {
+   "tipo": "peaton",
+   "lado": "der",
+   "resp": "NO",
+   "pregunta": "¿Puedes pasar?",
+   "rotulo": "PASO DE PEATONES: PASA EL PEATÓN",
+   "q": "Prueba uno. ¿Sigues o paras?",
+   "escena": "cruce",
+   "r": "No. Está en el paso de peatones: pasa él primero.",
+   "T0": 2.6,
+   "tq": 2.8000000000000003,
+   "C": 4.511333333333334,
+   "R": 7.511333333333334,
+   "tr": 7.6113333333333335,
+   "E": 10.556791666666667,
+   "L": 10.111333333333334
+  },
+  {
+   "tipo": "r303_der",
+   "lado": "der",
+   "resp": "SÍ",
+   "pregunta": "¿Puedes girar a la derecha?",
+   "rotulo": "SOLO PROHÍBE LA IZQUIERDA: SÍ PUEDES",
+   "q": "Prueba dos. Ojo, que es trampa. ¿Puedes girar a la derecha?",
+   "escena": "giro",
+   "r": "Sí. Esa señal solo prohíbe girar a la izquierda.",
+   "T0": 12.311333333333334,
+   "tq": 12.511333333333333,
+   "C": 15.654708333333334,
+   "R": 18.654708333333332,
+   "tr": 18.754708333333333,
+   "E": 21.7475,
+   "L": 19.85470833333333
+  },
+  {
+   "tipo": "vado",
+   "lado": "der",
+   "resp": "NO",
+   "pregunta": "¿Puedes aparcar aquí?",
+   "rotulo": "VADO: PROHIBIDO APARCAR",
+   "q": "Prueba tres. Mira la pared. ¿Aparcas aquí?",
+   "escena": "aparcar",
+   "r": "No. Delante de un vado señalizado está prohibido aparcar.",
+   "T0": 22.054708333333334,
+   "tq": 22.254708333333333,
+   "C": 24.646874999999998,
+   "R": 27.646874999999998,
+   "tr": 27.746875,
+   "E": 31.355375,
+   "L": 28.846874999999997
+  }
+ ]
+}
