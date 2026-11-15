@@ -145,7 +145,7 @@ def farola(x, y, sx):
     cyl((x, y, 2.6), 0.07, 5.2, '#3d4148', 8)
     box((x - sx * 0.45, y, 5.15), (0.9, 0.12, 0.08), '#3d4148'); box((x - sx * 0.85, y, 5.05), (0.45, 0.28, 0.14), '#fff3c4' if NOCHE else '#e9e9e9')
 for y in range(L0 + 8, int(L1), 13):
-    if all(not (-24 < y - Y < 12) for Y in YS):
+    if all(not (-24 < y - Y < 12) for Y in YS) and all(abs(y + 3 - Yl) > 11 for Yl in spec.get("libres", [])):
         if ARBOLES and rng.random() < 0.8: arbol(4.7, y + 3)
         if rng.random() < 0.7: farola(-4.3, y - 2, -1)
 
@@ -184,6 +184,8 @@ for y in range(L0 + 6, int(L1), 6):
     if all(abs(y - Y) > 11 for Y in YS) and rng.random() < 0.85:
         c, _ = car(rng.choice(PARK), "aparcado"); c.location = (-2.75, y + rng.uniform(-0.4, 0.4), 0)
 
+for a in spec.get("aparcados", []):
+    c, _ = car(a["color"], "aparcado"); c.location = (a["x"], a["y"], 0); c.rotation_euler = (0, 0, math.radians(a["rz"]))
 def peaton(col, name):
     e = bpy.data.objects.new(name, None); COL.objects.link(e)
     box((0, 0, 1.25), (0.5, 0.32, 0.75), col, e)
@@ -192,7 +194,7 @@ def peaton(col, name):
     return e, lg
 for k in range(rng.randint(5, 9)):
     sx = rng.choice([-1, 1]); y = rng.uniform(L0 + 10, L1 - 20)
-    if all(abs(y - Y) > 8 for Y in YS):
+    if all(abs(y - Y) > 8 for Y in YS) and all(abs(y - Yl) > 9 for Yl in spec.get("libres", [])):
         p, _ = peaton(rng.choice(['#e74c3c', '#2980b9', '#e67e22', '#27ae60', '#9b59b6', '#f1c40f']), "p"); p.location = (sx * 4.9, y, 0.16)
 
 # ---------- señales ----------
@@ -222,8 +224,72 @@ def semaforo(x, y, rz, estados):
         for nm, lo in lamps.items(): keycol(lo, round(t * FPS), ON[nm] if nm == st else OFF[nm])
     for lo in lamps.values(): const_interp(lo)
 
+def empty(c, rz):
+    e = bpy.data.objects.new("e", None); COL.objects.link(e); e.location = c; e.rotation_euler = (0, 0, rz); return e
+def disco(e, r, col, dy, z=0.0):                                    # disco plano en el plano x-z local, cara hacia -y
+    return cyl((0, dy, z), r, 0.03, col, 20, rot=(math.pi / 2, 0, 0), parent=e)
+def redonda(x, y, rz, tipo, r=0.6):
+    poste(x, y, 2.6)
+    e = empty((x, y, 2.95), rz)
+    if tipo == "r101":
+        disco(e, r, '#d61f17', 0); box((0, -0.03, 0), (r * 1.4, 0.02, r * 0.32), '#ffffff', e); return
+    if tipo == "r308":
+        disco(e, r, '#d61f17', 0); disco(e, r * 0.8, '#1f5fbf', -0.02)
+        box((0, -0.04, 0), (r * 1.75, 0.02, r * 0.17), '#d61f17', e, rot=(0, math.radians(45), 0)); return
+    disco(e, r, '#d61f17', 0); disco(e, r * 0.8, '#ffffff', -0.02)
+    sx = 1 if tipo == "r302" else -1                              # flecha que sube y gira a la derecha (R-302) o a la izquierda (R-303)
+    box((-sx * 0.12, -0.035, -0.12), (0.12, 0.02, 0.5), '#111111', e)
+    box((sx * 0.02, -0.035, 0.08), (0.4, 0.02, 0.12), '#111111', e)
+    obj(TRI, (sx * 0.27, -0.045, 0.08), (0.24, 1, 0.22), '#111111', e, rot=(0, -sx * math.pi / 2, 0))
+    box((0, -0.06, 0), (r * 1.75, 0.02, r * 0.17), '#d61f17', e, rot=(0, math.radians(45), 0))
+def flecha_suelo(x, y, d):
+    if d == "vuelta":
+        box((x, y, 0.012), (0.25, 2.0, 0.02), LINEA); box((x - 0.7, y + 1.0, 0.012), (1.4, 0.25, 0.02), LINEA)
+        box((x - 1.4, y + 0.3, 0.012), (0.25, 1.4, 0.02), LINEA)
+        obj(TRI, (x - 1.4, y - 0.6, 0.012), (0.9, 1, 0.9), LINEA, rot=(math.pi / 2, 0, math.pi)); return
+    sx = 1 if d == "der" else -1
+    box((x, y, 0.012), (0.25, 2.0, 0.02), LINEA); box((x + sx * 0.6, y + 1.0, 0.012), (1.2, 0.25, 0.02), LINEA)
+    obj(TRI, (x + sx * 1.3, y + 1.0, 0.012), (0.9, 1, 0.9), LINEA, rot=(math.pi / 2, 0, -sx * math.pi / 2))
+AMA = '#ffcc00'
+def marca(m, Ys):
+    if m == "amarilla_cont":
+        box((3.86, Ys, 0.215), (0.2, 13, 0.03), AMA); box((3.75, Ys, 0.1), (0.03, 13, 0.2), AMA)
+    elif m == "amarilla_disc":
+        for k in range(-6, 7, 2):
+            box((3.86, Ys + k, 0.215), (0.2, 1.1, 0.03), AMA); box((3.75, Ys + k, 0.1), (0.03, 1.1, 0.2), AMA)
+    elif m == "zigzag":
+        for k in range(12):
+            yy = Ys - 6 + k + 0.5; ang = math.radians(60 if k % 2 else -60)
+            box((2.95, yy, 0.013), (0.18, 2.0, 0.02), AMA, rot=(0, 0, ang))
+        box((3.6, Ys, 0.013), (0.12, 12.4, 0.02), AMA)
+    elif m == "plaza_blanca":
+        box((1.95, Ys, 0.013), (0.12, 12.4, 0.02), LINEA)
+        for dy in (-3.1, 3.1): box((2.9, Ys + dy, 0.013), (1.9, 0.12, 0.02), LINEA)
+        text("P", (2.9, Ys, 0.016), 1.6, '#ffffff')
+    elif m == "paso_cebra":
+        for k in range(7): box((-3.0 + k * 1.0, Ys, 0.013), (0.55, 2.6, 0.02), LINEA)
+        for sx in (-1, 1):
+            poste(sx * 4.5, Ys + 1.6, 2.7)
+            e = empty((sx * 4.5, Ys + 1.6, 3.0), 0)
+            box((0, 0, 0), (0.9, 0.04, 0.9), '#1f5fbf', e); obj(TRI, (0, -0.04, 0.02), (0.72, 1, -0.6), '#ffffff', e)
+    elif m == "vado":
+        box((6.04, Ys, 1.5), (0.14, 4.2, 3.0), '#f2f2f2')
+        box((5.98, Ys, 1.4), (0.12, 3.6, 2.8), '#b8c0c8')
+        for z in (0.5, 0.95, 1.4, 1.85, 2.3): box((5.9, Ys, z), (0.05, 3.5, 0.07), '#7d858d')
+        e = empty((5.85, Ys - 2.5, 2.3), math.radians(-50))
+        box((0, 0, 0), (1.1, 0.04, 1.4), '#ffffff', e)
+        disco(e, 0.34, '#d61f17', -0.03, 0.2); disco(e, 0.27, '#1f5fbf', -0.05, 0.2)
+        box((0, -0.07, 0.2), (0.6, 0.02, 0.1), '#d61f17', e, rot=(0, math.radians(45), 0))
+        text("VADO", (0, -0.06, -0.38), 0.26, '#111111', rot=(math.pi / 2, 0, 0), parent=e)
+        for dy in (-1.9, 1.9): box((3.86, Ys + dy, 0.215), (0.2, 0.25, 0.03), '#ffffff')
+    elif m == "r308":
+        redonda(4.55, Ys - 4.5, math.radians(-15), "r308")
+
 for s in spec["senales"]:
     k = s["tipo"]
+    if k in ("r302", "r303", "r101"): redonda(s["x"], s["y"], math.radians(s["rz"]), k, 0.72); continue
+    if k == "flecha": flecha_suelo(s["x"], s["y"], s["dir"]); continue
+    if k == "marca": marca(s["m"], s["y"]); continue
     if k == "stop": stop_sign(s["x"], s["y"], math.radians(s["rz"]))
     elif k == "ceda": ceda_sign(s["x"], s["y"], math.radians(s["rz"]))
     elif k == "semaforo": semaforo(s["x"], s["y"], math.radians(s["rz"]), s["estados"])
@@ -239,6 +305,28 @@ def keyloc(o, t, loc, rz=None):
     if rz is not None: o.rotation_euler = (0, 0, math.radians(rz)); o.keyframe_insert("rotation_euler", frame=round(t * FPS))
 yo, _ = car(spec["color_yo"], "yo")
 for t, y in spec["yo"]: keyloc(yo, t, (1.2, y, 0))
+for it in spec.get("intermitentes", []):
+    sx = 1 if it["lado"] == "der" else -1
+    ls = [box((sx * 0.8, sy, 0.8), (0.3, 0.06, 0.2), '#5a3a10', yo) for sy in (-2.18, 2.18)] + [box((sx * 0.94, 0.9, 0.95), (0.03, 0.3, 0.12), '#5a3a10', yo)]
+    t = it["t0"]; k = 0
+    keycol(ls[0], 0, '#5a3a10')
+    for lo in ls: keycol(lo, 0, '#5a3a10')
+    while t < it["t1"]:
+        for lo in ls: keycol(lo, round(t * FPS), '#ffae00' if k % 2 == 0 else '#5a3a10')
+        t += 0.38; k += 1
+    for lo in ls: keycol(lo, round(t * FPS), '#5a3a10'); const_interp(lo)
+for pn in spec.get("pines", []):
+    fin = '#22c55e' if pn["ok"] else '#ef4444'
+    e = bpy.data.objects.new("pin", None); COL.objects.link(e)
+    parts = [obj(SPH, (0, 0, 2.9), (0.5, 0.5, 0.5), '#ff9f1a', e), cyl((0, 0, 1.45), 0.07, 2.4, '#ff9f1a', 8, parent=e),
+             cyl((0, 0, -0.15), 1.4, 0.02, '#ff9f1a', 20, parent=e)]
+    for p in parts:
+        keycol(p, 0, '#ff9f1a'); keycol(p, round(pn["R"] * FPS) - 1, '#ff9f1a'); keycol(p, round(pn["R"] * FPS), fin); const_interp(p)
+    t = 0.0
+    while t < spec["dur"]:
+        z = 0.18 if pn["on"] - 0.5 < t < pn["off"] else -30
+        e.location = (pn["x"], pn["y"], z + 0.15 * math.sin(t * 4)); e.keyframe_insert("location", frame=round(t * FPS)); t += 0.2
+    const_interp(e, 'LINEAR')
 for a in spec["actores"]:
     if a["tipo"] == "peaton":
         o, legs = peaton(a["color"], "peaton")

@@ -1,7 +1,8 @@
 # Qué funciona – Teórico B en 30s (TikTok @teoricoben30segundos)
 Horarios: 10:00 y 18:00 (Europe/Madrid) — valor por defecto (picos de audiencia de TikTok en España según Metricool) hasta que el informe semanal decida otros. Las publicaciones antiguas a 14:00 y 21:00 se quedan como están.
 
-**FORMATO ÚNICO desde el 12/11/2026 (decisión de Mohamed): vídeos 3D "¿Tienes prioridad? Cruce 1, 2 y 3" hechos con teorico-b/3d/ (ver README y FUENTES). Los formatos antiguos de la tabla ya no se producen; sus datos sirven solo de referencia de horarios, ganchos y temas.**
+**FORMATO ÚNICO desde el 12/11/2026 (decisión de Mohamed): vídeos 3D hechos con teorico-b/3d/ (ver README y FUENTES). Los formatos antiguos de la tabla ya no se producen; sus datos sirven solo de referencia de horarios, ganchos y temas.**
+**15/11/2026 (Mohamed): todos los 3D se parecían ("la misma idea"). Mismo estilo 3D, pero ROTAR 4 TEMAS: prioridad (cruces), giro (señales de giro), aparcar (¿puedes aparcar/parar aquí?) y mezcla (examen relámpago). Nunca el mismo tema dos vídeos seguidos. Comparar a partir de ahora las visitas por TEMA.**
 
 ## 3D cruces: pistas (14/11/2026, 22:45)
 - PRIMEROS DATOS (Metricool, 14/11 noche): 13/11 18:00 peaton·ceda_mio·ceda_otro (1º NO, día, 34 s) = **4.266 vistas, 133 likes, 0 com., 2 compartidos** — el mejor vídeo de la cuenta con diferencia (5x la media antigua de ~835). 13/11 10:00 stop_otro·sem_verde·ambulancia (1º SÍ, día, 32 s) = 1.187 vistas, 69 likes, 1 com. — también por encima de cualquier vídeo antiguo.

@@ -1,10 +1,10 @@
 # Genera un vídeo "¿Tienes prioridad?" completo para Teórico B en 30s.
-# Uso: KOKORO_DIR=/ruta python3 generar.py --seed 20261113 --out carpeta [--tipos der_sin,peaton,stop_otro] [--evitar a,b] [--hora dia|tarde]
+# Uso: KOKORO_DIR=/ruta python3 generar.py --seed 20261113 --out carpeta [--tema prioridad|giro|aparcar|mezcla] [--tipos der_sin,peaton,stop_otro] [--evitar a,b] [--hora dia|tarde]
 #      [--prueba 3.5 9 20]  (solo renderiza esos segundos y monta fotogramas sueltos para revisar)
 import argparse, json, math, os, random, subprocess, sys
 import numpy as np, soundfile as sf
 from PIL import Image, ImageDraw, ImageEnhance, ImageFont, ImageFilter
-from tipos import TIPOS, INTROS, FINALES, ORD, elegir
+from tipos import TIPOS, TEMAS, FINALES, ORD, elegir
 
 AQUI = os.path.dirname(os.path.abspath(__file__))
 FPS, W, H = 30, 1080, 1920
@@ -17,19 +17,26 @@ OTROS = ['#e53935', '#ffffff', '#8e9eab', '#43a047', '#fb8c00', '#fdd835', '#6d4
 ap = argparse.ArgumentParser()
 ap.add_argument("--seed", type=int, required=True); ap.add_argument("--out", required=True)
 ap.add_argument("--tipos"); ap.add_argument("--evitar", default=""); ap.add_argument("--hora")
+ap.add_argument("--tema", choices=list(TEMAS))
 ap.add_argument("--prueba", nargs="*", type=float)
 A = ap.parse_args()
 rng = random.Random(A.seed); os.makedirs(A.out, exist_ok=True)
-tipos = A.tipos.split(",") if A.tipos else elegir(rng, set(filter(None, A.evitar.split(","))))
+if A.tipos:
+    tipos = A.tipos.split(","); tms = {TIPOS[t]["tema"] for t in tipos}
+    tema = A.tema or (tms.pop() if len(tms) == 1 else "mezcla")
+else:
+    tema = A.tema or rng.choice(list(TEMAS))
+    tipos = elegir(rng, set(filter(None, A.evitar.split(","))), tema)
+TM = TEMAS[tema]
 hora = A.hora or rng.choice(["dia", "dia", "tarde"])
 
 # ---------- guion ----------
 cr = []
 for i, t in enumerate(tipos):
     T = TIPOS[t]
-    cr.append(dict(tipo=t, lado=rng.choice(T["lados"]), resp=T["resp"], pregunta=T["pregunta"], rotulo=T["rotulo"],
-                   q=f"Cruce {ORD[i]}. " + rng.choice(T["voz_q"]), r=rng.choice(T["voz_r"])))
-intro, final = rng.choice(INTROS), rng.choice(FINALES)
+    cr.append(dict(tipo=t, lado=rng.choice(T.get("lados", ["der"])), resp=T["resp"], pregunta=T["pregunta"], rotulo=T["rotulo"],
+                   q=f"{TM['voz']} {ORD[i]}. " + rng.choice(T["voz_q"]), escena=T["escena"], r=rng.choice(T["voz_r"])))
+intro, final = rng.choice(TM["intros"]), rng.choice(FINALES)
 
 # ---------- voz ----------
 from kokoro_onnx import Kokoro
@@ -43,7 +50,8 @@ v_intro = voz(intro, "v_intro"); v_fin = voz(final, "v_fin")
 for i, c in enumerate(cr): c["vq"] = voz(c["q"], f"v{i}q"); c["vr"] = voz(c["r"], f"v{i}r")
 
 # ---------- línea de tiempo ----------
-STOP = [Y - 10.0 for Y in YS]
+PARADA = {"cruce": 10.0, "giro": 10.0, "aparcar": 22.5}
+STOP = [Y - PARADA[TIPOS[t]["escena"]] for Y, t in zip(YS, tipos)]
 yo = [(0.0, 4.0)]
 A_i, T0 = 3.0, 2.6
 for i, c in enumerate(cr):
@@ -51,17 +59,34 @@ for i, c in enumerate(cr):
     c["T0"] = T0; c["tq"] = T0 + 0.2
     c["C"] = max(A_i + 0.2, c["tq"] + dq + 0.15); c["R"] = c["C"] + 3.0; c["tr"] = c["R"] + 0.1
     c["E"] = c["tr"] + dr + 0.5
-    c["L"] = c["R"] + (0.9 if c["resp"] == "SÍ" else 2.6)
+    c["L"] = c["R"] + ((0.9 if c["resp"] == "SÍ" else 2.6) if c["escena"] == "cruce" else 1.2)
     yo += [(A_i, STOP[i]), (c["L"], STOP[i])]
-    A_i = c["L"] + 3.6; T0 = max(c["E"] + 0.1, A_i - 1.4)
+    A_i = c["L"] + (3.6 if i + 1 == len(cr) or STOP[i + 1] - STOP[i] < 50 else 4.6); T0 = max(c["E"] + 0.1, A_i - 1.4)
 FIN = cr[-1]["E"] + 0.1
 DUR = round(FIN + 0.2 + v_fin[1] + 0.8, 2)
 yo.append((DUR + 0.5, STOP[-1] + (DUR + 0.5 - cr[-1]["L"]) * 8))
 
 # ---------- actores y señales ----------
-actores, senales = [], []
+actores, senales, pines, intermit, aparcados = [], [], [], [], []
 for i, c in enumerate(cr):
-    Y, C, R, L, t, lado = YS[i], c["C"], c["R"], c["L"], c["tipo"], c["lado"]
+    Y, C, R, L, t = YS[i], c["C"], c["R"], c["L"], c["tipo"]; T = TIPOS[t]
+    if c["escena"] == "giro":
+        c["lado"] = T["giro"]
+        sig = T["senal"]
+        if sig in ("r302", "r303"): senales.append(dict(tipo=sig, x=4.6, y=Y - 8.2, rz=-8))
+        if sig == "r101":                                          # calle de la derecha: entrada prohibida
+            senales += [dict(tipo="r101", x=5.3, y=Y - 6.4, rz=-30)]
+            for k in range(3):                                     # coches aparcados mirando hacia nosotros (sentido único hacia aquí)
+                aparcados.append(dict(x=14 + k * 6.5, y=Y + 2.9, rz=90))
+        intermit.append(dict(t0=c["T0"], t1=L + 2.5, lado="izq" if t == "r303_sentido" else T["giro"]))
+        continue
+    if c["escena"] == "aparcar":
+        c["lado"] = "der"; Ys = Y - 17.0
+        senales.append(dict(tipo="marca", m=T["marca"], y=Ys))
+        if T["marca"] != "paso_cebra": aparcados.append(dict(x=2.75, y=Ys + 6.6, rz=0))
+        pines.append(dict(x=2.75, y=Ys, on=c["T0"], R=R, ok=c["resp"] == "SÍ", off=c["E"]))
+        continue
+    lado = c["lado"]
     der = lado == "der"
     sgn = 1 if der else -1
     lane_y, rz = (Y + 2.0, 90) if der else (Y - 2.0, -90)
@@ -95,12 +120,14 @@ for i, c in enumerate(cr):
             senales += [dict(tipo="semaforo", x=4.75, y=Y - 7.2, rz=0, estados=[(0, "verde")]),
                         dict(tipo="semaforo", x=cx, y=cy, rz=crz, estados=[(0, "rojo")]), linea_mia]
 
-spec = dict(seed=A.seed, hora=hora, ys=YS, dur=DUR, yo=yo, color_yo=rng.choice(COLORES_YO), actores=actores, senales=senales)
+spec = dict(seed=A.seed, hora=hora, ys=YS, dur=DUR, yo=yo, color_yo=rng.choice(COLORES_YO), actores=actores, senales=senales,
+            pines=pines, intermitentes=intermit, aparcados=[dict(a, color=rng.choice(OTROS)) for a in aparcados],
+            libres=[Y - 17.0 for Y, t in zip(YS, tipos) if TIPOS[t]["escena"] == "aparcar"])
 json.dump(spec, open(os.path.join(A.out, "spec.json"), "w"), indent=1, ensure_ascii=False)
-guion = dict(seed=A.seed, hora=hora, tipos=tipos, intro=intro, final=final, dur=DUR,
+guion = dict(seed=A.seed, hora=hora, tema=tema, tipos=tipos, intro=intro, final=final, dur=DUR,
              cruces=[{k: v for k, v in c.items() if k not in ("vq", "vr")} for c in cr])
 json.dump(guion, open(os.path.join(A.out, "guion.json"), "w"), indent=1, ensure_ascii=False)
-print("TIPOS", tipos, "HORA", hora, "DUR", DUR)
+print("TEMA", tema, "TIPOS", tipos, "HORA", hora, "DUR", DUR)
 
 # ---------- render 3D (2 procesos) ----------
 FR = os.path.join(A.out, "frames"); os.makedirs(FR, exist_ok=True)
@@ -135,7 +162,9 @@ def card(d, header, title, hcol, htxt, t, t0):
     d.rounded_rectangle([x0, 200 + dy, x1, 286 + dy], 34, fill=hcol + (int(255 * k),))
     d.rectangle([x0, 250 + dy, x1, 286 + dy], fill=hcol + (int(255 * k),))
     d.text((W / 2, 244 + dy), header, font=font(46), fill=htxt + (int(255 * k),), anchor="mm")
-    d.text((W / 2, 344 + dy), title, font=font(66), fill=NAVY + (int(255 * k),), anchor="mm")
+    fs = 66
+    while fs > 40 and d.textlength(title, font=font(fs)) > 930: fs -= 2
+    d.text((W / 2, 344 + dy), title, font=font(fs), fill=NAVY + (int(255 * k),), anchor="mm")
 def buttons(d, t, t0, reveal, good):
     k = ease((t - t0) / 0.3)
     if k <= 0: return
@@ -151,7 +180,9 @@ def buttons(d, t, t0, reveal, good):
 def explain(d, t, reveal, txt):
     k = ease((t - reveal - 0.25) / 0.3)
     if k <= 0: return
-    f = font(42 if len(txt) < 30 else 37); w = d.textlength(txt, font=f) + 80
+    fs = 42 if len(txt) < 30 else 37
+    while fs > 26 and d.textlength(txt, font=font(fs)) > 940: fs -= 1
+    f = font(fs); w = d.textlength(txt, font=f) + 80
     cy = 640 + int((1 - k) * 30)
     d.rounded_rectangle([W / 2 - w / 2, cy - 46, W / 2 + w / 2, cy + 46], 46, fill=RED + (int(250 * k),))
     d.text((W / 2, cy), txt, font=f, fill=(255, 255, 255, int(255 * k)), anchor="mm")
@@ -165,11 +196,11 @@ def countdown(d, t, c0):
 def overlay(t):
     im = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(im)
     if t < cr[0]["T0"]:
-        card(d, "EXAMEN PRÁCTICO", "¿Circularías bien?", BLUE, (255, 255, 255), t, -0.3)
-        if t > 0.5: d.text((W / 2, 480), "3 CRUCES · 3 SEGUNDOS", font=font(50), fill=(255, 255, 255, 255), anchor="mm", stroke_width=6, stroke_fill=NAVY + (255,))
+        card(d, TM["tit"][0], TM["tit"][1], BLUE, (255, 255, 255), t, -0.3)
+        if t > 0.5: d.text((W / 2, 480), TM["sub"], font=font(50), fill=(255, 255, 255, 255), anchor="mm", stroke_width=6, stroke_fill=NAVY + (255,))
     for i, c in enumerate(cr):
         if c["T0"] <= t < c["E"]:
-            card(d, f"CRUCE {i + 1} DE 3", c["pregunta"], YEL, NAVY, t, c["T0"])
+            card(d, f"{TM['cab']} {i + 1} DE 3", c["pregunta"], YEL, NAVY, t, c["T0"])
             buttons(d, t, c["C"] - 0.6, c["R"], c["resp"]); countdown(d, t, c["C"])
             if t >= c["R"]: explain(d, t, c["R"], c["rotulo"])
     if t >= FIN:
