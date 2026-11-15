@@ -360,3 +360,82 @@ def a_sujud(k, izquierda=True):
     sg = -1 if izquierda else 1
     return {j: (lerp(P["stand"][j][0], sg * SUJUD[j][0], k), lerp(P["stand"][j][1], SUJUD[j][1], k)) for j in SUJUD}
 PHONE = dict(P["stand"]); PHONE.update(re=(34, -200), rh=(30, -262), head=(-4, -298))   # mira el móvil (pantalla en (x+34, GY-272))
+
+# ---------------- piezas del 16 nov 2026 (puerta, cúpula de luz, planta, cesta, fruta, nube de luz, pobre) ----------------
+
+def puerta(d, x, open_k=0.0, h=230, w=104, col=CREAM, alpha=255, lado=1):
+    """Marco de puerta de pie sobre el suelo, centrado en x. open_k 0..1 abre la hoja hacia el lado (1 derecha, -1 izquierda)."""
+    c = col + (int(alpha),); lw = 6 * S
+    x0, x1, top = x - w / 2, x + w / 2, GY - h
+    d.line([(x0 * S, GY * S), (x0 * S, top * S), (x1 * S, top * S), (x1 * S, GY * S)], fill=c, width=lw, joint="curve")
+    d.rectangle([x0 * S, top * S, x1 * S, GY * S], fill=(250, 215, 140, int(alpha * 0.25 * open_k)))   # luz de dentro
+    hinge = x1 if lado > 0 else x0
+    leaf = hinge - lado * w * math.cos(open_k * 1.3)           # la hoja se estrecha al abrirse
+    skew = 16 * open_k
+    pts = [(hinge, top), (leaf, top - skew * 0.5), (leaf, GY + skew * 0.3), (hinge, GY)]
+    d.polygon([(a * S, b * S) for a, b in pts], fill=(18, 22, 28, int(alpha)), outline=c, width=int(4 * S))
+    kx = lerp(hinge, leaf, 0.82)
+    d.ellipse([(kx - 6) * S, (GY - h / 2 - 6) * S, (kx + 6) * S, (GY - h / 2 + 6) * S], fill=c)
+
+def cupula(d, g, x, k, t, r=210, col=(130, 240, 232), ry=1.25):
+    """Cúpula de luz protectora alrededor de una figura (k 0..1 la levanta)."""
+    if k <= 0: return
+    rr = r * (0.6 + 0.4 * k); a = int(200 * k)
+    for i in range(3):
+        ri = rr - i * 10 + 4 * math.sin(t * 3 + i)
+        d.arc([(x - ri) * S, (GY - ri * ry) * S, (x + ri) * S, (GY + ri * ry) * S], 180, 360, fill=col + (int(a * (1 - 0.3 * i)),), width=int((4 - i) * S))
+    g.ellipse([x - rr, GY - rr * ry, x + rr, GY + 30], fill=col + (int(55 * k),))
+    for i in range(10):                                  # chispas que recorren la cúpula
+        ang = math.pi + (t * 0.7 + i / 10) % 1 * math.pi
+        px, py = x + rr * math.cos(ang), GY + rr * ry * math.sin(ang)
+        d.ellipse([(px - 4) * S, (py - 4) * S, (px + 4) * S, (py + 4) * S], fill=(220, 255, 250, int(a * 0.9)))
+
+def planta(d, g, x, h, vida=1.0, seca=0.0, t=0.0, luz=0.0):
+    """Planta del huerto: tallo con hojas. vida 0..1 (tamaño), seca 0..1 (gris y caída), luz 0..1 (verde turquesa con brillo)."""
+    if h <= 2 or vida <= 0: return
+    hh = h * vida * (1 - 0.35 * seca)
+    verde = tuple(int(lerp(a, b, luz)) for a, b in zip(CREAM, (150, 245, 200)))
+    col = tuple(int(lerp(a, b, seca)) for a, b in zip(verde, (110, 100, 92)))
+    c = col + (255,)
+    sway = 4 * math.sin(t * 1.8 + x * 0.05) * (1 - seca)
+    bend = 40 * seca                                     # la punta se cae cuando está seca
+    pts = [(x, GY), (x + sway * 0.5, GY - hh * 0.5), (x + sway + bend * 0.6, GY - hh * 0.9), (x + sway + bend, GY - hh + bend * 0.8)]
+    d.line([(a * S, b * S) for a, b in pts], fill=c, width=int(5 * S), joint="curve")
+    for j, fy in enumerate((0.35, 0.6, 0.82)):
+        sg = -1 if j % 2 else 1
+        bx, by = x + sway * fy, GY - hh * fy
+        lx, ly = bx + sg * 30 * vida, by - 14 * vida + 22 * seca
+        d.polygon([(bx * S, by * S), ((bx + sg * 12) * S, (ly - 10) * S), (lx * S, ly * S), ((bx + sg * 14) * S, (by + 4) * S)], fill=c)
+    if luz > 0: g.ellipse([x - 40, GY - hh - 30, x + 40, GY + 10], fill=(120, 240, 210, int(110 * luz)))
+
+def fruta(d, g, x, y, r=13, alpha=255, glow=True):
+    d.ellipse([(x - r) * S, (y - r) * S, (x + r) * S, (y + r) * S], fill=GOLD + (int(alpha),))
+    d.line([(x * S, (y - r) * S), ((x + 3) * S, (y - r - 7) * S)], fill=CREAM + (int(alpha),), width=2 * S)
+    if glow: g.ellipse([x - 24, y - 24, x + 24, y + 24], fill=(250, 220, 140, int(90 * alpha / 255)))
+
+def cesta(d, g, x, n, alpha=255, gris=0.0, w=96, h=62):
+    """Cesta de mimbre con n frutas apiladas encima. gris 0..1 apaga la fruta."""
+    c = CREAM + (int(alpha),)
+    d.polygon([((x - w / 2) * S, (GY - h) * S), ((x + w / 2) * S, (GY - h) * S), ((x + w / 2 - 12) * S, GY * S), ((x - w / 2 + 12) * S, GY * S)], fill=(40, 36, 30, int(alpha)), outline=c, width=int(4 * S))
+    for k in range(1, 3): d.line([((x - w / 2 + 6 * k) * S, (GY - h + 20 * k) * S), ((x + w / 2 - 6 * k) * S, (GY - h + 20 * k) * S)], fill=c, width=int(2 * S))
+    fc = tuple(int(lerp(a, b, gris)) for a, b in zip(GOLD, (100, 96, 92)))
+    i = 0
+    for row, cnt in enumerate((4, 3, 2, 1)):
+        for k in range(cnt):
+            if i >= n: return
+            fx = x + (k - (cnt - 1) / 2) * 24; fy = GY - h - 10 - row * 19
+            d.ellipse([(fx - 12) * S, (fy - 12) * S, (fx + 12) * S, (fy + 12) * S], fill=fc + (int(alpha),))
+            i += 1
+
+def nube_luz(d, g, cx, cy, alpha, t, lluvia=0.0, ancho=1.0):
+    """Nube blanca luminosa (la nube buena). lluvia 0..1 deja caer gotas turquesa hasta el suelo."""
+    if alpha <= 0: return
+    for bx, by, r in [(-80, 12, 50), (-26, -24, 66), (44, -10, 58), (96, 16, 44), (8, 22, 54)]:
+        bx *= ancho
+        d.ellipse([(cx + bx - r) * S, (cy + by - r) * S, (cx + bx + r) * S, (cy + by + r) * S], fill=(236, 240, 236, int(alpha)))
+    g.ellipse([cx - 170 * ancho, cy - 110, cx + 170 * ancho, cy + 90], fill=(200, 250, 245, int(90 * alpha / 255)))
+    if lluvia > 0:
+        span = GY - (cy + 60)
+        for i in range(16):
+            ph = (t * 1.1 + i * 0.29) % 1; x = cx - 110 * ancho + i * 14.5 * ancho; y = cy + 60 + ph * span
+            d.line([(x * S, y * S), ((x - 3) * S, (y + 26) * S)], fill=(150, 245, 238, int(230 * lluvia * (1 - 0.5 * ph))), width=3 * S)

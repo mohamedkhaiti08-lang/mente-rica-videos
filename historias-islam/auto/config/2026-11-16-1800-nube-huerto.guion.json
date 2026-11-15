@@ -1,0 +1,56 @@
+{
+ "lines": [
+  "Dos huertos. Pero el cielo solo conoce a uno.",
+  "Uno se lo guarda todo.",
+  "El otro da un tercio a quien lo necesita.",
+  "Día diez. No llueve.",
+  "¿Dónde crees que va a llover?",
+  "Día treinta.",
+  "El Profeta, la paz sea con él, contó que un hombre oyó una voz dentro de una nube: riega el huerto de fulano. Y era el huerto del que daba un tercio.",
+  "Da. El cielo sabe tu nombre.",
+  "¿Y tú, qué parte de lo tuyo das?"
+ ],
+ "starts": [
+  0.3,
+  3.48,
+  5.7,
+  9.06,
+  10.81,
+  14.62,
+  16.91,
+  25.72,
+  28.27
+ ],
+ "ends": [
+  2.88,
+  4.9,
+  8.06,
+  10.31,
+  12.42,
+  15.51,
+  24.92,
+  27.37,
+  30.19
+ ],
+ "duration": 32.38,
+ "sfx": [
+  {
+   "t": 6.9,
+   "f": 1320,
+   "dur": 0.8,
+   "v": 0.06
+  },
+  {
+   "t": 16.22,
+   "f": 660,
+   "dur": 2.0,
+   "v": 0.08
+  },
+  {
+   "t": 16.369999999999997,
+   "f": 990,
+   "dur": 2.0,
+   "v": 0.06
+  }
+ ]
+}

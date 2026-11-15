@@ -1,0 +1,56 @@
+{
+ "lines": [
+  "Los dos salen de casa. Pero algo les sigue.",
+  "Uno abre la puerta y se va, sin decir nada.",
+  "El otro dice: bismillah, confío en Allah.",
+  "Día diez.",
+  "¿A quién crees que siguen?",
+  "Día treinta.",
+  "El Profeta, la paz sea con él, dijo: al que sale de casa y dice esto, se le dice: has sido guiado, protegido, y te basta. Y los demonios se apartan de él.",
+  "Bismillah. Y sal tranquilo.",
+  "¿Tú lo dices al salir de casa?"
+ ],
+ "starts": [
+  0.3,
+  3.38,
+  6.46,
+  9.74,
+  10.95,
+  14.6,
+  16.09,
+  25.65,
+  28.16
+ ],
+ "ends": [
+  2.78,
+  5.76,
+  8.74,
+  10.45,
+  12.39,
+  15.49,
+  24.85,
+  27.26,
+  30.06
+ ],
+ "duration": 32.26,
+ "sfx": [
+  {
+   "t": 7.46,
+   "f": 1320,
+   "dur": 0.8,
+   "v": 0.06
+  },
+  {
+   "t": 14.6,
+   "f": 660,
+   "dur": 2.0,
+   "v": 0.08
+  },
+  {
+   "t": 14.75,
+   "f": 990,
+   "dur": 2.0,
+   "v": 0.06
+  }
+ ]
+}
