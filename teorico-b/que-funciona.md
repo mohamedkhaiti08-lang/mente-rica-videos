@@ -4,7 +4,23 @@ Horarios: 10:00 y 18:00 (Europe/Madrid) — valor por defecto (picos de audienci
 **FORMATO ÚNICO desde el 12/11/2026 (decisión de Mohamed): vídeos 3D hechos con teorico-b/3d/ (ver README y FUENTES). Los formatos antiguos de la tabla ya no se producen; sus datos sirven solo de referencia de horarios, ganchos y temas.**
 **15/11/2026 (Mohamed): todos los 3D se parecían ("la misma idea"). Mismo estilo 3D, pero ROTAR 4 TEMAS: prioridad (cruces), giro (señales de giro), aparcar (¿puedes aparcar/parar aquí?) y mezcla (examen relámpago). Nunca el mismo tema dos vídeos seguidos. Comparar a partir de ahora las visitas por TEMA.**
 
-## 3D cruces: pistas (14/11/2026, 22:45)
+## 3D: pistas (15/11/2026, 21:55) — Metricool, TikTok 1-15/11
+| Publicado | Tema | Situaciones (1ª resp.) | Hora escena | Dur. | Vistas | Likes | Com. | Compart. |
+|---|---|---|---|---|---|---|---|---|
+| 13/11 18:00 | prioridad | peaton · ceda_mio · ceda_otro (1º NO) | día | 34 s | **11.905** | 327 | 3 | 7 |
+| 14/11 10:00 | prioridad | der_sin · sem_rojo · izq_sin (1º NO) | día | 32 s | 5.721 | 143 | 1 | 6 |
+| 13/11 10:00 | prioridad | stop_otro · sem_verde · ambulancia (1º SÍ) | día | 32 s | 1.862 | 97 | 2 | 1 |
+| 14/11 18:00 | prioridad | stop_mio · sem_verde · ambulancia (1º NO) | día | 34 s | 846 | 49 | 1 | 1 |
+- Media 3D (4 vídeos): 5.084 vistas (formatos antiguos: ~880). El 3D sigue siendo muy superior.
+- Por TEMA: de momento solo hay datos de «prioridad». Los primeros de giro/mezcla salen el 16/11; aparcar el 17/11.
+- Pista A: los 2 vídeos con sem_verde + ambulancia + STOP son los 2 peores (846 y 1.862). Los que llevan peatón/ceda el paso (11.905) o cruces sin señales/semáforo rojo (5.721) arrasan. Situaciones «con trampa visual» (alguien que viene, peatón) > señales evidentes. Evitar repetir el trío stop+sem_verde+ambulancia.
+- Pista B: peaton/ceda_mio/ceda_otro (11.905) = más del doble de la media → «situación que destaca». Se fuerza peaton en el mezcla del 16/11 18:00.
+- Pista C: abrir con NO: 3 de 4 (media 6.157) vs abrir con SÍ: 1 (1.862). Seguir abriendo con NO.
+- Hora de publicación: 18:00 ganó el 13/11 y perdió el 14/11 → sin señal clara. Duración 32-34 s: sin efecto visible.
+- Comentarios siguen muy bajos (1-3) pese a pedir el número: probar en el texto «¿0, 1, 2 o 3? Te leo».
+- 15/11 10:00 y 18:00: aún sin datos (publicados hoy). Ningún vídeo 3D con 0 vistas.
+
+### (anterior) 3D cruces: pistas (14/11/2026, 22:45)
 - PRIMEROS DATOS (Metricool, 14/11 noche): 13/11 18:00 peaton·ceda_mio·ceda_otro (1º NO, día, 34 s) = **4.266 vistas, 133 likes, 0 com., 2 compartidos** — el mejor vídeo de la cuenta con diferencia (5x la media antigua de ~835). 13/11 10:00 stop_otro·sem_verde·ambulancia (1º SÍ, día, 32 s) = 1.187 vistas, 69 likes, 1 com. — también por encima de cualquier vídeo antiguo.
 - Pista 1: el formato 3D funciona (media 3D 2.727 vs ~835 de los formatos antiguos). Seguir solo con 3D.
 - Pista 2 (solo 2 vídeos, no es conclusión): el de 4.266 abría con un NO (peatón en el paso) y tenía los dos «ceda el paso»; el de 1.187 abría con SÍ. Probar más vídeos que abran con NO y con peatón/ceda.
