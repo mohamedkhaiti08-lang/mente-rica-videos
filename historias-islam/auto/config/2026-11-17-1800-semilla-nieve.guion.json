@@ -1,0 +1,59 @@
+{
+ "lines": [
+  "Dos semillas bajo la nieve. Solo una verá la primavera.",
+  "Los dos esperan. Y arriba, nada cambia.",
+  "Día diez. Uno se cansa, y la arranca.",
+  "Sin saber que ya tenía raíces.",
+  "El otro sigue esperando. Con frío. Sin ver nada.",
+  "¿Para qué seguir?",
+  "Día treinta.",
+  "Allah dice en el Corán: con la dificultad viene la facilidad. Con la dificultad, viene la facilidad.",
+  "Aguanta. Ya está creciendo.",
+  "¿Qué estás esperando tú? Escríbelo abajo."
+ ],
+ "starts": [
+  0.3,
+  3.71,
+  6.43,
+  9.04,
+  11.72,
+  15.03,
+  17.8,
+  19.17,
+  25.18,
+  27.62
+ ],
+ "ends": [
+  3.21,
+  5.83,
+  8.55,
+  11.01,
+  14.44,
+  16.0,
+  18.66,
+  24.58,
+  26.82,
+  29.92
+ ],
+ "duration": 31.82,
+ "sfx": [
+  {
+   "t": 9.04,
+   "f": 520,
+   "dur": 1.2,
+   "v": 0.05
+  },
+  {
+   "t": 17.8,
+   "f": 660,
+   "dur": 2.0,
+   "v": 0.08
+  },
+  {
+   "t": 17.95,
+   "f": 990,
+   "dur": 2.0,
+   "v": 0.06
+  }
+ ]
+}

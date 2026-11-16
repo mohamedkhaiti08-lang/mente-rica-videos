@@ -439,3 +439,97 @@ def nube_luz(d, g, cx, cy, alpha, t, lluvia=0.0, ancho=1.0):
         for i in range(16):
             ph = (t * 1.1 + i * 0.29) % 1; x = cx - 110 * ancho + i * 14.5 * ancho; y = cy + 60 + ph * span
             d.line([(x * S, y * S), ((x - 3) * S, (y + 26) * S)], fill=(150, 245, 238, int(230 * lluvia * (1 - 0.5 * ph))), width=3 * S)
+
+# ---------------- piezas del 17 nov 2026 (cama, tumbarse, farol guardián, haz de luz, luna, zzz, móvil, nieve, raíces escaladas, semilla, pose de frío) ----------------
+
+def cama(d, x0, x1, h=64, col=CREAM, alpha=255, almohada="l"):
+    """Cama baja de líneas sobre el suelo (colchón de x0 a x1, altura h). Devuelve la y del colchón."""
+    c = col + (int(alpha),); top = GY - h
+    d.rounded_rectangle([x0 * S, top * S, x1 * S, (top + 26) * S], radius=10 * S, fill=(24, 30, 38, int(alpha)), outline=c, width=int(4 * S))
+    for xs in (x0 + 12, x1 - 12): d.line([(xs * S, (top + 26) * S), (xs * S, GY * S)], fill=c, width=int(6 * S))
+    hx = x0 + 10 if almohada == "l" else x1 - 80
+    d.rounded_rectangle([hx * S, (top - 16) * S, (hx + 70) * S, (top + 4) * S], radius=9 * S, fill=c)
+    return top
+
+def tumbar(d, xpie, k, y_cama, lado=-1, escala=0.92, col=CREAM, alpha=255, pose=None):
+    """Figura que pasa de estar de pie (k=0) a tumbada en la cama (k=1). lado -1: cabeza a la izquierda; 1: a la derecha."""
+    p = pose or P["stand"]
+    mini_figure(d, xpie, p, k=lerp(1.0, escala, k), rot=lado * (math.pi / 2) * k * 0.97, col=col, alpha=alpha, y0=lerp(GY, y_cama - 4, k))
+
+def manta(d, x0, x1, y_cama, alpha=255, col=(70, 84, 98)):
+    """Manta sobre la figura tumbada (de x0 a x1)."""
+    d.rounded_rectangle([x0 * S, (y_cama - 24) * S, x1 * S, (y_cama + 6) * S], radius=12 * S, fill=col + (int(alpha),), outline=CREAM + (int(alpha * 0.8),), width=int(3 * S))
+
+def farol(d, g, x, y, k, t, col=GOLD):
+    """Farol árabe que cuelga del cielo (k 0..1 aparece y brilla)."""
+    if k <= 0: return
+    a = int(255 * k); c = CREAM + (a,)
+    d.line([(x * S, (y - 84) * S), (x * S, (y - 46) * S)], fill=CREAM + (int(a * 0.6),), width=int(2 * S))
+    d.polygon([((x - 22) * S, (y - 46) * S), ((x + 22) * S, (y - 46) * S), (x * S, (y - 72) * S)], fill=c)
+    body = [(x - 30, y - 40), (x + 30, y - 40), (x + 38, y), (x + 30, y + 40), (x - 30, y + 40), (x - 38, y)]
+    d.polygon([(a_ * S, b_ * S) for a_, b_ in body], fill=col + (int(a * (0.75 + 0.25 * math.sin(t * 4))),), outline=c, width=int(4 * S))
+    for xx in (x - 12, x + 12): d.line([(xx * S, (y - 40) * S), (xx * S, (y + 40) * S)], fill=(120, 90, 40, a), width=int(2 * S))
+    d.polygon([((x - 20) * S, (y + 40) * S), ((x + 20) * S, (y + 40) * S), (x * S, (y + 58) * S)], fill=c)
+    g.ellipse([x - 120, y - 120, x + 120, y + 120], fill=(250, 220, 150, int(150 * k)))
+
+def haz(d, g, x, y, x0, x1, k, t, col=(150, 245, 238)):
+    """Haz de luz en cono desde (x, y) hasta el suelo entre x0 y x1 (protección)."""
+    if k <= 0: return
+    pts = [(x - 20, y + 50), (x + 20, y + 50), (x1, GY), (x0, GY)]
+    d.polygon([(a * S, b * S) for a, b in pts], fill=col + (int(38 * k),))
+    for i, (xa, xb) in enumerate(((x - 20, x0), (x + 20, x1))):
+        d.line([(xa * S, (y + 50) * S), (xb * S, GY * S)], fill=col + (int(150 * k * (0.8 + 0.2 * math.sin(t * 3 + i))),), width=int(3 * S))
+    g.polygon([(x - 30, y + 50), (x + 30, y + 50), (x1, GY), (x0, GY)], fill=col + (int(45 * k),))
+
+def luna(d, g, x, y, r=34, alpha=255):
+    """Luna creciente."""
+    if alpha <= 0: return
+    d.ellipse([(x - r) * S, (y - r) * S, (x + r) * S, (y + r) * S], fill=(236, 232, 214, int(alpha)))
+    d.ellipse([(x - r + 15) * S, (y - r - 8) * S, (x + r + 15) * S, (y + r - 8) * S], fill=(0, 0, 0, 0))
+    g.ellipse([x - 70, y - 70, x + 70, y + 70], fill=(200, 230, 225, int(50 * alpha / 255)))
+
+def zzz(d, x, y, t, alpha=255):
+    """Zetas de sueño tranquilo que suben."""
+    import noche as _N
+    for i in range(3):
+        ph = (t * 0.35 + i / 3) % 1
+        a = alpha * min(1, ph * 4) * (1 - ph)
+        if a > 2: spaced(d, "z", x + 40 * ph + 12 * math.sin(t + i), y - 120 * ph, int(26 + 16 * ph), a, col=(190, 235, 230))
+
+def movil(d, g, x, y, alpha=255):
+    """Pantalla de móvil encendida (luz azul fría)."""
+    if alpha <= 0: return
+    d.rounded_rectangle([(x - 13) * S, (y - 22) * S, (x + 13) * S, (y + 22) * S], radius=4 * S, fill=(150, 190, 255, int(alpha)), outline=CREAM + (int(alpha),), width=int(2 * S))
+    g.ellipse([x - 60, y - 60, x + 60, y + 60], fill=(110, 150, 255, int(110 * alpha / 255)))
+
+def copos(d, t, alpha, n=70, seed=21, ymax=GY):
+    """Nieve que cae por todo el cielo."""
+    if alpha <= 0: return
+    rnd = random.Random(seed)
+    for i in range(n):
+        x0 = rnd.uniform(0, W); sp = rnd.uniform(0.05, 0.11); r = rnd.choice((3, 4, 5, 6)); ph0 = rnd.random()
+        ph = (ph0 + t * sp) % 1
+        y = 60 + ph * (ymax - 60); x = x0 + 18 * math.sin(t * 0.9 + i)
+        d.ellipse([(x - r) * S, (y - r) * S, (x + r) * S, (y + r) * S], fill=(240, 244, 248, int(alpha * 0.85)))
+
+def manto_nieve(d, x0, x1, h, alpha=255, seed=3):
+    """Capa de nieve ondulada sobre el suelo, de altura h."""
+    if h <= 1 or alpha <= 0: return
+    pts = [(x0, GY)] + [(x, GY - h * (0.75 + 0.25 * math.sin(x / 55 + seed))) for x in range(int(x0), int(x1) + 1, 12)] + [(x1, GY)]
+    d.polygon([(a * S, b * S) for a, b in pts], fill=(236, 240, 244, int(alpha)))
+
+def raices_en(d, rg, x0, y0, k=1.0, col=CREAM, alpha=255):
+    """Raíces (las de noche.ROOTS) que nacen en (x0, y0) a escala k."""
+    if rg <= 0 or alpha <= 0: return
+    for a, b, c, e, tb, w_ in N.ROOTS:
+        if rg > tb:
+            q = min(1, (rg - tb) / 0.06)
+            pa = (x0 + (a - 880) * k, y0 + (b - GY - 18) * k); pc = (x0 + (lerp(a, c, q) - 880) * k, y0 + (lerp(b, e, q) - GY - 18) * k)
+            d.line([(pa[0] * S, pa[1] * S), (pc[0] * S, pc[1] * S)], fill=col + (int(alpha * 0.92),), width=max(2, int(w_ * k * S)))
+
+def semilla(d, g, x, y, alpha=255, col=GOLD, brillo=1.0, r=13):
+    if alpha <= 0: return
+    d.ellipse([(x - r) * S, (y - r * 0.7) * S, (x + r) * S, (y + r * 0.7) * S], fill=col + (int(alpha),))
+    if brillo > 0: g.ellipse([x - 36, y - 30, x + 36, y + 30], fill=(250, 220, 140, int(110 * brillo * alpha / 255)))
+
+FRIO = dict(P["stand"]); FRIO.update(le=(-36, -200), lh=(22, -218), re=(36, -204), rh=(-22, -212), head=(0, -296))   # se abraza por el frío

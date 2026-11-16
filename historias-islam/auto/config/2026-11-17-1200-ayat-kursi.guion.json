@@ -1,0 +1,59 @@
+{
+ "lines": [
+  "Dos camas. La misma noche. Pero solo una tiene guardián.",
+  "Uno se duerme sin más.",
+  "El otro recita Áyat al Kursi.",
+  "Día diez.",
+  "¿Quién duerme protegido?",
+  "Día treinta.",
+  "Recítala al acostarte: tendrás un guardián de Allah, y el shaitán no se te acercará hasta la mañana.",
+  "Lo curioso: se lo enseñó el propio shaitán. Y el Profeta, la paz sea con él, dijo: te ha dicho la verdad, aunque es un mentiroso.",
+  "Áyat al Kursi. Y duerme tranquilo.",
+  "¿Tú la recitas antes de dormir?"
+ ],
+ "starts": [
+  0.3,
+  3.89,
+  5.88,
+  8.69,
+  9.79,
+  12.92,
+  14.27,
+  20.3,
+  27.7,
+  30.41
+ ],
+ "ends": [
+  3.39,
+  5.28,
+  7.8,
+  9.38,
+  11.23,
+  13.76,
+  19.7,
+  27.0,
+  29.61,
+  32.3
+ ],
+ "duration": 34.2,
+ "sfx": [
+  {
+   "t": 6.78,
+   "f": 1320,
+   "dur": 0.8,
+   "v": 0.06
+  },
+  {
+   "t": 12.92,
+   "f": 660,
+   "dur": 2.0,
+   "v": 0.08
+  },
+  {
+   "t": 13.07,
+   "f": 990,
+   "dur": 2.0,
+   "v": 0.06
+  }
+ ]
+}
