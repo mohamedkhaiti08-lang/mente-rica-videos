@@ -1,0 +1,66 @@
+{
+ "seed": 202611172,
+ "hora": "dia",
+ "tema": "prioridad",
+ "tipos": [
+  "ceda_mio",
+  "der_sin",
+  "ceda_otro"
+ ],
+ "intro": "¿Aprobarías el práctico? Tres cruces, tres segundos.",
+ "final": "¿Cuántas has acertado? Dímelo en comentarios.",
+ "dur": 34.23,
+ "cruces": [
+  {
+   "tipo": "ceda_mio",
+   "lado": "der",
+   "resp": "NO",
+   "pregunta": "¿Tienes prioridad?",
+   "rotulo": "TIENES CEDA EL PASO: ESPERA",
+   "q": "Cruce uno. ¿Pasas tú?",
+   "escena": "cruce",
+   "r": "No. Tienes un ceda el paso: pasa él primero.",
+   "T0": 2.6,
+   "tq": 2.8000000000000003,
+   "C": 4.191625,
+   "R": 7.191625,
+   "tr": 7.291625,
+   "E": 10.087833333333332,
+   "L": 9.791625
+  },
+  {
+   "tipo": "der_sin",
+   "lado": "der",
+   "resp": "NO",
+   "pregunta": "¿Tienes prioridad?",
+   "rotulo": "SIN SEÑALES: PASA EL DE LA DERECHA",
+   "q": "Cruce dos. ¿Pasas tú o pasa él?",
+   "escena": "cruce",
+   "r": "No. Sin señales, manda la derecha: pasa él primero.",
+   "T0": 11.991624999999999,
+   "tq": 12.191624999999998,
+   "C": 14.138958333333331,
+   "R": 17.13895833333333,
+   "tr": 17.238958333333333,
+   "E": 20.452749999999998,
+   "L": 19.738958333333333
+  },
+  {
+   "tipo": "ceda_otro",
+   "lado": "der",
+   "resp": "SÍ",
+   "pregunta": "¿Tienes prioridad?",
+   "rotulo": "ÉL TIENE CEDA EL PASO: PASAS TÚ",
+   "q": "Cruce tres. Mira bien las señales. ¿Tienes prioridad?",
+   "escena": "cruce",
+   "r": "Sí. Él tiene un ceda el paso: pasas tú.",
+   "T0": 21.938958333333336,
+   "tq": 22.138958333333335,
+   "C": 25.0825,
+   "R": 28.0825,
+   "tr": 28.1825,
+   "E": 30.712833333333336,
+   "L": 28.982499999999998
+  }
+ ]
+}
