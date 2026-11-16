@@ -4,7 +4,22 @@ Horarios: 10:00 y 18:00 (Europe/Madrid) — valor por defecto (picos de audienci
 **FORMATO ÚNICO desde el 12/11/2026 (decisión de Mohamed): vídeos 3D hechos con teorico-b/3d/ (ver README y FUENTES). Los formatos antiguos de la tabla ya no se producen; sus datos sirven solo de referencia de horarios, ganchos y temas.**
 **15/11/2026 (Mohamed): todos los 3D se parecían ("la misma idea"). Mismo estilo 3D, pero ROTAR 4 TEMAS: prioridad (cruces), giro (señales de giro), aparcar (¿puedes aparcar/parar aquí?) y mezcla (examen relámpago). Nunca el mismo tema dos vídeos seguidos. Comparar a partir de ahora las visitas por TEMA.**
 
-## 3D: pistas (15/11/2026, 21:55) — Metricool, TikTok 1-15/11
+## 3D: pistas (16/11/2026, 22:00) — Metricool, TikTok 2-16/11
+| Publicado | Tema | Situaciones (1ª resp.) | Hora escena | Dur. | Vistas | Likes | Com. | Compart. |
+|---|---|---|---|---|---|---|---|---|
+| 13/11 18:00 | prioridad | peaton · ceda_mio · ceda_otro (1º NO) | día | 34 s | **14.017** | 386 | 3 | 13 |
+| 14/11 10:00 | prioridad | der_sin · sem_rojo · izq_sin (1º NO) | día | 32 s | 7.551 | 178 | 1 | 7 |
+| 13/11 10:00 | prioridad | stop_otro · sem_verde · ambulancia (1º SÍ) | día | 32 s | 2.063 | 101 | 2 | 3 |
+| 14/11 18:00 | prioridad | stop_mio · sem_verde · ambulancia (1º NO) | día | 34 s | 897 | 50 | 1 | 2 |
+| 15/11 18:00 | prioridad | sem_rojo · ceda_otro · der_sin (1º NO) | día | 33 s | 869 | 37 | 1 | 2 |
+| 15/11 10:00 | prioridad | peaton · stop_otro · ceda_mio (1º NO) | tarde | 32 s | 812 | 43 | 1 | 0 |
+- Media 3D (6 vídeos): 4.368 vistas; mediana ~1.480. Dos vídeos (13/11 18:00 y 14/11 10:00) siguen creciendo y tiran de la media.
+- Por TEMA: aún solo «prioridad» con datos. 16/11 (giro 10:00, mezcla 18:00) sin datos todavía (publicados hoy). 17/11: aparcar (1er vídeo del tema) y prioridad.
+- Pista D (nueva): los 3 últimos «prioridad» (14/11 18:00, 15/11 10:00 y 18:00) se quedan en 812-897, aunque el 15/11 10:00 repetía peatón+ceda y abría con NO. Encaja con lo que vio Mohamed: con el mismo tema seguido el algoritmo/la audiencia se cansa. La rotación de temas es la hipótesis a comprobar esta semana.
+- Pista A/B/C se mantienen como pistas débiles (peatón/ceda y abrir con NO no bastaron el 15/11). Hora de la escena: tarde 812 vs día 869 el mismo día → sin diferencia.
+- Comentarios siguen en 1-3 por vídeo aunque se pida el número. Ningún vídeo 3D con 0 vistas.
+
+### (anterior) 3D: pistas (15/11/2026, 21:55) — Metricool, TikTok 1-15/11
 | Publicado | Tema | Situaciones (1ª resp.) | Hora escena | Dur. | Vistas | Likes | Com. | Compart. |
 |---|---|---|---|---|---|---|---|---|
 | 13/11 18:00 | prioridad | peaton · ceda_mio · ceda_otro (1º NO) | día | 34 s | **11.905** | 327 | 3 | 7 |

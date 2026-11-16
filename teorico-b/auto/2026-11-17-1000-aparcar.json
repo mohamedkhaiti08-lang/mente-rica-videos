@@ -1,0 +1,66 @@
+{
+ "seed": 202611171,
+ "hora": "tarde",
+ "tema": "aparcar",
+ "tipos": [
+  "paso_cebra",
+  "r308_parar",
+  "plaza_blanca"
+ ],
+ "intro": "¿Aparcarías aquí? Tres huecos, tres segundos.",
+ "final": "Comenta cuántas has acertado.",
+ "dur": 33.19,
+ "cruces": [
+  {
+   "tipo": "paso_cebra",
+   "lado": "der",
+   "resp": "NO",
+   "pregunta": "¿Puedes parar un momento?",
+   "rotulo": "PASO DE PEATONES: NI PARAR NI APARCAR",
+   "q": "Sitio uno. Es solo un segundo. ¿Puedes parar aquí?",
+   "escena": "aparcar",
+   "r": "No. En un paso de peatones no puedes ni parar.",
+   "T0": 2.6,
+   "tq": 2.8000000000000003,
+   "C": 5.338500000000001,
+   "R": 8.3385,
+   "tr": 8.4385,
+   "E": 11.352958333333333,
+   "L": 9.538499999999999
+  },
+  {
+   "tipo": "r308_parar",
+   "lado": "der",
+   "resp": "SÍ",
+   "pregunta": "¿Puedes parar un momento?",
+   "rotulo": "R-308: PARAR SÍ, APARCAR NO",
+   "q": "Sitio dos. Ojo, que es trampa. ¿Puedes parar aquí un momento?",
+   "escena": "aparcar",
+   "r": "Sí. Una sola raya: prohibido estacionar, pero parar sí.",
+   "T0": 11.738499999999998,
+   "tq": 11.938499999999998,
+   "C": 15.178624999999998,
+   "R": 18.178624999999997,
+   "tr": 18.278624999999998,
+   "E": 21.765541666666664,
+   "L": 19.378624999999996
+  },
+  {
+   "tipo": "plaza_blanca",
+   "lado": "der",
+   "resp": "SÍ",
+   "pregunta": "¿Puedes aparcar aquí?",
+   "rotulo": "PLAZA EN BLANCO: SÍ PUEDES APARCAR",
+   "q": "Sitio tres. Plaza libre. ¿Aparcas?",
+   "escena": "aparcar",
+   "r": "Sí. Líneas blancas y ninguna señal: adelante.",
+   "T0": 21.865541666666665,
+   "tq": 22.065541666666665,
+   "C": 24.10595833333333,
+   "R": 27.10595833333333,
+   "tr": 27.20595833333333,
+   "E": 30.219875,
+   "L": 28.30595833333333
+  }
+ ]
+}
