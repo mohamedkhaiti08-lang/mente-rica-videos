@@ -1,0 +1,66 @@
+{
+ "seed": 202611181,
+ "hora": "dia",
+ "tema": "mezcla",
+ "tipos": [
+  "sem_rojo",
+  "r302_der",
+  "amarilla_disc_parar"
+ ],
+ "intro": "Tres pruebas distintas. ¿Las pasas todas?",
+ "final": "Comenta cuántas has acertado.",
+ "dur": 33.34,
+ "cruces": [
+  {
+   "tipo": "sem_rojo",
+   "lado": "der",
+   "resp": "NO",
+   "pregunta": "¿Puedes pasar?",
+   "rotulo": "SEMÁFORO EN ROJO: ESPERA",
+   "q": "Prueba uno. ¿Sigues o esperas?",
+   "escena": "cruce",
+   "r": "No. Tu semáforo está en rojo: esperas.",
+   "T0": 2.6,
+   "tq": 2.8000000000000003,
+   "C": 4.530750000000001,
+   "R": 7.530750000000001,
+   "tr": 7.630750000000001,
+   "E": 10.096375,
+   "L": 10.13075
+  },
+  {
+   "tipo": "r302_der",
+   "lado": "der",
+   "resp": "NO",
+   "pregunta": "¿Puedes girar a la derecha?",
+   "rotulo": "R-302: PROHIBIDO GIRAR A LA DERECHA",
+   "q": "Prueba dos. Quieres girar a la derecha. ¿Puedes?",
+   "escena": "giro",
+   "r": "No. Esa señal prohíbe girar a la derecha.",
+   "T0": 12.33075,
+   "tq": 12.53075,
+   "C": 15.044666666666666,
+   "R": 18.044666666666664,
+   "tr": 18.144666666666666,
+   "E": 20.884875,
+   "L": 19.244666666666664
+  },
+  {
+   "tipo": "amarilla_disc_parar",
+   "lado": "der",
+   "resp": "SÍ",
+   "pregunta": "¿Puedes parar un momento?",
+   "rotulo": "AMARILLA DISCONTINUA: PARAR SÍ, APARCAR NO",
+   "q": "Prueba tres. No vas a aparcar, solo parar. ¿Puedes?",
+   "escena": "aparcar",
+   "r": "Sí. La discontinua solo prohíbe estacionar.",
+   "T0": 21.444666666666667,
+   "tq": 21.644666666666666,
+   "C": 24.45870833333333,
+   "R": 27.45870833333333,
+   "tr": 27.558708333333332,
+   "E": 30.371916666666664,
+   "L": 28.65870833333333
+  }
+ ]
+}
