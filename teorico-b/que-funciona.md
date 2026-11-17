@@ -4,7 +4,24 @@ Horarios: 10:00 y 18:00 (Europe/Madrid) — valor por defecto (picos de audienci
 **FORMATO ÚNICO desde el 12/11/2026 (decisión de Mohamed): vídeos 3D hechos con teorico-b/3d/ (ver README y FUENTES). Los formatos antiguos de la tabla ya no se producen; sus datos sirven solo de referencia de horarios, ganchos y temas.**
 **15/11/2026 (Mohamed): todos los 3D se parecían ("la misma idea"). Mismo estilo 3D, pero ROTAR 4 TEMAS: prioridad (cruces), giro (señales de giro), aparcar (¿puedes aparcar/parar aquí?) y mezcla (examen relámpago). Nunca el mismo tema dos vídeos seguidos. Comparar a partir de ahora las visitas por TEMA.**
 
-## 3D: pistas (16/11/2026, 22:00) — Metricool, TikTok 2-16/11
+## 3D: pistas (17/11/2026, 22:45) — Metricool, TikTok 3-17/11
+| Publicado | Tema | Situaciones (1ª resp.) | Hora escena | Dur. | Vistas | Likes | Com. | Compart. |
+|---|---|---|---|---|---|---|---|---|
+| 13/11 18:00 | prioridad | peaton · ceda_mio · ceda_otro (1º NO) | día | 34 s | **14.793** | 412 | 3 | 15 |
+| 14/11 10:00 | prioridad | der_sin · sem_rojo · izq_sin (1º NO) | día | 32 s | 8.280 | 208 | 1 | 7 |
+| 13/11 10:00 | prioridad | stop_otro · sem_verde · ambulancia (1º SÍ) | día | 32 s | 2.154 | 103 | 2 | 3 |
+| 15/11 18:00 | prioridad | sem_rojo · ceda_otro · der_sin (1º NO) | día | 33 s | 1.017 | 44 | 1 | 2 |
+| 16/11 10:00 | giro | r303_izq · r302_izq · r101_der (1º NO) | tarde | 33 s | 945 | 57 | 2 | 1 |
+| 14/11 18:00 | prioridad | stop_mio · sem_verde · ambulancia (1º NO) | día | 34 s | 911 | 51 | 1 | 2 |
+| 15/11 10:00 | prioridad | peaton · stop_otro · ceda_mio (1º NO) | tarde | 32 s | 836 | 47 | 1 | 0 |
+| 16/11 18:00 | mezcla | peaton · r303_der · vado (1º NO) | día | 34 s | 790 | 26 | 0 | 0 |
+- Media 3D (8 vídeos): 3.716 vistas; mediana ~928. Los 2 del 17/11 (aparcar 10:00, prioridad 18:00) aún no aparecen en Metricool.
+- Por TEMA (pistas, 1 vídeo de giro y 1 de mezcla): prioridad media 4.665 pero los 4 últimos 836-1.017; giro 945 en ~1,5 días con la mejor tasa de likes (6,0 %), ya por encima de 3 de los 4 últimos «prioridad»; mezcla 790 en ~1 día y la peor tasa de likes (3,3 %) y 0 comentarios.
+- Pista E (nueva): el primer «giro» arranca igual o mejor que los «prioridad» recientes → la rotación no penaliza. Mezcla, de momento, la más floja; se repite el 18/11 a las 10:00 (antes 18:00) para separar tema y hora.
+- Hora de publicación: 10:00 vs 18:00 sin diferencia clara (los dos virales, uno a cada hora). Hora de la escena (día/tarde): sin diferencia.
+- Ningún vídeo 3D con 0 vistas. Comentarios siguen en 0-3 por vídeo.
+
+### (anterior) 3D: pistas (16/11/2026, 22:00)
 | Publicado | Tema | Situaciones (1ª resp.) | Hora escena | Dur. | Vistas | Likes | Com. | Compart. |
 |---|---|---|---|---|---|---|---|---|
 | 13/11 18:00 | prioridad | peaton · ceda_mio · ceda_otro (1º NO) | día | 34 s | **14.017** | 386 | 3 | 13 |
