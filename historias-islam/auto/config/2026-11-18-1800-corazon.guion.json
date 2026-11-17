@@ -1,0 +1,56 @@
+{
+ "lines": [
+  "¿Sabes qué mira Al-lá de ti? Te doy una pista: no es tu foto.",
+  "Uno cuida lo que se ve: la ropa, la foto, los likes.",
+  "El otro cuida lo que no se ve.",
+  "Día diez.",
+  "¿Quién brilla más?",
+  "Día treinta. Ahora, mira debajo.",
+  "El Profeta, la paz sea con él, dijo: Al-lá no mira vuestras formas ni vuestras riquezas, sino vuestros corazones y vuestras obras.",
+  "Lo de fuera se ve. Lo de dentro, cuenta.",
+  "¿Qué cuidas más: tu foto, o tu corazón?"
+ ],
+ "starts": [
+  0.3,
+  4.14,
+  7.58,
+  10.24,
+  11.43,
+  14.52,
+  17.21,
+  25.19,
+  28.15
+ ],
+ "ends": [
+  3.54,
+  6.98,
+  9.34,
+  10.93,
+  12.52,
+  16.51,
+  24.39,
+  27.36,
+  30.44
+ ],
+ "duration": 32.45,
+ "sfx": [
+  {
+   "t": 9.780000000000001,
+   "f": 1320,
+   "dur": 0.8,
+   "v": 0.06
+  },
+  {
+   "t": 15.52,
+   "f": 660,
+   "dur": 2.0,
+   "v": 0.08
+  },
+  {
+   "t": 15.67,
+   "f": 990,
+   "dur": 2.0,
+   "v": 0.06
+  }
+ ]
+}

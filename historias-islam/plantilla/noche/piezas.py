@@ -533,3 +533,115 @@ def semilla(d, g, x, y, alpha=255, col=GOLD, brillo=1.0, r=13):
     if brillo > 0: g.ellipse([x - 36, y - 30, x + 36, y + 30], fill=(250, 220, 140, int(110 * brillo * alpha / 255)))
 
 FRIO = dict(P["stand"]); FRIO.update(le=(-36, -200), lh=(22, -218), re=(36, -204), rh=(-22, -212), head=(0, -296))   # se abraza por el frío
+
+# ---------------- piezas del 18 nov 2026 (espuma del mar, tasbih, contador, corazón, corona, likes, destellos) ----------------
+
+def _burbujas(x0, x1, y0, y1, n, seed):
+    rnd = random.Random(seed); out = []
+    for i in range(n):
+        x = rnd.uniform(x0, x1); y = rnd.uniform(y0, y1); r = rnd.uniform(9, 26) * (1 - 0.35 * (y - y0) / max(1, y1 - y0))
+        out.append((x, y, r, rnd.uniform(0, 6.28), rnd.random()))
+    out.sort(key=lambda b: -b[1])                        # se llena de abajo arriba
+    return out
+
+def espuma(d, g, x0, x1, k, t, limpio=0.0, seed=1, n=70, y0=GY + 40, y1=GY + 430, col=(96, 94, 108)):
+    """Espuma oscura (pecados) bajo el suelo entre x0 y x1. k 0..1 cantidad visible (de abajo arriba).
+    limpio 0..1: una ola de luz barre de izquierda a derecha y cada burbuja se vuelve gota turquesa que sube y se apaga."""
+    if k <= 0: return
+    bs = _burbujas(x0, x1, y0, y1, n, seed)
+    for i, (x, y, r, ph, rr) in enumerate(bs):
+        if i >= k * n: break
+        pop = min(1.0, (k * n - i) / 2.5)
+        thr = (x - x0) / max(1, x1 - x0)
+        pr = max(0.0, min(1.0, (limpio * 1.35 - thr) / 0.35))
+        if pr >= 1: continue
+        xx = x + 4 * math.sin(t * 1.6 + ph); yy = y + 3 * math.cos(t * 1.3 + ph) - 120 * pr
+        rad = r * (0.6 + 0.4 * pop) * (1 - 0.5 * pr)
+        c = tuple(int(lerp(a, b, pr)) for a, b in zip(col, (150, 245, 238)))
+        a = int(235 * (1 - pr))
+        d.ellipse([(xx - rad) * S, (yy - rad) * S, (xx + rad) * S, (yy + rad) * S], fill=c + (a,), outline=(140, 138, 150, int(a * 0.8)), width=int(2 * S))
+        d.ellipse([(xx - rad * 0.45) * S, (yy - rad * 0.6) * S, (xx - rad * 0.05) * S, (yy - rad * 0.25) * S], fill=(200, 200, 210, int(a * 0.5)))
+        if pr > 0: g.ellipse([xx - 22, yy - 22, xx + 22, yy + 22], fill=(120, 245, 238, int(150 * (1 - pr))))
+
+def ola_luz(d, g, x0, x1, k, y0=GY + 30, y1=GY + 450, col=(130, 240, 232)):
+    """Frente de luz vertical que barre de x0 a x1 bajo el suelo (k 0..1)."""
+    if k <= 0 or k >= 1: return
+    x = lerp(x0, x1, k)
+    for i in range(6):
+        yy = lerp(y0, y1, i / 5)
+        d.line([((x + 10 * math.sin(i * 1.7 + k * 8)) * S, (yy - 35) * S), ((x - 6) * S, (yy + 35) * S)], fill=col + (int(220 * math.sin(math.pi * k)),), width=int(5 * S))
+    g.rectangle([x - 40, y0, x + 30, y1], fill=col + (int(120 * math.sin(math.pi * k)),))
+
+DHIKR = dict(P["stand"]); DHIKR.update(re=(34, -196), rh=(52, -228), le=(-26, -212), lh=(-32, -150))   # sostiene el tasbih delante del pecho (mano en (x+52, GY-228))
+
+def tasbih(d, g, hx, hy, t, activo=0.0, n=15, alpha=255, col=CREAM):
+    """Tasbih (cuentas) colgando de la mano en (hx, hy). activo 0..1 hace correr las cuentas y brillar la que pasa."""
+    if alpha <= 0: return
+    cx, cy, rx, ry = hx, hy + 44, 20, 40
+    pos = (t * 9 * activo) % n
+    for i in range(n):
+        ang = -math.pi / 2 + 2 * math.pi * (i + 0.5) / n
+        px, py = cx + rx * math.cos(ang), cy + ry * math.sin(ang)
+        hi = max(0.0, 1 - abs(((i - pos + n / 2) % n) - n / 2)) * activo
+        c = tuple(int(lerp(a, b, hi)) for a, b in zip(col, (150, 245, 238)))
+        r = 6 + 2 * hi
+        d.ellipse([(px - r) * S, (py - r) * S, (px + r) * S, (py + r) * S], fill=c + (int(alpha),))
+        if hi > 0.3: g.ellipse([px - 24, py - 24, px + 24, py + 24], fill=(120, 245, 238, int(160 * hi)))
+    d.line([(cx * S, (cy + ry + 4) * S), (cx * S, (cy + ry + 26) * S)], fill=col + (int(alpha),), width=int(3 * S))
+    d.ellipse([(cx - 5) * S, (cy + ry + 24) * S, (cx + 5) * S, (cy + ry + 34) * S], fill=col + (int(alpha),))
+
+def contador(d, x, y, n, alpha=255, size=40, total=100, col=(190, 235, 230)):
+    """Contador «n/total» encima de una figura."""
+    if alpha <= 0: return
+    txt = f"{int(n)}/{total}" if n < total else f"×{total}"
+    spaced(d, txt, x, y, size, alpha, col=col if n < total else (130, 240, 232))
+
+def corazon(d, g, cx, cy, r, col=CREAM, alpha=255, brillo=0.0, grieta=0.0, glow_col=(120, 240, 232)):
+    """Corazón relleno (lo de dentro). brillo 0..1 halo; grieta 0..1 lo parte."""
+    if alpha <= 0 or r <= 1: return
+    pts = []
+    for i in range(60):
+        u = 2 * math.pi * i / 60
+        x = 16 * math.sin(u) ** 3; y = -(13 * math.cos(u) - 5 * math.cos(2 * u) - 2 * math.cos(3 * u) - math.cos(4 * u))
+        pts.append(((cx + x * r / 16) * S, (cy + y * r / 16) * S))
+    d.polygon(pts, fill=col + (int(alpha),))
+    if grieta > 0:
+        zz = [(cx - 2, cy - r * 0.55), (cx + r * 0.12, cy - r * 0.2), (cx - r * 0.1, cy + r * 0.1), (cx + r * 0.1, cy + r * 0.45), (cx, cy + r * 0.8)]
+        m = 1 + int(grieta * 4)
+        d.line([(a * S, b * S) for a, b in zz[:m]], fill=(20, 20, 24, int(alpha)), width=int(max(3, r * 0.07) * S), joint="curve")
+    if brillo > 0: g.ellipse([cx - r * 2, cy - r * 2, cx + r * 2, cy + r * 2], fill=glow_col + (int(170 * brillo * alpha / 255),))
+
+def corona(d, g, x, y, k=1.0, alpha=255, col=GOLD, brillo=1.0):
+    """Corona dorada centrada en (x, y) (base). k escala."""
+    if alpha <= 0 or k <= 0: return
+    w, h = 44 * k, 34 * k
+    pts = [(x - w, y), (x - w, y - h * 0.6), (x - w * 0.5, y - h * 0.2), (x, y - h), (x + w * 0.5, y - h * 0.2), (x + w, y - h * 0.6), (x + w, y)]
+    d.polygon([(a * S, b * S) for a, b in pts], fill=col + (int(alpha),), outline=(150, 120, 60, int(alpha)), width=int(2 * S))
+    for px in (x - w, x, x + w):
+        py = y - (h if px == x else h * 0.6)
+        d.ellipse([(px - 5 * k) * S, (py - 5 * k) * S, (px + 5 * k) * S, (py + 5 * k) * S], fill=col + (int(alpha),))
+    if brillo > 0: g.ellipse([x - 70, y - 70, x + 70, y + 30], fill=(250, 220, 140, int(120 * brillo * alpha / 255)))
+
+def likes(d, g, x, y, t, k, seed=4, col=(235, 110, 120)):
+    """Corazoncitos de «me gusta» que suben desde (x, y). k 0..1 intensidad."""
+    if k <= 0: return
+    rnd = random.Random(seed)
+    for i in range(10):
+        ph0 = rnd.random(); sp = rnd.uniform(0.35, 0.6); dx = rnd.uniform(-40, 70)
+        ph = (ph0 + t * sp) % 1
+        px = x + dx * ph + 10 * math.sin(t * 3 + i); py = y - 30 - 230 * ph
+        a = 230 * k * min(1, ph * 5) * (1 - ph)
+        corazon(d, g, px, py, 11 + 4 * ph, col=col, alpha=a, brillo=0)
+
+def destellos(d, g, x, y0, y1, t, k, seed=6, col=GOLD):
+    """Brillos dorados alrededor de una figura (lo que luce por fuera)."""
+    if k <= 0: return
+    rnd = random.Random(seed)
+    for i in range(9):
+        px = x + rnd.uniform(-90, 90); py = rnd.uniform(y0, y1); ph = (t * 1.3 + rnd.random()) % 1
+        s = 12 * math.sin(math.pi * ph) * k
+        if s <= 0.5: continue
+        c = col + (int(240 * k),)
+        d.line([((px - s) * S, py * S), ((px + s) * S, py * S)], fill=c, width=int(3 * S))
+        d.line([(px * S, (py - s) * S), (px * S, (py + s) * S)], fill=c, width=int(3 * S))
+        g.ellipse([px - 18, py - 18, px + 18, py + 18], fill=(250, 220, 140, int(100 * k * math.sin(math.pi * ph))))

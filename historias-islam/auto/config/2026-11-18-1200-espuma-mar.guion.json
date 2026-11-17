@@ -1,0 +1,56 @@
+{
+ "lines": [
+  "Los mismos errores. Pero solo uno los ve desaparecer.",
+  "Uno sigue su día, sin más.",
+  "El otro repite cien veces: subjanal-láhi wa bijamdihi.",
+  "Día diez.",
+  "¿De quién crees que se borran?",
+  "Día treinta.",
+  "El Profeta, la paz sea con él, dijo: quien la diga cien veces al día, sus pecados se borran, aunque sean como la espuma del mar.",
+  "Unos dos minutos al día.",
+  "¿La has dicho hoy? Escríbela abajo."
+ ],
+ "starts": [
+  0.3,
+  3.86,
+  5.9,
+  9.86,
+  11.05,
+  14.67,
+  16.13,
+  23.84,
+  26.38
+ ],
+ "ends": [
+  3.26,
+  5.4,
+  9.07,
+  10.55,
+  12.66,
+  15.53,
+  23.04,
+  25.58,
+  28.33
+ ],
+ "duration": 30.33,
+ "sfx": [
+  {
+   "t": 8.5,
+   "f": 1320,
+   "dur": 0.8,
+   "v": 0.06
+  },
+  {
+   "t": 14.67,
+   "f": 660,
+   "dur": 2.0,
+   "v": 0.08
+  },
+  {
+   "t": 14.82,
+   "f": 990,
+   "dur": 2.0,
+   "v": 0.06
+  }
+ ]
+}
