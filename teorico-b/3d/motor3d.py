@@ -91,6 +91,7 @@ for Y in YS[:]:                                                              # f
     yy = Y - 22
     box((1.4, yy, 0.012), (0.25, 2.2, 0.02), LINEA); obj(TRI, (1.4, yy + 1.55, 0.012), (0.9, 1, 0.9), LINEA, rot=(math.pi / 2, 0, 0))
 
+SENALES_GIRO = [s for s in spec["senales"] if s.get("tipo") in ("r302", "r303", "r101")]   # sin toldos delante de estas señales
 # ---------- edificios ----------
 blocks = [(L0, YS[0] - 5.6)] + [(YS[i] + 5.6, YS[i + 1] - 5.6) for i in range(len(YS) - 1)] + [(YS[-1] + 5.6, L1)]
 for sx in (-1, 1):
@@ -107,6 +108,10 @@ for sx in (-1, 1):
             while yy < y + L - 1.2:
                 r = rng.random()
                 if r < 0.45:                                                         # persiana de local
+                    box((fx - sx * 0.06, yy, 1.35), (0.1, 2.6, 2.7), '#9ba1a8')
+                    for z in (0.5, 0.95, 1.4, 1.85, 2.3): box((fx - sx * 0.12, yy, z), (0.04, 2.5, 0.06), '#7d838b')
+                elif r < 0.75 and any(sx > 0 and abs(yy - sg["y"]) < 5.0 for sg in SENALES_GIRO):   # toldo que taparía una señal de giro → persiana
+                    rng.choice(FRANJA)                                               # (mantiene la misma ciudad para cada semilla)
                     box((fx - sx * 0.06, yy, 1.35), (0.1, 2.6, 2.7), '#9ba1a8')
                     for z in (0.5, 0.95, 1.4, 1.85, 2.3): box((fx - sx * 0.12, yy, z), (0.04, 2.5, 0.06), '#7d838b')
                 elif r < 0.75:                                                       # tienda con toldo
