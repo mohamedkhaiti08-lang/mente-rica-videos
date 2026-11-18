@@ -1,0 +1,66 @@
+{
+ "seed": 202611191,
+ "hora": "dia",
+ "tema": "prioridad",
+ "tipos": [
+  "peaton",
+  "izq_sin",
+  "stop_mio"
+ ],
+ "intro": "¿Circularías bien? Tres cruces, tres segundos.",
+ "final": "¿Tres de tres? Escríbelo en comentarios.",
+ "dur": 31.98,
+ "cruces": [
+  {
+   "tipo": "peaton",
+   "lado": "izq",
+   "resp": "NO",
+   "pregunta": "¿Puedes pasar?",
+   "rotulo": "PASO DE PEATONES: PASA EL PEATÓN",
+   "q": "Cruce uno. ¿Sigues o paras?",
+   "escena": "cruce",
+   "r": "No. En el paso de peatones, el peatón tiene prioridad.",
+   "T0": 2.6,
+   "tq": 2.8000000000000003,
+   "C": 4.469,
+   "R": 7.469,
+   "tr": 7.569,
+   "E": 10.875,
+   "L": 10.069
+  },
+  {
+   "tipo": "izq_sin",
+   "lado": "izq",
+   "resp": "SÍ",
+   "pregunta": "¿Tienes prioridad?",
+   "rotulo": "VIENE POR TU IZQUIERDA: PASAS TÚ",
+   "q": "Cruce dos. ¿Y aquí, quién pasa?",
+   "escena": "cruce",
+   "r": "Sí. No hay señales, y viene por tu izquierda: pasas tú.",
+   "T0": 12.269,
+   "tq": 12.469,
+   "C": 14.344541666666666,
+   "R": 17.344541666666665,
+   "tr": 17.444541666666666,
+   "E": 20.620958333333334,
+   "L": 18.244541666666663
+  },
+  {
+   "tipo": "stop_mio",
+   "lado": "izq",
+   "resp": "NO",
+   "pregunta": "¿Tienes prioridad?",
+   "rotulo": "TIENES STOP: CEDE EL PASO",
+   "q": "Cruce tres. Ojo a la señal. ¿Pasas?",
+   "escena": "cruce",
+   "r": "No. El stop es tuyo: te paras y pasa él.",
+   "T0": 20.720958333333336,
+   "tq": 20.920958333333335,
+   "C": 23.101708333333335,
+   "R": 26.101708333333335,
+   "tr": 26.201708333333336,
+   "E": 28.773000000000003,
+   "L": 28.701708333333336
+  }
+ ]
+}
