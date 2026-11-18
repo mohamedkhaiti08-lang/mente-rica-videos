@@ -1,0 +1,66 @@
+{
+ "seed": 202611192,
+ "hora": "dia",
+ "tema": "aparcar",
+ "tipos": [
+  "amarilla_cont",
+  "r308_parar",
+  "zigzag"
+ ],
+ "intro": "¿Te multarían? Tres sitios, tres segundos.",
+ "final": "Comenta cuántas has acertado.",
+ "dur": 32.38,
+ "cruces": [
+  {
+   "tipo": "amarilla_cont",
+   "lado": "der",
+   "resp": "NO",
+   "pregunta": "¿Puedes aparcar aquí?",
+   "rotulo": "AMARILLA CONTINUA: NI PARAR NI APARCAR",
+   "q": "Sitio uno. Mira el bordillo. ¿Aparcas aquí?",
+   "escena": "aparcar",
+   "r": "No. Línea amarilla continua: prohibido parar y estacionar.",
+   "T0": 2.6,
+   "tq": 2.8000000000000003,
+   "C": 5.138583333333334,
+   "R": 8.138583333333333,
+   "tr": 8.238583333333333,
+   "E": 11.851791666666665,
+   "L": 9.338583333333332
+  },
+  {
+   "tipo": "r308_parar",
+   "lado": "der",
+   "resp": "SÍ",
+   "pregunta": "¿Puedes parar un momento?",
+   "rotulo": "R-308: PARAR SÍ, APARCAR NO",
+   "q": "Sitio dos. Solo vas a parar. ¿Puedes?",
+   "escena": "aparcar",
+   "r": "Sí. Una sola raya: prohibido estacionar, pero parar sí.",
+   "T0": 11.951791666666665,
+   "tq": 12.151791666666664,
+   "C": 14.265583333333332,
+   "R": 17.265583333333332,
+   "tr": 17.365583333333333,
+   "E": 20.8525,
+   "L": 18.46558333333333
+  },
+  {
+   "tipo": "zigzag",
+   "lado": "der",
+   "resp": "NO",
+   "pregunta": "¿Puedes aparcar aquí?",
+   "rotulo": "ZIGZAG AMARILLO: PROHIBIDO ESTACIONAR",
+   "q": "Sitio tres. Hueco libre. ¿Puedes aparcar aquí?",
+   "escena": "aparcar",
+   "r": "No. Zigzag amarillo: prohibido aparcar.",
+   "T0": 20.9525,
+   "tq": 21.1525,
+   "C": 23.69095833333333,
+   "R": 26.69095833333333,
+   "tr": 26.790958333333332,
+   "E": 29.405124999999998,
+   "L": 27.89095833333333
+  }
+ ]
+}

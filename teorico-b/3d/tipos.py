@@ -20,7 +20,7 @@ TIPOS = {
      voz_r=["Sí. Él tiene un ceda el paso: pasas tú.", "Sí. El ceda el paso es suyo: te deja pasar."],
      rotulo="ÉL TIENE CEDA EL PASO: PASAS TÚ", norma="Señal R-1"),
  "stop_mio": dict(tema="prioridad", escena="cruce", grupo="stop_mio", resp="NO", lados=["der", "izq"], actor="coche", senal="stop_mio", pregunta="¿Tienes prioridad?",
-     voz_q=["¿Tienes prioridad?", "Ojo a tu derecha. ¿Pasas?"],
+     voz_q=["¿Tienes prioridad?", "Ojo a la señal. ¿Pasas?"],
      voz_r=["No. Tienes un stop: para y cede el paso a todos.", "No. El stop es tuyo: te paras y pasa él."],
      rotulo="TIENES STOP: CEDE EL PASO", norma="Señal R-2"),
  "ceda_mio": dict(tema="prioridad", escena="cruce", grupo="ceda_mio", resp="NO", lados=["der", "izq"], actor="coche", senal="ceda_mio", pregunta="¿Tienes prioridad?",
