@@ -1,0 +1,56 @@
+{
+ "lines": [
+  "¿Sabes por qué un musulmán se tapa la boca al bostezar?",
+  "Uno bosteza con la boca abierta.",
+  "El otro se la tapa con la mano.",
+  "Día diez.",
+  "¿Qué crees que se le cuela?",
+  "Día treinta.",
+  "El Profeta, la paz sea con él, dijo: cuando bosteces, tápate la boca con la mano, porque el shaitán entra.",
+  "Un gesto pequeño. Una puerta cerrada.",
+  "¿Tú te tapas la boca al bostezar?"
+ ],
+ "starts": [
+  0.3,
+  4.04,
+  7.47,
+  10.71,
+  12.42,
+  16.05,
+  17.64,
+  24.25,
+  27.43
+ ],
+ "ends": [
+  3.34,
+  6.07,
+  9.31,
+  11.42,
+  13.85,
+  16.94,
+  23.44,
+  26.53,
+  29.49
+ ],
+ "duration": 31.69,
+ "sfx": [
+  {
+   "t": 8.77,
+   "f": 1320,
+   "dur": 0.8,
+   "v": 0.06
+  },
+  {
+   "t": 16.05,
+   "f": 660,
+   "dur": 2.0,
+   "v": 0.08
+  },
+  {
+   "t": 16.2,
+   "f": 990,
+   "dur": 2.0,
+   "v": 0.06
+  }
+ ]
+}

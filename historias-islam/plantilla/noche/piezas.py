@@ -645,3 +645,81 @@ def destellos(d, g, x, y0, y1, t, k, seed=6, col=GOLD):
         d.line([((px - s) * S, py * S), ((px + s) * S, py * S)], fill=c, width=int(3 * S))
         d.line([(px * S, (py - s) * S), (px * S, (py + s) * S)], fill=c, width=int(3 * S))
         g.ellipse([px - 18, py - 18, px + 18, py + 18], fill=(250, 220, 140, int(100 * k * math.sin(math.pi * ph))))
+
+# ---------------- piezas del 19 nov 2026 (bostezo, boca, hilo de sombra, humo bajo tierra, bocadillo, piedra, escalones de luz) ----------------
+
+# Bostezo: estira los brazos arriba y echa la cabeza un poco atrás (mirando a la derecha; usa mirror para la izquierda).
+BOSTEZO = dict(P["stand"]); BOSTEZO.update(head=(4, -304), neck=(0, -264), le=(-40, -286), lh=(-58, -342), re=(40, -286), rh=(58, -342))
+# Se tapa la boca con la mano derecha mientras bosteza (la mano queda en (x+20, GY-294)).
+TAPA = dict(P["stand"]); TAPA.update(head=(4, -304), neck=(0, -264), le=(-40, -286), lh=(-58, -342), re=(36, -232), rh=(22, -292))
+# Habla gesticulando con una mano abierta hacia delante (derecha).
+HABLA = dict(P["stand"]); HABLA.update(re=(44, -228), rh=(92, -246))
+
+def lerp_pose(a, b, k):
+    return {j: (lerp(a[j][0], b[j][0], k), lerp(a[j][1], b[j][1], k)) for j in a}
+
+def espejo(p):
+    return {j: (-v[0], v[1]) for j, v in p.items()}
+
+def boca(d, x, y, k, alpha=255):
+    """Boca abierta (óvalo oscuro) en la cara de una figura sin rasgos; k 0..1 cuánto se abre."""
+    if k <= 0.02 or alpha <= 0: return
+    rx, ry = 9 + 3 * k, 4 + 13 * k
+    d.ellipse([(x - rx) * S, (y - ry) * S, (x + rx) * S, (y + ry) * S], fill=(16, 18, 26, int(alpha)))
+
+def hilo_sombra(d, x0, y0, x1, y1, k, t, alpha=220, n=14, col=SHADOW, r=16):
+    """Hilo de humo oscuro que va de (x0, y0) a (x1, y1) (k 0..1 cuánto ha avanzado la punta). Para algo que «se cuela»."""
+    if k <= 0 or alpha <= 0: return
+    for i in range(n):
+        u = k - i * 0.05
+        if u <= 0: break
+        u = min(1.0, u)
+        px = lerp(x0, x1, u) + 18 * math.sin(u * 9 + t * 3) * (1 - u)
+        py = lerp(y0, y1, u) - 40 * math.sin(math.pi * u)
+        rr = r * (1 - i / n) * (1 - 0.5 * u) + 3
+        d.ellipse([(px - rr) * S, (py - rr) * S, (px + rr) * S, (py + rr) * S], fill=col + (int(alpha * (1 - i / n)),))
+
+def humo_dentro(d, x, k, t, col=(58, 54, 72), seed=8):
+    """Humo oscuro que se acumula bajo el suelo debajo de x (lo que se ha colado). k 0..1."""
+    if k <= 0: return
+    rnd = random.Random(seed)
+    for i in range(int(4 + 22 * k)):
+        bx = x + rnd.uniform(-150, 150) * (0.4 + 0.6 * k); by = GY + 40 + rnd.uniform(0, 330) * (0.3 + 0.7 * k)
+        r = rnd.uniform(24, 52) * (0.5 + 0.5 * k)
+        bx += 8 * math.sin(t * 0.9 + i); by += 5 * math.cos(t * 0.7 + i)
+        d.ellipse([(bx - r) * S, (by - r) * S, (bx + r) * S, (by + r) * S], fill=col + (int(170 + 60 * k),))
+
+def bocadillo(d, x, y, txt, alpha=255, size=30, col=CREAM, fondo=(18, 22, 30), cola=-1, borde=None):
+    """Bocadillo de diálogo con texto espaciado centrado en (x, y). cola -1 apunta abajo-izquierda, 1 abajo-derecha."""
+    if alpha <= 0: return
+    a = int(alpha); n = len(txt)
+    w = n * size * (0.602 + 0.22) + 40; h = size + 34
+    bc = (borde or col) + (a,)
+    tx = x + cola * w * 0.22
+    d.polygon([((tx - 14) * S, (y + h / 2 - 3) * S), ((tx + 14) * S, (y + h / 2 - 3) * S), ((tx + cola * 26) * S, (y + h / 2 + 26) * S)], fill=fondo + (a,), outline=bc, width=int(3 * S))
+    d.rounded_rectangle([(x - w / 2) * S, (y - h / 2) * S, (x + w / 2) * S, (y + h / 2) * S], radius=int(h / 2 * S), fill=fondo + (a,), outline=bc, width=int(3 * S))
+    d.line([((tx - 11) * S, (y + h / 2 - 2) * S), ((tx + 11) * S, (y + h / 2 - 2) * S)], fill=fondo + (a,), width=int(5 * S))
+    spaced(d, txt, x, y, size, alpha, track=0.22, col=col)
+
+def piedra(d, x, y, r=20, alpha=255, rot=0.0, col=(92, 86, 96)):
+    """Piedra oscura irregular (una palabra que pesa y cae)."""
+    if alpha <= 0: return
+    pts = []
+    for i, f in enumerate((1.0, 0.82, 1.08, 0.9, 1.0, 0.78, 1.05)):
+        ang = rot + i * 2 * math.pi / 7
+        pts.append(((x + r * f * math.cos(ang)) * S, (y + r * f * 0.85 * math.sin(ang)) * S))
+    d.polygon(pts, fill=col + (int(alpha),), outline=(140, 132, 140, int(alpha * 0.8)), width=int(2 * S))
+
+def escalones(d, g, x, n, k, ancho=150, alto=46, lado=1, col=(130, 240, 232)):
+    """Escalones de luz (grados) que suben desde el suelo junto a x, hacia el lado indicado. k 0..1 cuántos se ven (de n).
+    Devuelve la altura (px sobre el suelo) del último escalón completo, para subir a una figura."""
+    top = 0.0
+    for i in range(n):
+        q = max(0.0, min(1.0, k * n - i))
+        if q <= 0: break
+        x0 = x + lado * i * ancho * 0.55 - ancho / 2; y = GY - (i + 1) * alto
+        w = ancho * q
+        d.rounded_rectangle([x0 * S, (y - 6) * S, (x0 + w) * S, (y + 6) * S], radius=6 * S, fill=col + (int(235 * q),))
+        g.rectangle([x0, y - 18, x0 + w, y + 18], fill=col + (int(110 * q),))
+        if q >= 1: top = (i + 1) * alto
+    return top
