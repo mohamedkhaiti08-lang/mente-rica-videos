@@ -723,3 +723,106 @@ def escalones(d, g, x, n, k, ancho=150, alto=46, lado=1, col=(130, 240, 232)):
         g.rectangle([x0, y - 18, x0 + w, y + 18], fill=col + (int(110 * q),))
         if q >= 1: top = (i + 1) * alto
     return top
+
+# ---------------- piezas del 20 nov 2026 (sentado en el suelo comiendo, mantel, granos de baraka) ----------------
+
+def sentado(comer=0.0, droop=0.0, joy=0.0):
+    """Figura sentada en el suelo con las piernas cruzadas, mirando a la derecha (usa espejo() para la izquierda).
+    comer 0..1 lleva la mano 're/rh' del plato (x+118, GY-20) a la boca; droop 0..1 se encoge; joy 0..1 levanta los brazos."""
+    p = dict(head=(12, -206), neck=(4, -168), hip=(-10, -40), le=(22, -110), lh=(50, -56), re=(64, -90), rh=(118, -20),
+             lk=(48, -40), lf=(18, -6), rk=(38, -30), rf=(4, -4))
+    p["re"] = (lerp(64, 62, comer), lerp(-90, -122, comer)); p["rh"] = (lerp(118, 40, comer), lerp(-20, -186, comer))
+    if droop > 0:
+        for j, v in dict(head=(42, -168), neck=(26, -140), le=(34, -96), lh=(56, -50)).items():
+            p[j] = (lerp(p[j][0], v[0], droop), lerp(p[j][1], v[1], droop))
+    if joy > 0:
+        for j, v in dict(le=(-20, -220), lh=(-46, -276), re=(30, -224), rh=(56, -280)).items():
+            p[j] = (lerp(p[j][0], v[0], joy), lerp(p[j][1], v[1], joy))
+    return p
+
+def mantel(d, cx, w=170, alpha=255, col=CREAM):
+    """Mantel (sufra) extendido en el suelo, con un dibujo de puntos."""
+    if alpha <= 0: return
+    a = int(alpha)
+    d.rounded_rectangle([(cx - w / 2) * S, (GY - 7) * S, (cx + w / 2) * S, (GY + 5) * S], radius=5 * S, fill=(34, 40, 50, a), outline=col + (a,), width=int(3 * S))
+    for i in range(7):
+        x = cx - w / 2 + 16 + i * (w - 32) / 6
+        d.ellipse([(x - 3) * S, (GY - 3) * S, (x + 3) * S, (GY + 3) * S], fill=GOLD + (int(a * 0.7),))
+
+def granos(d, g, x, k, t, seed=12, col=GOLD):
+    """Montón de granos dorados que se acumula bajo el suelo debajo de x (baraka, lo que no se ve). k 0..1."""
+    if k <= 0: return
+    rnd = random.Random(seed); n = int(60 * k)
+    for i in range(n):
+        u = rnd.random(); v = rnd.random()
+        hw = 170 * (1 - v * 0.75)                     # forma de montaña: más ancho abajo
+        bx = x + (u - 0.5) * 2 * hw; by = GY + 380 - v * 300 * (0.4 + 0.6 * k)
+        r = rnd.uniform(5, 9); tw = 0.75 + 0.25 * math.sin(t * 3 + i)
+        d.ellipse([(bx - r) * S, (by - r * 0.7) * S, (bx + r) * S, (by + r * 0.7) * S], fill=col + (int(235 * tw),))
+    g.ellipse([x - 190, GY + 120 - 200 * k, x + 190, GY + 400], fill=(250, 220, 140, int(70 * k)))
+
+# ---------------- piezas del 20 nov 2026 (b): mar que se abre en dos murallas, bastón, soldado con lanza y antorcha, polvo, pose de miedo ----------------
+
+MIEDO = dict(P["stand"]); MIEDO.update(le=(-34, -250), lh=(-14, -300), re=(34, -250), rh=(14, -300), head=(0, -296))   # manos a la cabeza
+
+def mar_alto(d, g, x0, x1, h0, t, abre=0.0, gx=820, gw_max=110, hmax=560, col=(18, 66, 80)):
+    """Mar por ENCIMA del suelo, de x0 a x1 con altura h0. abre 0..1 lo parte en dos murallas alrededor de gx
+    (hueco de 2*gw_max px con un camino de luz en el fondo). hmax: altura de las murallas (no taparlas con texto)."""
+    gw = gw_max * abre
+    def top(x):
+        if abre > 0 and abs(x - gx) < gw - 0.5: return None
+        dist = abs(x - gx) - gw
+        hh = h0 + (hmax - h0) * abre * math.exp(-(dist / 150) ** 2) if abre > 0 else h0
+        return GY - hh + 9 * math.sin(x / 45 + t * 1.6) * (1 - 0.6 * abre)
+    for a, b in ((x0, gx - gw if abre > 0 else x1), (gx + gw, x1) if abre > 0 else (None, None)):
+        if a is None or b - a < 4: continue
+        xs = [a + (b - a) * i / 40 for i in range(41)]
+        pts = [(a, GY)] + [(x, top(x)) for x in xs] + [(b, GY)]
+        d.polygon([(px * S, py * S) for px, py in pts], fill=col + (235,))
+        d.line([(x * S, top(x) * S) for x in xs], fill=(150, 235, 235, 230), width=int(4 * S))          # espuma de la superficie
+        for k in range(1, 9):                                                                             # olas dentro del agua
+            y = GY - k * 40
+            seg_pts = [((x) * S, (y + 6 * math.sin(x / 38 + t * 1.3 + k)) * S) for x in xs if top(x) < y - 10]
+            if len(seg_pts) > 1: d.line(seg_pts, fill=(90, 200, 205, 110), width=int(2 * S))
+        if abre > 0:                                                                                      # bordes de las murallas
+            for xe in (a, b):
+                if abs(xe - gx) <= gw + 1:
+                    ty = top(xe - 1 if xe == b else xe + 1)
+                    d.line([(xe * S, ty * S), (xe * S, GY * S)], fill=(190, 250, 248, int(230 * abre)), width=int(4 * S))
+                    g.rectangle([xe - 14, ty, xe + 14, GY], fill=(120, 240, 235, int(90 * abre)))
+    if abre > 0:                                                                                          # camino de luz en el fondo
+        d.line([((gx - gw) * S, (GY - 2) * S), ((gx + gw) * S, (GY - 2) * S)], fill=(150, 245, 238, 255), width=int(6 * S))
+        g.rectangle([gx - gw, GY - 120 * abre, gx + gw, GY + 10], fill=(140, 245, 238, int(120 * abre)))
+
+def baston(d, hx, hy, ang, largo=330, col=CREAM, alpha=255):
+    """Bastón que sale de la mano (hx, hy) con ángulo ang (rad, 0 = vertical hacia abajo; positivo gira hacia la derecha).
+    El punto de agarre está a 1/3 del largo. Devuelve la punta inferior."""
+    ux, uy = -math.sin(ang), math.cos(ang)
+    x0, y0 = hx - ux * largo / 3, hy - uy * largo / 3; x1, y1 = hx + ux * largo * 2 / 3, hy + uy * largo * 2 / 3
+    d.line([(x0 * S, y0 * S), (x1 * S, y1 * S)], fill=col + (int(alpha),), width=int(7 * S))
+    d.arc([(x0 - 16) * S, (y0 - 16) * S, (x0 + 16) * S, (y0 + 16) * S], 180, 360, fill=col + (int(alpha),), width=int(6 * S))
+    return x1, y1
+
+def soldado(d, g, x, t, k=0.85, alpha=230, antorcha=False, ph=0.0, andar=1.0, col=(88, 80, 106)):
+    """Soldado de sombra que marcha hacia la derecha con una lanza (y antorcha si antorcha=True)."""
+    if alpha <= 0: return
+    p = walk_pose(t * 6 + ph, amp=0.8 * andar)
+    mini_figure(d, x, p, k=k, col=col, alpha=alpha)
+    hx, hy = x + p["rh"][0] * k, GY + p["rh"][1] * k
+    d.line([((hx - 10) * S, (hy + 60 * k) * S), ((hx + 24) * S, (hy - 250 * k) * S)], fill=(90, 84, 104, int(alpha)), width=int(4 * S))
+    d.polygon([((hx + 24) * S, (hy - 250 * k - 26) * S), ((hx + 16) * S, (hy - 250 * k + 4) * S), ((hx + 32) * S, (hy - 250 * k + 2) * S)], fill=(120, 112, 130, int(alpha)))
+    if antorcha:
+        lx, ly = x + p["lh"][0] * k, GY + p["lh"][1] * k - 70 * k
+        d.line([(lx * S, (ly + 70 * k) * S), (lx * S, ly * S)], fill=(90, 84, 104, int(alpha)), width=int(4 * S))
+        fl = 1 + 0.2 * math.sin(t * 13 + ph)
+        d.ellipse([(lx - 9 * fl) * S, (ly - 22 * fl) * S, (lx + 9 * fl) * S, (ly + 4) * S], fill=(240, 170, 90, int(alpha)))
+        g.ellipse([lx - 46, ly - 50, lx + 46, ly + 36], fill=(240, 150, 70, int(110 * alpha / 255)))
+
+def polvo(d, x0, x1, k, t, col=(70, 66, 80), seed=5):
+    """Nube de polvo baja que levanta un ejército (dibujar en capa sin halo)."""
+    if k <= 0: return
+    rnd = random.Random(seed)
+    for i in range(18):
+        bx = rnd.uniform(x0, x1) + 20 * math.sin(t * 0.8 + i); by = GY - rnd.uniform(10, 90) - 10 * math.sin(t + i)
+        r = rnd.uniform(30, 60)
+        d.ellipse([(bx - r) * S, (by - r * 0.6) * S, (bx + r) * S, (by + r * 0.6) * S], fill=col + (int(110 * k),))

@@ -1,0 +1,56 @@
+{
+ "lines": [
+  "¿Sabes por qué los musulmanes comen con la mano derecha?",
+  "Uno come con la izquierda, sin pensar.",
+  "El otro, siempre con la derecha.",
+  "Día diez.",
+  "¿Quién crees que come igual que él?",
+  "Día treinta.",
+  "El Profeta, la paz sea con él, dijo: come con tu derecha, porque el shaitán come con su izquierda.",
+  "Come con la derecha. No te parezcas a él.",
+  "¿Y tú, con qué mano comes?"
+ ],
+ "starts": [
+  0.3,
+  4.08,
+  7.49,
+  10.76,
+  12.47,
+  16.59,
+  18.18,
+  24.54,
+  28.08
+ ],
+ "ends": [
+  3.38,
+  6.19,
+  9.35,
+  11.47,
+  14.39,
+  17.48,
+  23.64,
+  27.08,
+  29.66
+ ],
+ "duration": 31.86,
+ "sfx": [
+  {
+   "t": 8.49,
+   "f": 1320,
+   "dur": 0.8,
+   "v": 0.06
+  },
+  {
+   "t": 16.59,
+   "f": 660,
+   "dur": 2.0,
+   "v": 0.08
+  },
+  {
+   "t": 16.74,
+   "f": 990,
+   "dur": 2.0,
+   "v": 0.06
+  }
+ ]
+}

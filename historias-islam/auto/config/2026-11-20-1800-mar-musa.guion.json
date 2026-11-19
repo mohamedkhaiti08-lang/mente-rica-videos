@@ -1,0 +1,62 @@
+{
+ "lines": [
+  "El mar delante. Un ejército detrás.",
+  "Su gente gritó: ¡nos van a alcanzar!",
+  "Y el ejército, cada vez más cerca.",
+  "¿Tú qué habrías dicho?",
+  "Musa dijo: ¡No! Mi Señor está conmigo. Él me guiará.",
+  "Allah le dijo: golpea el mar con tu bastón.",
+  "Y el mar se abrió. Cada lado, como una gran montaña.",
+  "Cuando no ves salida, Allah abre un camino.",
+  "¿Cuál es tu mar ahora mismo?"
+ ],
+ "starts": [
+  0.3,
+  3.29,
+  6.35,
+  9.19,
+  12.76,
+  16.37,
+  19.36,
+  23.24,
+  26.59
+ ],
+ "ends": [
+  2.49,
+  5.45,
+  8.39,
+  10.56,
+  15.56,
+  18.86,
+  22.34,
+  25.6,
+  28.25
+ ],
+ "duration": 30.36,
+ "sfx": [
+  {
+   "t": 13.06,
+   "f": 660,
+   "dur": 1.6,
+   "v": 0.06
+  },
+  {
+   "t": 19.36,
+   "f": 660,
+   "dur": 2.2,
+   "v": 0.08
+  },
+  {
+   "t": 19.509999999999998,
+   "f": 990,
+   "dur": 2.2,
+   "v": 0.06
+  },
+  {
+   "t": 19.11,
+   "f": 1320,
+   "dur": 0.8,
+   "v": 0.05
+  }
+ ]
+}
