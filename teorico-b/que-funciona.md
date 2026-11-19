@@ -4,7 +4,29 @@ Horarios: 10:00 y 18:00 (Europe/Madrid) — valor por defecto (picos de audienci
 **FORMATO ÚNICO desde el 12/11/2026 (decisión de Mohamed): vídeos 3D hechos con teorico-b/3d/ (ver README y FUENTES). Los formatos antiguos de la tabla ya no se producen; sus datos sirven solo de referencia de horarios, ganchos y temas.**
 **15/11/2026 (Mohamed): todos los 3D se parecían ("la misma idea"). Mismo estilo 3D, pero ROTAR 4 TEMAS: prioridad (cruces), giro (señales de giro), aparcar (¿puedes aparcar/parar aquí?) y mezcla (examen relámpago). Nunca el mismo tema dos vídeos seguidos. Comparar a partir de ahora las visitas por TEMA.**
 
-## 3D: pistas (18/11/2026, 22:00) — Metricool, TikTok 4-18/11
+## 3D: pistas (19/11/2026, 22:50) — Metricool, TikTok 5-19/11
+| Publicado | Tema | Situaciones (1ª resp.) | Hora escena | Dur. | Vistas | Likes | Com. | Compart. |
+|---|---|---|---|---|---|---|---|---|
+| 13/11 18:00 | prioridad | peaton · ceda_mio · ceda_otro (1º NO) | día | 34 s | **15.289** | 426 | 3 | 16 |
+| 14/11 10:00 | prioridad | der_sin · sem_rojo · izq_sin (1º NO) | día | 32 s | 8.763 | 216 | 1 | 7 |
+| 18/11 10:00 | mezcla | sem_rojo · r302_der · amarilla_disc_parar (1º NO) | día | 33 s | **2.351** | 78 | 2 | 2 |
+| 13/11 10:00 | prioridad | stop_otro · sem_verde · ambulancia (1º SÍ) | día | 32 s | 2.261 | 107 | 2 | 3 |
+| 15/11 18:00 | prioridad | sem_rojo · ceda_otro · der_sin (1º NO) | día | 32 s | 1.051 | 46 | 1 | 2 |
+| 16/11 10:00 | giro | r303_izq · r302_izq · r101_der (1º NO) | tarde | 33 s | 980 | 57 | 2 | 1 |
+| 17/11 18:00 | prioridad | ceda_mio · der_sin · ceda_otro (1º NO) | día | 34 s | 971 | 52 | 1 | 6 |
+| 18/11 18:00 | giro | r303_sentido · r302_izq · r101_der (1º NO) | tarde | 34 s | 943 | 31 | 0 | 0 |
+| 14/11 18:00 | prioridad | stop_mio · sem_verde · ambulancia (1º NO) | día | 34 s | 929 | 52 | 1 | 4 |
+| 16/11 18:00 | mezcla | peaton · r303_der · vado (1º NO) | día | 34 s | 887 | 31 | 0 | 0 |
+| 15/11 10:00 | prioridad | peaton · stop_otro · ceda_mio (1º NO) | tarde | 31 s | 854 | 47 | 1 | 0 |
+| 17/11 10:00 | aparcar | paso_cebra · r308_parar · plaza_blanca (1º NO) | tarde | 33 s | 849 | 55 | 0 | 1 |
+- Media 3D (12 vídeos): 3.011 vistas; mediana 976. Los 2 del 19/11 (prioridad 10:00, aparcar 18:00) aún no salen en Metricool.
+- Por TEMA (pistas): mezcla 1.619 de media (2 vídeos; el 18/11 10:00 = 2.351, 2,4× la mediana, el mejor desde el 14/11), prioridad 1.213 sin los 2 virales (4.303 con ellos), giro 962 (2), aparcar 849 (1). Tasa de likes: aparcar 6,5 %, prioridad 4,9 %, giro 4,6 %, mezcla 3,4 %. Ningún tema llega al doble de la media → rotación 1:1:1:1; mezcla es la candidata a salir más si se confirma.
+- sem_rojo sale en 3 de los 5 mejores (8.763, 2.351, 1.051) → pista a vigilar, aún sin forzar.
+- PISTA NUEVA, hora de la ESCENA: los 4 vídeos al atardecer ("tarde") están todos por debajo de 1.000 (media 906); los de día sin los 2 virales, media 1.408. → Desde el 20/11 se fuerza --hora dia hasta que haya más datos.
+- Hora de publicación: 10:00 sin el viral 1.459 de media vs 18:00 sin el viral 956 → pista débil a favor de las 10:00; se mantienen 10:00 y 18:00.
+- Duración 31-34 s: sin diferencia. Ningún vídeo 3D con 0 vistas. Instagram sigue sin conectar.
+
+### (anterior) 3D: pistas (18/11/2026, 22:00) — Metricool, TikTok 4-18/11
 | Publicado | Tema | Situaciones (1ª resp.) | Hora escena | Dur. | Vistas | Likes | Com. | Compart. |
 |---|---|---|---|---|---|---|---|---|
 | 13/11 18:00 | prioridad | peaton · ceda_mio · ceda_otro (1º NO) | día | 34 s | **15.007** | 422 | 3 | 15 |
