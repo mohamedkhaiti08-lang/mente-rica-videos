@@ -1,0 +1,66 @@
+{
+ "seed": 202611202,
+ "hora": "dia",
+ "tema": "mezcla",
+ "tipos": [
+  "ambulancia",
+  "r303_izq",
+  "plaza_blanca"
+ ],
+ "intro": "Examen relámpago: un cruce, un giro y un sitio para aparcar.",
+ "final": "¿Tres de tres? Escríbelo en comentarios.",
+ "dur": 32.42,
+ "cruces": [
+  {
+   "tipo": "ambulancia",
+   "lado": "der",
+   "resp": "NO",
+   "pregunta": "¿Tienes prioridad?",
+   "rotulo": "AMBULANCIA DE URGENCIA: PASA ELLA",
+   "q": "Prueba uno. ¿Tienes prioridad?",
+   "escena": "cruce",
+   "r": "No. Una ambulancia en servicio de urgencia siempre tiene prioridad.",
+   "T0": 2.6,
+   "tq": 2.8000000000000003,
+   "C": 4.538250000000001,
+   "R": 7.538250000000001,
+   "tr": 7.63825,
+   "E": 11.696541666666667,
+   "L": 10.138250000000001
+  },
+  {
+   "tipo": "r303_izq",
+   "lado": "izq",
+   "resp": "NO",
+   "pregunta": "¿Puedes girar a la izquierda?",
+   "rotulo": "R-303: PROHIBIDO GIRAR A LA IZQUIERDA",
+   "q": "Prueba dos. ¿Giras a la izquierda?",
+   "escena": "giro",
+   "r": "No. Flecha a la izquierda tachada: prohibido.",
+   "T0": 12.33825,
+   "tq": 12.53825,
+   "C": 14.426458333333333,
+   "R": 17.426458333333333,
+   "tr": 17.526458333333334,
+   "E": 20.103125000000002,
+   "L": 18.626458333333332
+  },
+  {
+   "tipo": "plaza_blanca",
+   "lado": "der",
+   "resp": "SÍ",
+   "pregunta": "¿Puedes aparcar aquí?",
+   "rotulo": "PLAZA EN BLANCO: SÍ PUEDES APARCAR",
+   "q": "Prueba tres. Plaza libre. ¿Aparcas?",
+   "escena": "aparcar",
+   "r": "Sí. Líneas blancas y ninguna señal: adelante.",
+   "T0": 20.826458333333335,
+   "tq": 21.026458333333334,
+   "C": 23.103041666666666,
+   "R": 26.103041666666666,
+   "tr": 26.203041666666667,
+   "E": 29.216958333333334,
+   "L": 27.303041666666665
+  }
+ ]
+}
