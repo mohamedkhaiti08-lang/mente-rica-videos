@@ -1,0 +1,66 @@
+{
+ "seed": 202611211,
+ "hora": "dia",
+ "tema": "aparcar",
+ "tipos": [
+  "vado",
+  "amarilla_disc_parar",
+  "r308"
+ ],
+ "intro": "¿Aparcarías aquí? Tres huecos, tres segundos.",
+ "final": "¿Cuántas has acertado? Dímelo en comentarios.",
+ "dur": 33.0,
+ "cruces": [
+  {
+   "tipo": "vado",
+   "lado": "der",
+   "resp": "NO",
+   "pregunta": "¿Puedes aparcar aquí?",
+   "rotulo": "VADO: PROHIBIDO APARCAR",
+   "q": "Sitio uno. Mira la pared. ¿Aparcas aquí?",
+   "escena": "aparcar",
+   "r": "No. Delante de un vado señalizado está prohibido aparcar.",
+   "T0": 2.6,
+   "tq": 2.8000000000000003,
+   "C": 5.014458333333334,
+   "R": 8.014458333333334,
+   "tr": 8.114458333333333,
+   "E": 11.722958333333333,
+   "L": 9.214458333333333
+  },
+  {
+   "tipo": "amarilla_disc_parar",
+   "lado": "der",
+   "resp": "SÍ",
+   "pregunta": "¿Puedes parar un momento?",
+   "rotulo": "AMARILLA DISCONTINUA: PARAR SÍ, APARCAR NO",
+   "q": "Sitio dos. No vas a aparcar, solo parar. ¿Puedes?",
+   "escena": "aparcar",
+   "r": "Sí. La discontinua solo prohíbe estacionar.",
+   "T0": 11.822958333333332,
+   "tq": 12.022958333333332,
+   "C": 14.707541666666666,
+   "R": 17.707541666666664,
+   "tr": 17.807541666666665,
+   "E": 20.620749999999997,
+   "L": 18.907541666666663
+  },
+  {
+   "tipo": "r308",
+   "lado": "der",
+   "resp": "NO",
+   "pregunta": "¿Puedes aparcar aquí?",
+   "rotulo": "R-308: ESTACIONAMIENTO PROHIBIDO",
+   "q": "Sitio tres. Mira la señal. ¿Aparcas?",
+   "escena": "aparcar",
+   "r": "No. Esa señal prohíbe estacionar en este lado.",
+   "T0": 21.107541666666666,
+   "tq": 21.307541666666665,
+   "C": 23.472125,
+   "R": 26.472125,
+   "tr": 26.572125,
+   "E": 29.485875,
+   "L": 27.672124999999998
+  }
+ ]
+}

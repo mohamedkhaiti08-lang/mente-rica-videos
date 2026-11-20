@@ -1,0 +1,66 @@
+{
+ "seed": 202611212,
+ "hora": "dia",
+ "tema": "prioridad",
+ "tipos": [
+  "sem_rojo",
+  "stop_otro",
+  "ceda_mio"
+ ],
+ "intro": "¿Sabes quién pasa primero? Tres cruces.",
+ "final": "¿Cuántas has acertado? Dímelo en comentarios.",
+ "dur": 32.3,
+ "cruces": [
+  {
+   "tipo": "sem_rojo",
+   "lado": "izq",
+   "resp": "NO",
+   "pregunta": "¿Puedes pasar?",
+   "rotulo": "SEMÁFORO EN ROJO: ESPERA",
+   "q": "Cruce uno. ¿Puedes pasar?",
+   "escena": "cruce",
+   "r": "No. Tu semáforo está en rojo: esperas.",
+   "T0": 2.6,
+   "tq": 2.8000000000000003,
+   "C": 4.355708333333334,
+   "R": 7.355708333333334,
+   "tr": 7.455708333333334,
+   "E": 9.921333333333333,
+   "L": 9.955708333333334
+  },
+  {
+   "tipo": "stop_otro",
+   "lado": "izq",
+   "resp": "SÍ",
+   "pregunta": "¿Tienes prioridad?",
+   "rotulo": "ÉL TIENE STOP: TE CEDE EL PASO",
+   "q": "Cruce dos. Mira las señales. ¿Pasas tú?",
+   "escena": "cruce",
+   "r": "Sí. El stop es suyo: te tiene que ceder el paso.",
+   "T0": 12.155708333333333,
+   "tq": 12.355708333333332,
+   "C": 14.713125,
+   "R": 17.713124999999998,
+   "tr": 17.813125,
+   "E": 20.809708333333333,
+   "L": 18.613124999999997
+  },
+  {
+   "tipo": "ceda_mio",
+   "lado": "izq",
+   "resp": "NO",
+   "pregunta": "¿Tienes prioridad?",
+   "rotulo": "TIENES CEDA EL PASO: ESPERA",
+   "q": "Cruce tres. ¿Tienes prioridad?",
+   "escena": "cruce",
+   "r": "No. Tienes un ceda el paso: pasa él primero.",
+   "T0": 20.909708333333334,
+   "tq": 21.109708333333334,
+   "C": 22.89120833333333,
+   "R": 25.89120833333333,
+   "tr": 25.991208333333333,
+   "E": 28.787416666666665,
+   "L": 28.491208333333333
+  }
+ ]
+}
