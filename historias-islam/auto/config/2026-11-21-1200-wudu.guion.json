@@ -1,0 +1,59 @@
+{
+ "lines": [
+  "¿Sabes qué se va con el agua cuando un musulmán hace el wudu?",
+  "Los dos fallan cada día, con lo que miran y lo que tocan.",
+  "Uno sigue sin más.",
+  "El otro hace el wudu.",
+  "Día diez.",
+  "¿Quién crees que llega limpio?",
+  "Día treinta.",
+  "El Profeta, la paz sea con él, dijo: cuando el musulmán lava su cara, el agua se lleva los pecados de sus ojos… hasta que termina limpio.",
+  "El agua se lleva más de lo que ves.",
+  "¿Cuántas veces al día haces el wudu?"
+ ],
+ "starts": [
+  0.3,
+  3.88,
+  7.69,
+  9.74,
+  12.56,
+  13.96,
+  17.49,
+  18.84,
+  26.99,
+  29.76
+ ],
+ "ends": [
+  3.38,
+  6.89,
+  8.84,
+  11.06,
+  13.25,
+  15.6,
+  18.33,
+  26.29,
+  28.96,
+  32.02
+ ],
+ "duration": 34.01,
+ "sfx": [
+  {
+   "t": 10.94,
+   "f": 1320,
+   "dur": 0.8,
+   "v": 0.06
+  },
+  {
+   "t": 17.49,
+   "f": 660,
+   "dur": 2.0,
+   "v": 0.08
+  },
+  {
+   "t": 17.639999999999997,
+   "f": 990,
+   "dur": 2.0,
+   "v": 0.06
+  }
+ ]
+}
