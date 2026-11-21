@@ -1,0 +1,66 @@
+{
+ "seed": 202611232,
+ "hora": "dia",
+ "tema": "giro",
+ "tipos": [
+  "r101_der",
+  "r302_izq",
+  "r303_der"
+ ],
+ "intro": "Si fallas una de estas, suspendes. ¿Puedes girar aquí?",
+ "final": "¿Cuántas has acertado? Pon tu número abajo.",
+ "dur": 34.44,
+ "cruces": [
+  {
+   "tipo": "r101_der",
+   "lado": "der",
+   "resp": "NO",
+   "pregunta": "¿Puedes girar a la derecha?",
+   "rotulo": "ENTRADA PROHIBIDA: NO PUEDES ENTRAR",
+   "q": "Calle uno. Quieres entrar en esa calle de la derecha. ¿Puedes?",
+   "escena": "giro",
+   "r": "No. Esa calle tiene entrada prohibida.",
+   "T0": 2.6,
+   "tq": 2.8000000000000003,
+   "C": 6.0592500000000005,
+   "R": 9.05925,
+   "tr": 9.15925,
+   "E": 11.693375,
+   "L": 10.25925
+  },
+  {
+   "tipo": "r302_izq",
+   "lado": "izq",
+   "resp": "SÍ",
+   "pregunta": "¿Puedes girar a la izquierda?",
+   "rotulo": "SOLO PROHÍBE LA DERECHA: SÍ PUEDES",
+   "q": "Calle dos. Ahora quieres ir a la izquierda. ¿Puedes?",
+   "escena": "giro",
+   "r": "Sí. Esa señal solo prohíbe girar a la derecha.",
+   "T0": 12.459249999999999,
+   "tq": 12.659249999999998,
+   "C": 15.277249999999999,
+   "R": 18.27725,
+   "tr": 18.37725,
+   "E": 21.370416666666667,
+   "L": 19.477249999999998
+  },
+  {
+   "tipo": "r303_der",
+   "lado": "der",
+   "resp": "SÍ",
+   "pregunta": "¿Puedes girar a la derecha?",
+   "rotulo": "SOLO PROHÍBE LA IZQUIERDA: SÍ PUEDES",
+   "q": "Calle tres. Ojo, que es trampa. ¿Puedes girar a la derecha?",
+   "escena": "giro",
+   "r": "Sí. Esa señal solo prohíbe girar a la izquierda.",
+   "T0": 21.67725,
+   "tq": 21.87725,
+   "C": 24.9455,
+   "R": 27.9455,
+   "tr": 28.0455,
+   "E": 31.038291666666666,
+   "L": 29.1455
+  }
+ ]
+}

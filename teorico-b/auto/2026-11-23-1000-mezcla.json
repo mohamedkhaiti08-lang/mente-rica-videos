@@ -1,0 +1,66 @@
+{
+ "seed": 202611231,
+ "hora": "dia",
+ "tema": "mezcla",
+ "tipos": [
+  "r303_sentido",
+  "ceda_otro",
+  "amarilla_cont_parar"
+ ],
+ "intro": "Cruce, giro y aparcar. ¿Aciertas las tres?",
+ "final": "¿Tres de tres? Escríbelo en comentarios.",
+ "dur": 33.79,
+ "cruces": [
+  {
+   "tipo": "r303_sentido",
+   "lado": "izq",
+   "resp": "NO",
+   "pregunta": "¿Puedes cambiar de sentido?",
+   "rotulo": "TAMBIÉN PROHÍBE CAMBIAR DE SENTIDO",
+   "q": "Prueba uno. Quieres dar la vuelta. ¿Puedes cambiar de sentido aquí?",
+   "escena": "giro",
+   "r": "No. Prohibido girar a la izquierda incluye el cambio de sentido.",
+   "T0": 2.6,
+   "tq": 2.8000000000000003,
+   "C": 6.2582916666666675,
+   "R": 9.258291666666668,
+   "tr": 9.358291666666668,
+   "E": 13.046958333333334,
+   "L": 10.458291666666668
+  },
+  {
+   "tipo": "ceda_otro",
+   "lado": "der",
+   "resp": "SÍ",
+   "pregunta": "¿Tienes prioridad?",
+   "rotulo": "ÉL TIENE CEDA EL PASO: PASAS TÚ",
+   "q": "Prueba dos. ¿Quién tiene que ceder?",
+   "escena": "cruce",
+   "r": "Sí. Él tiene un ceda el paso: pasas tú.",
+   "T0": 13.146958333333334,
+   "tq": 13.346958333333333,
+   "C": 15.201666666666666,
+   "R": 18.201666666666668,
+   "tr": 18.30166666666667,
+   "E": 20.832000000000004,
+   "L": 19.101666666666667
+  },
+  {
+   "tipo": "amarilla_cont_parar",
+   "lado": "der",
+   "resp": "NO",
+   "pregunta": "¿Puedes parar un momento?",
+   "rotulo": "AMARILLA CONTINUA: NI PARAR NI APARCAR",
+   "q": "Prueba tres. No vas a aparcar, solo parar. ¿Puedes?",
+   "escena": "aparcar",
+   "r": "No. Con línea amarilla continua no puedes ni parar.",
+   "T0": 21.30166666666667,
+   "tq": 21.50166666666667,
+   "C": 24.315708333333333,
+   "R": 27.315708333333333,
+   "tr": 27.415708333333335,
+   "E": 30.579541666666668,
+   "L": 28.515708333333333
+  }
+ ]
+}

@@ -4,6 +4,8 @@ Horarios: 10:00 y 18:00 (Europe/Madrid) — valor por defecto (picos de audienci
 **FORMATO ÚNICO desde el 12/11/2026 (decisión de Mohamed): vídeos 3D hechos con teorico-b/3d/ (ver README y FUENTES). Los formatos antiguos de la tabla ya no se producen; sus datos sirven solo de referencia de horarios, ganchos y temas.**
 **15/11/2026 (Mohamed): todos los 3D se parecían ("la misma idea"). Mismo estilo 3D, pero ROTAR 4 TEMAS: prioridad (cruces), giro (señales de giro), aparcar (¿puedes aparcar/parar aquí?) y mezcla (examen relámpago). Nunca el mismo tema dos vídeos seguidos. Comparar a partir de ahora las visitas por TEMA.**
 
+- 21/11/2026 (22:40): sin datos nuevos — Metricool desconectado desde el 20/11 (no se pudo hacer «Aprender» ni programar). Cola lista en el repo: 22/11 aparcar 10:00 + prioridad 18:00 (archivos 2026-11-21-*), 23/11 mezcla 10:00 + giro 18:00.
+
 ## 3D: pistas (19/11/2026, 22:50) — Metricool, TikTok 5-19/11
 | Publicado | Tema | Situaciones (1ª resp.) | Hora escena | Dur. | Vistas | Likes | Com. | Compart. |
 |---|---|---|---|---|---|---|---|---|
