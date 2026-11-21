@@ -826,3 +826,100 @@ def polvo(d, x0, x1, k, t, col=(70, 66, 80), seed=5):
         bx = rnd.uniform(x0, x1) + 20 * math.sin(t * 0.8 + i); by = GY - rnd.uniform(10, 90) - 10 * math.sin(t + i)
         r = rnd.uniform(30, 60)
         d.ellipse([(bx - r) * S, (by - r * 0.6) * S, (bx + r) * S, (by + r * 0.6) * S], fill=col + (int(110 * k),))
+
+
+# ---------------- piezas del 23 nov 2026 (muro de distancia, lazo de luz entre corazones, caja pesada, hoguera, vela) ----------------
+GRIS = (120, 116, 126)
+TEAL_L = (130, 240, 232)
+FUEGO = (250, 196, 120)
+
+def muro(d, x, h, alpha=255, w=56, col=GRIS):
+    """Muro de ladrillos grises que crece desde el suelo (h px). Objeto nuevo: la distancia que no se ve."""
+    if h <= 2 or alpha <= 0: return
+    bh = 26; n = int(h // bh) + 1
+    for i in range(n):
+        y1 = GY - i * bh; y0 = max(GY - h, y1 - bh)
+        if y0 >= y1: break
+        off = (bh / 2 if i % 2 else 0)
+        d.rectangle([(x - w / 2) * S, y0 * S, (x + w / 2) * S, y1 * S], fill=(44, 44, 52, int(alpha * 0.9)), outline=col + (int(alpha),), width=int(2 * S))
+        d.line([((x - w / 2 + 14 + off) * S, y0 * S), ((x - w / 2 + 14 + off) * S, y1 * S)], fill=col + (int(alpha * 0.8),), width=int(2 * S))
+
+def lazo(d, g, x0, y0, x1, y1, k, t, alpha=255, alto=90, col=TEAL_L):
+    """Lazo de luz en arco entre dos corazones; k 0..1 cuánto se ha tendido. Chispas que viajan por él (objeto nuevo)."""
+    if k <= 0 or alpha <= 0: return
+    pts = []
+    for i in range(41):
+        u = i / 40 * k
+        pts.append((lerp(x0, x1, u), lerp(y0, y1, u) - alto * math.sin(math.pi * u)))
+    d.line([(a * S, b * S) for a, b in pts], fill=col + (int(alpha * 0.9),), width=int(4 * S), joint="curve")
+    for a, b in pts[::4]: g.ellipse([a - 18, b - 18, a + 18, b + 18], fill=(90, 235, 228, int(alpha * 0.35)))
+    if k >= 1:
+        for j in range(2):
+            u = (t * 0.45 + j * 0.5) % 1
+            a, b = lerp(x0, x1, u), lerp(y0, y1, u) - alto * math.sin(math.pi * u)
+            d.ellipse([(a - 6) * S, (b - 6) * S, (a + 6) * S, (b + 6) * S], fill=(230, 255, 250, int(alpha)))
+    for (a, b) in ((x0, y0), (pts[-1][0], pts[-1][1])):
+        d.ellipse([(a - 9) * S, (b - 9) * S, (a + 9) * S, (b + 9) * S], fill=col + (int(alpha),))
+
+def caja(d, x, y, alpha=255, w=112, h=84, col=CREAM, gris=0.0):
+    """Caja de mudanza pesada (centro x, base y)."""
+    c = tuple(int(lerp(a, b, gris)) for a, b in zip(col, (110, 108, 116))) + (int(alpha),)
+    d.rectangle([(x - w / 2) * S, (y - h) * S, (x + w / 2) * S, y * S], fill=(30, 32, 40, int(alpha)), outline=c, width=int(5 * S))
+    d.line([((x - w / 2) * S, (y - h + 18) * S), ((x + w / 2) * S, (y - h + 18) * S)], fill=c, width=int(3 * S))
+    d.line([(x * S, (y - h) * S), (x * S, (y - h + 18) * S)], fill=c, width=int(3 * S))
+
+def gotas_sudor(d, x, y, t, alpha=255):
+    for i in range(2):
+        ph = (t * 1.2 + i * 0.5) % 1
+        yy = y + 30 * ph; xx = x + 20 * i
+        d.ellipse([(xx - 4) * S, (yy - 7) * S, (xx + 4) * S, (yy + 5) * S], fill=(200, 225, 235, int(alpha * (1 - ph))))
+
+def llama(d, g, x, y, h, w, t, alpha=255, col=FUEGO, seed=0):
+    """Una lengua de fuego (gota alargada que tiembla)."""
+    if h <= 2 or alpha <= 0: return
+    sw = 1 + 0.08 * math.sin(t * 9 + seed); hh = h * (1 + 0.1 * math.sin(t * 7 + seed * 2))
+    tip = x + w * 0.35 * math.sin(t * 5 + seed)
+    pts = []
+    for i in range(13):
+        a = math.pi * i / 12
+        pts.append((x - w * sw * math.cos(a), y - w * 0.55 * math.sin(a) * 0.6))
+    pts += [(x + w * 0.6, y - hh * 0.4), (tip, y - hh), (x - w * 0.6, y - hh * 0.4)]
+    d.polygon([(a * S, b * S) for a, b in pts], fill=col + (int(alpha),))
+    inner = [(x + (px - x) * 0.5, y + (py - y) * 0.5) for px, py in pts]
+    d.polygon([(a * S, b * S) for a, b in inner], fill=(255, 244, 214, int(alpha)))
+
+def hoguera(d, g, x, k, t, ceniza=0.0):
+    """Hoguera (objeto nuevo): k 0..1 tamaño del fuego; ceniza 0..1 brasas y ceniza gris cuando se apaga."""
+    leña = tuple(int(lerp(a, b, ceniza)) for a, b in zip(CREAM, (100, 98, 104)))
+    for a in (-0.35, 0.35, 0.0):
+        dx = 90 * math.cos(a) ; dy = 90 * math.sin(a) * 0.25
+        d.line([((x - dx) * S, (GY - 10 - dy) * S), ((x + dx) * S, (GY - 10 + dy) * S)], fill=leña + (255,), width=int(12 * S))
+    if ceniza > 0:
+        d.ellipse([(x - 80) * S, (GY - 22) * S, (x + 80) * S, (GY + 4) * S], fill=(80, 78, 84, int(220 * ceniza)))
+        for i in range(5):
+            bx = x - 50 + i * 25; d.ellipse([(bx - 5) * S, (GY - 16) * S, (bx + 5) * S, (GY - 6) * S], fill=(230, 120, 80, int(200 * ceniza * (1 - seg(ceniza, 0.6, 1.0)) * (0.5 + 0.5 * math.sin(t * 4 + i)))))
+    if k > 0.02:
+        for i, (ox, hk, wk) in enumerate(((0, 1.0, 1.0), (-48, 0.7, 0.7), (48, 0.75, 0.7), (-20, 0.55, 0.5), (26, 0.6, 0.5))):
+            llama(d, g, x + ox * k, GY - 18, 330 * k * hk, 60 * k * wk + 6, t, seed=i)
+        g.ellipse([x - 260 * k, GY - 420 * k - 40, x + 260 * k, GY + 40], fill=(255, 180, 90, int(150 * k)))
+        rnd = random.Random(3)
+        for i in range(int(14 * k)):                      # chispas
+            ph = (t * 0.7 + rnd.random()) % 1
+            sx = x + rnd.uniform(-90, 90) * k + 20 * math.sin(t * 3 + i); sy = GY - 60 - ph * 520 * k
+            d.ellipse([(sx - 3) * S, (sy - 3) * S, (sx + 3) * S, (sy + 3) * S], fill=FUEGO + (int(255 * (1 - ph)),))
+
+def humo(d, x, y, k, t, seed=4):
+    """Humo gris que sube de lo que se apaga."""
+    if k <= 0: return
+    rnd = random.Random(seed)
+    for i in range(10):
+        ph = (t * 0.25 + i / 10) % 1
+        px = x + 30 * math.sin(ph * 6 + i) + rnd.uniform(-20, 20); py = y - ph * 420
+        r = 18 + 40 * ph
+        d.ellipse([(px - r) * S, (py - r) * S, (px + r) * S, (py + r) * S], fill=(110, 108, 118, int(120 * k * (1 - ph))))
+
+def vela(d, g, x, y, t, alpha=255):
+    """Vela pequeña en la mano: cuerpo blanco y llamita constante (objeto nuevo)."""
+    d.rounded_rectangle([(x - 9) * S, (y - 4) * S, (x + 9) * S, (y + 40) * S], radius=3 * S, fill=CREAM + (int(alpha),))
+    llama(d, g, x, y - 6, 34, 9, t * 0.6, alpha)
+    g.ellipse([x - 70, y - 90, x + 70, y + 40], fill=(255, 200, 120, int(130 * alpha / 255)))

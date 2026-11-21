@@ -1,0 +1,65 @@
+{
+ "lines": [
+  "¿Sabes qué pasa cuando dices assalamu aleikum?",
+  "Uno pasa al lado de la gente sin decir nada.",
+  "El otro saluda a cada uno.",
+  "Día diez.",
+  "Día treinta. Los dos cargan algo pesado.",
+  "¿A quién crees que ayudarán?",
+  "Una frase pequeña abrió todos los corazones.",
+  "El Profeta, la paz sea con él, dijo: ¿os digo algo que, si lo hacéis, os amaréis? Extended el salam entre vosotros.",
+  "Saluda. Abre corazones.",
+  "¿A quién vas a saludar hoy?"
+ ],
+ "starts": [
+  0.3,
+  3.36,
+  6.45,
+  9.37,
+  11.26,
+  14.05,
+  17.49,
+  20.7,
+  27.69,
+  29.84
+ ],
+ "ends": [
+  2.86,
+  5.85,
+  8.16,
+  10.06,
+  13.65,
+  15.59,
+  20.1,
+  26.98,
+  29.14,
+  31.48
+ ],
+ "duration": 33.47,
+ "sfx": [
+  {
+   "t": 7.3500000000000005,
+   "f": 1320,
+   "dur": 0.8,
+   "v": 0.06
+  },
+  {
+   "t": 10.27,
+   "f": 1320,
+   "dur": 0.8,
+   "v": 0.05
+  },
+  {
+   "t": 17.189999999999998,
+   "f": 660,
+   "dur": 2.0,
+   "v": 0.08
+  },
+  {
+   "t": 17.34,
+   "f": 990,
+   "dur": 2.0,
+   "v": 0.06
+  }
+ ]
+}

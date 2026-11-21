@@ -1,0 +1,65 @@
+{
+ "lines": [
+  "Empezó con todo. Y al mes lo dejó. ¿Te suena?",
+  "Uno lo quiere hacer todo de golpe.",
+  "El otro hace un poco. Pero cada día.",
+  "Día diez.",
+  "Día treinta.",
+  "¿Quién crees que ha llegado más lejos?",
+  "La llama grande se apagó. La pequeña, nunca.",
+  "El Profeta, la paz sea con él, dijo: la obra más amada por Allah es la más constante, aunque sea poca.",
+  "Poco. Pero cada día.",
+  "¿Qué vas a hacer tú cada día?"
+ ],
+ "starts": [
+  0.3,
+  3.31,
+  5.85,
+  9.3,
+  11.59,
+  13.23,
+  17.2,
+  20.44,
+  26.68,
+  28.77
+ ],
+ "ends": [
+  2.71,
+  5.15,
+  7.89,
+  9.99,
+  12.43,
+  15.3,
+  19.74,
+  25.98,
+  27.97,
+  30.52
+ ],
+ "duration": 32.53,
+ "sfx": [
+  {
+   "t": 6.85,
+   "f": 1320,
+   "dur": 0.8,
+   "v": 0.05
+  },
+  {
+   "t": 16.9,
+   "f": 660,
+   "dur": 2.0,
+   "v": 0.08
+  },
+  {
+   "t": 17.05,
+   "f": 990,
+   "dur": 2.0,
+   "v": 0.06
+  },
+  {
+   "t": 26.68,
+   "f": 880,
+   "dur": 1.2,
+   "v": 0.05
+  }
+ ]
+}
