@@ -6,7 +6,36 @@ Horarios: 10:00 y 18:00 (Europe/Madrid) — valor por defecto (picos de audienci
 
 - 21/11/2026 (22:40): sin datos nuevos — Metricool desconectado desde el 20/11 (no se pudo hacer «Aprender» ni programar). Cola lista en el repo: 22/11 aparcar 10:00 + prioridad 18:00 (archivos 2026-11-21-*), 23/11 mezcla 10:00 + giro 18:00.
 
-## 3D: pistas (19/11/2026, 22:50) — Metricool, TikTok 5-19/11
+- 22/11/2026 (22:40): Metricool RECONECTADO. Los vídeos del 21/11 nunca salieron y el 21-22/11 no se publicó nada (2 días sin vídeos). Cola nueva: 23/11 aparcar 10:00 + prioridad 18:00 (archivos 2026-11-21-*, programados); 24/11 mezcla 10:00 + giro 18:00 (archivos 2026-11-23-*, listos, a programar en la próxima ejecución).
+
+## 3D: pistas (22/11/2026, 22:40) — Metricool, TikTok 8-22/11
+| Publicado | Tema | Situaciones (1ª resp.) | Hora escena | Dur. | Vistas | Likes | Com. | Compart. |
+|---|---|---|---|---|---|---|---|---|
+| 13/11 18:00 | prioridad | peaton · ceda_mio · ceda_otro (1º NO) | día | 34 s | **15.629** | 435 | 3 | 18 |
+| 14/11 10:00 | prioridad | der_sin · sem_rojo · izq_sin (1º NO) | día | 32 s | 8.970 | 223 | 1 | 7 |
+| 18/11 10:00 | mezcla | sem_rojo · r302_der · amarilla_disc_parar (1º NO) | día | 33 s | **2.570** | 92 | 2 | 2 |
+| 13/11 10:00 | prioridad | stop_otro · sem_verde · ambulancia (1º SÍ) | día | 32 s | 2.359 | 112 | 2 | 3 |
+| 19/11 18:00 | aparcar | amarilla_cont · r308_parar · zigzag (1º NO) | día | 32 s | 1.217 | 64 | 0 | 4 |
+| 18/11 18:00 | giro | r303_sentido · r302_izq · r101_der (1º NO) | tarde | 34 s | 1.213 | 47 | 0 | 1 |
+| 15/11 18:00 | prioridad | sem_rojo · ceda_otro · der_sin (1º NO) | día | 32 s | 1.075 | 49 | 1 | 2 |
+| 17/11 18:00 | prioridad | ceda_mio · der_sin · ceda_otro (1º NO) | día | 34 s | 992 | 54 | 1 | 6 |
+| 16/11 10:00 | giro | r303_izq · r302_izq · r101_der (1º NO) | tarde | 33 s | 987 | 58 | 2 | 1 |
+| 14/11 18:00 | prioridad | stop_mio · sem_verde · ambulancia (1º NO) | día | 34 s | 937 | 53 | 1 | 4 |
+| 16/11 18:00 | mezcla | peaton · r303_der · vado (1º NO) | día | 34 s | 896 | 32 | 0 | 0 |
+| 17/11 10:00 | aparcar | paso_cebra · r308_parar · plaza_blanca (1º NO) | tarde | 33 s | 864 | 56 | 0 | 1 |
+| 15/11 10:00 | prioridad | peaton · stop_otro · ceda_mio (1º NO) | tarde | 31 s | 858 | 48 | 1 | 0 |
+| 19/11 10:00 | prioridad | peaton · izq_sin · stop_mio (1º NO) | día | 31 s | 779 | 25 | 0 | 1 |
+| 20/11 10:00 | giro | r302_der · r303_der · r101_der (1º NO) | día | 33 s | 743 | 11 | 4 | 0 |
+| 20/11 18:00 | mezcla | ambulancia · r303_izq · plaza_blanca (1º NO) | día | 32 s | 695 | 19 | 0 | 0 |
+- Media 3D (16 vídeos): 2.549 vistas; mediana 990. Ningún vídeo con 0 vistas.
+- Por TEMA (pistas): mezcla 1.387 (3), aparcar 1.040 (2), giro 981 (3), prioridad 3.950 con los 2 virales / 1.167 sin ellos (8). Tasa de likes: aparcar 5,8 % (la mejor otra vez), prioridad 4,9 %, giro 3,9 %, mezcla 3,4 %. Ninguno llega al doble de la media → rotación 1:1:1:1.
+- Situaciones: sem_rojo sigue en 3 de los 4 mejores (8.970, 2.570, 1.075) → la pista se mantiene (no llega al doble de la media en vídeos sin viral). r308_parar está en los 2 de aparcar.
+- Los 2 del 20/11 son los PEORES 3D (695 y 743) y con muy pocos likes (1,5-2,7 %): tendencia a la baja en los últimos 4 vídeos (779-1.217). Ambos eran de día → la pista «atardecer peor» se debilita (giro al atardecer del 18/11 = 1.213). Escena tarde media 981 vs día sin virales 1.226: diferencia pequeña; se sigue con --hora dia pero sin darlo por seguro.
+- Hora de publicación (sin los 2 virales): 10:00 = 1.309 de media (7) vs 18:00 = 1.004 (7) → pista a favor de las 10:00; se mantienen 10:00 y 18:00.
+- Duración 31-34 s: sin diferencia. Instagram sigue sin conectar.
+- Ojo: el parón del 21-22/11 (sin publicar por la desconexión de Metricool) puede bajar el alcance de los próximos vídeos; vigilar los del 23-24/11.
+
+### (anterior) 3D: pistas (19/11/2026, 22:50) — Metricool, TikTok 5-19/11
 | Publicado | Tema | Situaciones (1ª resp.) | Hora escena | Dur. | Vistas | Likes | Com. | Compart. |
 |---|---|---|---|---|---|---|---|---|
 | 13/11 18:00 | prioridad | peaton · ceda_mio · ceda_otro (1º NO) | día | 34 s | **15.289** | 426 | 3 | 16 |
