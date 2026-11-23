@@ -1,0 +1,65 @@
+{
+ "lines": [
+  "¿Sabes qué dice un musulmán antes de entrar al baño?",
+  "Uno abre la puerta sin decir nada.",
+  "El otro dice: Oh Allah, me refugio en Ti.",
+  "Día diez.",
+  "Día treinta. Uno ya no sale solo.",
+  "¿Y por qué al otro no se le acerca nada?",
+  "Porque antes de entrar, pidió refugio.",
+  "El Profeta, la paz sea con él, al entrar al baño decía: Oh Allah, me refugio en Ti de los demonios, machos y hembras.",
+  "Una frase. Una cortina de luz.",
+  "¿Tú la dices? Escribe: desde hoy."
+ ],
+ "starts": [
+  0.3,
+  3.6,
+  6.47,
+  10.08,
+  12.07,
+  14.65,
+  18.66,
+  21.26,
+  28.11,
+  30.63
+ ],
+ "ends": [
+  3.1,
+  5.57,
+  8.68,
+  10.77,
+  14.04,
+  16.76,
+  20.66,
+  27.42,
+  29.93,
+  32.36
+ ],
+ "duration": 34.37,
+ "sfx": [
+  {
+   "t": 8.07,
+   "f": 1320,
+   "dur": 0.8,
+   "v": 0.06
+  },
+  {
+   "t": 10.98,
+   "f": 1320,
+   "dur": 0.8,
+   "v": 0.05
+  },
+  {
+   "t": 18.36,
+   "f": 660,
+   "dur": 2.0,
+   "v": 0.08
+  },
+  {
+   "t": 18.51,
+   "f": 990,
+   "dur": 2.0,
+   "v": 0.06
+  }
+ ]
+}

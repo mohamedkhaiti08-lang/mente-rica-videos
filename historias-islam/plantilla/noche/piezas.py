@@ -923,3 +923,42 @@ def vela(d, g, x, y, t, alpha=255):
     d.rounded_rectangle([(x - 9) * S, (y - 4) * S, (x + 9) * S, (y + 40) * S], radius=3 * S, fill=CREAM + (int(alpha),))
     llama(d, g, x, y - 6, 34, 9, t * 0.6, alpha)
     g.ellipse([x - 70, y - 90, x + 70, y + 40], fill=(255, 200, 120, int(130 * alpha / 255)))
+
+# ---- piezas del 25/11 (baño: SE OLVIDA vs SE REFUGIA) ----
+DUA = dict(P["stand"]); DUA.update(le=(14, -214), lh=(40, -262), re=(40, -210), rh=(66, -256), head=(4, -300))   # manos levantadas (dua) hacia la derecha
+CARGADO = dict(P["stand"]); CARGADO.update(head=(18, -270), neck=(10, -236), hip=(0, -124), le=(30, -180), lh=(40, -122),
+                                           re=(36, -182), rh=(50, -124), lk=(-10, -60), rk=(18, -60))            # encorvado, cargado
+
+def humo_puerta(d, x, k, t, seed=3, top=GY - 260, col=(52, 48, 66)):
+    """Humo oscuro que asoma por encima de una puerta cerrada (algo espera detrás). Dibujar en capa under."""
+    if k <= 0: return
+    rnd = random.Random(seed)
+    for i in range(9):
+        ph = (t * 0.35 + i / 9) % 1
+        px = x + rnd.uniform(-36, 36) + 16 * math.sin(t * 1.6 + i); py = top + 6 - ph * 150
+        r = 12 + 22 * ph
+        d.ellipse([(px - r) * S, (py - r) * S, (px + r) * S, (py + r) * S], fill=col + (int(200 * k * (1 - ph)),))
+
+def cortina(d, g, x, k, t, w=112, h=260, brillo=0.0, col=(130, 240, 232)):
+    """Cortina de luz que cae desde el dintel y tapa una puerta (k 0..1 cuánto ha bajado)."""
+    if k <= 0: return
+    top = GY - h - 6; largo = (h + 6) * k; n = 9
+    for i in range(n):
+        u = i / (n - 1); bx = x - w / 2 + u * w
+        pts = [((bx + 5 * math.sin(t * 2.2 + i * 0.9 + (j / 12) * 5) * (j / 12)) * S, (top + largo * j / 12) * S) for j in range(13)]
+        a = int((150 + 90 * brillo) * (0.6 + 0.4 * math.sin(t * 3 + i)))
+        d.line(pts, fill=col + (a,), width=int(4 * S), joint="curve")
+        ex, ey = pts[-1][0] / S, pts[-1][1] / S
+        d.ellipse([(ex - 5) * S, (ey - 5) * S, (ex + 5) * S, (ey + 5) * S], fill=(225, 255, 250, a))
+    d.line([((x - w / 2 - 10) * S, top * S), ((x + w / 2 + 10) * S, top * S)], fill=col + (240,), width=int(6 * S))
+    g.rectangle([x - w / 2 - 20, top - 10, x + w / 2 + 20, top + largo], fill=(80, 230, 225, int((70 + 90 * brillo) * k)))
+
+def chispas(d, x, y, t, t0, dur=1.4, n=16, col=(200, 255, 250), seed=7):
+    """Chispas turquesa que salen de un punto (algo oscuro que se deshace en luz)."""
+    if not (t0 <= t < t0 + dur): return
+    rnd = random.Random(seed); u = (t - t0) / dur
+    for i in range(n):
+        ang = rnd.uniform(0, 2 * math.pi); sp = rnd.uniform(60, 170)
+        px = x + math.cos(ang) * sp * u; py = y + math.sin(ang) * sp * u - 40 * u
+        r = 6 * (1 - u) + 1
+        d.ellipse([(px - r) * S, (py - r) * S, (px + r) * S, (py + r) * S], fill=col + (int(255 * (1 - u)),))
