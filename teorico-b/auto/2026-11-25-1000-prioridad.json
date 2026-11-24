@@ -1,0 +1,66 @@
+{
+ "seed": 202611251,
+ "hora": "dia",
+ "tema": "prioridad",
+ "tipos": [
+  "der_sin",
+  "peaton",
+  "sem_verde"
+ ],
+ "intro": "¿Sabes quién pasa primero? Tres cruces.",
+ "final": "¿Tres de tres? Escríbelo en comentarios.",
+ "dur": 33.6,
+ "cruces": [
+  {
+   "tipo": "der_sin",
+   "lado": "der",
+   "resp": "NO",
+   "pregunta": "¿Tienes prioridad?",
+   "rotulo": "SIN SEÑALES: PASA EL DE LA DERECHA",
+   "q": "Cruce uno. ¿Tienes prioridad?",
+   "escena": "cruce",
+   "r": "No. No hay señales, y viene por tu derecha: pasa él.",
+   "T0": 2.6,
+   "tq": 2.8000000000000003,
+   "C": 4.572916666666667,
+   "R": 7.572916666666667,
+   "tr": 7.672916666666667,
+   "E": 10.761875,
+   "L": 10.172916666666667
+  },
+  {
+   "tipo": "peaton",
+   "lado": "izq",
+   "resp": "NO",
+   "pregunta": "¿Puedes pasar?",
+   "rotulo": "PASO DE PEATONES: PASA EL PEATÓN",
+   "q": "Cruce dos. ¿Puedes pasar?",
+   "escena": "cruce",
+   "r": "No. Está en el paso de peatones: pasa él primero.",
+   "T0": 12.372916666666667,
+   "tq": 12.572916666666666,
+   "C": 14.178666666666667,
+   "R": 17.178666666666665,
+   "tr": 17.278666666666666,
+   "E": 20.224125,
+   "L": 19.778666666666666
+  },
+  {
+   "tipo": "sem_verde",
+   "lado": "der",
+   "resp": "SÍ",
+   "pregunta": "¿Tienes prioridad?",
+   "rotulo": "EL SEMÁFORO MANDA: PASAS TÚ",
+   "q": "Cruce tres. ¿Quién pasa aquí?",
+   "escena": "cruce",
+   "r": "Sí. Tienes verde: pasas tú, aunque venga por la derecha.",
+   "T0": 21.97866666666667,
+   "tq": 22.17866666666667,
+   "C": 23.931125,
+   "R": 26.931125,
+   "tr": 27.031125000000003,
+   "E": 30.39541666666667,
+   "L": 27.831125
+  }
+ ]
+}
