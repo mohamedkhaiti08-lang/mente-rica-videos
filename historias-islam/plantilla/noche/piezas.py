@@ -962,3 +962,105 @@ def chispas(d, x, y, t, t0, dur=1.4, n=16, col=(200, 255, 250), seed=7):
         px = x + math.cos(ang) * sp * u; py = y + math.sin(ang) * sp * u - 40 * u
         r = 6 * (1 - u) + 1
         d.ellipse([(px - r) * S, (py - r) * S, (px + r) * S, (py + r) * S], fill=col + (int(255 * (1 - u)),))
+
+# ---------------- piezas del 26 nov 2026 (cuerda con nudos, despertador, balanza, bandeja, piedra de luz) ----------------
+NUDO = (78, 70, 96)
+
+def cuerda_nudos(d, g, cx, cy, k, t, sueltos=(0.0, 0.0, 0.0), oscuro=0.0, w=170, hilo_a=None, alpha=255):
+    """Cuerda de humo flotante con 3 nudos (los nudos del shaitán). k 0..1 aparece; sueltos[i] 0..1 deshace el nudo i
+    (se abre y queda un punto de luz que sube); oscuro 0..1 la cuerda se oscurece y engorda (pesa más).
+    hilo_a=(x, y): hilo fino que baja de la cuerda hasta la nuca."""
+    if k <= 0 or alpha <= 0: return
+    a = alpha * k
+    grosor = 6 + 4 * oscuro
+    col = tuple(int(lerp(c1, c2, oscuro)) for c1, c2 in zip((120, 112, 138), (60, 52, 74)))
+    pts = []
+    for j in range(25):
+        u = j / 24; x = cx - w / 2 + w * u
+        pts.append((x * S, (cy + 8 * math.sin(u * 7 + t * 1.6)) * S))
+    vivos = sum(1 for s in sueltos if s < 0.5)
+    if vivos and a > 0:
+        d.line(pts, fill=col + (int(a * 0.95),), width=int(grosor * S), joint="curve")
+    else:
+        d.line(pts, fill=(130, 240, 232, int(a * 0.25)), width=int(3 * S), joint="curve")
+    if hilo_a and vivos:
+        hx, hy = hilo_a
+        d.line([(cx * S, (cy + 10) * S), ((cx + hx) / 2 * S, ((cy + hy) / 2 + 10 * math.sin(t * 2)) * S), (hx * S, hy * S)],
+               fill=col + (int(a * 0.6),), width=int(3 * S), joint="curve")
+    for i, s in enumerate(sueltos):
+        u = (i + 1) / 4; nx = cx - w / 2 + w * u; ny = cy + 8 * math.sin(u * 7 + t * 1.6)
+        r = (22 + 5 * oscuro) * (1 - s)
+        if r > 1:
+            d.ellipse([(nx - r) * S, (ny - r) * S, (nx + r) * S, (ny + r) * S], fill=col + (int(a),),
+                      outline=(150, 142, 166, int(a)), width=int(3 * S))
+            d.arc([(nx - r * 0.55) * S, (ny - r * 0.55) * S, (nx + r * 0.55) * S, (ny + r * 0.55) * S], 200, 520,
+                  fill=(30, 26, 40, int(a)), width=int(3 * S))
+        if 0 < s < 1:                                   # el nudo se abre en luz que sube
+            py = ny - 140 * s
+            d.ellipse([(nx - 8) * S, (py - 8) * S, (nx + 8) * S, (py + 8) * S], fill=(200, 255, 250, int(255 * (1 - s * 0.5))))
+            g.ellipse([nx - 40, py - 40, nx + 40, py + 40], fill=(120, 240, 235, int(200 * (1 - s))))
+        if s > 0.02:
+            g.ellipse([nx - 22, ny - 22, nx + 22, ny + 22], fill=(120, 240, 235, int(90 * min(1, s * 3) * (1 - s))))
+
+def despertador(d, x, y, t, suena=0.0, alpha=255, col=CREAM):
+    """Despertador clásico de dos campanas (x, y = centro de la esfera). suena 0..1 vibra y saca ondas."""
+    if alpha <= 0: return
+    a = int(alpha); c = col + (a,)
+    jx = 3 * math.sin(t * 60) * suena
+    x = x + jx; r = 30
+    for sgn in (-1, 1):
+        d.pieslice([(x + sgn * 22 - 14) * S, (y - r - 18) * S, (x + sgn * 22 + 14) * S, (y - r + 10) * S], 180, 360, fill=c)
+        d.line([((x + sgn * 20) * S, (y + r - 6) * S), ((x + sgn * 30) * S, (y + r + 10) * S)], fill=c, width=int(5 * S))
+    d.ellipse([(x - r) * S, (y - r) * S, (x + r) * S, (y + r) * S], fill=(24, 30, 38, a), outline=c, width=int(5 * S))
+    d.line([(x * S, y * S), (x * S, (y - 18) * S)], fill=c, width=int(4 * S))
+    d.line([(x * S, y * S), ((x + 13) * S, (y + 4) * S)], fill=c, width=int(4 * S))
+    if suena > 0:
+        for i in range(2):
+            ph = (t * 2.2 + i * 0.5) % 1; rr = r + 10 + 40 * ph
+            for sgn in (-1, 1):
+                d.arc([(x - rr) * S, (y - rr) * S, (x + rr) * S, (y + rr) * S], 300 if sgn > 0 else 200, 340 if sgn > 0 else 240,
+                      fill=col + (int(a * suena * (1 - ph)),), width=int(3 * S))
+
+def balanza(d, g, cx, top, ang, t, half=290, cadena=150, alpha=255, col=CREAM, brillo=0.0, plato_w=170):
+    """Balanza grande con mástil desde el suelo. ang (rad) > 0 inclina hacia la derecha (el plato derecho baja).
+    Devuelve ((xl, yl), (xr, yr)): centro superior de cada plato, para apilar cosas encima."""
+    a = int(alpha); c = col + (a,)
+    d.line([(cx * S, GY * S), (cx * S, (top + 10) * S)], fill=c, width=int(9 * S))
+    d.polygon([((cx - 60) * S, GY * S), ((cx + 60) * S, GY * S), (cx * S, (GY - 40) * S)], fill=c)
+    ca, sa = math.cos(ang), math.sin(ang)
+    lx, ly = cx - half * ca, top - half * sa; rx_, ry_ = cx + half * ca, top + half * sa
+    d.line([(lx * S, ly * S), (rx_ * S, ry_ * S)], fill=c, width=int(9 * S))
+    star8(d, cx, top - 4, 22, t * 0.2, alpha=a)
+    platos = []
+    for (ex, ey) in ((lx, ly), (rx_, ry_)):
+        py = ey + cadena
+        for sgn in (-1, 1):
+            d.line([(ex * S, ey * S), ((ex + sgn * plato_w / 2) * S, py * S)], fill=col + (int(a * 0.7),), width=int(3 * S))
+        d.chord([(ex - plato_w / 2) * S, (py - 26) * S, (ex + plato_w / 2) * S, (py + 26) * S], 0, 180, fill=(24, 30, 38, a), outline=c, width=int(5 * S))
+        d.line([((ex - plato_w / 2) * S, py * S), ((ex + plato_w / 2) * S, py * S)], fill=c, width=int(5 * S))
+        d.ellipse([(ex - 9) * S, (ey - 9) * S, (ex + 9) * S, (ey + 9) * S], fill=c)
+        platos.append((ex, py))
+    if brillo > 0:
+        g.ellipse([platos[1][0] - 160, platos[1][1] - 160, platos[1][0] + 160, platos[1][1] + 120], fill=(120, 240, 235, int(160 * brillo)))
+    return platos
+
+def bandeja(d, x, y, alpha=255, col=CREAM, vaso=True):
+    """Bandeja de camarero sostenida en (x, y) (centro), con un vaso encima."""
+    if alpha <= 0: return
+    a = int(alpha); c = col + (a,)
+    d.line([((x - 40) * S, y * S), ((x + 40) * S, y * S)], fill=c, width=int(6 * S))
+    if vaso:
+        d.polygon([((x - 12) * S, (y - 4) * S), ((x + 12) * S, (y - 4) * S), ((x + 15) * S, (y - 40) * S), ((x - 15) * S, (y - 40) * S)],
+                  outline=c, fill=(110, 170, 200, int(a * 0.5)), width=int(3 * S))
+
+def piedra_luz(d, g, x, y, r=18, alpha=255, rot=0.0):
+    """Piedra de luz (un acto bueno que pesa): como piedra() pero dorada-turquesa y con halo."""
+    if alpha <= 0: return
+    piedra(d, x, y, r=r, alpha=alpha, rot=rot, col=(150, 240, 228))
+    g.ellipse([x - r * 2.4, y - r * 2.4, x + r * 2.4, y + r * 2.4], fill=(120, 240, 235, int(140 * alpha / 255)))
+
+# Poses del 26 nov: camarero con bandeja (brazo derecho delante), borde (señala con el dedo), sonríe/agradece (mano al pecho)
+CAMARERO = dict(P["stand"]); CAMARERO.update(re=(30, -206), rh=(70, -196))
+SENALA = dict(P["stand"]); SENALA.update(re=(52, -238), rh=(110, -250), head=(4, -300))
+GRACIAS = dict(P["stand"]); GRACIAS.update(re=(22, -206), rh=(-6, -230), head=(6, -298))
+DESPEREZA = dict(P["stand"]); DESPEREZA.update(le=(-40, -290), lh=(-30, -350), re=(40, -290), rh=(30, -350))

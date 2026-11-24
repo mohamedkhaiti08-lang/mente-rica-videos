@@ -1,0 +1,74 @@
+{
+ "lines": [
+  "¿Sabes por qué te cuesta tanto levantarte?",
+  "Mientras duermes, el shaitán te ata tres nudos.",
+  "Suena la alarma. Uno la apaga… y sigue durmiendo.",
+  "El otro dice: Allah. Se suelta un nudo.",
+  "Hace el wudú. Otro nudo.",
+  "Reza. Y se suelta el último.",
+  "Día treinta.",
+  "¿Quién empieza el día más ligero?",
+  "El Profeta, la paz sea con él, dijo: así amanece activo y de buen ánimo. Si no, perezoso y de mal ánimo.",
+  "Tres nudos. Tres pasos.",
+  "¿Mañana los sueltas los tres? Escribe: in sha Allah."
+ ],
+ "starts": [
+  0.3,
+  2.97,
+  6.21,
+  9.35,
+  11.81,
+  13.59,
+  16.7,
+  17.82,
+  21.38,
+  27.83,
+  29.83
+ ],
+ "ends": [
+  2.57,
+  5.61,
+  8.85,
+  11.41,
+  13.19,
+  15.2,
+  17.52,
+  19.68,
+  27.23,
+  29.23,
+  32.59
+ ],
+ "duration": 34.5,
+ "sfx": [
+  {
+   "t": 10.75,
+   "f": 1320,
+   "dur": 0.8,
+   "v": 0.05
+  },
+  {
+   "t": 12.71,
+   "f": 1320,
+   "dur": 0.8,
+   "v": 0.05
+  },
+  {
+   "t": 14.49,
+   "f": 1320,
+   "dur": 0.8,
+   "v": 0.06
+  },
+  {
+   "t": 21.08,
+   "f": 660,
+   "dur": 2.0,
+   "v": 0.08
+  },
+  {
+   "t": 21.23,
+   "f": 990,
+   "dur": 2.0,
+   "v": 0.06
+  }
+ ]
+}

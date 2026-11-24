@@ -1,0 +1,65 @@
+{
+ "lines": [
+  "¿Qué es lo que más pesa en la balanza? No es lo que crees.",
+  "Dos personas. Rezan lo mismo. La balanza, igual.",
+  "Uno le habla mal al camarero.",
+  "El otro le sonríe y le da las gracias.",
+  "Día diez.",
+  "Día treinta.",
+  "¿Hacia dónde se inclina?",
+  "El Profeta, la paz sea con él, dijo: no hay nada que pese más en la balanza que el buen carácter.",
+  "Reza. Y trata bien a la gente.",
+  "¿Cómo tratas tú al que te atiende?"
+ ],
+ "starts": [
+  0.3,
+  3.74,
+  7.11,
+  9.43,
+  12.24,
+  13.93,
+  15.16,
+  18.38,
+  24.22,
+  26.54
+ ],
+ "ends": [
+  3.24,
+  6.51,
+  8.83,
+  11.54,
+  12.93,
+  14.75,
+  16.49,
+  23.61,
+  25.94,
+  28.4
+ ],
+ "duration": 30.4,
+ "sfx": [
+  {
+   "t": 11.03,
+   "f": 1320,
+   "dur": 0.8,
+   "v": 0.06
+  },
+  {
+   "t": 12.84,
+   "f": 1320,
+   "dur": 0.8,
+   "v": 0.05
+  },
+  {
+   "t": 18.08,
+   "f": 660,
+   "dur": 2.0,
+   "v": 0.08
+  },
+  {
+   "t": 18.23,
+   "f": 990,
+   "dur": 2.0,
+   "v": 0.06
+  }
+ ]
+}
