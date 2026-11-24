@@ -10,7 +10,7 @@ Horarios: 10:00 y 18:00 (Europe/Madrid) — valor por defecto (picos de audienci
 
 - 23/11/2026 (22:42): 24/11 PROGRAMADO con los vídeos ya hechos: mezcla 10:00 (r303_sentido NO · ceda_otro SÍ · amarilla_cont_parar NO) y giro 18:00 (r101_der NO · r302_izq SÍ · r303_der SÍ). No se renderizó nada nuevo (máx. 2 por ejecución). Cola llena hasta el 24/11; desde el 25/11 libre → próxima ejecución: aparcar + prioridad.
 
-- 24/11/2026 (22:40): los 2 del 24/11 (mezcla 10:00, giro 18:00) ya PUBLICADOS en TikTok (aún sin cifras en Metricool). Cola libre desde el 25/11 → esta ejecución: 25/11 prioridad 10:00 + aparcar 18:00.
+- 24/11/2026 (23:30): los 2 del 24/11 (mezcla 10:00, giro 18:00) ya PUBLICADOS en TikTok (aún sin cifras). PROGRAMADO 25/11: prioridad 10:00 (der_sin NO · peaton NO · sem_verde SÍ) + aparcar 18:00 (zigzag NO · amarilla_disc NO · plaza_blanca SÍ). Cola llena hasta el 25/11 → próxima ejecución: 26/11 mezcla + giro.
 
 ## 3D: pistas (24/11/2026, 22:40) — Metricool, TikTok 10-24/11
 - Primeros datos tras el parón del 21-22/11: 23/11 10:00 aparcar (vado · amarilla_disc_parar · r308, 1º NO, día, 33 s) = 873 vistas / 52 likes (6,0 %) / 0 com. / 0 compart.; 23/11 18:00 prioridad (sem_rojo · stop_otro · ceda_mio, 1º NO, día, 32 s) = **675** vistas / 10 likes (1,5 %) → el PEOR 3D hasta ahora. El parón no hundió el alcance (aparcar en su media), pero prioridad a las 18:00 sin virales sigue bajando (944 → 1.084 → 1.000 → 675).

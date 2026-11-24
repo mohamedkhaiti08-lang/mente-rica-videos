@@ -1,0 +1,66 @@
+{
+ "seed": 202611252,
+ "hora": "dia",
+ "tema": "aparcar",
+ "tipos": [
+  "zigzag",
+  "amarilla_disc",
+  "plaza_blanca"
+ ],
+ "intro": "¿Aparcarías aquí? Tres huecos, tres segundos.",
+ "final": "¿Cuántas has acertado? Dímelo en comentarios.",
+ "dur": 34.26,
+ "cruces": [
+  {
+   "tipo": "zigzag",
+   "lado": "der",
+   "resp": "NO",
+   "pregunta": "¿Puedes aparcar aquí?",
+   "rotulo": "ZIGZAG AMARILLO: PROHIBIDO ESTACIONAR",
+   "q": "Sitio uno. Hueco libre. ¿Puedes aparcar aquí?",
+   "escena": "aparcar",
+   "r": "No. Zigzag amarillo: prohibido aparcar.",
+   "T0": 2.6,
+   "tq": 2.8000000000000003,
+   "C": 5.263583333333334,
+   "R": 8.263583333333333,
+   "tr": 8.363583333333333,
+   "E": 10.97775,
+   "L": 9.463583333333332
+  },
+  {
+   "tipo": "amarilla_disc",
+   "lado": "der",
+   "resp": "NO",
+   "pregunta": "¿Puedes aparcar aquí?",
+   "rotulo": "AMARILLA DISCONTINUA: PARAR SÍ, APARCAR NO",
+   "q": "Sitio dos. Hay sitio. ¿Puedes aparcar aquí?",
+   "escena": "aparcar",
+   "r": "No. Amarilla discontinua: puedes parar, pero no aparcar.",
+   "T0": 11.663583333333332,
+   "tq": 11.863583333333331,
+   "C": 14.227124999999997,
+   "R": 17.227124999999997,
+   "tr": 17.327125,
+   "E": 20.716541666666664,
+   "L": 18.427124999999997
+  },
+  {
+   "tipo": "plaza_blanca",
+   "lado": "der",
+   "resp": "SÍ",
+   "pregunta": "¿Puedes aparcar aquí?",
+   "rotulo": "PLAZA EN BLANCO: SÍ PUEDES APARCAR",
+   "q": "Sitio tres. Por fin, un hueco. ¿Puedes aparcar aquí?",
+   "escena": "aparcar",
+   "r": "Sí. Plaza marcada en blanco y sin prohibiciones: puedes aparcar.",
+   "T0": 20.816541666666666,
+   "tq": 21.016541666666665,
+   "C": 23.805041666666664,
+   "R": 26.805041666666664,
+   "tr": 26.905041666666666,
+   "E": 30.740333333333332,
+   "L": 28.005041666666664
+  }
+ ]
+}
