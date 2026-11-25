@@ -1,0 +1,66 @@
+{
+ "seed": 202611261,
+ "hora": "dia",
+ "tema": "mezcla",
+ "tipos": [
+  "ceda_mio",
+  "r303_der",
+  "r308_parar"
+ ],
+ "intro": "Tres pruebas distintas. ¿Las pasas todas?",
+ "final": "Comenta cuántas has acertado.",
+ "dur": 32.93,
+ "cruces": [
+  {
+   "tipo": "ceda_mio",
+   "lado": "der",
+   "resp": "NO",
+   "pregunta": "¿Tienes prioridad?",
+   "rotulo": "TIENES CEDA EL PASO: ESPERA",
+   "q": "Prueba uno. ¿Tienes prioridad?",
+   "escena": "cruce",
+   "r": "No. El ceda el paso es tuyo: espera.",
+   "T0": 2.6,
+   "tq": 2.8000000000000003,
+   "C": 4.538250000000001,
+   "R": 7.538250000000001,
+   "tr": 7.63825,
+   "E": 10.017708333333333,
+   "L": 10.138250000000001
+  },
+  {
+   "tipo": "r303_der",
+   "lado": "der",
+   "resp": "SÍ",
+   "pregunta": "¿Puedes girar a la derecha?",
+   "rotulo": "SOLO PROHÍBE LA IZQUIERDA: SÍ PUEDES",
+   "q": "Prueba dos. Quieres ir a la derecha. ¿Puedes?",
+   "escena": "giro",
+   "r": "Sí. Esa señal solo prohíbe girar a la izquierda.",
+   "T0": 12.33825,
+   "tq": 12.53825,
+   "C": 14.950750000000001,
+   "R": 17.95075,
+   "tr": 18.05075,
+   "E": 21.043541666666666,
+   "L": 19.15075
+  },
+  {
+   "tipo": "r308_parar",
+   "lado": "der",
+   "resp": "SÍ",
+   "pregunta": "¿Puedes parar un momento?",
+   "rotulo": "R-308: PARAR SÍ, APARCAR NO",
+   "q": "Prueba tres. Solo vas a parar. ¿Puedes?",
+   "escena": "aparcar",
+   "r": "Sí. Esa señal prohíbe aparcar, pero puedes parar.",
+   "T0": 21.35075,
+   "tq": 21.55075,
+   "C": 23.746458333333333,
+   "R": 26.746458333333333,
+   "tr": 26.846458333333334,
+   "E": 29.96004166666667,
+   "L": 27.946458333333332
+  }
+ ]
+}
