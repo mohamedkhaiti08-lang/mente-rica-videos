@@ -12,7 +12,17 @@ Horarios: 10:00 y 18:00 (Europe/Madrid) — valor por defecto (picos de audienci
 
 - 24/11/2026 (23:30): los 2 del 24/11 (mezcla 10:00, giro 18:00) ya PUBLICADOS en TikTok (aún sin cifras). PROGRAMADO 25/11: prioridad 10:00 (der_sin NO · peaton NO · sem_verde SÍ) + aparcar 18:00 (zigzag NO · amarilla_disc NO · plaza_blanca SÍ). Cola llena hasta el 25/11 → próxima ejecución: 26/11 mezcla + giro.
 
-## 3D: pistas (24/11/2026, 22:40) — Metricool, TikTok 10-24/11
+- 25/11/2026 (22:40): 25/11 prioridad 10:00 y aparcar 18:00 publicados (aún sin cifras). PROGRAMADO 26/11: mezcla 10:00 + giro 18:00 (detalle en publicados.md). Cola llena hasta el 26/11 → próxima ejecución: 27/11 prioridad + aparcar.
+
+## 3D: pistas (25/11/2026, 22:40) — Metricool, TikTok 11-25/11
+- Nuevos: 24/11 10:00 mezcla (r303_sentido · ceda_otro · amarilla_cont_parar, 1º NO, día, 33 s) = **1.306** vistas / 64 likes (4,9 %) / 1 com. / 3 compart. → el mejor 3D desde el 18/11. 24/11 18:00 giro (r101_der · r302_izq · r303_der, 1º NO, día, 34 s) = **650** / 36 likes / 2 com. → el PEOR 3D hasta ahora. Los 2 del 25/11 aún no salen en Metricool.
+- Actualizados: 23/11 aparcar 901 (57 likes, 6,3 %); 23/11 prioridad 690 (13 likes); 13/11 18:00 prioridad 15.974 (nº 1, 443 likes, 18 compart.); 14/11 10:00 prioridad 9.322; 18/11 10:00 mezcla 2.647; 13/11 10:00 prioridad 2.424.
+- Media 3D (20 vídeos): 2.272; mediana 971. Por TEMA: **mezcla 1.393** (4: 2.647, 1.306, 907, 710), prioridad 1.116 sin los 2 virales (9 en total, media 3.679), aparcar 1.022 (3), **giro 923** (4, y baja: 1.287 → 759 → 650). Ninguno llega al doble de la media → rotación 1:1:1:1.
+- **Pista fuerte de HORA DE PUBLICACIÓN**: sin los 2 virales, 10:00 = 1.286 de media (9) vs 18:00 = 952 (9). Mezcla a las 10:00 = 2.647 y 1.306; a las 18:00 = 907 y 710. → mezcla y prioridad (los temas que mejor tiran) a las 10:00; giro y aparcar a las 18:00 cuando cuadre la rotación.
+- Giro: el único trío de giro por encima de 1.000 fue r303_sentido · r302_izq · r101_der (1.287, 18/11 18:00) → se repite el 26/11 18:00 (fuera de la ventana de 7 días). Si vuelve a quedar < 800, el problema es el tema, no el trío.
+- Tasa de likes: aparcar sigue la mejor (~6 %); prioridad del 23/11 solo 1,9 %. Ningún vídeo con 0 vistas. Instagram sin conectar.
+
+### (anterior) 3D: pistas (24/11/2026, 22:40) — Metricool, TikTok 10-24/11
 - Primeros datos tras el parón del 21-22/11: 23/11 10:00 aparcar (vado · amarilla_disc_parar · r308, 1º NO, día, 33 s) = 873 vistas / 52 likes (6,0 %) / 0 com. / 0 compart.; 23/11 18:00 prioridad (sem_rojo · stop_otro · ceda_mio, 1º NO, día, 32 s) = **675** vistas / 10 likes (1,5 %) → el PEOR 3D hasta ahora. El parón no hundió el alcance (aparcar en su media), pero prioridad a las 18:00 sin virales sigue bajando (944 → 1.084 → 1.000 → 675).
 - Resto casi igual: 13/11 18:00 prioridad 15.879 (nº 1, 441 likes, 18 compart.); 14/11 10:00 prioridad 9.167; 18/11 10:00 mezcla 2.636; 13/11 10:00 prioridad 2.404; 18/11 18:00 giro 1.267; 19/11 18:00 aparcar 1.262.
 - Media 3D (18 vídeos): 2.393; mediana 969. Por TEMA: mezcla 1.415 (3), prioridad 1.108 sin los 2 virales (9 en total, media 3.645), giro 1.005 (3), aparcar 1.003 (3). Ninguno llega al doble → rotación 1:1:1:1.
