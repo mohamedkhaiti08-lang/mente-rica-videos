@@ -1,0 +1,68 @@
+{
+ "lines": [
+  "¿Sabes qué pasa cuando visitas a un enfermo?",
+  "Uno dice: ya iré otro día.",
+  "El otro coge el abrigo y va.",
+  "Arriba, solo es una calle gris.",
+  "Pero mira debajo.",
+  "Día treinta.",
+  "¿Quién ha caminado por el Paraíso?",
+  "Cada paso hacia el enfermo, era un jardín.",
+  "El Profeta, la paz sea con él, dijo: quien visita a un enfermo, sigue en el jardín del Paraíso hasta que vuelve.",
+  "Ve a verle. Hoy.",
+  "¿A quién vas a visitar esta semana? Escribe su nombre."
+ ],
+ "starts": [
+  0.3,
+  3.08,
+  5.45,
+  8.63,
+  10.99,
+  13.5,
+  15.02,
+  18.71,
+  21.65,
+  28.09,
+  29.64
+ ],
+ "ends": [
+  2.68,
+  4.75,
+  7.23,
+  10.39,
+  12.0,
+  14.32,
+  16.81,
+  21.05,
+  27.49,
+  29.14,
+  32.53
+ ],
+ "duration": 34.33,
+ "sfx": [
+  {
+   "t": 11.89,
+   "f": 1320,
+   "dur": 0.8,
+   "v": 0.06
+  },
+  {
+   "t": 14.2,
+   "f": 1320,
+   "dur": 0.8,
+   "v": 0.05
+  },
+  {
+   "t": 18.41,
+   "f": 660,
+   "dur": 2.0,
+   "v": 0.08
+  },
+  {
+   "t": 18.560000000000002,
+   "f": 990,
+   "dur": 2.0,
+   "v": 0.06
+  }
+ ]
+}

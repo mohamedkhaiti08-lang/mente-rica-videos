@@ -1064,3 +1064,98 @@ CAMARERO = dict(P["stand"]); CAMARERO.update(re=(30, -206), rh=(70, -196))
 SENALA = dict(P["stand"]); SENALA.update(re=(52, -238), rh=(110, -250), head=(4, -300))
 GRACIAS = dict(P["stand"]); GRACIAS.update(re=(22, -206), rh=(-6, -230), head=(6, -298))
 DESPEREZA = dict(P["stand"]); DESPEREZA.update(le=(-40, -290), lh=(-30, -350), re=(40, -290), rh=(30, -350))
+
+# ---------------- piezas del 27 nov 2026 (sol poniente, sombras que salen de la tierra, sello de luz en la puerta,
+#                  casa llena de humo, ventana, huellas de luz, jardín de luz bajo el suelo, bocadillo de pensamiento) ----------------
+
+def sol_poniente(d, g, x, k, r=70, col=(250, 196, 120)):
+    """Sol que se esconde por el horizonte (k 0 = medio sol fuera, 1 = ya escondido). Solo dibuja la parte sobre el suelo."""
+    if k >= 1: return
+    cy = GY - r * 0.55 + r * 1.6 * k
+    pts = []
+    for i in range(41):
+        ang = math.pi + i / 40 * math.pi
+        px, py = x + r * math.cos(ang), cy + r * math.sin(ang)
+        pts.append((px, min(py, GY)))
+    pts += [(x + r, GY), (x - r, GY)]
+    if cy - r < GY: d.polygon([(a * S, min(b, GY) * S) for a, b in pts], fill=col + (int(255 * (1 - k)),))
+    g.ellipse([x - 300, GY - 160, x + 300, GY + 80], fill=(250, 170, 100, int(110 * (1 - k))))
+
+def sombra_sale(d, x, k, rise, alpha, t, seed=0, col=SHADOW):
+    """Sombra de humo que SALE de la tierra (rise 0 = enterrada, 1 = de pie sobre el suelo). Dibujar en una capa new_layer()."""
+    if rise <= 0 or alpha <= 0: return
+    sombra(d, x, k, alpha * min(1, rise * 2), t + seed, y0=GY + 280 * k * (1 - rise), col=col)
+
+def sello_luz(d, g, x, y, k, t, w=104, col=(130, 240, 232)):
+    """Sello de luz que cierra una puerta: cerrojo de luz de lado a lado y una estrella de 8 puntas que gira (k 0..1)."""
+    if k <= 0: return
+    a = int(255 * k)
+    half = w / 2 * k
+    d.line([((x - half) * S, y * S), ((x + half) * S, y * S)], fill=col + (a,), width=int(7 * S))
+    for sx in (-1, 1):
+        d.ellipse([(x + sx * half - 7) * S, (y - 7) * S, (x + sx * half + 7) * S, (y + 7) * S], fill=(220, 255, 250, a))
+    rr = 26 * k
+    for i, rad in enumerate((rr + 10 + 4 * math.sin(t * 3), rr + 24 + 4 * math.sin(t * 3 + 1))):
+        d.ellipse([(x - rad) * S, (y - rad) * S, (x + rad) * S, (y + rad) * S], outline=col + (int(a * (0.7 - 0.3 * i)),), width=int(3 * S))
+    star8(d, x, y, rr, t * 0.8, alpha=a)
+    g.ellipse([x - 110, y - 110, x + 110, y + 110], fill=(90, 235, 225, int(120 * k)))
+
+def humo_casa(d, x0, x1, top, k, t, seed=9, col=(58, 54, 74)):
+    """Humo oscuro que va llenando el interior de una casa (k 0..1 de abajo arriba). Dibujar en una capa new_layer()."""
+    if k <= 0: return
+    rnd = random.Random(seed)
+    nivel = GY - (GY - top) * k
+    for i in range(46):
+        bx = rnd.uniform(x0 + 20, x1 - 20); by = rnd.uniform(nivel, GY - 10); r = rnd.uniform(28, 58)
+        bx += 14 * math.sin(t * 0.9 + i); by += 8 * math.cos(t * 0.7 + i * 1.3)
+        d.ellipse([(bx - r) * S, (by - r * 0.8) * S, (bx + r) * S, (by + r * 0.8) * S], fill=col + (int(120 * min(1, k * 1.5)),))
+
+def ventana(d, g, x, y, luz, w=74, h=74, col=CREAM, alpha=255, calida=(250, 215, 140)):
+    """Ventana con cruz; luz 0..1 la enciende con luz cálida."""
+    c = col + (int(alpha),)
+    d.rectangle([(x - w / 2) * S, (y - h / 2) * S, (x + w / 2) * S, (y + h / 2) * S], fill=calida + (int(200 * luz),), outline=c, width=int(4 * S))
+    d.line([(x * S, (y - h / 2) * S), (x * S, (y + h / 2) * S)], fill=c, width=int(3 * S))
+    d.line([((x - w / 2) * S, y * S), ((x + w / 2) * S, y * S)], fill=c, width=int(3 * S))
+    if luz > 0: g.ellipse([x - 90, y - 90, x + 90, y + 90], fill=calida + (int(110 * luz),))
+
+def huella(d, g, x, a, col=(150, 245, 238)):
+    """Huella de luz en el suelo (donde alguien ha pisado)."""
+    if a <= 0: return
+    d.ellipse([(x - 16) * S, (GY - 5) * S, (x + 16) * S, (GY + 5) * S], fill=col + (int(a),))
+    g.ellipse([x - 34, GY - 24, x + 34, GY + 24], fill=col + (int(0.5 * a),))
+
+def arbol_invertido(d, g, x, k, t, alto=300, seed=1, frutas=1.0, col=(150, 245, 225)):
+    """Árbol de luz que crece HACIA ABAJO desde el suelo (el jardín que no se ve). k 0..1 crecimiento; frutas 0..1 frutas doradas."""
+    if k <= 0: return
+    rnd = random.Random(seed)
+    h = alto * k
+    d.line([(x * S, GY * S), (x * S, (GY + h) * S)], fill=col + (235,), width=int(7 * S))
+    copa_y = GY + h
+    pts_frutas = []
+    for i in range(5):                                   # ramas
+        u = 0.45 + 0.5 * i / 4; by = GY + h * u
+        for sg in (-1, 1):
+            L = (60 + rnd.uniform(0, 50)) * k * (1.1 - 0.4 * u)
+            ex, ey = x + sg * L, by + L * 0.45
+            d.line([(x * S, by * S), (ex * S, ey * S)], fill=col + (220,), width=int(4 * S))
+            pts_frutas.append((ex, ey))
+    rr = 70 * k                                          # copa (abajo)
+    for bx, by, br in [(0, 0, 1.0), (-0.8, -0.35, 0.7), (0.8, -0.35, 0.7), (0, 0.5, 0.75)]:
+        r = br * rr; cx_, cy_ = x + bx * rr, copa_y + by * rr
+        d.ellipse([(cx_ - r) * S, (cy_ - r) * S, (cx_ + r) * S, (cy_ + r) * S], outline=col + (200,), width=int(3 * S), fill=(20, 60, 64, 160))
+    g.ellipse([x - 140 * k, GY, x + 140 * k, copa_y + 110 * k], fill=(80, 230, 215, int(70 * k)))
+    if frutas > 0:
+        for i, (fx, fy) in enumerate(pts_frutas + [(x - 30 * k, copa_y + 10), (x + 26 * k, copa_y - 18), (x, copa_y + 40 * k)]):
+            if frutas * 13 < i: break
+            r = 10 + 2 * math.sin(t * 3 + i)
+            d.ellipse([(fx - r) * S, (fy - r) * S, (fx + r) * S, (fy + r) * S], fill=GOLD + (255,))
+            g.ellipse([fx - 26, fy - 26, fx + 26, fy + 26], fill=(250, 220, 140, 120))
+
+def pensamiento(d, x, y, txt, alpha=255, size=26, col=CREAM, fondo=(18, 22, 30), hacia=(0, 0)):
+    """Bocadillo de pensamiento (nube con burbujitas hacia la cabeza en 'hacia')."""
+    if alpha <= 0: return
+    bocadillo(d, x, y, txt, alpha=alpha, size=size, col=col, fondo=fondo, cola=0)
+    hx, hy = hacia
+    for i, r in enumerate((10, 7, 5)):
+        u = 0.45 + 0.18 * i; px, py = lerp(x, hx, u), lerp(y + 40, hy, u)
+        d.ellipse([(px - r) * S, (py - r) * S, (px + r) * S, (py + r) * S], fill=fondo + (int(alpha),), outline=col + (int(alpha),), width=int(2 * S))

@@ -1,0 +1,65 @@
+{
+ "lines": [
+  "¿Sabes por qué un musulmán cierra la puerta diciendo bismillah?",
+  "Cae la noche… y salen las sombras.",
+  "Uno deja la puerta abierta.",
+  "El otro la cierra y dice: bismillah.",
+  "Día diez.",
+  "Día treinta. Una casa llena de humo.",
+  "¿Y por qué en la otra no entra nada?",
+  "El Profeta, la paz sea con él, dijo: cerrad las puertas y nombrad a Allah, porque el shaitán no abre una puerta cerrada.",
+  "Una puerta. Un nombre.",
+  "¿Esta noche la cierras así? Escribe: bismillah."
+ ],
+ "starts": [
+  0.3,
+  4.03,
+  6.61,
+  8.91,
+  12.2,
+  14.19,
+  16.99,
+  20.98,
+  28.06,
+  29.89
+ ],
+ "ends": [
+  3.63,
+  5.9,
+  8.31,
+  10.9,
+  12.89,
+  16.19,
+  18.98,
+  27.36,
+  29.3,
+  32.36
+ ],
+ "duration": 34.16,
+ "sfx": [
+  {
+   "t": 10.41,
+   "f": 1320,
+   "dur": 0.8,
+   "v": 0.06
+  },
+  {
+   "t": 13.1,
+   "f": 1320,
+   "dur": 0.8,
+   "v": 0.05
+  },
+  {
+   "t": 20.63,
+   "f": 660,
+   "dur": 2.0,
+   "v": 0.08
+  },
+  {
+   "t": 20.78,
+   "f": 990,
+   "dur": 2.0,
+   "v": 0.06
+  }
+ ]
+}
