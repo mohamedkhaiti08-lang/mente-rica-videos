@@ -1,0 +1,66 @@
+{
+ "seed": 202611271,
+ "hora": "dia",
+ "tema": "prioridad",
+ "tipos": [
+  "stop_mio",
+  "ceda_otro",
+  "izq_sin"
+ ],
+ "intro": "¿Circularías bien? Tres cruces, tres segundos.",
+ "final": "¿Cuántas has acertado? Dímelo en comentarios.",
+ "dur": 32.52,
+ "cruces": [
+  {
+   "tipo": "stop_mio",
+   "lado": "izq",
+   "resp": "NO",
+   "pregunta": "¿Tienes prioridad?",
+   "rotulo": "TIENES STOP: CEDE EL PASO",
+   "q": "Cruce uno. ¿Tienes prioridad?",
+   "escena": "cruce",
+   "r": "No. El stop es tuyo: te paras y pasa él.",
+   "T0": 2.6,
+   "tq": 2.8000000000000003,
+   "C": 4.572916666666667,
+   "R": 7.572916666666667,
+   "tr": 7.672916666666667,
+   "E": 10.244208333333333,
+   "L": 10.172916666666667
+  },
+  {
+   "tipo": "ceda_otro",
+   "lado": "izq",
+   "resp": "SÍ",
+   "pregunta": "¿Tienes prioridad?",
+   "rotulo": "ÉL TIENE CEDA EL PASO: PASAS TÚ",
+   "q": "Cruce dos. ¿Quién tiene que ceder?",
+   "escena": "cruce",
+   "r": "Sí. El ceda el paso es suyo: te deja pasar.",
+   "T0": 12.372916666666667,
+   "tq": 12.572916666666666,
+   "C": 14.50675,
+   "R": 17.50675,
+   "tr": 17.60675,
+   "E": 20.44516666666667,
+   "L": 18.40675
+  },
+  {
+   "tipo": "izq_sin",
+   "lado": "izq",
+   "resp": "SÍ",
+   "pregunta": "¿Tienes prioridad?",
+   "rotulo": "VIENE POR TU IZQUIERDA: PASAS TÚ",
+   "q": "Cruce tres. ¿Y aquí, quién pasa?",
+   "escena": "cruce",
+   "r": "Sí. No hay señales, y viene por tu izquierda: pasas tú.",
+   "T0": 20.60675,
+   "tq": 20.80675,
+   "C": 22.731541666666665,
+   "R": 25.731541666666665,
+   "tr": 25.831541666666666,
+   "E": 29.007958333333335,
+   "L": 26.631541666666664
+  }
+ ]
+}
