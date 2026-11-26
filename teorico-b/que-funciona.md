@@ -14,7 +14,7 @@ Horarios: 10:00 y 18:00 (Europe/Madrid) — valor por defecto (picos de audienci
 
 - 25/11/2026 (22:40): 25/11 prioridad 10:00 y aparcar 18:00 publicados (aún sin cifras). PROGRAMADO 26/11: mezcla 10:00 + giro 18:00 (detalle en publicados.md). Cola llena hasta el 26/11 → próxima ejecución: 27/11 prioridad + aparcar.
 
-- 26/11/2026 (22:45): 26/11 mezcla 10:00 y giro 18:00 publicados (aún sin cifras). Cola de Metricool vacía desde el 27/11 → se hacen 27/11 prioridad 10:00 + aparcar 18:00 (detalle en publicados.md).
+- 26/11/2026 (22:45): 26/11 mezcla 10:00 y giro 18:00 publicados (aún sin cifras). Cola de Metricool vacía desde el 27/11 → PROGRAMADO 27/11: prioridad 10:00 (stop_mio NO · ceda_otro SÍ · izq_sin SÍ) + aparcar 18:00 (amarilla_cont NO · amarilla_disc_parar SÍ · paso_cebra NO). Cola llena hasta el 27/11 → próxima ejecución: 28/11 mezcla + giro.
 
 ## 3D: pistas (26/11/2026, 22:45) — Metricool, TikTok 12-26/11
 - Nuevos: 25/11 10:00 prioridad (der_sin · peaton · sem_verde, 1º NO, día, 33 s) = **875** vistas / 57 likes (6,5 %, la mejor tasa de prioridad) / 0 com. / 0 compart. 25/11 18:00 aparcar (zigzag · amarilla_disc · plaza_blanca, 1º NO, día, 34 s) = **814** / 19 likes (2,3 %, la peor tasa de aparcar) / 0 com. / 1 compart. Los 2 del 26/11 aún no salen en Metricool.
