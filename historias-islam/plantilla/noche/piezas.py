@@ -1159,3 +1159,73 @@ def pensamiento(d, x, y, txt, alpha=255, size=26, col=CREAM, fondo=(18, 22, 30),
     for i, r in enumerate((10, 7, 5)):
         u = 0.45 + 0.18 * i; px, py = lerp(x, hx, u), lerp(y + 40, hy, u)
         d.ellipse([(px - r) * S, (py - r) * S, (px + r) * S, (py + r) * S], fill=fondo + (int(alpha),), outline=col + (int(alpha),), width=int(2 * S))
+
+# ---------------- piezas del 28 nov 2026 (ira: soplo de la sombra, fuego en el pecho, brasas; sonrisa y monedas de luz) ----------------
+GRITA = dict(P["stand"]); GRITA.update(head=(22, -294), neck=(14, -256), le=(-6, -206), lh=(-30, -160), re=(40, -206), rh=(30, -150))   # se inclina hacia la derecha con los puños abajo
+CALMA = dict(P["stand"]); CALMA.update(le=(-20, -208), lh=(6, -196), re=(20, -208), rh=(-6, -196))     # manos juntas en el pecho (calma, dhikr)
+SALUDA = dict(P["stand"]); SALUDA.update(re=(40, -246), rh=(56, -310))                                 # mano levantada saludando
+
+def fuego_pecho(d, g, x, y, k, t, col=FUEGO, seed=0):
+    """Fuego que arde en el pecho (la ira). k 0..1 tamaño (k > 1 desborda por encima de la cabeza)."""
+    if k <= 0.02: return
+    llama(d, g, x, y, 60 + 150 * k, 16 + 26 * min(k, 1.3), t, seed=seed, col=col)
+    if k > 0.5: llama(d, g, x - 22 * k, y + 4, 40 + 80 * k, 10 + 12 * k, t * 1.1, seed=seed + 3, col=col)
+    if k > 0.5: llama(d, g, x + 22 * k, y + 4, 40 + 90 * k, 10 + 12 * k, t * 0.9, seed=seed + 5, col=col)
+    g.ellipse([x - 90 - 90 * k, y - 120 - 160 * k, x + 90 + 90 * k, y + 60], fill=(255, 150, 80, int(min(170, 90 + 80 * k))))
+
+def soplo(d, x0, y0, x1, y1, k, t, alpha=235, col=(150, 140, 175)):
+    """Ráfagas de aire (3 líneas onduladas) que van de la boca de la sombra (x0, y0) al fuego (x1, y1). k 0..1 intensidad."""
+    if k <= 0 or alpha <= 0: return
+    for i in range(3):
+        ph = (t * 1.3 + i / 3) % 1
+        u0, u1 = max(0, ph - 0.35), ph
+        pts = []
+        for j in range(9):
+            u = lerp(u0, u1, j / 8)
+            px = lerp(x0, x1, u); py = lerp(y0, y1, u) + (i - 1) * 22 + 9 * math.sin(u * 14 + t * 4 + i)
+            pts.append((px * S, py * S))
+        d.line(pts, fill=col + (int(alpha * k * (1 - ph * 0.6)),), width=int(7 * S), joint="curve")
+
+def brasas(d, g, x, k, t, seed=2, w=200):
+    """Brasas encendidas que se extienden bajo el suelo (lo que la ira va quemando por dentro). k 0..1."""
+    if k <= 0: return
+    rnd = random.Random(seed)
+    for i in range(int(6 + 34 * k)):
+        bx = x + rnd.uniform(-w, w) * (0.35 + 0.65 * k); by = GY + 30 + rnd.uniform(0, 320) * (0.3 + 0.7 * k)
+        r = rnd.uniform(5, 13); fl = 0.55 + 0.45 * math.sin(t * 3 + i * 1.7)
+        d.ellipse([(bx - r) * S, (by - r * 0.7) * S, (bx + r) * S, (by + r * 0.7) * S], fill=(240, 120 + int(60 * fl), 70, int(220 * fl)))
+    g.ellipse([x - w * k, GY + 20, x + w * k, GY + 40 + 340 * k], fill=(240, 110, 60, int(70 * k)))
+
+def sonrisa(d, x, y, k, alpha=255, col=(16, 18, 26)):
+    """Sonrisa (arco oscuro) en la cabeza de una figura sin rasgos; k 0..1 cuánto sonríe (0 = boca recta seria)."""
+    if alpha <= 0: return
+    a = int(alpha)
+    if k < 0.15:
+        d.line([((x - 11) * S, y * S), ((x + 11) * S, y * S)], fill=col + (a,), width=int(4 * S)); return
+    h = 4 + 12 * k
+    d.arc([(x - 14) * S, (y - h) * S, (x + 14) * S, (y + h) * S], 15, 165, fill=col + (a,), width=int(4 * S))
+
+def moneda_luz(d, g, x, y, r=16, alpha=255, col=GOLD):
+    """Moneda de luz dorada (una buena obra que cae a tu cofre)."""
+    if alpha <= 0: return
+    d.ellipse([(x - r) * S, (y - r) * S, (x + r) * S, (y + r) * S], fill=col + (int(alpha),), outline=(255, 245, 210, int(alpha)), width=int(2 * S))
+    d.ellipse([(x - r * 0.45) * S, (y - r * 0.45) * S, (x + r * 0.45) * S, (y + r * 0.45) * S], outline=(200, 165, 90, int(alpha)), width=int(2 * S))
+    g.ellipse([x - 3 * r, y - 3 * r, x + 3 * r, y + 3 * r], fill=(250, 220, 140, int(110 * alpha / 255)))
+
+def cofre_luz(d, g, x, y, n, abre, t, alpha=255, gris=0.0, w=150, h=96):
+    """Cofre bajo el suelo (objeto nuevo): n monedas de luz dentro; abre 0..1 levanta la tapa y deja salir la luz."""
+    if alpha <= 0: return
+    a = int(alpha)
+    col = tuple(int(lerp(c, g_, gris)) for c, g_ in zip((214, 186, 120), (96, 94, 100)))
+    x0, x1, y0, y1 = x - w / 2, x + w / 2, y - h / 2, y + h / 2
+    if abre > 0:                                         # luz que sale
+        g.ellipse([x - 160, y - 200 * abre - 60, x + 160, y + 30], fill=(250, 220, 140, int(150 * abre)))
+        for i in range(min(n, 14)):
+            cx = x - 50 + (i % 5) * 25; cy = y0 + 4 - (i // 5) * 14 - 14 * abre
+            moneda_luz(d, g, cx, cy, r=12, alpha=alpha)
+    d.rounded_rectangle([x0 * S, y0 * S, x1 * S, y1 * S], radius=int(10 * S), fill=col + (a,), outline=(70, 55, 30, a), width=int(3 * S))
+    d.line([(x0 * S, (y0 + 30) * S), (x1 * S, (y0 + 30) * S)], fill=(70, 55, 30, a), width=int(3 * S))
+    lid = -abre * 54; ang = abre * 0.5
+    d.rounded_rectangle([(x0 - 5) * S, (y0 - 30 + lid) * S, (x1 + 5) * S, (y0 + 2 + lid) * S], radius=int(12 * S), fill=col + (a,), outline=(70, 55, 30, a), width=int(3 * S))
+    if abre < 0.3:
+        d.rectangle([(x - 13) * S, (y0 - 6) * S, (x + 13) * S, (y0 + 20) * S], fill=(60, 60, 64, a))

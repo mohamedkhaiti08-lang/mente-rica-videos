@@ -1,0 +1,68 @@
+{
+ "lines": [
+  "¿Sabes por qué un musulmán te sonríe?",
+  "Dos personas. La misma calle.",
+  "Uno pasa serio, sin mirar.",
+  "El otro sonríe a cada uno.",
+  "Día diez.",
+  "Día treinta. Ninguno ha dado nada…",
+  "¿O sí?",
+  "Mira debajo.",
+  "El Profeta, la paz sea con él, dijo: tu sonrisa a tu hermano es una sadaqa, una caridad.",
+  "Sonreír también es dar.",
+  "¿Quién te alegra el día con su sonrisa? Etiquétale."
+ ],
+ "starts": [
+  0.3,
+  2.64,
+  4.83,
+  7.25,
+  10.19,
+  12.48,
+  14.98,
+  17.07,
+  19.31,
+  24.8,
+  26.94
+ ],
+ "ends": [
+  2.24,
+  4.33,
+  6.35,
+  8.89,
+  10.88,
+  14.37,
+  15.48,
+  17.91,
+  24.19,
+  26.34,
+  29.71
+ ],
+ "duration": 31.51,
+ "sfx": [
+  {
+   "t": 8.15,
+   "f": 1320,
+   "dur": 0.8,
+   "v": 0.05
+  },
+  {
+   "t": 11.09,
+   "f": 1320,
+   "dur": 0.8,
+   "v": 0.05
+  },
+  {
+   "t": 17.57,
+   "f": 660,
+   "dur": 2.0,
+   "v": 0.08
+  },
+  {
+   "t": 17.72,
+   "f": 990,
+   "dur": 2.0,
+   "v": 0.06
+  }
+ ]
+}

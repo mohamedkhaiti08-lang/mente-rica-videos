@@ -1,0 +1,68 @@
+{
+ "lines": [
+  "¿Sabes qué dice un musulmán cuando se enfada?",
+  "Les gritan… y se enciende un fuego.",
+  "Y detrás, alguien que no ves… sopla.",
+  "Uno le deja soplar.",
+  "El otro dice: me refugio en Allah del shaitán.",
+  "Día diez.",
+  "Día treinta. Uno vive ardiendo.",
+  "¿Y por qué al otro ya no le prende?",
+  "Dos hombres discutían, y el Profeta, la paz sea con él, dijo: conozco una frase que le quitaría la ira: me refugio en Allah del shaitán.",
+  "No le dejes soplar.",
+  "¿La dirás la próxima vez? Escríbela."
+ ],
+ "starts": [
+  0.3,
+  2.95,
+  5.29,
+  7.73,
+  9.46,
+  12.94,
+  14.67,
+  17.14,
+  20.56,
+  28.24,
+  29.94
+ ],
+ "ends": [
+  2.6,
+  4.79,
+  7.23,
+  8.96,
+  11.84,
+  13.57,
+  16.44,
+  18.96,
+  27.74,
+  29.44,
+  31.94
+ ],
+ "duration": 33.54,
+ "sfx": [
+  {
+   "t": 11.06,
+   "f": 1320,
+   "dur": 0.8,
+   "v": 0.06
+  },
+  {
+   "t": 13.94,
+   "f": 1320,
+   "dur": 0.8,
+   "v": 0.05
+  },
+  {
+   "t": 20.209999999999997,
+   "f": 660,
+   "dur": 2.0,
+   "v": 0.08
+  },
+  {
+   "t": 20.36,
+   "f": 990,
+   "dur": 2.0,
+   "v": 0.06
+  }
+ ]
+}
