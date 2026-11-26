@@ -14,7 +14,17 @@ Horarios: 10:00 y 18:00 (Europe/Madrid) — valor por defecto (picos de audienci
 
 - 25/11/2026 (22:40): 25/11 prioridad 10:00 y aparcar 18:00 publicados (aún sin cifras). PROGRAMADO 26/11: mezcla 10:00 + giro 18:00 (detalle en publicados.md). Cola llena hasta el 26/11 → próxima ejecución: 27/11 prioridad + aparcar.
 
-## 3D: pistas (25/11/2026, 22:40) — Metricool, TikTok 11-25/11
+- 26/11/2026 (22:45): 26/11 mezcla 10:00 y giro 18:00 publicados (aún sin cifras). Cola de Metricool vacía desde el 27/11 → se hacen 27/11 prioridad 10:00 + aparcar 18:00 (detalle en publicados.md).
+
+## 3D: pistas (26/11/2026, 22:45) — Metricool, TikTok 12-26/11
+- Nuevos: 25/11 10:00 prioridad (der_sin · peaton · sem_verde, 1º NO, día, 33 s) = **875** vistas / 57 likes (6,5 %, la mejor tasa de prioridad) / 0 com. / 0 compart. 25/11 18:00 aparcar (zigzag · amarilla_disc · plaza_blanca, 1º NO, día, 34 s) = **814** / 19 likes (2,3 %, la peor tasa de aparcar) / 0 com. / 1 compart. Los 2 del 26/11 aún no salen en Metricool.
+- Actualizados: 13/11 18:00 prioridad 16.042 (nº 1, 444 likes, 18 compart.); 14/11 10:00 prioridad 9.399; 18/11 10:00 mezcla 2.658; 13/11 10:00 prioridad 2.445; 24/11 10:00 mezcla 1.376; 18/11 18:00 giro 1.306; 19/11 18:00 aparcar 1.297.
+- Media 3D (22 vídeos): 2.159; mediana 929. Por TEMA: **mezcla 1.414** (4), prioridad 1.091 sin los 2 virales (10 en total, media 3.417), aparcar 976 (4), **giro 941** (4). Ninguno llega al doble de la media → rotación 1:1:1:1, mezcla y prioridad a las 10:00.
+- Hora de publicación (sin virales): 10:00 = 1.257 de media (10) vs 18:00 = 948 (10). Se mantiene la pista.
+- Los vídeos ya se estabilizan en 700-900 salvo mezcla a las 10:00. Abrir con der_sin/peaton no repitió el viral (875) → hoy prioridad con trío nuevo stop_mio · ceda_otro · izq_sin (ceda y cruce sin señales estaban en los 2 virales). Aparcar: el mejor (1.297) llevaba amarilla_cont + zigzag + parada permitida → hoy amarilla_cont · amarilla_disc_parar · paso_cebra (contraste continua/discontinua).
+- Ningún vídeo con más de 24 h y 0 vistas. Instagram sin conectar.
+
+### (anterior) 3D: pistas (25/11/2026, 22:40) — Metricool, TikTok 11-25/11
 - Nuevos: 24/11 10:00 mezcla (r303_sentido · ceda_otro · amarilla_cont_parar, 1º NO, día, 33 s) = **1.306** vistas / 64 likes (4,9 %) / 1 com. / 3 compart. → el mejor 3D desde el 18/11. 24/11 18:00 giro (r101_der · r302_izq · r303_der, 1º NO, día, 34 s) = **650** / 36 likes / 2 com. → el PEOR 3D hasta ahora. Los 2 del 25/11 aún no salen en Metricool.
 - Actualizados: 23/11 aparcar 901 (57 likes, 6,3 %); 23/11 prioridad 690 (13 likes); 13/11 18:00 prioridad 15.974 (nº 1, 443 likes, 18 compart.); 14/11 10:00 prioridad 9.322; 18/11 10:00 mezcla 2.647; 13/11 10:00 prioridad 2.424.
 - Media 3D (20 vídeos): 2.272; mediana 971. Por TEMA: **mezcla 1.393** (4: 2.647, 1.306, 907, 710), prioridad 1.116 sin los 2 virales (9 en total, media 3.679), aparcar 1.022 (3), **giro 923** (4, y baja: 1.287 → 759 → 650). Ninguno llega al doble de la media → rotación 1:1:1:1.
