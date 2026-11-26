@@ -1,0 +1,66 @@
+{
+ "seed": 202611272,
+ "hora": "dia",
+ "tema": "aparcar",
+ "tipos": [
+  "amarilla_cont",
+  "amarilla_disc_parar",
+  "paso_cebra"
+ ],
+ "intro": "¿Te multarían? Tres sitios, tres segundos.",
+ "final": "Comenta cuántas has acertado.",
+ "dur": 33.65,
+ "cruces": [
+  {
+   "tipo": "amarilla_cont",
+   "lado": "der",
+   "resp": "NO",
+   "pregunta": "¿Puedes aparcar aquí?",
+   "rotulo": "AMARILLA CONTINUA: NI PARAR NI APARCAR",
+   "q": "Sitio uno. Mira el bordillo. ¿Aparcas aquí?",
+   "escena": "aparcar",
+   "r": "No. Con amarilla continua no puedes ni parar.",
+   "T0": 2.6,
+   "tq": 2.8000000000000003,
+   "C": 5.138583333333334,
+   "R": 8.138583333333333,
+   "tr": 8.238583333333333,
+   "E": 11.077416666666666,
+   "L": 9.338583333333332
+  },
+  {
+   "tipo": "amarilla_disc_parar",
+   "lado": "der",
+   "resp": "SÍ",
+   "pregunta": "¿Puedes parar un momento?",
+   "rotulo": "AMARILLA DISCONTINUA: PARAR SÍ, APARCAR NO",
+   "q": "Sitio dos. Solo un momento, para dejar a alguien. ¿Puedes parar?",
+   "escena": "aparcar",
+   "r": "Sí. La discontinua solo prohíbe estacionar.",
+   "T0": 11.538583333333332,
+   "tq": 11.738583333333331,
+   "C": 14.972999999999997,
+   "R": 17.973,
+   "tr": 18.073,
+   "E": 20.886208333333332,
+   "L": 19.173
+  },
+  {
+   "tipo": "paso_cebra",
+   "lado": "der",
+   "resp": "NO",
+   "pregunta": "¿Puedes parar un momento?",
+   "rotulo": "PASO DE PEATONES: NI PARAR NI APARCAR",
+   "q": "Sitio tres. No viene nadie. ¿Puedes parar aquí un momento?",
+   "escena": "aparcar",
+   "r": "No. En un paso de peatones no puedes ni parar.",
+   "T0": 21.373,
+   "tq": 21.573,
+   "C": 24.662125,
+   "R": 27.662125,
+   "tr": 27.762125,
+   "E": 30.676583333333333,
+   "L": 28.862125
+  }
+ ]
+}
