@@ -1,0 +1,68 @@
+{
+ "lines": [
+  "¿Sabes qué hace un musulmán cuando tiene una pesadilla?",
+  "Dos camas. La misma pesadilla.",
+  "Uno se despierta con miedo, y se queda con ella.",
+  "El otro escupe levemente a su lado, y pide refugio en Allah.",
+  "Día diez.",
+  "¿Quién vuelve a dormir tranquilo?",
+  "Día treinta.",
+  "El Profeta, la paz sea con él, dijo: el buen sueño es de Allah, y la pesadilla, del shaitán.",
+  "Escupe a tu izquierda, pide refugio en Allah, y no te hará daño.",
+  "Él asusta. Allah protege.",
+  "¿Lo sabías? Guárdalo para esta noche."
+ ],
+ "starts": [
+  0.3,
+  3.43,
+  5.66,
+  8.8,
+  12.93,
+  14.93,
+  18.14,
+  20.06,
+  25.3,
+  29.12,
+  31.14
+ ],
+ "ends": [
+  3.13,
+  5.26,
+  8.2,
+  12.14,
+  13.62,
+  16.74,
+  18.96,
+  24.9,
+  28.61,
+  30.64,
+  33.16
+ ],
+ "duration": 34.56,
+ "sfx": [
+  {
+   "t": 10.600000000000001,
+   "f": 1320,
+   "dur": 0.8,
+   "v": 0.05
+  },
+  {
+   "t": 13.93,
+   "f": 1320,
+   "dur": 0.8,
+   "v": 0.05
+  },
+  {
+   "t": 18.14,
+   "f": 660,
+   "dur": 2.0,
+   "v": 0.08
+  },
+  {
+   "t": 18.29,
+   "f": 990,
+   "dur": 2.0,
+   "v": 0.06
+  }
+ ]
+}

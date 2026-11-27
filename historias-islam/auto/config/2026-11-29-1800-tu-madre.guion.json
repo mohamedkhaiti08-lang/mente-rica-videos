@@ -1,0 +1,86 @@
+{
+ "lines": [
+  "¿Sabes a quién manda el islam tratar mejor que a nadie?",
+  "Su madre les pide ayuda.",
+  "Uno dice: luego, mamá.",
+  "El otro deja el móvil, y va.",
+  "Día diez.",
+  "Día treinta.",
+  "¿Quién merece más tu cariño?",
+  "Un hombre le preguntó al Profeta, la paz sea con él: ¿quién merece más mi buen trato? Tu madre.",
+  "¿Y después? Tu madre.",
+  "¿Y después? Tu madre.",
+  "¿Y después? Tu padre.",
+  "Di: ya voy, mamá.",
+  "¿Cuándo fue la última vez que le dijiste: te quiero?"
+ ],
+ "starts": [
+  0.3,
+  3.71,
+  5.51,
+  7.53,
+  9.91,
+  12.41,
+  14.73,
+  17.75,
+  22.89,
+  24.45,
+  26.01,
+  27.8,
+  29.41
+ ],
+ "ends": [
+  3.41,
+  5.11,
+  6.93,
+  9.21,
+  10.6,
+  13.23,
+  16.45,
+  22.54,
+  24.1,
+  25.66,
+  27.2,
+  28.9,
+  31.85
+ ],
+ "duration": 33.35,
+ "sfx": [
+  {
+   "t": 9.13,
+   "f": 1320,
+   "dur": 0.8,
+   "v": 0.05
+  },
+  {
+   "t": 22.44,
+   "f": 990,
+   "dur": 1.2,
+   "v": 0.06
+  },
+  {
+   "t": 24.0,
+   "f": 1110,
+   "dur": 1.2,
+   "v": 0.06
+  },
+  {
+   "t": 25.560000000000002,
+   "f": 1320,
+   "dur": 1.4,
+   "v": 0.06
+  },
+  {
+   "t": 27.8,
+   "f": 660,
+   "dur": 2.0,
+   "v": 0.07
+  },
+  {
+   "t": 27.95,
+   "f": 990,
+   "dur": 2.0,
+   "v": 0.05
+  }
+ ]
+}

@@ -1229,3 +1229,87 @@ def cofre_luz(d, g, x, y, n, abre, t, alpha=255, gris=0.0, w=150, h=96):
     d.rounded_rectangle([(x0 - 5) * S, (y0 - 30 + lid) * S, (x1 + 5) * S, (y0 + 2 + lid) * S], radius=int(12 * S), fill=col + (a,), outline=(70, 55, 30, a), width=int(3 * S))
     if abre < 0.3:
         d.rectangle([(x - 13) * S, (y0 - 6) * S, (x + 13) * S, (y0 + 20) * S], fill=(60, 60, 64, a))
+
+# ---------------- piezas del 29 nov 2026 (pesadilla: nube de sueño, escupir/soplo; madre con velo, cargar peso) ----------------
+NOCHE_MALA = (34, 28, 44)
+
+def nube_sueno(d, cx, cy, k, t, hacia=None, alpha=255, oscuro=1.0, col=CREAM, fondo=NOCHE_MALA, seed=3):
+    """Nube de sueño (bocadillo de pensamiento grande) sobre quien duerme. k 0..1 tamaño. hacia=(x, y) cabeza: burbujitas.
+    Dibujar en una capa de new_layer() para que el relleno oscuro no lleve halo. Devuelve (rx, ry)."""
+    if k <= 0.02 or alpha <= 0: return 0, 0
+    a = int(alpha); rx, ry = 150 * k, 92 * k
+    rnd = random.Random(seed)
+    lobs = [(math.cos(2 * math.pi * i / 9), math.sin(2 * math.pi * i / 9)) for i in range(9)]
+    rr = [44 + 8 * rnd.random() for _ in lobs]
+    fill = tuple(int(lerp(c, f, oscuro)) for c, f in zip((40, 46, 58), fondo)) + (a,)
+    for i, (ux, uy) in enumerate(lobs):                  # borde de la nube
+        r = rr[i] * k * (1 + 0.04 * math.sin(t * 2 + i))
+        px, py = cx + ux * rx * 0.9, cy + uy * ry * 0.85
+        d.ellipse([(px - r - 3) * S, (py - r - 3) * S, (px + r + 3) * S, (py + r + 3) * S], fill=col + (int(a * 0.75),))
+    for i, (ux, uy) in enumerate(lobs):
+        r = rr[i] * k * (1 + 0.04 * math.sin(t * 2 + i))
+        px, py = cx + ux * rx * 0.9, cy + uy * ry * 0.85
+        d.ellipse([(px - r) * S, (py - r) * S, (px + r) * S, (py + r) * S], fill=fill)
+    d.ellipse([(cx - rx) * S, (cy - ry) * S, (cx + rx) * S, (cy + ry) * S], fill=fill)
+    if hacia:
+        hx, hy = hacia
+        for i, r in enumerate((14, 10, 7)):
+            u = 0.35 + 0.22 * i; px, py = lerp(cx, hx, u), lerp(cy + ry, hy, u)
+            r *= max(0.5, k)
+            d.ellipse([(px - r) * S, (py - r) * S, (px + r) * S, (py + r) * S], fill=fill, outline=col + (int(a * 0.75),), width=int(2 * S))
+    return rx, ry
+
+def rayo(d, x, y, h, alpha=255, col=(200, 90, 90), w=5):
+    """Rayo en zigzag (miedo dentro de la pesadilla)."""
+    if alpha <= 0: return
+    pts = [(x, y), (x - 0.25 * h, y + 0.45 * h), (x + 0.05 * h, y + 0.45 * h), (x - 0.2 * h, y + h)]
+    d.line([(a * S, b * S) for a, b in pts], fill=col + (int(alpha),), width=int(w * S), joint="curve")
+
+def escupe(d, x, y, k, t, lado=-1, alpha=230, col=(190, 240, 235)):
+    """Soplo leve hacia un lado (escupir levemente a la izquierda tras una pesadilla). k 0..1 progreso."""
+    if k <= 0 or k >= 1 or alpha <= 0: return
+    for i in range(3):
+        u = max(0.0, min(1.0, k * 1.4 - i * 0.18))
+        if u <= 0: continue
+        px = x + lado * 70 * u; py = y + 12 * u + (i - 1) * 6
+        r = 6 * (1 - 0.5 * u) + 2
+        d.ellipse([(px - r) * S, (py - r) * S, (px + r) * S, (py + r) * S], fill=col + (int(alpha * (1 - u)),))
+
+INCORPORADO = dict(P["stand"])   # figura medio incorporada en la cama se hace con tumbar(k≈0.45)
+MAYOR = dict(P["stand"]); MAYOR.update(head=(14, -286), neck=(10, -250), le=(-14, -200), lh=(-20, -140), re=(34, -198), rh=(40, -140))   # algo encorvada
+CARGA = dict(P["stand"]); CARGA.update(head=(18, -272), neck=(14, -236), hip=(0, -126), le=(-4, -180), lh=(30, -150), re=(40, -184), rh=(62, -150), lk=(-10, -62), rk=(18, -62))  # carga peso delante, encorvada
+LLEVA = dict(P["stand"]); LLEVA.update(le=(-6, -196), lh=(30, -172), re=(44, -198), rh=(66, -172))   # lleva algo delante, erguido
+
+def velo(d, x, p, k=1.0, col=CREAM, alpha=255, y0=GY, linea=(24, 28, 36)):
+    """Pañuelo sobre la cabeza de una figura (madre). Dibujar DESPUÉS de mini_figure/figure con la misma pose y escala."""
+    if alpha <= 0: return
+    hx, hy = x + p["head"][0] * k, y0 + p["head"][1] * k
+    nx, ny = x + p["neck"][0] * k, y0 + p["neck"][1] * k
+    c = col + (int(alpha),); r = 40 * k
+    d.ellipse([(hx - r) * S, (hy - r - 4 * k) * S, (hx + r) * S, (hy + r - 4 * k) * S], fill=c)
+    d.polygon([((hx - r) * S, hy * S), ((hx + r) * S, hy * S), ((nx + 58 * k) * S, (ny + 30 * k) * S), ((nx - 58 * k) * S, (ny + 30 * k) * S)], fill=c)
+    ri = 25 * k
+    d.ellipse([(hx - ri) * S, (hy - ri + 4 * k) * S, (hx + ri) * S, (hy + ri + 4 * k) * S], outline=linea + (int(alpha * 0.8),), width=int(3 * S))
+
+def madre(d, x, p, k=0.9, col=CREAM, alpha=255, gris=0.0):
+    """Madre: figura con pañuelo. gris 0..1 la apaga (sola, triste)."""
+    c = tuple(int(lerp(a, b, gris)) for a, b in zip(col, (120, 118, 128)))
+    mini_figure(d, x, p, k=k, col=c, alpha=alpha)
+    velo(d, x, p, k=k, col=c, alpha=alpha)
+
+def corazon_luz(d, g, x, y, r, alpha=255, col=(150, 245, 238)):
+    """Corazón pequeño de luz (cariño / dua de la madre)."""
+    if alpha <= 0: return
+    pts = []
+    for i in range(40):
+        a = 2 * math.pi * i / 40
+        px = 16 * math.sin(a) ** 3; py = -(13 * math.cos(a) - 5 * math.cos(2 * a) - 2 * math.cos(3 * a) - math.cos(4 * a))
+        pts.append(((x + px * r / 16) * S, (y + py * r / 16) * S))
+    d.polygon(pts, fill=col + (int(alpha),))
+    g.ellipse([x - 2.5 * r, y - 2.5 * r, x + 2.5 * r, y + 2.5 * r], fill=col + (int(120 * alpha / 255),))
+
+# sentado en la cama (cadera en (0,0) sobre el colchón, piernas hacia la derecha; usar espejo() para el otro lado)
+SENTADO_MIEDO = dict(head=(-2, -182), neck=(0, -144), hip=(0, -10), le=(22, -112), lh=(58, -66), re=(26, -114), rh=(64, -70), lk=(56, -66), lf=(112, -4), rk=(62, -62), rf=(118, -4))   # abraza las rodillas
+SENTADO_MOVIL = dict(SENTADO_MIEDO); SENTADO_MOVIL.update(re=(30, -100), rh=(60, -128))
+SENTADO_CANSADO = dict(head=(26, -160), neck=(20, -124), hip=(0, -10), le=(30, -96), lh=(60, -56), re=(34, -98), rh=(66, -58), lk=(56, -60), lf=(112, -4), rk=(62, -56), rf=(118, -4))  # encorvado
+SENTADO_DUA = dict(head=(0, -184), neck=(0, -146), hip=(0, -10), le=(18, -114), lh=(44, -150), re=(24, -116), rh=(52, -146), lk=(64, -16), lf=(128, -8), rk=(66, -14), rf=(130, -6))     # manos delante (dua)
