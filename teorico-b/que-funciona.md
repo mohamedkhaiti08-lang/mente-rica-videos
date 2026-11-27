@@ -16,7 +16,17 @@ Horarios: 10:00 y 18:00 (Europe/Madrid) — valor por defecto (picos de audienci
 
 - 26/11/2026 (22:45): 26/11 mezcla 10:00 y giro 18:00 publicados (aún sin cifras). Cola de Metricool vacía desde el 27/11 → PROGRAMADO 27/11: prioridad 10:00 (stop_mio NO · ceda_otro SÍ · izq_sin SÍ) + aparcar 18:00 (amarilla_cont NO · amarilla_disc_parar SÍ · paso_cebra NO). Cola llena hasta el 27/11 → próxima ejecución: 28/11 mezcla + giro.
 
-## 3D: pistas (26/11/2026, 22:45) — Metricool, TikTok 12-26/11
+- 27/11/2026 (Aprender + programar): 27/11 prioridad 10:00 y aparcar 18:00 publicados (aún sin cifras). Cola de Metricool vacía desde el 28/11 → 28/11: mezcla 10:00 (sem_rojo NO · r302_der NO · plaza_blanca SÍ) + giro 18:00 (r303_izq NO · r101_der NO · r302_izq SÍ). Próxima ejecución: 29/11 prioridad + aparcar.
+
+## 3D: pistas (27/11/2026) — Metricool, TikTok 13-27/11
+- Nuevos: 26/11 10:00 mezcla (ceda_mio · r303_der · r308_parar, 1º NO, día, 32 s) = **848** vistas / 73 likes (8,6 %, la MEJOR tasa de likes de todos los 3D) / 0 com. / 2 compart. 26/11 18:00 giro (r303_sentido · r302_izq · r101_der, 1º NO, día, 34 s) = **644** / 7 likes (1,1 %) / 0 com. / 1 compart. → el PEOR 3D hasta ahora. Era el mismo trío que hizo 1.338 el 18/11: el problema de giro es el TEMA, no el trío (lo dicho el 25/11 se confirma).
+- Actualizados: 13/11 18:00 prioridad 16.099 (nº 1, 445 likes, 19 compart.); 14/11 10:00 prioridad 9.443; 18/11 10:00 mezcla 2.664; 13/11 10:00 prioridad 2.461; 24/11 10:00 mezcla 1.404; 18/11 18:00 giro 1.338; 19/11 18:00 aparcar 1.310; 25/11 18:00 aparcar 946; 25/11 10:00 prioridad 892.
+- Media 3D (24 vídeos): 2.056; mediana 930. Por TEMA: **mezcla 1.308** (5), prioridad 1.096 sin los 2 virales (10; 3.431 con ellos), aparcar 1.014 (4), **giro 889** (5: 995 → 1.338 → 762 → 708 → 644, a la baja). Ninguno llega al doble de la media → rotación 1:1:1:1 (giro no puede faltar más de 2 días).
+- Hora de publicación (sin virales): 10:00 = 1.226 (11) vs 18:00 = 938 (11). Se mantiene: mezcla y prioridad a las 10:00, giro y aparcar a las 18:00.
+- Giro: con la regla de 3 grupos distintos (R-302, R-303, R-101) y al menos un SÍ, solo quedan 4 tríos posibles y ya se han repetido. Idea para subir el tema: añadir situaciones nuevas de giro (p. ej. sentido obligatorio R-400, calle de sentido único/R-101 contraria, giro con flecha verde de semáforo) — verificar antes la norma en BOE/DGT. Hoy se usa el único trío no usado en 7 días: r303_izq · r101_der · r302_izq.
+- Ningún vídeo con más de 24 h y 0 vistas. Instagram sin conectar.
+
+### (anterior) 3D: pistas (26/11/2026, 22:45) — Metricool, TikTok 12-26/11
 - Nuevos: 25/11 10:00 prioridad (der_sin · peaton · sem_verde, 1º NO, día, 33 s) = **875** vistas / 57 likes (6,5 %, la mejor tasa de prioridad) / 0 com. / 0 compart. 25/11 18:00 aparcar (zigzag · amarilla_disc · plaza_blanca, 1º NO, día, 34 s) = **814** / 19 likes (2,3 %, la peor tasa de aparcar) / 0 com. / 1 compart. Los 2 del 26/11 aún no salen en Metricool.
 - Actualizados: 13/11 18:00 prioridad 16.042 (nº 1, 444 likes, 18 compart.); 14/11 10:00 prioridad 9.399; 18/11 10:00 mezcla 2.658; 13/11 10:00 prioridad 2.445; 24/11 10:00 mezcla 1.376; 18/11 18:00 giro 1.306; 19/11 18:00 aparcar 1.297.
 - Media 3D (22 vídeos): 2.159; mediana 929. Por TEMA: **mezcla 1.414** (4), prioridad 1.091 sin los 2 virales (10 en total, media 3.417), aparcar 976 (4), **giro 941** (4). Ninguno llega al doble de la media → rotación 1:1:1:1, mezcla y prioridad a las 10:00.
